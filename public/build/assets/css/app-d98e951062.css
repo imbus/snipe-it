@@ -14141,7 +14141,7 @@ a.accordion-header {
   padding-left: 15px;
 }
 .control-label.multiline {
-  padding-top: 10;
+  padding-top: 10px;
 }
 .btn-outline {
   color: inherit;
@@ -14342,6 +14342,16 @@ a.logo.no-hover a:hover {
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+@media print {
+  a[href]:after {
+    content: none;
+  }
+  .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }
 
 /*# sourceMappingURL=app.css.map */
