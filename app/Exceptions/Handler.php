@@ -117,7 +117,8 @@ class Handler extends ExceptionHandler
                     case '429':
                         return response()->json(Helper::formatStandardApiResponse('error', ['requests_per_minute' => (int) config('app.api_throttle_per_minute'), 'retry-after' => $e->getHeaders()['Retry-After']], 'Too many requests. Try again in '.($e->getHeaders()['Retry-After'] ?? 60).' seconds'), 429)
                             ->header('Retry-After', $e->getHeaders()['Retry-After'] ?? 60)
-                            ->header('X-Ratelimit-Remaining', $request->header('X-RateLimit-Remaining'))
+                            ->header('X-RateLimit-Reset', $e->getHeaders()['Retry-After'] ?? 60)
+                            ->header('X-Ratelimit-Remaining', $e->getHeaders()['X-RateLimit-Remaining'])
                             ->header('X-Ratelimit-Limit', config('app.api_throttle_per_minute'));
                     default:
                         return response()->json(Helper::formatStandardApiResponse('error', null, $statusCode), $statusCode);
