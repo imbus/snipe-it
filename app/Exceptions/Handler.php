@@ -109,17 +109,12 @@ class Handler extends ExceptionHandler
 
                 $statusCode = $e->getStatusCode();
 
+                // API throttle requests are handled in the RouteServiceProvider configureRateLimiting() method, so we don't need to handle them here
                 switch ($e->getStatusCode()) {
                     case '404':
                        return response()->json(Helper::formatStandardApiResponse('error', null, $statusCode . ' endpoint not found'), 404);
                      case '405':
                         return response()->json(Helper::formatStandardApiResponse('error', null, 'Method not allowed'), 405);
-                    case '429':
-                        return response()->json(Helper::formatStandardApiResponse('error', ['requests_per_minute' => (int) config('app.api_throttle_per_minute'), 'retry-after' => $e->getHeaders()['Retry-After']], 'Too many requests. Try again in '.($e->getHeaders()['Retry-After'] ?? 60).' seconds'), 429)
-                            ->header('Retry-After', $e->getHeaders()['Retry-After'] ?? 60)
-                            ->header('X-RateLimit-Reset', $e->getHeaders()['Retry-After'] ?? 60)
-                            ->header('X-Ratelimit-Remaining', $e->getHeaders()['X-RateLimit-Remaining'])
-                            ->header('X-Ratelimit-Limit', config('app.api_throttle_per_minute'));
                     default:
                         return response()->json(Helper::formatStandardApiResponse('error', null, $statusCode), $statusCode);
 

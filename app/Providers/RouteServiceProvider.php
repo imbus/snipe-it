@@ -83,9 +83,18 @@ class RouteServiceProvider extends ServiceProvider
     protected function configureRateLimiting()
     {
 
-        // Rate limiter for API calls
+        // Rate limiter for API calls - this sends the correct API headers to show the user the remaining time they have to wait and gives them the 429 status code if they are throttled
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(config('app.api_throttle_per_minute'))->by(optional($request->user())->id ?: $request->ip());
+            return Limit::perMinute(config('app.api_throttle_per_minute'))->by(optional($request->user())->id ?: $request->ip())
+                ->response(function ($request, $headers) {
+
+                    return response()->json([
+                        'status' => 'error',
+                        'messages' => 'Too many requests. Try again in '.$headers['Retry-After'].' seconds.',
+                        'status_code' => 429,
+                        'retryAfter' => $headers['Retry-After'] ?? 60,
+                    ], 429, $headers);
+                });;
         });
 
         // Rate limiter for forgotten password requests
