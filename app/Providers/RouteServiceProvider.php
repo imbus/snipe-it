@@ -87,14 +87,13 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(config('app.api_throttle_per_minute'))->by(optional($request->user())->id ?: $request->ip())
                 ->response(function ($request, $headers) {
-
                     return response()->json([
                         'status' => 'error',
                         'messages' => 'Too many requests. Try again in '.$headers['Retry-After'].' seconds.',
                         'status_code' => 429,
                         'retryAfter' => $headers['Retry-After'] ?? 60,
                     ], 429, $headers);
-                });;
+                });
         });
 
         // Rate limiter for forgotten password requests
