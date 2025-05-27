@@ -27,7 +27,8 @@ class SetAPIResponseHeaders extends ThrottleRequests
             (int) $response->headers->get('X-RateLimit-Remaining') <= (int) $remainingAttempts) {
             $headers = [];
             $headers['Retry-After'] = $retryAfter; // this is the only line we changed
-            $headers['X-RateLimit-Reset'] = $this->availableAt($retryAfter); // this is the only line we changed
+            $headers['X-RateLimit-Reset'] = $retryAfter; // this is the only line we changed
+            $headers['X-RateLimit-Reset-Timestamp'] = $this->availableAt($retryAfter); // this is the only line we changed
             return $headers;
         }
 
@@ -38,7 +39,8 @@ class SetAPIResponseHeaders extends ThrottleRequests
 
         if (! is_null($retryAfter)) {
             $headers['Retry-After'] = $retryAfter;
-            $headers['X-RateLimit-Reset'] = $this->availableAt($retryAfter);
+            $headers['X-RateLimit-Reset'] = $retryAfter; // this is the only line we changed
+            $headers['X-RateLimit-Reset-Timestamp'] = $this->availableAt($retryAfter); // this is the only line we changed
         }
 
         return $headers;
@@ -70,7 +72,8 @@ class SetAPIResponseHeaders extends ThrottleRequests
                 $response,
                 $limit->maxAttempts,
                 $this->calculateRemainingAttempts($limit->key, $limit->maxAttempts),
-                $this->getTimeUntilNextRetry($limit->key) // this is the only line we changed
+                $this->getTimeUntilNextRetry($limit->key), // this is the only line we changed
+                $this->getTimeUntilNextRetry($limit->key), // this is the only line we changed
             );
         }
 
