@@ -76,6 +76,8 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Configure the rate limiters for the application.
      *
+     * This ONLY fires on 429 responses.
+     *
      * https://laravel.com/docs/8.x/routing#rate-limiting
      *
      * @return void
