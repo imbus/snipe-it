@@ -252,7 +252,7 @@
                                     <label for="skin">{{ trans('general.skin') }}</label>
                                 </div>
                                 <div class="col-md-9">
-                                    <x-input.user-skin name="skin" :selected="old('skin', $setting->skin)" />
+                                    <x-input.skin name="skin" :selected="old('skin', $setting->skin)" />
                                     {!! $errors->first('skin', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
                                 </div>
                             </div>
