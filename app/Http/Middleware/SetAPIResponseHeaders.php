@@ -72,8 +72,7 @@ class SetAPIResponseHeaders extends ThrottleRequests
                 $response,
                 $limit->maxAttempts,
                 $this->calculateRemainingAttempts($limit->key, $limit->maxAttempts),
-                $this->getTimeUntilNextRetry($limit->key), // this is the only line we changed
-                $this->getTimeUntilNextRetry($limit->key), // this is the only line we changed
+                $this->getTimeUntilNextRetry($limit->key) // this is the only line we changed
             );
         }
 
