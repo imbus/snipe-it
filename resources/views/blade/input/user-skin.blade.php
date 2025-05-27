@@ -1,11 +1,12 @@
 @props([
     'name',
     'selected',
+    // Whether to include a blank option with the label "Site Default"
+    'includeBlankOption' => false,
 ])
 
 @php
     $formats = [
-        '' => 'Site Default',
         'blue' => trans('general.skins.default_blue'),
         'blue-dark' => trans('general.skins.blue_dark'),
         'green' => trans('general.skins.green'),
@@ -22,6 +23,10 @@
         'yellow-dark' => trans('general.skins.yellow_dark'),
         'contrast' => trans('general.skins.high_contrast'),
     ];
+
+    if ($includeBlankOption) {
+        $formats = ['' => 'Site Default'] + $formats;
+    }
 @endphp
 
 <select
