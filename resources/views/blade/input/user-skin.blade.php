@@ -28,7 +28,7 @@
     name="{{ $name }}"
     {{ $attributes->merge([
         'class' => 'select2',
-        'style' => 'width: 250px',
+        'style' => 'width: 250px;',
     ]) }}
 >
     @foreach ($formats as $value => $label)
