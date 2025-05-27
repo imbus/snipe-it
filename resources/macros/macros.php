@@ -285,33 +285,3 @@ Form::macro('skin', function ($name = 'skin', $selected = null, $class = null) {
 
     return $select;
 });
-
-Form::macro('user_skin', function ($name = 'skin', $selected = null, $class = null) {
-    $formats = [
-        '' => 'Site Default',
-        'blue' => trans('general.skins.default_blue'),
-        'blue-dark' => trans('general.skins.blue_dark'),
-        'green' => trans('general.skins.green'),
-        'green-dark' => trans('general.skins.green_dark'),
-        'red' => trans('general.skins.red'),
-        'red-dark' => trans('general.skins.red_dark'),
-        'orange' => trans('general.skins.orange'),
-        'orange-dark' => trans('general.skins.orange_dark'),
-        'black' => trans('general.skins.black'),
-        'black-dark' => trans('general.skins.black_dark'),
-        'purple' => trans('general.skins.purple'),
-        'purple-dark' => trans('general.skins.purple_dark'),
-        'yellow' => trans('general.skins.yellow_dark'),
-        'yellow-dark' => trans('general.skins.yellow'),
-        'contrast' => trans('general.skins.high_contrast'),
-    ];
-
-    $select = '<select name="'.$name.'" class="'.$class.'" style="width: 250px">';
-    foreach ($formats as $format => $label) {
-        $select .= '<option value="'.$format.'"'.($selected == $format ? ' selected="selected"' : '').'>'.$label.'</option> '."\n";
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});
