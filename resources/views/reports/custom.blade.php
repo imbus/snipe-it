@@ -743,7 +743,8 @@
           clearBtn: true,
           todayHighlight: true,
           endDate: '0d',
-          format: 'yyyy-mm-dd'
+          format: 'yyyy-mm-dd',
+          keepEmptyValues: true,
       });
 
       $('.checkout-range .input-daterange').datepicker({
