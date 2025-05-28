@@ -854,7 +854,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                                     @if ($loop->first)
                                                         <x-icon type="home" />
                                                     @else
-                                                        <a href="{{ $crumbs->url() }}">{{ $crumbs->title() }}</a>
+                                                        {{ $crumbs->title() }}
                                                     @endif
                                                 </a>
                                                 <x-icon type="angle-right" />
