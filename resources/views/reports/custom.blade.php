@@ -738,7 +738,7 @@
           endDate: '0d',
           format: 'yyyy-mm-dd'
       });
-      $('.created-range-range .input-daterange').datepicker({
+      $('.created-range .input-daterange').datepicker({
           clearBtn: true,
           todayHighlight: true,
           endDate: '0d',
