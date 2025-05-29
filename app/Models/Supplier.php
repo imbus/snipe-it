@@ -48,7 +48,7 @@ class Supplier extends SnipeModel
      *
      * @var array
      */
-    protected $searchableAttributes = ['name'];
+    protected $searchableAttributes = ['name', 'notes', 'phone', 'fax', 'url', 'email', 'contact', 'address', 'address2', 'city', 'state', 'country', 'zip'];
 
     /**
      * The relations and their attributes that should be included when searching the model.
@@ -209,4 +209,13 @@ class Supplier extends SnipeModel
 
         return $url;
     }
+
+    /**
+     * Query builder scope to order on the user that created it
+     */
+    public function scopeOrderByCreatedByName($query, $order)
+    {
+        return $query->leftJoin('users as admin_sort', 'suppliers.created_by', '=', 'admin_sort.id')->select('suppliers.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
+    }
+
 }
