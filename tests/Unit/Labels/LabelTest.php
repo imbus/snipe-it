@@ -7,6 +7,7 @@ use App\Models\Location;
 use App\Models\Setting;
 use App\View\Label;
 use Tests\TestCase;
+use function Livewire\invade;
 
 class LabelTest extends TestCase
 {
@@ -31,6 +32,9 @@ class LabelTest extends TestCase
             ->with('settings', Setting::getSettings())
             ->with('bulkedit', true)
             ->with('count', 0);
+
+        // a simple way to avoid flooding test output with PDF characters.
+        invade($label)->destination = 'S';
 
         $label->render();
 
