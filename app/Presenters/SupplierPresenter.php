@@ -187,80 +187,14 @@ class SupplierPresenter extends Presenter
         return json_encode($layout);
     }
 
-    public static function assignedAccessoriesDataTableLayout()
-    {
-        $layout = [
-            [
-                'field' => 'id',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => true,
-                'title' => trans('general.id'),
-                'visible' => false,
-            ],
-            [
-                'field' => 'accessory',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => true,
-                'title' => trans('general.accessory'),
-                'visible' => true,
-                'formatter' => 'accessoriesLinkObjFormatter',
-            ],
-            [
-                'field' => 'image',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => true,
-                'title' => trans('general.image'),
-                'visible' => true,
-                'formatter' => 'imageFormatter',
-            ],
-            [
-                'field' => 'note',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => true,
-                'title' => trans('general.notes'),
-                'visible' => true,
-            ],
-            [
-                'field' => 'created_at',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => true,
-                'title' => trans('admin/hardware/table.checkout_date'),
-                'visible' => true,
-                'formatter' => 'dateDisplayFormatter',
-            ],
-            [
-                'field' => 'created_by',
-                'searchable' => false,
-                'sortable' => false,
-                'title' => trans('general.created_by'),
-                'visible' => false,
-                'formatter' => 'usersLinkObjFormatter',
-            ],
-            [
-                'field' => 'available_actions',
-                'searchable' => false,
-                'sortable' => false,
-                'switchable' => false,
-                'title' => trans('table.actions'),
-                'formatter' => 'accessoriesInOutFormatter',
-            ],
-        ];
-
-        return json_encode($layout);
-    }
-
+    =
     /**
      * Link to this locations name
      * @return string
      */
     public function nameUrl()
     {
-        return (string) link_to_route('locations.show', $this->name, $this->id);
+        return (string) link_to_route('suppliers.show', $this->name, $this->id);
     }
 
     /**
@@ -278,12 +212,12 @@ class SupplierPresenter extends Presenter
      */
     public function viewUrl()
     {
-        return route('locations.show', $this->id);
+        return route('suppliers.show', $this->id);
     }
 
     public function glyph()
     {
-        return '<x-icon type="locations" />';
+        return '<x-icon type="suppliers" />';
     }
 
     public function fullName()
