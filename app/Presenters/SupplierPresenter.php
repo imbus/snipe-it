@@ -9,7 +9,6 @@ class SupplierPresenter extends Presenter
 {
     /**
      * Json Column Layout for bootstrap table
-     * @return string
      */
     public static function dataTableLayout()
     {
@@ -186,10 +185,10 @@ class SupplierPresenter extends Presenter
 
         return json_encode($layout);
     }
+    
 
-    =
     /**
-     * Link to this locations name
+     * Link to this supplier name
      * @return string
      */
     public function nameUrl()
