@@ -3,6 +3,7 @@
 namespace Tests\Unit\Labels;
 
 use App\Models\Asset;
+use App\Models\Location;
 use App\Models\Setting;
 use App\View\Label;
 use Tests\TestCase;
@@ -20,16 +21,19 @@ class LabelTest extends TestCase
             'label2_2d_target' => 'location',
         ]);
 
-        $asset = Asset::factory()->create(['location_id' => null]);
+        $location = Location::factory()->create();
+        $assets = Asset::factory()->count(2)->create(['location_id' => $location->id]);
+        $assets->first()->update(['location_id' => null]);
 
         // pulled from BulkAssetsController@edit method
         $label = (new Label)
-            // receives eloquent collection in practice
-            ->with('assets', Asset::findMany($asset->id))
+            ->with('assets', $assets)
             ->with('settings', Setting::getSettings())
             ->with('bulkedit', true)
             ->with('count', 0);
 
         $label->render();
+
+        $this->assertTrue(true, 'Label rendering should not throw an error when location is not set on an asset.');
     }
 }
