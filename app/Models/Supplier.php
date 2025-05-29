@@ -128,6 +128,18 @@ class Supplier extends SnipeModel
         return $this->hasMany(\App\Models\Consumable::class, 'supplier_id');
     }
 
+
+    /**
+     * Establishes the supplier -> admin user relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function adminuser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
     /**
      * Establishes the supplier -> asset maintenances relationship
      *

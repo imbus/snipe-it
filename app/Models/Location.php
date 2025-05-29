@@ -136,6 +136,17 @@ class Location extends SnipeModel
     }
 
     /**
+     * Establishes the location -> admin user relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function adminuser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    /**
      * Find assets with this location as their location_id
      *
      * @author A. Gianotto <snipe@snipe.net>
