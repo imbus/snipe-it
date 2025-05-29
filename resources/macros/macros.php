@@ -220,24 +220,6 @@ Form::macro('username_format', function ($name = 'username_format', $selected = 
     return $select;
 });
 
-Form::macro('two_factor_options', function ($name = 'two_factor_enabled', $selected = null, $class = null) {
-    $formats = [
-        '' => trans('admin/settings/general.two_factor_disabled'),
-        '1' => trans('admin/settings/general.two_factor_optional'),
-        '2' => trans('admin/settings/general.two_factor_required'),
-
-    ];
-
-    $select = '<select name="'.$name.'" class="'.$class.'" aria-label="'.$name.'">';
-    foreach ($formats as $format => $label) {
-        $select .= '<option value="'.$format.'"'.($selected == $format ? ' selected="selected" role="option" aria-selected="true"' : ' aria-selected="false"').'>'.$label.'</option> '."\n";
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});
-
 Form::macro('customfield_elements', function ($name = 'customfield_elements', $selected = null, $class = null) {
     $formats = [
         'text' => 'Text Box',
