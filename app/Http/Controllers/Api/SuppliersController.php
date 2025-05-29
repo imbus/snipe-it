@@ -39,15 +39,17 @@ class SuppliersController extends Controller
             'components_count',
             'consumables_count',
             'url',
+            'notes',
         ];
         
         $suppliers = Supplier::select(
-                ['id', 'name', 'address', 'address2', 'city', 'state', 'country', 'fax', 'phone', 'email', 'contact', 'created_at', 'updated_at', 'deleted_at', 'image', 'notes', 'url'])
+                ['id', 'name', 'address', 'address2', 'city', 'state', 'country', 'fax', 'phone', 'email', 'contact', 'created_at', 'created_by', 'updated_at', 'deleted_at', 'image', 'notes', 'url'])
                     ->withCount('assets as assets_count')
                     ->withCount('licenses as licenses_count')
                     ->withCount('accessories as accessories_count')
                     ->withCount('components as components_count')
-                    ->withCount('consumables as consumables_count');
+                    ->withCount('consumables as consumables_count')
+                    ->with('adminuser');
 
 
         if ($request->filled('search')) {
