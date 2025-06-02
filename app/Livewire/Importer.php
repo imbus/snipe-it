@@ -42,6 +42,7 @@ class Importer extends Component
     public $consumables_fields;
     public $components_fields;
     public $manufacturers_fields;
+    public $categories_fields;
     public $aliases_fields;
 
     protected $rules = [
@@ -102,6 +103,9 @@ class Importer extends Component
                 break;
             case 'manufacturer':
                 $results = $this->manufacturers_fields;
+                break;
+            case 'category':
+                $results = $this->categories_fields;
                 break;
             default:
                 $results = [];
@@ -176,6 +180,7 @@ class Importer extends Component
             'user'          =>       trans('general.users'),
             'supplier'      =>       trans('general.suppliers'),
             'manufacturer'  =>       trans('general.manufacturers'),
+            'category'      =>       trans('general.categories'),
         ];
 
         /**
@@ -378,6 +383,18 @@ class Importer extends Component
             'warranty_lookup_url' =>  trans('admin/manufacturers/table.warranty_lookup_url'),
             'url' =>  trans('general.url'),
         ];
+
+        $this->categories_fields = [
+            'id' => trans('general.id'),
+            'name' => trans('general.name'),
+            'notes' => trans('general.notes'),
+            'category_type' => trans('general.type'),
+            'eula_text' => trans('admin/categories/general.eula_text'),
+//            'use_default_eula' => trans('admin/categories/general.use_default_eula'),
+//            'require_acceptance' => trans('admin/categories/general.require_acceptance'),
+//            'checkin_email' => trans('admin/categories/general.checkin_email'),
+        ];
+
 
 
         $this->assetmodels_fields  = [
