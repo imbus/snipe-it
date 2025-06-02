@@ -111,7 +111,7 @@ class ImportManufacturersTest extends ImportDataTestCase implements TestsPermiss
     public function updateManufacturerFromImport(): void
     {
         $manufacturer = Manufacturer::factory()->create()->refresh();
-        $importFileBuilder = ImportFileBuilder::new(['name' => $manufacturer->name, 'url' => $manufacturer->url, 'phone' => $manufacturer->phone, 'fax' => $manufacturer->fax, 'contact' => $manufacturer->contact, 'email' => $manufacturer->email]);
+        $importFileBuilder = ImportFileBuilder::new(['name' => $manufacturer->name, 'support_url' => $manufacturer->support_url, 'support_phone' => $manufacturer->support_phone, 'support_email' => $manufacturer->support_email]);
 
         $row = $importFileBuilder->firstRow();
         $import = Import::factory()->manufacturers()->create(['file_path' => $importFileBuilder->saveToImportsDirectory()]);
@@ -122,11 +122,9 @@ class ImportManufacturersTest extends ImportDataTestCase implements TestsPermiss
         $updatedManufacturer = Manufacturer::query()->find($manufacturer->id);
         $updatedAttributes = [
             'name',
-            'url',
-            'phone',
-            'fax',
-            'contact',
-            'email',
+            'support_url',
+            'support_phone',
+            'support_email',
         ];
 
         $this->assertEquals($row['name'], $updatedManufacturer->name);
