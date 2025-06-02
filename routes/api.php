@@ -1324,7 +1324,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             return response()->json(
                 [
                     'version' => config('version.app_version'),
-                ], 200);
+                    'build_version' => config('version.build_version'),
+                    'hash_version' => config('version.hash_version'),
+                    'full_version' => config('version.full_app_version')
+                ]
+            );
         }); // end version api routes
 
 
