@@ -100,14 +100,12 @@ chown -R docker:root /var/www/html/storage/framework/cache
 # Fix php settings
 if [ -v "PHP_UPLOAD_LIMIT" ]
 then
-  echo "Changing upload limit to ${PHP_UPLOAD_LIMIT}"
-  if [ -e /etc/php/*/apache2/php.ini ]
+  PHP_INI_FILE=$(find /etc/php/*/apache2/php.ini)
+  if [ -e $PHP_INI_FILE ]
   then
-    sed -i "s/^upload_max_filesize.*/upload_max_filesize = ${PHP_UPLOAD_LIMIT}M/" /etc/php/*/apache2/php.ini
-    sed -i "s/^post_max_size.*/post_max_size = ${PHP_UPLOAD_LIMIT}M/" /etc/php/*/apache2/php.ini
-  else
-    sed -i "s/^upload_max_filesize.*/upload_max_filesize = ${PHP_UPLOAD_LIMIT}M/" /etc/php*/php.ini
-    sed -i "s/^post_max_size.*/post_max_size = ${PHP_UPLOAD_LIMIT}M/" /etc/php*/php.ini
+    echo "Changing upload limit to ${PHP_UPLOAD_LIMIT}M in ${PHP_INI_FILE}"
+    sed -i "s/^upload_max_filesize.*/upload_max_filesize = ${PHP_UPLOAD_LIMIT}M/" $PHP_INI_FILE
+    sed -i "s/^post_max_size.*/post_max_size = ${PHP_UPLOAD_LIMIT}M/" $PHP_INI_FILE
   fi
 fi
 
