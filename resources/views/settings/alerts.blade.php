@@ -108,6 +108,9 @@
                                         <input type="radio" name="admin_cc_always" value="0">
                                         Only send if acceptance required
                                     </label>
+                                    <p class="help-block">
+                                        "Always send copy to CC email" requires valid CC Email to be set.
+                                    </p>
                                 </div>
                             </div>
                         </fieldset>
