@@ -39,4 +39,25 @@ class ApiRateLimitTest extends TestCase
             ->assertHeader('Retry-After', 60);
     }
 
+    public function testRateLimitDecreasesRemainingOverSixty()
+    {
+        config(['app.api_throttle_per_minute' => 80]);
+        $expected_remaining = (config('app.api_throttle_per_minute') - 1);
+        $admin = User::factory()->create();
+
+        for ($x = 0; $x < 5; $x++) {
+
+            $this->actingAsForApi($admin)
+                ->getJson(route('api.users.me'))
+                ->assertOk()
+                ->assertHeader('X-Ratelimit-Remaining', $expected_remaining--);
+
+        }
+
+        $this->actingAsForApi($admin)
+            ->getJson(route('api.users.me'))
+            ->assertStatus(200)
+            ->assertHeader('Retry-After', 60);
+    }
+
 }
