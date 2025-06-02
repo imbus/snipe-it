@@ -1329,6 +1329,8 @@ class Helper
                 return 'fa-solid fa-store';
             case 'manufacturer':
                 return 'fa-solid fa-building';
+            case 'category':
+                return 'fa-solid fa-table-columns';
         }
 
     }

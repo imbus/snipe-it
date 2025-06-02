@@ -240,6 +240,9 @@ class ImportController extends Controller
             case 'manufacturer':
                 $redirectTo = 'manufacturers.index';
                 break;
+            case 'category':
+                $redirectTo = 'categories.index';
+                break;
         }
 
         if ($errors) { //Failure

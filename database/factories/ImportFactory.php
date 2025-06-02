@@ -219,4 +219,18 @@ class ImportFactory extends Factory
         });
     }
 
+    public function categories()
+    {
+        return $this->state(function (array $attributes) {
+            $fileBuilder = Importing\CategoriesImportFileBuilder::new();
+            $attributes['name'] = "Category {$attributes['name']}";
+            $attributes['import_type'] = 'category';
+            $attributes['header_row'] = $fileBuilder->toCsv()[0];
+            $attributes['first_row'] = $fileBuilder->firstRow();
+
+            return $attributes;
+        });
+    }
+
+
 }
