@@ -126,4 +126,9 @@ php artisan migrate --force
 php artisan config:clear
 php artisan config:cache
 
+# we do this after the artisan commands to ensure that if the laravel
+# log got created by root, we set the permissions back
+touch /var/www/html/storage/logs/laravel.log
+chown -R docker:root /var/www/html/storage/logs/laravel.log
+
 exec supervisord -c /supervisord.conf
