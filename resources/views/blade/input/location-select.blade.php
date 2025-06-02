@@ -34,9 +34,9 @@
             @endif
         >
             @if ($selected)
-                @foreach(Arr::wrap($selected) as $id)
-                    <option value="{{ $id }}" selected="selected" role="option" aria-selected="true"  role="option">
-                        {{ optional(Location::find($id))->name }}
+                @foreach(Arr::wrap($selected) as $value)
+                    <option value="{{ $value }}" selected="selected" role="option" aria-selected="true"  role="option">
+                        {{ optional(Location::find($value))->name }}
                     </option>
                 @endforeach
             @endif
