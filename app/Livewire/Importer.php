@@ -41,6 +41,7 @@ class Importer extends Component
     public $locations_fields;
     public $consumables_fields;
     public $components_fields;
+    public $manufacturers_fields;
     public $aliases_fields;
 
     protected $rules = [
@@ -98,6 +99,9 @@ class Importer extends Component
                 break;
             case 'supplier':
                 $results = $this->suppliers_fields;
+                break;
+            case 'manufacturer':
+                $results = $this->manufacturers_fields;
                 break;
             default:
                 $results = [];
@@ -171,6 +175,7 @@ class Importer extends Component
             'location'      =>   trans('general.locations'),
             'user'          =>       trans('general.users'),
             'supplier'      =>       trans('general.suppliers'),
+            'manufacturer'  =>       trans('general.manufacturers'),
         ];
 
         /**
@@ -362,6 +367,18 @@ class Importer extends Component
             'contact' => trans('general.contact'),
             'email' => trans('general.email'),
         ];
+
+        $this->manufacturers_fields = [
+            'id' => trans('general.id'),
+            'name' => trans('general.name'),
+            'notes' => trans('general.notes'),
+            'support_phone' =>  trans('admin/manufacturers/table.support_phone'),
+            'support_url' =>  trans('admin/manufacturers/table.support_url'),
+            'support_email' =>  trans('admin/manufacturers/table.support_email'),
+            'warranty_lookup_url' =>  trans('admin/manufacturers/table.warranty_lookup_url'),
+            'url' =>  trans('general.url'),
+        ];
+
 
         $this->assetmodels_fields  = [
             'category' => trans('general.category'),
