@@ -39,6 +39,23 @@
          ])
 
 
+            <!-- Status -->
+            <div class="form-group {{ $errors->has('status_id') ? 'error' : '' }}">
+                <label for="status_id" class="col-md-3 control-label">
+                    {{ trans('admin/hardware/form.status') }}
+                </label>
+                <div class="col-md-7 required">
+                    <x-input.select
+                            name="status_id"
+                            :options="$statusLabel_list"
+                            :selected="old('status_id', $status_id ?? null)"
+                            style="width: 100%;"
+                            aria-label="status_id"
+                    />
+                    {!! $errors->first('status_id', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+                </div>
+            </div>
+
 
             <!-- Checkout selector -->
           @include ('partials.forms.checkout-selector', ['user_select' => 'true','asset_select' => 'true', 'location_select' => 'true'])
