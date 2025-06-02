@@ -390,9 +390,9 @@ class Importer extends Component
             'notes' => trans('general.notes'),
             'category_type' => trans('general.type'),
             'eula_text' => trans('admin/categories/general.eula_text'),
-//            'use_default_eula' => trans('admin/categories/general.use_default_eula'),
-//            'require_acceptance' => trans('admin/categories/general.require_acceptance'),
-//            'checkin_email' => trans('admin/categories/general.checkin_email'),
+            'use_default_eula' => trans('admin/categories/general.use_default_eula_column'),
+            'require_acceptance' => trans('admin/categories/general.require_acceptance'),
+            'checkin_email' => trans('admin/categories/general.checkin_email'),
         ];
 
 
@@ -463,6 +463,10 @@ class Importer extends Component
             'currency' =>
                 [
                     '$',
+                ],
+            'category_type' =>
+                [
+                    'type',
                 ],
             'jobtitle' =>
                 [
