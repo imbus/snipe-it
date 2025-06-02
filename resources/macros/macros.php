@@ -219,22 +219,3 @@ Form::macro('username_format', function ($name = 'username_format', $selected = 
 
     return $select;
 });
-
-Form::macro('customfield_elements', function ($name = 'customfield_elements', $selected = null, $class = null) {
-    $formats = [
-        'text' => 'Text Box',
-        'listbox' => 'List Box',
-        'textarea' => 'Textarea (multi-line) ',
-        'checkbox' => 'Checkbox',
-        'radio' => 'Radio Buttons',
-    ];
-
-    $select = '<select name="'.$name.'" class="'.$class.'" style="width: 100%" aria-label="'.$name.'">';
-    foreach ($formats as $format => $label) {
-        $select .= '<option value="'.$format.'"'.($selected == $format ? ' selected="selected" role="option" aria-selected="true"' : ' aria-selected="false"').'>'.$label.'</option> '."\n";
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});

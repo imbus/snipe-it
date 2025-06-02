@@ -201,4 +201,36 @@ class ImportFactory extends Factory
         });
     }
 
+    /**
+     * Create a supplier import type.
+     *
+     * @return static
+     */
+    public function manufacturers()
+    {
+        return $this->state(function (array $attributes) {
+            $fileBuilder = Importing\ManufacturersImportFileBuilder::new();
+            $attributes['name'] = "Manufacturer {$attributes['name']}";
+            $attributes['import_type'] = 'manufacturer';
+            $attributes['header_row'] = $fileBuilder->toCsv()[0];
+            $attributes['first_row'] = $fileBuilder->firstRow();
+
+            return $attributes;
+        });
+    }
+
+    public function categories()
+    {
+        return $this->state(function (array $attributes) {
+            $fileBuilder = Importing\CategoriesImportFileBuilder::new();
+            $attributes['name'] = "Category {$attributes['name']}";
+            $attributes['import_type'] = 'category';
+            $attributes['header_row'] = $fileBuilder->toCsv()[0];
+            $attributes['first_row'] = $fileBuilder->firstRow();
+
+            return $attributes;
+        });
+    }
+
+
 }
