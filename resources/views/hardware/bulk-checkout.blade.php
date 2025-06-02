@@ -137,6 +137,14 @@
         //if there's already a user selected, make sure their checked-out assets show up
         // (if there isn't one, it won't do anything)
         $('#assigned_user').change();
+
+        // Add the disabled attribute to empty inputs on submit to handle the case where someone does not pick a status ID
+        // and the form is submitted with an empty status ID which will fail validation via the form request
+        $("form").submit(function() {
+            $(this).find(":input").filter(function(){ return !this.value; }).attr("disabled", "disabled");
+            return true; // ensure form still submits
+        });
+
     });
 </script>
 
