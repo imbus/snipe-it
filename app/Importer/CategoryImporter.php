@@ -27,7 +27,7 @@ class CategoryImporter extends ItemImporter
     }
 
     /**
-     * Create a supplier if a duplicate does not exist.
+     * Create a category if a duplicate does not exist.
      * @todo Investigate how this should interact with Importer::createCategoryIfNotExists
      *
      * @author A. Gianotto
@@ -39,16 +39,16 @@ class CategoryImporter extends ItemImporter
 
         $editingCategory = false;
 
-        $supplier = Category::where('name', '=', $this->findCsvMatch($row, 'name'))->first();
+        $category = Category::where('name', '=', $this->findCsvMatch($row, 'name'))->first();
 
         if ($this->findCsvMatch($row, 'id')!='') {
-            // Override supplier if an ID was given
-            \Log::debug('Finding supplier by ID: '.$this->findCsvMatch($row, 'id'));
-            $supplier = Category::find($this->findCsvMatch($row, 'id'));
+            // Override category if an ID was given
+            \Log::debug('Finding category by ID: '.$this->findCsvMatch($row, 'id'));
+            $category = Category::find($this->findCsvMatch($row, 'id'));
         }
 
 
-        if ($supplier) {
+        if ($category) {
             if (! $this->updating) {
                 $this->log('A matching Category '.$this->item['name'].' already exists');
                 return;
@@ -58,8 +58,8 @@ class CategoryImporter extends ItemImporter
             $editingCategory = true;
         } else {
             $this->log('No Matching Category, Create a new one');
-            $supplier = new Category;
-            $supplier->created_by = auth()->id();
+            $category = new Category;
+            $category->created_by = auth()->id();
         }
 
         // Pull the records from the CSV to determine their values
@@ -77,21 +77,21 @@ class CategoryImporter extends ItemImporter
 
 
         if ($editingCategory) {
-            Log::debug('Updating existing supplier');
-            $supplier->update($this->sanitizeItemForUpdating($supplier));
+            Log::debug('Updating existing category');
+            $category->update($this->sanitizeItemForUpdating($category));
         } else {
-            Log::debug('Creating supplier');
-            $supplier->fill($this->sanitizeItemForStoring($supplier));
+            Log::debug('Creating category');
+            $category->fill($this->sanitizeItemForStoring($category));
         }
 
-        if ($supplier->save()) {
-            $this->log('Category '.$supplier->name.' created or updated from CSV import');
-            return $supplier;
+        if ($category->save()) {
+            $this->log('Category '.$category->name.' created or updated from CSV import');
+            return $category;
 
         } else {
-            Log::debug($supplier->getErrors());
-            $this->logError($supplier, 'Category "'.$this->item['name'].'"');
-            return $supplier->errors;
+            Log::debug($category->getErrors());
+            $this->logError($category, 'Category "'.$this->item['name'].'"');
+            return $category->errors;
         }
 
 
