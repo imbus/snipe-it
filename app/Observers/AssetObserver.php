@@ -126,7 +126,6 @@ class AssetObserver
      */
     public function deleting(Asset $asset)
     {
-        \Log::error('deleting observer fired for asset: ' . $asset->id);
         $logAction = new Actionlog();
         $logAction->item_type = Asset::class;
         $logAction->item_id = $asset->id;
