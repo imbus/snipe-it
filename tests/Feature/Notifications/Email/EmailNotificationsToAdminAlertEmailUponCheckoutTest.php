@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 #[Group('notifications')]
-class EmailNotificationsToAdminAlertEmailUponCheckout extends TestCase
+class EmailNotificationsToAdminAlertEmailUponCheckoutTest extends TestCase
 {
     private Asset $asset;
     private AssetModel $assetModel;
@@ -74,6 +74,21 @@ class EmailNotificationsToAdminAlertEmailUponCheckout extends TestCase
 
         Mail::assertSent(CheckoutAssetMail::class, function ($mail) {
             return $mail->hasTo('cc@example.com');
+        });
+    }
+
+    public function test_admin_alert_email_sent_when_always_send_is_true_and_asset_does_not_require_acceptance()
+    {
+        $this->settings
+            ->enableAdminCC('cc@example.com')
+            ->enableAdminCCAlways();
+
+        $this->category->update(['checkin_email' => false]);
+
+        $this->fireCheckoutEvent();
+
+        Mail::assertSent(CheckoutAssetMail::class, function (CheckoutAssetMail $mail) {
+            return $mail->hasTo('cc@example.com') || $mail->hasCc('cc@example.com');
         });
     }
 
