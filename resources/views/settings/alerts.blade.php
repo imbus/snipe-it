@@ -116,7 +116,7 @@
                                             value="0"
                                             @checked($setting->admin_cc_always == 0)
                                         >
-                                        Only send if acceptance required
+                                        Only send copy if acceptance required
                                     </label>
                                     <p class="help-block">
                                         "Always send copy to CC email" requires valid CC Email to be set.
