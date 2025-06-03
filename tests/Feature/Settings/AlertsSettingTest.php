@@ -26,4 +26,18 @@ class AlertsSettingTest extends TestCase
         $this->followRedirects($response)->assertSee('alert-success');
     }
 
+    public function testCannotUpdateAdminCcAwaysWithoutAdminCcEmail()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_can_update_admin_cc_always_to_true()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_can_update_admin_cc_always_to_false()
+    {
+        $this->markTestIncomplete();
+    }
 }
