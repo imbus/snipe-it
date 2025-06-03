@@ -77,6 +77,21 @@ class EmailNotificationsToAdminAlertEmailUponCheckout extends TestCase
         });
     }
 
+    public function test_admin_alert_email_not_sent_when_always_send_is_false_and_asset_does_not_require_acceptance()
+    {
+        $this->settings
+            ->enableAdminCC('cc@example.com')
+            ->disableAdminCCAlways();
+
+        $this->category->update(['checkin_email' => false]);
+
+        $this->fireCheckoutEvent();
+
+        Mail::assertNotSent(CheckoutAssetMail::class, function (CheckoutAssetMail $mail) {
+            return $mail->hasTo('cc@example.com') || $mail->hasCc('cc@example.com');
+        });
+    }
+
     private function fireCheckoutEvent(): void
     {
         event(new CheckoutableCheckedOut(
