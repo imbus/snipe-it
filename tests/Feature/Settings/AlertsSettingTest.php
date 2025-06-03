@@ -47,7 +47,7 @@ class AlertsSettingTest extends TestCase
 
     public function test_can_update_admin_cc_always_to_false()
     {
-        $this->settings->enableAdminCCAlways();
+        $this->settings->enableAdminCC()->enableAdminCCAlways();
 
         $this->actingAs(User::factory()->superuser()->create())
             ->post(route('settings.alerts.save', ['admin_cc_always' => '0']));
