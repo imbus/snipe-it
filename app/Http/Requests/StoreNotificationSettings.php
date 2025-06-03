@@ -26,7 +26,11 @@ class StoreNotificationSettings extends FormRequest
     {
         return [
             'alert_email'                         => 'email_array|nullable',
-            'admin_cc_email'                      => 'email_array|nullable',
+            'admin_cc_email' => [
+                'email_array',
+                'nullable',
+                'required_if_accepted:admin_cc_always',
+            ],
             'admin_cc_always' => [
                 Rule::in('0', '1'),
             ],
