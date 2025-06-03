@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
 
 #[Group('notifications')]
-class EmailNotificationsUponCheckoutTest extends TestCase
+class EmailNotificationsToAdminAlertEmailUponCheckout extends TestCase
 {
     private Asset $asset;
     private AssetModel $assetModel;
@@ -37,54 +37,6 @@ class EmailNotificationsUponCheckoutTest extends TestCase
         $this->asset = Asset::factory()->for($this->assetModel, 'model')->create();
 
         $this->user = User::factory()->create();
-    }
-
-    public function test_email_sent_to_user_when_category_requires_acceptance()
-    {
-        $this->category->update(['require_acceptance' => true]);
-
-        $this->fireCheckoutEvent();
-
-        $this->assertUserSentEmail();
-    }
-
-    public function test_email_sent_to_user_when_category_using_default_eula()
-    {
-        $this->settings->setEula();
-
-        $this->category->update(['use_default_eula' => true]);
-
-        $this->fireCheckoutEvent();
-
-        $this->assertUserSentEmail();
-    }
-
-    public function test_email_sent_to_user_when_category_using_local_eula()
-    {
-        $this->category->update(['eula_text' => 'Some EULA text']);
-
-        $this->fireCheckoutEvent();
-
-        $this->assertUserSentEmail();
-    }
-
-    public function test_email_sent_to_user_when_category_set_to_explicitly_send_email()
-    {
-        $this->category->update(['checkin_email' => true]);
-
-        $this->fireCheckoutEvent();
-
-        $this->assertUserSentEmail();
-    }
-
-    public function test_handles_user_not_having_email_address_set()
-    {
-        $this->category->update(['checkin_email' => true]);
-        $this->user->update(['email' => null]);
-
-        $this->fireCheckoutEvent();
-
-        Mail::assertNothingSent();
     }
 
     public function test_admin_alert_email_sends()
@@ -133,12 +85,5 @@ class EmailNotificationsUponCheckoutTest extends TestCase
             User::factory()->superuser()->create(),
             '',
         ));
-    }
-
-    private function assertUserSentEmail(): void
-    {
-        Mail::assertSent(CheckoutAssetMail::class, function (CheckoutAssetMail $mail) {
-            return $mail->hasTo($this->user->email);
-        });
     }
 }
