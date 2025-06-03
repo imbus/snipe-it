@@ -25,7 +25,6 @@ use App\Http\Controllers\StatuslabelsController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\ViewAssetsController;
 use App\Livewire\Importer;
-use App\Models\Asset;
 use App\Models\ReportTemplate;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -699,11 +698,3 @@ Route::middleware(['auth'])->get(
     ->breadcrumbs(fn (Trail $trail) =>
     $trail->push('Home', route('home'))
     );
-
-Route::get( 'blah',
-    function(){
-        Asset::whereIn('id', [1886])
-            ->undeployable()
-            ->get();
-    }
-);
