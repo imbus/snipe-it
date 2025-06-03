@@ -26,18 +26,32 @@ class AlertsSettingTest extends TestCase
         $this->followRedirects($response)->assertSee('alert-success');
     }
 
-    public function testCannotUpdateAdminCcAwaysWithoutAdminCcEmail()
-    {
-        $this->markTestIncomplete();
-    }
-
     public function test_can_update_admin_cc_always_to_true()
     {
-        $this->markTestIncomplete();
+        $this->settings->disableAdminCCAlways();
+
+        $this->actingAs(User::factory()->superuser()->create())
+            ->post(route('settings.alerts.save', ['admin_cc_always' => '1']));
+
+        $this->assertDatabaseHas('settings', ['admin_cc_always' => '1']);
+    }
+
+    public function test_cannot_update_admin_cc_always_without_admin_cc_email()
+    {
+        $this->settings->disableAdminCCAlways();
+
+        $this->actingAs(User::factory()->superuser()->create())
+            ->post(route('settings.alerts.save', ['admin_cc_always' => '1']))
+            ->assertSessionHasErrors('admin_cc_always');
     }
 
     public function test_can_update_admin_cc_always_to_false()
     {
-        $this->markTestIncomplete();
+        $this->settings->enableAdminCCAlways();
+
+        $this->actingAs(User::factory()->superuser()->create())
+            ->post(route('settings.alerts.save', ['admin_cc_always' => '0']));
+
+        $this->assertDatabaseHas('settings', ['admin_cc_always' => '0']);
     }
 }
