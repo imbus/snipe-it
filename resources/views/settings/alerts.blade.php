@@ -101,11 +101,21 @@
                             <div class="form-group">
                                 <div class="col-md-9 col-md-offset-3">
                                     <label class="form-control">
-                                        <input type="radio" name="admin_cc_always" value="1">
+                                        <input
+                                            type="radio"
+                                            name="admin_cc_always"
+                                            value="1"
+                                            @checked($setting->admin_cc_always == 1)
+                                        >
                                         Always send copy to CC email
                                     </label>
                                     <label class="form-control">
-                                        <input type="radio" name="admin_cc_always" value="0">
+                                        <input
+                                            type="radio"
+                                            name="admin_cc_always"
+                                            value="0"
+                                            @checked($setting->admin_cc_always == 0)
+                                        >
                                         Only send if acceptance required
                                     </label>
                                     <p class="help-block">
