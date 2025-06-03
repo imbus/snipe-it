@@ -18,7 +18,10 @@ class AlertsSettingTest extends TestCase
     public function testAdminCCEmailArrayCanBeSaved()
     {
         $response = $this->actingAs(User::factory()->superuser()->create())
-            ->post(route('settings.alerts.save', ['alert_email' => 'me@example.com,you@example.com']))
+            ->post(route('settings.alerts.save', [
+                'alert_email' => 'me@example.com,you@example.com',
+                'admin_cc_always' => '1',
+            ]))
             ->assertStatus(302)
             ->assertValid('alert_email')
             ->assertRedirect(route('settings.index'))
