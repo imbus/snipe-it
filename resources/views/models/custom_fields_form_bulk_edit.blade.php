@@ -30,6 +30,9 @@
                       :selected="old($field->db_column_name(),(isset($item) ? Helper::gracefulDecrypt($field, $item->{$field->db_column_name()}) : $field->defaultValue($model->id)))"
                       class="format form-control"
                   />
+                  <button type="button" class="btn btn-default btn-xs clear-field" data-clear-target="{{ $field->db_column_name() }}">
+                      {{ __('Clear') }}
+                  </button>
 
               @elseif ($field->element=='textarea')
                 @if($field->is_unique)
@@ -45,7 +48,9 @@
                           <input type="checkbox" value="{{ $value }}" name="{{ $field->db_column_name() }}[]" {{  isset($item) ? (in_array($value, array_map('trim', explode(',', $item->{$field->db_column_name()}))) ? ' checked="checked"' : '') : (old($field->db_column_name()) != '' ? ' checked="checked"' : (in_array($key, array_map('trim', explode(',', $field->defaultValue($model->id)))) ? ' checked="checked"' : '')) }}>
                           {{ $value }}
                       </label>
-
+                      <button type="button" class="btn btn-default btn-xs clear-field" data-clear-target="{{ $field->db_column_name() }}">
+                          {{ __('Clear') }}
+                      </button>
                   @endforeach
             @elseif ($field->element=='radio')
             @foreach ($field->formatFieldValuesAsArray() as $value)
@@ -54,7 +59,9 @@
                       <input type="radio" value="{{ $value }}" name="{{ $field->db_column_name() }}" {{ isset($item) ? ($item->{$field->db_column_name()} == $value ? ' checked="checked"' : '') : (old($field->db_column_name()) != '' ? ' checked="checked"' : (in_array($value, explode(', ', $field->defaultValue($model->id))) ? ' checked="checked"' : '')) }}>
                       {{ $value }}
                   </label>
-
+                      <button type="button" class="btn btn-default btn-xs clear-field" data-clear-target="{{ $field->db_column_name() }}">
+                          {{ __('Clear') }}
+                      </button>
             @endforeach
 
             @endif
