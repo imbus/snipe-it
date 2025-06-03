@@ -53,6 +53,8 @@ class BulkAssetsController extends Controller
 
         $asset_ids = $request->input('ids');
         if ($request->input('bulk_actions') === 'checkout') {
+            $this->isDeployable($asset_ids);
+
             $request->session()->flashInput(['selected_assets' => $asset_ids]);
             return redirect()->route('hardware.bulkcheckout.show');
         }
@@ -659,5 +661,19 @@ class BulkAssetsController extends Controller
             } 
             return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.restore.success'));
         }
+    }
+    public function isDeployable ($asset_ids) : bool {
+        $undeployable = Asset::whereIn('id', $asset_ids)
+            ->whereHas('assetstatus', function ($query) {
+                $query->where('deployable', 0)
+                    ->where('pending', 0)
+                    ->where('archived', 0)
+                    ->exists();
+            });
+
+         if( !$undeployable ) {
+             return true;
+         }
+        return redirect()->back()->with('error', trans('admin/hardware/message.upload.nofiles'));
     }
 }
