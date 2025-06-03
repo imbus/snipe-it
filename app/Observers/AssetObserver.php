@@ -62,6 +62,7 @@ class AssetObserver
             $logAction = new Actionlog();
             $logAction->item_type = Asset::class;
             $logAction->item_id = $asset->id;
+            $logAction->action_date = date('Y-m-d H:i:s');
             $logAction->created_at = date('Y-m-d H:i:s');
             $logAction->created_by = auth()->id();
             $logAction->log_meta = json_encode($changed);
@@ -108,6 +109,7 @@ class AssetObserver
         $logAction = new Actionlog();
         $logAction->item_type = Asset::class; // can we instead say $logAction->item = $asset ?
         $logAction->item_id = $asset->id;
+        $logAction->action_date = date('Y-m-d H:i:s');
         $logAction->created_at = date('Y-m-d H:i:s');
         $logAction->created_by = auth()->id();
         if($asset->imported) {
@@ -124,10 +126,12 @@ class AssetObserver
      */
     public function deleting(Asset $asset)
     {
+        \Log::error('deleting observer fired for asset: ' . $asset->id);
         $logAction = new Actionlog();
         $logAction->item_type = Asset::class;
         $logAction->item_id = $asset->id;
         $logAction->created_at = date('Y-m-d H:i:s');
+        $logAction->action_date = date('Y-m-d H:i:s');
         $logAction->created_by = auth()->id();
         $logAction->logaction('delete');
     }
@@ -143,6 +147,7 @@ class AssetObserver
         $logAction = new Actionlog();
         $logAction->item_type = Asset::class;
         $logAction->item_id = $asset->id;
+        $logAction->action_date = date('Y-m-d H:i:s');
         $logAction->created_at = date('Y-m-d H:i:s');
         $logAction->created_by = auth()->id();
         $logAction->logaction('restore');
