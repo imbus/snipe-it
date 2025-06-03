@@ -201,6 +201,7 @@ class BulkAssetsController extends Controller
      */
     public function update(Request $request) : RedirectResponse
     {
+        //dd($request->all());
         $this->authorize('update', Asset::class);
         $has_errors = 0;
         $error_array = array();
@@ -213,6 +214,20 @@ class BulkAssetsController extends Controller
         }
 
        $custom_field_columns = CustomField::all()->pluck('db_column')->toArray();
+        // find input attirubtes that start with 'null_'
+        $temp_custom_fields_to_null = array_filter($request->all(), function ($key) {
+            // filter out all keys that start with 'null_'
+            return (strpos($key, 'null_') === 0);
+        }, ARRAY_FILTER_USE_KEY);;
+        // remove 'null_' from the keys
+        $custom_fields_to_null = [];
+        foreach ($temp_custom_fields_to_null as $key => $value) {
+            $custom_fields_to_null[str_replace('null_', '', $key)] = $value;
+        }
+
+
+
+
 
      
         if (! $request->filled('ids') || count($request->input('ids')) == 0) {
@@ -252,6 +267,7 @@ class BulkAssetsController extends Controller
             || ($request->filled('null_next_audit_date'))
             || ($request->filled('null_asset_eol_date'))
             || ($request->anyFilled($custom_field_columns))
+            || ($request->anyFilled(array_keys($custom_fields_to_null)))
 
         ) {
             // Let's loop through those assets and build an update array
@@ -278,6 +294,10 @@ class BulkAssetsController extends Controller
                     foreach ($custom_field_columns as $key => $custom_field_column) {
                         $this->conditionallyAddItem($custom_field_column); 
                    }
+                foreach ($custom_fields_to_null as $key => $custom_field_to_null) {
+
+                    $this->conditionallyAddItem($key);
+                }
 
                 if (!($asset->eol_explicit)) {
 					if ($request->filled('model_id')) {
@@ -423,6 +443,7 @@ class BulkAssetsController extends Controller
                 }
 
                 /**
+                 *
                  * Start all the custom fields shenanigans
                  */
 
