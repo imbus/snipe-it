@@ -740,9 +740,9 @@ class UsersController extends Controller
     /**
      * Display the EULAs accepted by the user.
      *
-     * @param \App\Models\User $user
-     * * @param \App\Http\Transformers\ActionlogsTransformer $transformer
-     * * @return \Illuminate\Http\JsonResponse
+     *  @param \App\Models\User $user
+     *  @param \App\Http\Transformers\ActionlogsTransformer $transformer
+     *  @return \Illuminate\Http\JsonResponse
      *@since [v8.1.16]
      * @author [Godfrey Martinez] [<gmartinez@grokability.com>]
      */
