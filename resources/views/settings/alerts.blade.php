@@ -107,7 +107,7 @@
                                             value="1"
                                             @checked($setting->admin_cc_always == 1)
                                         >
-                                        Always send copy to CC email
+                                        Always send copy upon checkin/checkout
                                     </label>
                                     <label class="form-control">
                                         <input
@@ -116,11 +116,8 @@
                                             value="0"
                                             @checked($setting->admin_cc_always == 0)
                                         >
-                                        Only send copy if acceptance required
+                                        Only send copy upon checkout if acceptance is required
                                     </label>
-                                    <p class="help-block">
-                                        "Always send copy to CC email" requires valid CC Email to be set.
-                                    </p>
                                 </div>
                             </div>
                         </fieldset>
