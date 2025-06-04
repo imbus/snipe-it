@@ -73,6 +73,16 @@ class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
         });
     }
 
+    public function test_admin_alert_email_sent_when_always_send_is_true_and_asset_does_not_require_acceptance()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_admin_alert_email_not_sent_when_always_send_is_false_and_asset_does_not_require_acceptance()
+    {
+        $this->markTestIncomplete();
+    }
+
     private function fireCheckInEvent($asset, $user): void
     {
         event(new CheckoutableCheckedIn(
