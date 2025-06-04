@@ -552,6 +552,23 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     }
 
     /**
+     * Establishes the user -> eula relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v7.0.7]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function eulas()
+    {
+        return $this->hasMany(Actionlog::class, 'target_id')
+            ->where('target_type', self::class)
+            ->where('action_type', 'accepted')
+            ->whereNotNull('filename')
+            ->whereNotNull('accept_signature')
+            ->orderBy('created_at', 'desc');
+    }
+
+    /**
      * Establishes the user -> requested assets relationship
      *
      * @author A. Gianotto <snipe@snipe.net>

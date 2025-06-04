@@ -39,6 +39,7 @@ class ViewAssetsController extends Controller
             'consumables',
             'accessories',
             'licenses',
+            'eulas',
         )->find(auth()->id());
 
         $field_array = array();
