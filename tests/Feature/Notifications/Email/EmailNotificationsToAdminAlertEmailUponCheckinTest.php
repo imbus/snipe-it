@@ -41,7 +41,6 @@ class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
             ->for($this->assetModel, 'model')
             ->assignedToUser($this->user)
             ->create();
-
     }
 
     public function test_admin_alert_email_sends()
