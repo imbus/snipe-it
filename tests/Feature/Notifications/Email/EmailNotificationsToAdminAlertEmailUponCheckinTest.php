@@ -86,12 +86,32 @@ class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
 
     public function test_admin_alert_email_sent_when_always_send_is_true_and_asset_does_not_require_acceptance()
     {
-        $this->markTestIncomplete();
+        $this->settings
+            ->enableAdminCC('cc@example.com')
+            ->enableAdminCCAlways();
+
+        $this->category->update(['checkin_email' => false]);
+
+        $this->fireCheckInEvent($this->asset, $this->user);
+
+        Mail::assertSent(CheckinAssetMail::class, function ($mail) {
+            return $mail->hasTo('cc@example.com') || $mail->hasCc('cc@example.com');
+        });
     }
 
     public function test_admin_alert_email_not_sent_when_always_send_is_false_and_asset_does_not_require_acceptance()
     {
-        $this->markTestIncomplete();
+        $this->settings
+            ->enableAdminCC('cc@example.com')
+            ->disableAdminCCAlways();
+
+        $this->category->update(['checkin_email' => false]);
+
+        $this->fireCheckInEvent($this->asset, $this->user);
+
+        Mail::assertNotSent(CheckinAssetMail::class, function ($mail) {
+            return $mail->hasTo('cc@example.com') || $mail->hasCc('cc@example.com');
+        });
     }
 
     private function fireCheckInEvent($asset, $user): void
