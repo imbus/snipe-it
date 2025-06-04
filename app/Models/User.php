@@ -961,20 +961,25 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     /**
      * Get all direct and indirect subordinates for this user.
      *
-     * @param bool $includeSelf Include the current user in the results
      * @return \Illuminate\Support\Collection
      */
-    public function getAllSubordinates($includeSelf=false)
+    public function getAllSubordinates()
     {
         $subordinates = collect();
-        if ($includeSelf) {
-            $subordinates->push($this);
-        }
-
-        // Use a recursive helper function to avoid scope issues
         $this->fetchSubordinatesRecursive($this, $subordinates);
+        return $subordinates->unique('id');
+    }
 
-        return $subordinates->unique('id'); // Ensure uniqueness
+    /**
+     * Get all direct and indirect subordinates for this user, including self.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllSubordinatesIncludingSelf()
+    {
+        $subordinates = collect([$this]);
+        $this->fetchSubordinatesRecursive($this, $subordinates);
+        return $subordinates->unique('id');
     }
 
     /**
@@ -995,7 +1000,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
                  // Recursive call for this subordinate's subordinates
                  $this->fetchSubordinatesRecursive($directSubordinate, $subs);
             }
-        } //end foreach
+        }//end foreach
     }
 
     /**

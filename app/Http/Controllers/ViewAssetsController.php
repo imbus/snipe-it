@@ -41,9 +41,9 @@ class ViewAssetsController extends Controller
                     if ($field->display_in_user_view == '1') {
                         $fieldArray[$field->db_column] = $field->name;
                     }
-                } //end foreach
+                }//end foreach
             }
-        } //end foreach
+        }//end foreach
         return array_unique($fieldArray);
     }
 
@@ -70,7 +70,7 @@ class ViewAssetsController extends Controller
                     ->get();
             } else {
                 // Regular manager sees only their subordinates + self (recursive)
-                $managedUsers = $authUser->getAllSubordinates(false); // Don't include self yet
+                $managedUsers = $authUser->getAllSubordinates();
                 
                 // Only show dropdown if user actually has subordinates
                 if ($managedUsers->count() > 0) {
@@ -80,7 +80,7 @@ class ViewAssetsController extends Controller
                 } else {
                     // User has no subordinates, so they only see themselves
                     $subordinates = collect([$authUser]);
-                } //end if
+                }//end if
             }
 
             // If the user has subordinates and a user_id is provided in the request
