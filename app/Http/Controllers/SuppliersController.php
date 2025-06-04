@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Suppliers\DestroySupplierAction;
+use App\Exceptions\ModelStillHasAssetMaintenances;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;
@@ -119,30 +123,20 @@ class SuppliersController extends Controller
      *
      * @param  int $supplierId
      */
-    public function destroy($supplierId) : RedirectResponse
+    public function destroy(Supplier $supplier): RedirectResponse
     {
         $this->authorize('delete', Supplier::class);
-        if (is_null($supplier = Supplier::with('asset_maintenances', 'assets', 'licenses')->withCount('asset_maintenances as asset_maintenances_count', 'assets as assets_count', 'licenses as licenses_count')->find($supplierId))) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.not_found'));
-        }
-
-        if ($supplier->assets_count > 0) {
+        try {
+            DestroySupplierAction::run(supplier: $supplier);
+        } catch (ModelStillHasAssets $e) {
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
-        }
-
-        if ($supplier->asset_maintenances_count > 0) {
+        } catch (ModelStillHasAssetMaintenances $e) {
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
-        }
-
-        if ($supplier->licenses_count > 0) {
+        } catch (ModelStillHasLicenses $e) {
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
         }
 
-        $supplier->delete();
-
-        return redirect()->route('suppliers.index')->with('success',
-            trans('admin/suppliers/message.delete.success')
-        );
+        return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));
     }
 
     /**
@@ -155,6 +149,5 @@ class SuppliersController extends Controller
     {
         $this->authorize('view', Supplier::class);
         return view('suppliers/view', compact('supplier'));
-
     }
 }

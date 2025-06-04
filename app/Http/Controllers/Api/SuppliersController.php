@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Suppliers\DestroySupplierAction;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\SelectlistTransformer;
@@ -191,10 +192,11 @@ class SuppliersController extends Controller
      * @since [v4.0]
      * @param  int  $id
      */
-    public function destroy($id) : JsonResponse
+    public function destroy(Supplier $supplier): JsonResponse
     {
+        //$supplier->load('assets', 'asset_maintenances', 'licenses');...
         $this->authorize('delete', Supplier::class);
-        $supplier = Supplier::with('asset_maintenances', 'assets', 'licenses')->withCount('asset_maintenances as asset_maintenances_count', 'assets as assets_count', 'licenses as licenses_count')->findOrFail($id);
+        $supplier = Supplier::with('asset_maintenances', 'assets', 'licenses')->withCount('asset_maintenances as asset_maintenances_count', 'assets as assets_count', 'licenses as licenses_count')->findOrFail($supplier);
         $this->authorize('delete', $supplier);
 
 
