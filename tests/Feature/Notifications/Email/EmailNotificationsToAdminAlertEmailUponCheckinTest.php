@@ -15,26 +15,45 @@ use Tests\TestCase;
 #[Group('notifications')]
 class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
 {
+    private Asset $asset;
+    private AssetModel $assetModel;
+    private Category $category;
+    private User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         Mail::fake();
+
+        $this->user = User::factory()->create();
+
+        $this->category = Category::factory()->create([
+            'checkin_email' => false,
+            'eula_text' => null,
+            'require_acceptance' => false,
+            'use_default_eula' => false,
+        ]);
+
+        $this->assetModel = AssetModel::factory()->for($this->category)->create();
+
+        $this->asset = Asset::factory()
+            ->for($this->assetModel, 'model')
+            ->assignedToUser($this->user)
+            ->create();
+
     }
 
     public function test_admin_alert_email_sends()
     {
         $this->settings->enableAdminCC('cc@example.com');
 
-        $user = User::factory()->create();
-        $asset = Asset::factory()->assignedToUser($user)->create();
+        $this->category->update(['checkin_email' => true]);
 
-        $asset->model->category->update(['checkin_email' => true]);
+        $this->fireCheckInEvent($this->asset, $this->user);
 
-        $this->fireCheckInEvent($asset, $user);
-
-        Mail::assertSent(CheckinAssetMail::class, function ($mail) use ($user) {
-            return $mail->hasTo($user->email) && $mail->hasCc('cc@example.com');
+        Mail::assertSent(CheckinAssetMail::class, function ($mail) {
+            return $mail->hasTo($this->user->email) && $mail->hasCc('cc@example.com');
         });
     }
 
@@ -42,15 +61,9 @@ class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
     {
         $this->settings->enableAdminCC('cc@example.com');
 
-        $category = Category::factory()->create([
-            'checkin_email' => false,
-            'eula_text' => null,
-            'use_default_eula' => false,
-        ]);
-        $assetModel = AssetModel::factory()->create(['category_id' => $category->id]);
-        $asset = Asset::factory()->create(['model_id' => $assetModel->id]);
+        $this->category->update(['checkin_email' => false]);
 
-        $this->fireCheckInEvent($asset, User::factory()->create());
+        $this->fireCheckInEvent($this->asset, $this->user);
 
         Mail::assertSent(CheckinAssetMail::class, function ($mail) {
             return $mail->hasTo('cc@example.com');
@@ -61,12 +74,11 @@ class EmailNotificationsToAdminAlertEmailUponCheckinTest extends TestCase
     {
         $this->settings->enableAdminCC('cc@example.com');
 
-        $user = User::factory()->create(['email' => null]);
-        $asset = Asset::factory()->assignedToUser($user)->create();
+        $this->user->update(['email' => null]);
 
-        $asset->model->category->update(['checkin_email' => true]);
+        $this->category->update(['checkin_email' => true]);
 
-        $this->fireCheckInEvent($asset, $user);
+        $this->fireCheckInEvent($this->asset, $this->user);
 
         Mail::assertSent(CheckinAssetMail::class, function ($mail) {
             return $mail->hasTo('cc@example.com');
