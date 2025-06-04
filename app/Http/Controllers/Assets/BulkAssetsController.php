@@ -201,7 +201,6 @@ class BulkAssetsController extends Controller
      */
     public function update(Request $request) : RedirectResponse
     {
-        //dd($request->all());
         $this->authorize('update', Asset::class);
         $has_errors = 0;
         $error_array = array();
@@ -296,7 +295,6 @@ class BulkAssetsController extends Controller
                         $this->conditionallyAddItem($custom_field_column); 
                    }
                 foreach ($custom_fields_to_null as $key => $custom_field_to_null) {
-                    //dd($key);
                     $this->conditionallyAddItem($key);
                 }
 
