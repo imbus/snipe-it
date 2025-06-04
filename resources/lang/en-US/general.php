@@ -288,6 +288,7 @@ return [
     'status'    			=> 'Status',
     'accept_eula'           => 'Acceptance Agreement',
     'eula'                  => 'EULAs',
+    'eula_long'             => 'End-User License Agreements',
     'show_or_hide_eulas' => 'Show/Hide EULAs',
     'supplier'              => 'Supplier',
     'suppliers'  			=> 'Suppliers',

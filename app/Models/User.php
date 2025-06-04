@@ -561,6 +561,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     public function eulas()
     {
         return $this->hasMany(Actionlog::class, 'target_id')
+            ->with('item')
             ->where('target_type', self::class)
             ->where('action_type', 'accepted')
             ->whereNotNull('filename')

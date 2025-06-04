@@ -731,41 +731,28 @@
                     data-sort-order="asc"
                     data-sort-name="name"
                     class="table table-striped snipe-table table-hover"
+                    data-url="{{route('api.user.eulas', $user->id)}}"
                     data-export-options='{
                     "fileName": "export-eula-{{ str_slug($user->username) }}-{{ date('Y-m-d') }}",
                     "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","delete","purchasecost", "icon"]
                     }'>
 
-              <caption id="userConsumableToolbar" class="tableCaption">
-                {{ trans('general.consumables') }}
+              <caption id="userEulaToolbar" class="tableCaption">
+                {{ trans('general.eula_long') }}
               </caption>
 
               <thead>
               <tr>
-                <th class="col-md-3">{{ trans('general.name') }}</th>
-                @can('self.view_purchase_cost')
-                  <th class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
-                @endcan
-                <th class="col-md-2">{{ trans('general.date') }}</th>
-                <th class="col-md-5">{{ trans('general.notes') }}</th>
+                <th data-visible="true" data-field="icon" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter">{{ trans('admin/hardware/table.icon') }}</th>
+                <th data-visible="true" data-field="item.name">{{ trans('general.item') }}</th>
+                <th data-visible="true" data-field="created_at" data-sortable="true" data-formatter="dateDisplayFormatter">{{ trans('general.accepted_date') }}</th>
+                <th data-field="note">{{ trans('general.notes') }}</th>
+                <th data-field="signature_file" data-visible="false"  data-formatter="imageFormatter">{{ trans('general.signature') }}</th>
+                <th data-field="file" data-formatter="fileUploadFormatter">{{ trans('general.download') }}</th>
               </tr>
               </thead>
-              <tbody>
-              @foreach ($user->consumables as $consumable)
-                <tr>
-                  <td>{{ $consumable->name }}</td>
-                  @can('self.view_purchase_cost')
-                    <td>
-                      {!! Helper::formatCurrencyOutput($consumable->purchase_cost) !!}
-                    </td>
-                  @endcan
-                  <td>{{ Helper::getFormattedDateObject($consumable->pivot->created_at, 'datetime',  false) }}</td>
-                  <td>{{ $consumable->pivot->note }}</td>
-                </tr>
-              @endforeach
-              </tbody>
             </table>
-          </div><!-- /consumables-tab -->
+          </div><!-- /eulas-tab -->
         </div><!-- /.tab-content -->
       </div><!-- nav-tabs-custom -->
     </div>
