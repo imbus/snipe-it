@@ -964,7 +964,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * @param bool $includeSelf Include the current user in the results
      * @return \Illuminate\Support\Collection
      */
-    public function getAllSubordinates($includeSelf = false)
+    public function getAllSubordinates($includeSelf=false)
     {
         $subordinates = collect();
         if ($includeSelf) {
@@ -981,21 +981,21 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * Recursive helper function to fetch subordinates.
      *
      * @param User $manager
-     * @param \Illuminate\Support\Collection $subordinatesCollection
+     * @param \Illuminate\Support\Collection $subs
      */
-    protected function fetchSubordinatesRecursive(User $manager, \Illuminate\Support\Collection &$subordinatesCollection)
+    protected function fetchSubordinatesRecursive(User $manager, \Illuminate\Support\Collection &$subs)
     {
         // Eager load 'managesUsers' to prevent N+1 queries in recursion
         $directSubordinates = $manager->managesUsers()->with('managesUsers')->get();
 
         foreach ($directSubordinates as $directSubordinate) {
             // Add subordinate if not already in the collection
-            if (!$subordinatesCollection->contains('id', $directSubordinate->id)) {
-                 $subordinatesCollection->push($directSubordinate);
+            if (!$subs->contains('id', $directSubordinate->id)) {
+                 $subs->push($directSubordinate);
                  // Recursive call for this subordinate's subordinates
-                 $this->fetchSubordinatesRecursive($directSubordinate, $subordinatesCollection);
+                 $this->fetchSubordinatesRecursive($directSubordinate, $subs);
             }
-        }
+        } //end foreach
     }
 
     /**

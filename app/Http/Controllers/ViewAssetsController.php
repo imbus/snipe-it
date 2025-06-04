@@ -27,6 +27,27 @@ use Exception;
 class ViewAssetsController extends Controller
 {
     /**
+     * Extract custom fields that should be displayed in user view.
+     *
+     * @param User $user
+     * @return array
+     */
+    private function extractCustomFields(User $user): array
+    {
+        $fieldArray = [];
+        foreach ($user->assets as $asset) {
+            if ($asset->model && $asset->model->fieldset) {
+                foreach ($asset->model->fieldset->fields as $field) {
+                    if ($field->display_in_user_view == '1') {
+                        $fieldArray[$field->db_column] = $field->name;
+                    }
+                } //end foreach
+            }
+        } //end foreach
+        return array_unique($fieldArray);
+    }
+
+    /**
      * Show user's assigned assets with optional manager view functionality.
      *
      */
@@ -59,7 +80,7 @@ class ViewAssetsController extends Controller
                 } else {
                     // User has no subordinates, so they only see themselves
                     $subordinates = collect([$authUser]);
-                }
+                } //end if
             }
 
             // If the user has subordinates and a user_id is provided in the request
@@ -90,22 +111,12 @@ class ViewAssetsController extends Controller
         }
 
         // Process custom fields for the user being viewed
-        $field_array = [];
-        foreach ($userToView->assets as $asset) {
-            if ($asset->model && $asset->model->fieldset) {
-                foreach ($asset->model->fieldset->fields as $field) {
-                    if ($field->display_in_user_view == '1') {
-                        $field_array[$field->db_column] = $field->name;
-                    }
-                }
-            }
-        }
-        array_unique($field_array); // Remove duplicate field names
+        $fieldArray = $this->extractCustomFields($userToView);
 
         // Pass the necessary data to the view
         return view('account/view-assets', [
             'user' => $userToView, // Use 'user' for compatibility with the existing view
-            'field_array' => $field_array,
+            'field_array' => $fieldArray,
             'settings' => $settings,
             'subordinates' => $subordinates,
             'selectedUserId' => $selectedUserId

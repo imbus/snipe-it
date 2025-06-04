@@ -14,6 +14,7 @@
 <div class="row hidden-print" style="margin-bottom: 15px;">
     <div class="col-md-12">
         <form method="GET" action="{{ route('view-assets') }}" class="pull-right" role="form">
+            @csrf
             <div class="form-group" style="margin-bottom: 0;">
                 <label for="user_id" class="control-label" style="margin-right: 10px;">
                     <i class="fas fa-users"></i> {{ trans('general.view_user_assets') }}:
