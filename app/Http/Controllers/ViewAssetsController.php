@@ -92,7 +92,7 @@ class ViewAssetsController extends Controller
                 }
                 // If invalid ID or not authorized, $selectedUserId remains $authUser->id (default)
             }
-        }
+        }//end if
 
         // Load the data for the user to be viewed (either auth user or selected subordinate)
         $userToView = User::with([
