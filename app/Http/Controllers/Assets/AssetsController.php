@@ -446,7 +446,7 @@ class AssetsController extends Controller
             event(new CheckoutableCheckedIn($asset, $target, auth()->user(), 'Checkin on delete', $checkin_at, $originalValues));
             DB::table('assets')
                 ->where('id', $asset->id)
-                ->update(['assigned_to' => null]);
+                ->update(['assigned_to' => null, 'assigned_type' => null]);
         }
 
 

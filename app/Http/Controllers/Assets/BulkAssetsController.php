@@ -642,7 +642,6 @@ class BulkAssetsController extends Controller
 
                     // See if there is a status label passed
                     if ($request->filled('status_id')) {
-                        \Log::error('status id: ' . $request->get('status_id'));
                         $asset->status_id = $request->get('status_id');
                     }
 

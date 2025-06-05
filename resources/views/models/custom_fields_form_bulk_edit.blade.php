@@ -41,9 +41,9 @@
                 @if($field->is_unique)
                     <input type="text" class="form-control" disabled value="{{ trans('/admin/hardware/form.bulk_update_custom_field_unique') }}">
                 @endif
-                @if(!$field->is_unique) 
+                @if(!$field->is_unique)
                     <textarea class="col-md-6 form-control" id="{{ $field->db_column_name() }}" name="{{ $field->db_column_name() }}">{{ old($field->db_column_name(),(isset($item) ? Helper::gracefulDecrypt($field, $item->{$field->db_column_name()}) : $field->defaultValue($model->id))) }}</textarea>
-                    @endif
+                @endif
               @elseif ($field->element=='checkbox')
                     <!-- Checkboxes -->
                   @foreach ($field->formatFieldValuesAsArray() as $key => $value)
@@ -61,7 +61,11 @@
                   </label>
 
             @endforeach
-
+                <button type="button"
+                        class="btn btn-default btn-xs clear-radio"
+                        data-target-name="{{ $field->db_column_name() }}">
+                    {{ trans('/admin/hardware/general.clear') }}
+                </button>
             @endif
 
             @else
@@ -130,4 +134,4 @@
 
     @endforeach
 @endif
- @endforeach 
+ @endforeach
