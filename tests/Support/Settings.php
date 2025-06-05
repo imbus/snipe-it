@@ -4,7 +4,6 @@ namespace Tests\Support;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Crypt;
-use RuntimeException;
 
 class Settings
 {
@@ -63,10 +62,6 @@ class Settings
 
     public function enableAdminCCAlways(): Settings
     {
-        if (is_null($this->setting->admin_cc_email) || $this->setting->admin_cc_email == 0) {
-            throw new RuntimeException('admin_cc_email requires admin_cc_email to be set.');
-        }
-
         return $this->update([
             'admin_cc_always' => 1,
         ]);
