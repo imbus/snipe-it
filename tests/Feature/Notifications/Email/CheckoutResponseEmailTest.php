@@ -23,9 +23,8 @@ class CheckoutResponseEmailTest extends TestCase
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
             ->pending()
-            ->create([
-                'alert_on_response_id' => $initiator->id,
-            ]);
+            ->withAlertingTo($initiator)
+            ->create();
 
         $this->acceptCheckout($checkoutAcceptance);
 
@@ -38,9 +37,8 @@ class CheckoutResponseEmailTest extends TestCase
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
             ->pending()
-            ->create([
-                'alert_on_response_id' => $initiator->id,
-            ]);
+            ->withAlertingTo($initiator)
+            ->create();
 
         $this->declineCheckout($checkoutAcceptance);
 
@@ -53,9 +51,8 @@ class CheckoutResponseEmailTest extends TestCase
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
             ->pending()
-            ->create([
-                'alert_on_response_id' => null,
-            ]);
+            ->withoutAlerting()
+            ->create();
 
         $this->acceptCheckout($checkoutAcceptance);
 
@@ -68,9 +65,8 @@ class CheckoutResponseEmailTest extends TestCase
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
             ->pending()
-            ->create([
-                'alert_on_response_id' => null,
-            ]);
+            ->withoutAlerting()
+            ->create();
 
         $this->declineCheckout($checkoutAcceptance);
 
