@@ -70,6 +70,7 @@ class Category extends SnipeModel
         'eula_text',
         'name',
         'require_acceptance',
+        'alert_on_response',
         'use_default_eula',
         'created_by',
         'notes',

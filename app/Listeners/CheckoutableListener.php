@@ -227,6 +227,7 @@ class CheckoutableListener
         if ($checkedOutToType != "App\Models\User") {
             return null;
         }
+
         if (!$event->checkoutable->requireAcceptance()) {
             return null;
         }
@@ -234,6 +235,11 @@ class CheckoutableListener
         $acceptance = new CheckoutAcceptance;
         $acceptance->checkoutable()->associate($event->checkoutable);
         $acceptance->assignedTo()->associate($event->checkedOutTo);
+
+        if (data_get($event, 'checkoutable.model.category.alert_on_response')) {
+            $acceptance->alert_on_response_id = auth()->id();
+        }
+        
         $acceptance->save();
 
         return $acceptance;
