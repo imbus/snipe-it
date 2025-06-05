@@ -1094,7 +1094,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                 ]
             )->name('api.users.me');
 
-            Route::get('/users/{user}/eulas',
+            Route::get('{user}/eulas',
                 [
                     Api\UsersController::class,
                     'eulas'

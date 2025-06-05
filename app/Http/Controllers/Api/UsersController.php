@@ -748,6 +748,8 @@ class UsersController extends Controller
      */
     public function eulas(User $user, ActionlogsTransformer $transformer)
     {
+        $this->authorize('view', Asset::class);
+
         $eulas = $user->eulas;
         return response()->json(
             $transformer->transformActionlogs($eulas, $eulas->count())

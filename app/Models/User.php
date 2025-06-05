@@ -562,6 +562,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     {
         return $this->hasMany(Actionlog::class, 'target_id')
             ->with('item')
+            ->select(['id', 'target_id', 'target_type', 'action_type', 'filename', 'accept_signature', 'created_at'])
             ->where('target_type', self::class)
             ->where('action_type', 'accepted')
             ->whereNotNull('filename')
