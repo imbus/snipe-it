@@ -107,7 +107,7 @@
                                             value="1"
                                             @checked($setting->admin_cc_always == 1)
                                         >
-                                        Always send copy upon checkin/checkout
+                                        {{ trans('admin/settings/general.admin_cc_always') }}
                                     </label>
                                     <label class="form-control">
                                         <input
@@ -116,7 +116,7 @@
                                             value="0"
                                             @checked($setting->admin_cc_always == 0)
                                         >
-                                        Only send copy upon checkout if acceptance is required
+                                        {{ trans('admin/settings/general.admin_cc_when_acceptance_required') }}
                                     </label>
                                 </div>
                             </div>
