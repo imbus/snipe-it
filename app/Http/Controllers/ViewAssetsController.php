@@ -82,7 +82,6 @@ class ViewAssetsController extends Controller
                     $subordinates = collect([$authUser]);
                 }
             }//end if
-
             // If the user has subordinates and a user_id is provided in the request
             if ($subordinates->count() > 1 && $request->filled('user_id')) {
                 $requestedUserId = (int) $request->input('user_id');
