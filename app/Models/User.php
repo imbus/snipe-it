@@ -1000,7 +1000,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
                  // Recursive call for this subordinate's subordinates
                  $this->fetchSubordinatesRecursive($directSubordinate, $subs);
             }
-        }//end foreach
+        }//endforeach
     }
 
     /**
