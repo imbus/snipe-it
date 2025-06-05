@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Suppliers\DestroySupplierAction;
+use App\Exceptions\ModelStillHasAssetMaintenances;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\SelectlistTransformer;
@@ -194,25 +197,16 @@ class SuppliersController extends Controller
      */
     public function destroy(Supplier $supplier): JsonResponse
     {
-        //$supplier->load('assets', 'asset_maintenances', 'licenses');...
-        $this->authorize('delete', Supplier::class);
-        $supplier = Supplier::with('asset_maintenances', 'assets', 'licenses')->withCount('asset_maintenances as asset_maintenances_count', 'assets as assets_count', 'licenses as licenses_count')->findOrFail($supplier);
         $this->authorize('delete', $supplier);
-
-
-        if ($supplier->assets_count > 0) {
+        try {
+            DestroySupplierAction::run($supplier);
+        } catch (ModelStillHasAssets $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count])));
-        }
-
-        if ($supplier->asset_maintenances_count > 0) {
+        } catch (ModelStillHasAssetMaintenances $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count])));
-        }
-
-        if ($supplier->licenses_count > 0) {
+        } catch (ModelStillHasLicenses $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
         }
-
-        $supplier->delete();
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/suppliers/message.delete.success')));
     }
