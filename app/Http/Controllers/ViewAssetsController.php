@@ -80,8 +80,8 @@ class ViewAssetsController extends Controller
                 } else {
                     // User has no subordinates, so they only see themselves
                     $subordinates = collect([$authUser]);
-                }//end if managedUsers count > 0
-            }
+                }//end if
+            }//end if
 
             // If the user has subordinates and a user_id is provided in the request
             if ($subordinates->count() > 1 && $request->filled('user_id')) {
