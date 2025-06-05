@@ -10,10 +10,15 @@ use Tests\TestCase;
 
 class CheckoutResponseEmailTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Mail::fake();
+    }
+
     public function test_accepting_checkout_acceptance_configured_to_send_alert()
     {
-        Mail::fake();
-
         $user = User::factory()->create();
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
@@ -28,10 +33,7 @@ class CheckoutResponseEmailTest extends TestCase
                 'note' => null,
             ]);
 
-        Mail::assertSent(CheckoutAcceptanceResponseMail::class, function ($mail) use ($user) {
-            // @todo: better assertions? accepted vs declined?
-            return $mail->hasTo($user->email);
-        });
+        $this->assertEmailSentTo($user);
     }
 
     public function test_declining_checkout_acceptance_configured_to_send_alert()
@@ -47,5 +49,13 @@ class CheckoutResponseEmailTest extends TestCase
     public function test_declining_checkout_acceptance_not_configured_to_send_alert()
     {
         $this->markTestIncomplete();
+    }
+
+    private function assertEmailSentTo(User $user): void
+    {
+        Mail::assertSent(CheckoutAcceptanceResponseMail::class, function ($mail) use ($user) {
+            // @todo: better assertions? accepted vs declined?
+            return $mail->hasTo($user->email);
+        });
     }
 }
