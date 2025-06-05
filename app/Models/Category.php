@@ -32,6 +32,7 @@ class Category extends SnipeModel
     protected $hidden = ['created_by', 'deleted_at'];
 
     protected $casts = [
+        'alert_on_response' => 'boolean',
         'created_by'      => 'integer',
     ];
 
