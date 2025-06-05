@@ -83,7 +83,7 @@ class AssetImporter extends ItemImporter
 
 
         if ($this->findCsvMatch($row, 'id')!='') {
-            // Override location if an ID was given
+            // Override asset if an ID was given
             \Log::debug('Finding asset by ID: '.$this->findCsvMatch($row, 'id'));
             $asset = Asset::find($this->findCsvMatch($row, 'id'));
         } else {
