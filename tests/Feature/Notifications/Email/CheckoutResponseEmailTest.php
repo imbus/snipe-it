@@ -10,15 +10,7 @@ use Tests\TestCase;
 
 class CheckoutResponseEmailTest extends TestCase
 {
-    public static function scenarios()
-    {
-        yield 'Accepting checkout acceptance configured to send alert' => [];
-        yield 'Declining checkout acceptance configured to send alert' => [];
-        yield 'Accepting checkout acceptance not configured to send alert' => [];
-        yield 'Declining checkout acceptance not configured to send alert' => [];
-    }
-
-    public function test_checkout_response_alert()
+    public function test_accepting_checkout_acceptance_configured_to_send_alert()
     {
         Mail::fake();
 
@@ -40,5 +32,20 @@ class CheckoutResponseEmailTest extends TestCase
             // @todo: better assertions? accepted vs declined?
             return $mail->hasTo($user->email);
         });
+    }
+
+    public function test_declining_checkout_acceptance_configured_to_send_alert()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_accepting_checkout_acceptance_not_configured_to_send_alert()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_declining_checkout_acceptance_not_configured_to_send_alert()
+    {
+        $this->markTestIncomplete();
     }
 }
