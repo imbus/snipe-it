@@ -19,36 +19,62 @@ class CheckoutResponseEmailTest extends TestCase
 
     public function test_accepting_checkout_acceptance_configured_to_send_alert()
     {
-        $user = User::factory()->create();
+        $initiator = User::factory()->create();
 
         $checkoutAcceptance = CheckoutAcceptance::factory()
             ->pending()
             ->create([
-                'alert_on_response_id' => $user->id,
+                'alert_on_response_id' => $initiator->id,
             ]);
 
-        $this->actingAs($checkoutAcceptance->assignedTo)
-            ->post(route('account.store-acceptance', $checkoutAcceptance), [
-                'asset_acceptance' => 'accepted',
-                'note' => null,
-            ]);
+        $this->acceptCheckout($checkoutAcceptance);
 
-        $this->assertEmailSentTo($user);
+        $this->assertEmailSentTo($initiator);
     }
 
     public function test_declining_checkout_acceptance_configured_to_send_alert()
     {
-        $this->markTestIncomplete();
+        $initiator = User::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->create([
+                'alert_on_response_id' => $initiator->id,
+            ]);
+
+        $this->declineCheckout($checkoutAcceptance);
+
+        $this->assertEmailSentTo($initiator);
     }
 
     public function test_accepting_checkout_acceptance_not_configured_to_send_alert()
     {
-        $this->markTestIncomplete();
+        $initiator = User::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->create([
+                'alert_on_response_id' => null,
+            ]);
+
+        $this->acceptCheckout($checkoutAcceptance);
+
+        $this->assertEmailNotSentTo($initiator);
     }
 
     public function test_declining_checkout_acceptance_not_configured_to_send_alert()
     {
-        $this->markTestIncomplete();
+        $initiator = User::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->create([
+                'alert_on_response_id' => null,
+            ]);
+
+        $this->declineCheckout($checkoutAcceptance);
+
+        $this->assertEmailNotSentTo($initiator);
     }
 
     private function assertEmailSentTo(User $user): void
@@ -57,5 +83,30 @@ class CheckoutResponseEmailTest extends TestCase
             // @todo: better assertions? accepted vs declined?
             return $mail->hasTo($user->email);
         });
+    }
+
+    private function assertEmailNotSentTo(User $user): void
+    {
+        Mail::assertNotSent(CheckoutAcceptanceResponseMail::class, function ($mail) use ($user) {
+            return $mail->hasTo($user->email);
+        });
+    }
+
+    private function acceptCheckout(CheckoutAcceptance $checkoutAcceptance): void
+    {
+        $this->actingAs($checkoutAcceptance->assignedTo)
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
+                'asset_acceptance' => 'accepted',
+                'note' => null,
+            ]);
+    }
+
+    private function declineCheckout(CheckoutAcceptance $checkoutAcceptance): void
+    {
+        $this->actingAs($checkoutAcceptance->assignedTo)
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
+                'asset_acceptance' => 'declined',
+                'note' => null,
+            ]);
     }
 }
