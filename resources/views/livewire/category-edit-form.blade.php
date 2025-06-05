@@ -71,7 +71,8 @@
                     <input
                         type="checkbox"
                         name="alert_on_response"
-                        @checked(false)
+                        value="1"
+                        wire:model.blur="alertOnResponse"
                     />
                     Send email to you when user accepts or declines checkout.
                 </label>
