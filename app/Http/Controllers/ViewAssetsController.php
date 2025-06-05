@@ -48,6 +48,63 @@ class ViewAssetsController extends Controller
     }
 
     /**
+     * Get list of users viewable by the current user.
+     *
+     * @param User $authUser
+     * @return \Illuminate\Support\Collection
+     */
+    private function getViewableUsers(User $authUser): \Illuminate\Support\Collection
+    {
+        // SuperAdmin sees all users
+        if ($authUser->isSuperUser()) {
+            return User::select('id', 'first_name', 'last_name', 'username')
+                ->where('activated', 1)
+                ->orderBy('last_name')
+                ->orderBy('first_name')
+                ->get();
+        }
+
+        // Regular manager sees only their subordinates + self
+        $managedUsers = $authUser->getAllSubordinates();
+        
+        // If user has subordinates, show them with self at beginning
+        if ($managedUsers->count() > 0) {
+            return collect([$authUser])->merge($managedUsers)
+                ->sortBy('last_name')
+                ->sortBy('first_name');
+        }
+        
+        // User has no subordinates, only sees themselves
+        return collect([$authUser]);
+    }
+
+    /**
+     * Get the selected user ID from request or default to current user.
+     *
+     * @param Request $request
+     * @param \Illuminate\Support\Collection $subordinates
+     * @param int $defaultUserId
+     * @return int
+     */
+    private function getSelectedUserId(Request $request, \Illuminate\Support\Collection $subordinates, int $defaultUserId): int
+    {
+        // If no subordinates or no user_id in request, return default
+        if ($subordinates->count() <= 1 || !$request->filled('user_id')) {
+            return $defaultUserId;
+        }
+
+        $requestedUserId = (int) $request->input('user_id');
+        
+        // Validate if the requested user is allowed
+        if ($subordinates->contains('id', $requestedUserId)) {
+            return $requestedUserId;
+        }
+        
+        // If invalid ID or not authorized, return default
+        return $defaultUserId;
+    }
+
+    /**
      * Show user's assigned assets with optional manager view functionality.
      *
      */
@@ -58,41 +115,11 @@ class ViewAssetsController extends Controller
         $subordinates = collect();
         $selectedUserId = $authUser->id;
 
-        // Check if manager view is enabled and get subordinates if applicable
+        // Process manager view if enabled
         if ($settings->manager_view_enabled) {
-            // Get all subordinates including self, sorted for the dropdown
-            if ($authUser->isSuperUser()) {
-                // SuperAdmin sees all users
-                $subordinates = User::select('id', 'first_name', 'last_name', 'username')
-                    ->where('activated', 1)
-                    ->orderBy('last_name')
-                    ->orderBy('first_name')
-                    ->get();
-            } else {
-                // Regular manager sees only their subordinates + self (recursive)
-                $managedUsers = $authUser->getAllSubordinates();
-                
-                // Only show dropdown if user actually has subordinates
-                if ($managedUsers->count() > 0) {
-                    $subordinates = collect([$authUser])->merge($managedUsers) // Add self at beginning
-                        ->sortBy('last_name')
-                        ->sortBy('first_name');
-                } else {
-                    // User has no subordinates, so they only see themselves
-                    $subordinates = collect([$authUser]);
-                }
-            }//end if
-            // If the user has subordinates and a user_id is provided in the request
-            if ($subordinates->count() > 1 && $request->filled('user_id')) {
-                $requestedUserId = (int) $request->input('user_id');
-
-                // Validate if the requested user is allowed (self or subordinate)
-                if ($subordinates->contains('id', $requestedUserId)) {
-                    $selectedUserId = $requestedUserId;
-                }
-                // If invalid ID or not authorized, $selectedUserId remains $authUser->id (default)
-            }
-        }//end if
+            $subordinates = $this->getViewableUsers($authUser);
+            $selectedUserId = $this->getSelectedUserId($request, $subordinates, $authUser->id);
+        }
 
         // Load the data for the user to be viewed (either auth user or selected subordinate)
         $userToView = User::with([
