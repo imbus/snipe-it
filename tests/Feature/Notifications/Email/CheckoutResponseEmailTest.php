@@ -20,8 +20,6 @@ class CheckoutResponseEmailTest extends TestCase
 
     public function test_checkout_response_alert()
     {
-        $this->markTestIncomplete();
-
         Mail::fake();
 
         $user = User::factory()->create();

@@ -7,6 +7,7 @@ use App\Events\CheckoutDeclined;
 use App\Events\ItemAccepted;
 use App\Events\ItemDeclined;
 use App\Http\Controllers\Controller;
+use App\Mail\CheckoutAcceptanceResponseMail;
 use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\CheckoutAcceptance;
@@ -21,8 +22,10 @@ use App\Models\Component;
 use App\Models\Consumable;
 use App\Notifications\AcceptanceAssetAcceptedNotification;
 use App\Notifications\AcceptanceAssetDeclinedNotification;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Controllers\SettingsController;
@@ -337,6 +340,16 @@ class AcceptanceController extends Controller
             $return_msg = trans('admin/users/message.declined');
         }
 
+        if ($acceptance->alert_on_response_id) {
+            try {
+                Mail::to(User::findOrFail($acceptance->alert_on_response_id))
+                    ->send(new CheckoutAcceptanceResponseMail(
+                        (bool) $request->input('asset_acceptance') === 'accepted'
+                    ));
+            } catch (Exception $e) {
+                Log::warning($e);
+            }
+        }
 
         return redirect()->to('account/accept')->with('success', $return_msg);
 
