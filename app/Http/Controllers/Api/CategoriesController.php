@@ -212,14 +212,7 @@ class CategoriesController extends Controller
     public function destroy($id) : JsonResponse
     {
         $this->authorize('delete', Category::class);
-        $category = Category::withCount('assets as assets_count', 'accessories as accessories_count', 'consumables as consumables_count', 'components as components_count', 'licenses as licenses_count', 'models as models_count')->findOrFail($id);
 
-        if (! $category->isDeletable()) {
-            return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type'=>$category->category_type]))
-            );
-        }
-        $category->delete();
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/categories/message.delete.success')));
     }
