@@ -41,9 +41,9 @@ class ViewAssetsController extends Controller
                     if ($field->display_in_user_view == '1') {
                         $fieldArray[$field->db_column] = $field->name;
                     }
-                }//endforeach
+                }//end foreach
             }
-        }//endforeach
+        }//end foreach
         return array_unique($fieldArray);
     }
 
@@ -80,7 +80,7 @@ class ViewAssetsController extends Controller
                 } else {
                     // User has no subordinates, so they only see themselves
                     $subordinates = collect([$authUser]);
-                }//endif
+                }//end if
             }
 
             // If the user has subordinates and a user_id is provided in the request
