@@ -32,6 +32,7 @@
               data-cookie-id-table="licensesTable"
               data-pagination="true"
               data-search="true"
+              data-search-highlight="true"
               data-side-pagination="server"
               data-footer-style="footerStyle"
               data-show-columns="true"
