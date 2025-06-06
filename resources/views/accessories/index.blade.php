@@ -28,6 +28,7 @@
                 data-id-table="accessoriesTable"
                 data-search-highlight="true"
                 data-search="true"
+                data-show-print="true"
                 data-side-pagination="server"
                 data-show-columns="true"
                 data-show-fullscreen="true"

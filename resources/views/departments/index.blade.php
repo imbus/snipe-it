@@ -22,6 +22,7 @@
                                 data-id-table="departmentsTable"
                                 data-search="true"
                                 data-search-highlight="true"
+                                data-show-print="true"
                                 data-side-pagination="server"
                                 data-show-columns="true"
                                 data-show-fullscreen="true"

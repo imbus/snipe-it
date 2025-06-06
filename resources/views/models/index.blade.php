@@ -44,6 +44,7 @@
                         data-id-table="asssetModelsTable"
                         data-search="true"
                         data-search-highlight="true"
+                        data-show-print="true"
                         data-show-footer="true"
                         data-side-pagination="server"
                         data-footer-style="footerStyle"
