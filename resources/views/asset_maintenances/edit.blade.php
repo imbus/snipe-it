@@ -60,7 +60,6 @@
           'fieldname' => 'selected_assets[]',
           'multiple' => true,
           'required' => true,
-          'asset_status_type' => 'RTD',
           'select_id' => 'assigned_assets_select',
           'asset_selector_div_id' => 'assets_to_checkout_div',
           'asset_ids' => old('selected_assets')

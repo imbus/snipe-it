@@ -63,9 +63,7 @@ class AssetMaintenancesController extends Controller
         $this->authorize('update', Asset::class);
         $asset = null;
 
-        $assetMaintenanceType = [
-                                    '' => 'Select an asset maintenance type',
-                                ] + AssetMaintenance::getImprovementOptions();
+        $assetMaintenanceType =  AssetMaintenance::getImprovementOptions();
         // Mark the selected asset, if it came in
 
         if ($asset = Asset::find(request('asset_id'))) {
@@ -153,7 +151,7 @@ class AssetMaintenancesController extends Controller
         }
 
         // Prepare Improvement Type List
-        $assetMaintenanceType = ['' => 'Select an improvement type'] + AssetMaintenance::getImprovementOptions();
+        $assetMaintenanceType = ['' => trans('general.select')] + AssetMaintenance::getImprovementOptions();
 
         return view('asset_maintenances/edit')
                    ->with('selectedAsset', null)
