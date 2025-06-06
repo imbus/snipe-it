@@ -24,6 +24,7 @@
                 data-columns="{{ \App\Presenters\PredefinedKitPresenter::dataTableLayout() }}"
                 data-pagination="true"
                 data-search="true"
+                data-search-highlight="true"
                 data-side-pagination="server"
                 data-show-columns="true"
                 data-show-fullscreen="true"

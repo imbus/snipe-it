@@ -26,6 +26,7 @@
                 data-cookie-id-table="accessoriesTable"
                 data-pagination="true"
                 data-id-table="accessoriesTable"
+                data-search-highlight="true"
                 data-search="true"
                 data-side-pagination="server"
                 data-show-columns="true"
