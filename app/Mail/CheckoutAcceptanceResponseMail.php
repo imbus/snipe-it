@@ -32,7 +32,7 @@ class CheckoutAcceptanceResponseMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'A checkout you initiated was ' . ($this->wasAccepted ? 'accepted' : 'rejected'),
+            subject: 'A checkout you initiated was ' . ($this->wasAccepted ? 'accepted' : 'declined'),
         );
     }
 

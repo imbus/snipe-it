@@ -42,7 +42,7 @@ class CheckoutResponseEmailTest extends TestCase
 
         $this->declineCheckout($checkoutAcceptance);
 
-        $this->assertEmailSentTo($initiator, 'rejected');
+        $this->assertEmailSentTo($initiator, 'declined');
     }
 
     public function test_accepting_checkout_acceptance_not_configured_to_send_alert()
@@ -100,7 +100,7 @@ class CheckoutResponseEmailTest extends TestCase
     {
         $this->actingAs($checkoutAcceptance->assignedTo)
             ->post(route('account.store-acceptance', $checkoutAcceptance), [
-                'asset_acceptance' => 'rejected',
+                'asset_acceptance' => 'declined',
                 'note' => null,
             ]);
     }
