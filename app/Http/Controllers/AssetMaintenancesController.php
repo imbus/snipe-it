@@ -63,17 +63,13 @@ class AssetMaintenancesController extends Controller
         $this->authorize('update', Asset::class);
         $asset = null;
 
-        $assetMaintenanceType =  AssetMaintenance::getImprovementOptions();
-        // Mark the selected asset, if it came in
-
         if ($asset = Asset::find(request('asset_id'))) {
             // We have to set this so that the correct property is set in the select2 ajax dropdown
             $asset->asset_id = $asset->id;
         }
-
-
+        
         return view('asset_maintenances/edit')
-                   ->with('assetMaintenanceType', $assetMaintenanceType)
+                   ->with('assetMaintenanceType', AssetMaintenance::getImprovementOptions())
                    ->with('asset', $asset)
                    ->with('item', new AssetMaintenance);
     }
