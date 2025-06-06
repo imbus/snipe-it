@@ -19,7 +19,7 @@
 
 {{-- Page content --}}
 @section('content')
-
+  
 <div class="row">
   <div class="col-md-9">
     @if ($item->id)
@@ -54,10 +54,21 @@
         </div>
 
 
-        @include ('partials.forms.edit.asset-select', ['translated_name' => trans('general.asset'), 'fieldname' => 'asset_id', 'required' => 'true'])
-        @include ('partials.forms.edit.supplier-select', ['translated_name' => trans('general.supplier'), 'fieldname' => 'supplier_id', 'required' => 'true'])
-        @include ('partials.forms.edit.maintenance_type')
 
+        @include ('partials.forms.edit.asset-select', [
+          'translated_name' => trans('general.assets'),
+          'fieldname' => 'selected_assets[]',
+          'multiple' => true,
+          'required' => true,
+          'asset_status_type' => 'RTD',
+          'select_id' => 'assigned_assets_select',
+          'asset_selector_div_id' => 'assets_to_checkout_div',
+          'asset_ids' => old('selected_assets')
+        ])
+
+
+        @include ('partials.forms.edit.maintenance_type')
+        @include ('partials.forms.edit.supplier-select', ['translated_name' => trans('general.supplier'), 'fieldname' => 'supplier_id'])
 
 
         <!-- Start Date -->
