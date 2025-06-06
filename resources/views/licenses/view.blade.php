@@ -124,13 +124,13 @@
                   <div class="row">
                     <div class="col-md-3">
                       <strong>{{ trans('admin/licenses/form.license_key') }}</strong>
+                      <i class="fa-regular fa-clipboard js-copy-link" data-clipboard-target=".js-copy" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}">
+                        <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
+                      </i>
                     </div>
                     <div class="col-md-9">
                       @can('viewKeys', $license)
-                        <span class="js-copy">{!! nl2br(e($license->serial)) !!}</span>
-                          <i class="fa-regular fa-clipboard js-copy-link" data-clipboard-target=".js-copy" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}">
-                            <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
-                          </i>
+                        <code><span class="js-copy">{!! nl2br(e($license->serial)) !!}</span></code>
                       @else
                         ------------
                       @endcan
@@ -440,6 +440,7 @@
                         id="seatsTable"
                         data-pagination="true"
                         data-search="false"
+                        data-show-print="true"
                         data-side-pagination="server"
                         data-show-columns="true"
                         data-show-fullscreen="true"
@@ -490,6 +491,9 @@
                       data-show-refresh="true"
                       data-show-export="true"
                       data-sort-order="desc"
+                      data-search="true"
+                      data-search-highlight="true"
+                      data-show-print="true"
                       data-export-options='{
                        "fileName": "export-{{ str_slug($license->name) }}-history-{{ date('Y-m-d') }}",
                        "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
