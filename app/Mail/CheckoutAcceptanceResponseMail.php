@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,14 +14,16 @@ class CheckoutAcceptanceResponseMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public bool $accepted;
+    public bool $wasAccepted;
+    public User $recipient;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(bool $accepted)
+    public function __construct(User $recipient, bool $wasAccepted)
     {
-        $this->accepted = $accepted;
+        $this->recipient = $recipient;
+        $this->wasAccepted = $wasAccepted;
     }
 
     /**
@@ -29,7 +32,7 @@ class CheckoutAcceptanceResponseMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Checkout Acceptance Response Mail',
+            subject: 'A checkout you initiated was ' . ($this->wasAccepted ? 'accepted' : 'rejected'),
         );
     }
 
@@ -40,6 +43,10 @@ class CheckoutAcceptanceResponseMail extends Mailable
     {
         return new Content(
             markdown: 'mail.markdown.checkout-acceptance-response',
+            with: [
+                'recipient' => $this->recipient,
+                'wasAccepted' => $this->wasAccepted,
+            ]
         );
     }
 

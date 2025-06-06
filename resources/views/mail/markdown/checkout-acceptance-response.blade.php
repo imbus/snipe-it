@@ -1,5 +1,5 @@
 @component('mail::message')
-# {{ trans('mail.hello') }} {{ $target->present()->fullName() }},
+# {{ trans('mail.hello') }} {{ $recipient->present()->fullName() }},
 
 {{ trans('mail.best_regards') }}
 

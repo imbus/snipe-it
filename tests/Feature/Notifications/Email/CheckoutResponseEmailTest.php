@@ -28,7 +28,7 @@ class CheckoutResponseEmailTest extends TestCase
 
         $this->acceptCheckout($checkoutAcceptance);
 
-        $this->assertEmailSentTo($initiator);
+        $this->assertEmailSentTo($initiator, 'accepted');
     }
 
     public function test_declining_checkout_acceptance_configured_to_send_alert()
@@ -42,7 +42,7 @@ class CheckoutResponseEmailTest extends TestCase
 
         $this->declineCheckout($checkoutAcceptance);
 
-        $this->assertEmailSentTo($initiator);
+        $this->assertEmailSentTo($initiator, 'rejected');
     }
 
     public function test_accepting_checkout_acceptance_not_configured_to_send_alert()
@@ -73,11 +73,10 @@ class CheckoutResponseEmailTest extends TestCase
         $this->assertEmailNotSentTo($initiator);
     }
 
-    private function assertEmailSentTo(User $user): void
+    private function assertEmailSentTo(User $user, string $type): void
     {
-        Mail::assertSent(CheckoutAcceptanceResponseMail::class, function ($mail) use ($user) {
-            // @todo: better assertions? accepted vs declined?
-            return $mail->hasTo($user->email);
+        Mail::assertSent(CheckoutAcceptanceResponseMail::class, function (CheckoutAcceptanceResponseMail $mail) use ($type, $user) {
+            return $mail->hasTo($user->email) && $mail->assertHasSubject('A checkout you initiated was ' . $type);
         });
     }
 
@@ -101,7 +100,7 @@ class CheckoutResponseEmailTest extends TestCase
     {
         $this->actingAs($checkoutAcceptance->assignedTo)
             ->post(route('account.store-acceptance', $checkoutAcceptance), [
-                'asset_acceptance' => 'declined',
+                'asset_acceptance' => 'rejected',
                 'note' => null,
             ]);
     }
