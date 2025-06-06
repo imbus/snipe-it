@@ -43,6 +43,7 @@
                         data-pagination="true"
                         data-id-table="asssetModelsTable"
                         data-search="true"
+                        data-search-highlight="true"
                         data-show-footer="true"
                         data-side-pagination="server"
                         data-footer-style="footerStyle"

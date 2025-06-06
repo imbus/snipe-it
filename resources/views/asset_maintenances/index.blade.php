@@ -26,6 +26,7 @@
               data-cookie-id-table="maintenancesTable"
               data-pagination="true"
               data-search="true"
+              data-search-highlight="true"
               data-side-pagination="server"
               data-show-columns="true"
               data-show-fullscreen="true"

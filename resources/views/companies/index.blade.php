@@ -29,6 +29,7 @@
               data-show-fullscreen="true"
               data-sort-order="asc"
               id="companiesTable"
+              data-search-highlight="true"
               class="table table-striped snipe-table"
               data-url="{{ route('api.companies.index') }}"
               data-export-options='{

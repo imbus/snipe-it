@@ -55,6 +55,7 @@
                     data-show-export="true"
                     data-show-refresh="true"
                     data-sort-order="asc"
+                    data-search-highlight="true"
                     data-toolbar="#userBulkEditToolbar"
                     data-bulk-button-id="#bulkUserEditButton"
                     data-bulk-form-id="#usersBulkForm"
