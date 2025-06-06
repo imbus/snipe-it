@@ -22,6 +22,8 @@
               data-pagination="true"
               data-id-table="companiesTable"
               data-search="true"
+              data-search-highlight="true"
+              data-show-print="true"
               data-side-pagination="server"
               data-show-columns="true"
               data-show-export="true"
@@ -29,7 +31,6 @@
               data-show-fullscreen="true"
               data-sort-order="asc"
               id="companiesTable"
-              data-search-highlight="true"
               class="table table-striped snipe-table"
               data-url="{{ route('api.companies.index') }}"
               data-export-options='{
