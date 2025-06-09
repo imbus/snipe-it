@@ -10,7 +10,7 @@
 @php
 $checkin = Helper::getFormattedDateObject($asset->expected_checkin, 'date');
 
-$assignedToName = $asset->assignedTo ? $asset->assignedTo->present()->fullName : 'Unknown User';
+$assignedToName = $asset->assignedTo ? $asset->assignedTo->present()->fullName : trans('general.unknown_user');
 $assignedToRoute = $asset->assignedTo ? route($asset->targetShowRoute().'.show', [$asset->assignedTo->id]) : '';
 @endphp
 | [{{ $asset->present()->name }}]({{ route('hardware.show', $asset) }}) | @if ($asset->assignedTo) [{{ $assignedToName }}]({{ $assignedToRoute }}) @else {{ $assignedToName }} @endif  | {{ $checkin['formatted'] }}
