@@ -153,7 +153,7 @@
 
                  @if (($user->isSuperUser()) || ($user->hasAccess('admin')))
                       <x-icon type="superadmin" class="fa-2x {{  ($user->isSuperUser()) ? 'text-danger' : 'text-orange'}}" />
-                        <div class="{{  ($user->isSuperUser()) ? 'text-danger' : ' text-orange'}}" style="font-weight: bold">{{  ($user->isSuperUser()) ? strtolower(trans('general.superuser')) : strtolower(trans('general.admin')) }}</div>
+                        <div class="{{  ($user->isSuperUser()) ? 'text-danger' : ' text-orange'}}" style="font-weight: bold">{{  ($user->isSuperUser()) ? strtolower(trans('general.superuser')) : strtolower(trans('general.admin_user')) }}</div>
                   @endif
 
                 
