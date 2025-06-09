@@ -336,7 +336,7 @@
                         @if ($user->isSuperUser())
                           <span class="label label-danger" data-tooltip="true" title="{{ trans('general.superuser_tooltip') }}"><x-icon type="superadmin" title="{{ trans('general.superuser') }}" /></span>&nbsp;
                         @elseif ($user->hasAccess('admin'))
-                          <span class="label label-warning" data-tooltip="true" title="{{ trans('general.admin_tooltip') }}"><x-icon type="superadmin" title="{{ trans('general.admin') }}" /></span>&nbsp;
+                          <span class="label label-warning" data-tooltip="true" title="{{ trans('general.admin_tooltip') }}"><x-icon type="superadmin" title="{{ trans('general.admin_user') }}" /></span>&nbsp;
                         @endif
                          {{ $user->username }}
 
