@@ -242,7 +242,7 @@ class AssetTest extends TestCase
     }
     public function testUndeployableStatusReturnsFalseifAssetIsDeployable()
     {
-        $assets = Asset::factory()->count(3)->create(); // Assume none match undeployable condition
+        $assets = Asset::factory()->count(3)->create();
         $asset_ids = $assets->pluck('id')->toArray();
 
         $bulk_assets = new BulkAssetsController();
