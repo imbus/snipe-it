@@ -59,7 +59,7 @@ class BulkAssetsController extends Controller
                 $asset_tags = implode(', ', array_column($status_check['tags'], 'asset_tag'));
                 $asset_ids = $status_check['asset_ids'];
 
-                session()->flash('error', trans('admin/hardware/message.undeployable', ['asset_tags' => $asset_tags]));
+                session()->flash('warning', trans('admin/hardware/message.undeployable', ['asset_tags' => $asset_tags]));
             }
 
             $request->session()->flashInput(['selected_assets' => $asset_ids]);
