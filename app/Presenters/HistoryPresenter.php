@@ -40,7 +40,7 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.created_at'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'dateDisplayFormatter',
             ],
             [
@@ -48,7 +48,7 @@ class HistoryPresenter extends Presenter
                 'searchable' => false,
                 'sortable' => true,
                 'title' => trans('general.created_by'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'usersLinkObjFormatter',
             ],
             [
@@ -65,7 +65,7 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.action'),
-                'visible' => false,
+                'visible' => true,
             ],
             [
                 'field' => 'item',
@@ -73,7 +73,7 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.item'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'polymorphicItemFormatter',
             ],
         ];
@@ -96,7 +96,7 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.target'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'polymorphicItemFormatter',
             ],
             [
@@ -105,7 +105,7 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.file_name'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'fileUploadNameFormatter',
             ],
             [
@@ -114,14 +114,14 @@ class HistoryPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.download'),
-                'visible' => false,
+                'visible' => true,
                 'formatter' => 'fileUploadFormatter',
             ],
             [
                 'field' => 'note',
                 'searchable' => true,
                 'sortable' => true,
-                'visible' => false,
+                'visible' => true,
                 'title' => trans('general.notes'),
                 'formatter' => 'notesFormatter'
             ],
@@ -146,21 +146,21 @@ class HistoryPresenter extends Presenter
                 'field' => 'remote_ip',
                 'searchable' => false,
                 'sortable' => false,
-                'visible' => true,
+                'visible' => false,
                 'title' => trans('admin/settings/general.login_ip'),
             ],
             [
                 'field' => 'user_agent',
                 'searchable' => false,
                 'sortable' => false,
-                'visible' => true,
+                'visible' => false,
                 'title' => trans('admin/settings/general.login_user_agent'),
             ],
             [
                 'field' => 'action_source',
                 'searchable' => false,
                 'sortable' => false,
-                'visible' => true,
+                'visible' => false,
                 'title' => trans('general.action_source'),
             ],
         ];
