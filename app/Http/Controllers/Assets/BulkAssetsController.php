@@ -220,6 +220,21 @@ class BulkAssetsController extends Controller
 
        $custom_field_columns = CustomField::all()->pluck('db_column')->toArray();
 
+        // find custom field input attributes that start with 'null_'
+        $null_custom_fields_inputs = array_filter($request->all(), function ($key) {
+            // filter out all keys that start with 'null_'
+            return (strpos($key, 'null_') === 0);
+        }, ARRAY_FILTER_USE_KEY);;
+        // remove 'null' from the keys
+        $custom_fields_to_null = [];
+        foreach ($null_custom_fields_inputs as $key => $value) {
+            $custom_fields_to_null[str_replace('null', '', $key)] = $value;
+        }
+
+
+
+
+
      
         if (! $request->filled('ids') || count($request->input('ids')) == 0) {
             return redirect($bulk_back_url)->with('error', trans('admin/hardware/message.update.no_assets_selected'));
@@ -258,6 +273,7 @@ class BulkAssetsController extends Controller
             || ($request->filled('null_next_audit_date'))
             || ($request->filled('null_asset_eol_date'))
             || ($request->anyFilled($custom_field_columns))
+            || ($request->anyFilled(array_keys($null_custom_fields_inputs)))
 
         ) {
             // Let's loop through those assets and build an update array
@@ -284,6 +300,9 @@ class BulkAssetsController extends Controller
                     foreach ($custom_field_columns as $key => $custom_field_column) {
                         $this->conditionallyAddItem($custom_field_column); 
                    }
+                foreach ($custom_fields_to_null as $key => $custom_field_to_null) {
+                    $this->conditionallyAddItem($key);
+                }
 
                 if (!($asset->eol_explicit)) {
 					if ($request->filled('model_id')) {
@@ -429,12 +448,22 @@ class BulkAssetsController extends Controller
                 }
 
                 /**
+                 *
                  * Start all the custom fields shenanigans
                  */
 
                 // Does the model have a fieldset?
                 if ($asset->model->fieldset) {
                     foreach ($asset->model->fieldset->fields as $field) {
+
+                        // null custom fields
+                        if ($custom_fields_to_null) {
+                            foreach ($custom_fields_to_null as $key => $custom_field_to_null) {
+                                if ($field->db_column == $key) {
+                                    $this->update_array[$field->db_column] = null;
+                                }
+                            }
+                        }
 
                         if ((array_key_exists($field->db_column, $this->update_array)) && ($field->field_encrypted == '1')) {
                             if (Gate::allows('admin')) {
