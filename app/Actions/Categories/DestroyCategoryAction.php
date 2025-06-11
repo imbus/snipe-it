@@ -2,12 +2,13 @@
 
 namespace App\Actions\Categories;
 
+use App\Exceptions\ModelIsNotDeletable;
 use App\Helpers\Helper;
 use App\Models\Category;
 
 class DestroyCategoryAction
 {
-    static function run(Category $category)
+    static function run(Category $category): bool
     {
         // why do we need to do this?
         // hm,
@@ -20,11 +21,13 @@ class DestroyCategoryAction
             'models as models_count'
         ]);
 
+        // this should give better errors, do we throw down in the model for this one, or move that logic up here?
+        // one of those fat-model vs action things...
         if (!$category->isDeletable()) {
-            return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
-            );
+            throw new ModelIsNotDeletable($category);
         }
         $category->delete();
+
+        return true;
     }
 }

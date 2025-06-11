@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Categories\DestroyCategoryAction;
+use App\Exceptions\ModelIsNotDeletable;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
@@ -209,10 +211,16 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) : JsonResponse
+    public function destroy(Category $category): JsonResponse
     {
         $this->authorize('delete', Category::class);
-
+        try {
+            DestroyCategoryAction::run(category: $category);
+        } catch (ModelIsNotDeletable $e) {
+            return response()->json(
+                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
+            );
+        }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/categories/message.delete.success')));
     }
