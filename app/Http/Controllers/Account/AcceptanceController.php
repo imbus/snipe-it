@@ -342,13 +342,14 @@ class AcceptanceController extends Controller
 
         if ($acceptance->alert_on_response_id) {
             try {
-                $recipient = User::findOrFail($acceptance->alert_on_response_id);
+                $recipient = User::find($acceptance->alert_on_response_id);
 
-                Mail::to($recipient)
-                    ->send(new CheckoutAcceptanceResponseMail(
-                            $recipient,
-                            $request->input('asset_acceptance') === 'accepted')
-                    );
+                if ($recipient) {
+                    Mail::to($recipient)->send(new CheckoutAcceptanceResponseMail(
+                        $recipient,
+                        $request->input('asset_acceptance') === 'accepted'
+                    ));
+                }
             } catch (Exception $e) {
                 Log::warning($e);
             }
