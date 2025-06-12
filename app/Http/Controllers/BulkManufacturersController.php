@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Categories\DestroyCategoryAction;
+use App\Actions\Manufacturers\DestroyManufacturerAction;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssetMaintenances;
 use App\Exceptions\ModelStillHasAssetModels;
@@ -12,14 +13,14 @@ use App\Exceptions\ModelStillHasConsumables;
 use App\Exceptions\ModelStillHasLicenses;
 use Illuminate\Http\Request;
 
-class BulkCategoriesController extends Controller
+class BulkManufacturersController extends Controller
 {
     public function destroy($ids)
     {
         $errors = [];
         foreach ($ids as $id) {
             try {
-                DestroyCategoryAction::run(category: $id);
+                DestroyManufacturerAction::run(manufacturer: $id);
             } catch (ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
                 $errors[] = `{$id} still has {$id->thing}`;
             } catch (\Exception $e) {
@@ -28,9 +29,9 @@ class BulkCategoriesController extends Controller
             }
         }
         if (count($errors) > 0) {
-            return redirect()->route('categories.index')->with('error', implode(', ', $errors));
+            return redirect()->route('manufacturers.index')->with('error', implode(', ', $errors));
         } else {
-            return redirect()->route('categories.index')->with('success', trans('admin/suppliers/message.delete.success'));
+            return redirect()->route('manufacturers.index')->with('success', trans('admin/suppliers/message.delete.success'));
         }
     }
 }

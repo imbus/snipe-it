@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Manufacturers\DestroyManufacturerAction;
+use App\Exceptions\ModelStillHasAccessories;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasComponents;
+use App\Exceptions\ModelStillHasConsumables;
+use App\Exceptions\ModelStillHasLicenses;
+use App\Helpers\Helper;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Actionlog;
 use App\Models\Manufacturer;
@@ -157,26 +164,19 @@ class ManufacturersController extends Controller
      * @param int $manufacturerId
      * @since [v1.0]
      */
-    public function destroy($manufacturerId) : RedirectResponse
+    public function destroy(Manufacturer $manufacturer): RedirectResponse
     {
-        $this->authorize('delete', Manufacturer::class);
-        if (is_null($manufacturer = Manufacturer::withTrashed()->withCount('models as models_count')->find($manufacturerId))) {
-            return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.not_found'));
-        }
-
-        if (! $manufacturer->isDeletable()) {
+        $this->authorize('delete', $manufacturer);
+        try {
+            DestroyManufacturerAction::run($manufacturer);
+        } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
             return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.assoc_users'));
-        }
-
-        if ($manufacturer->image) {
-            try {
-                Storage::disk('public')->delete('manufacturers/'.$manufacturer->image);
-            } catch (\Exception $e) {
-                Log::info($e);
-            }
+        } catch (\Exception $e) {
+            return redirect()->route('manufacturers.index')->with('error', 'something went wrong');
         }
 
         // Soft delete the manufacturer if active, permanent delete if is already deleted
+        // do we really want to do that?...
         if ($manufacturer->deleted_at === null) {
             $manufacturer->delete();
         } else {

@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Manufacturers\DestroyManufacturerAction;
+use App\Exceptions\ModelStillHasAccessories;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasComponents;
+use App\Exceptions\ModelStillHasConsumables;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\ManufacturersTransformer;
@@ -184,18 +190,19 @@ class ManufacturersController extends Controller
      * @since [v4.0]
      * @param  int  $id
      */
-    public function destroy($id) : JsonResponse
+    public function destroy(Manufacturer $manufacturer): JsonResponse
     {
-        $this->authorize('delete', Manufacturer::class);
-        $manufacturer = Manufacturer::findOrFail($id);
         $this->authorize('delete', $manufacturer);
-
-        if ($manufacturer->isDeletable()) {
-            $manufacturer->delete();
-            return response()->json(Helper::formatStandardApiResponse('success', null,  trans('admin/manufacturers/message.delete.success')));
+        try {
+            DestroyManufacturerAction::run($manufacturer);
+        } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
+        } catch (\Exception $e) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, 'something went wrong'));
         }
 
-        return response()->json(Helper::formatStandardApiResponse('error', null,  trans('admin/manufacturers/message.assoc_users')));
+        return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/manufacturers/message.delete.success')));
+
 
     }
 
