@@ -9,9 +9,13 @@ use App\Exceptions\ModelStillHasLicenses;
 
 class DestroySupplierAction
 {
-    static function run(Supplier $supplier)
+    /**
+     * @throws ModelStillHasLicenses
+     * @throws ModelStillHasAssets
+     * @throws ModelStillHasAssetMaintenances
+     */
+    static function run(Supplier $supplier): bool
     {
-        $supplier->load('asset_maintenances', 'assets', 'licenses');
         $supplier->loadCount([
             'asset_maintenances as asset_maintenances_count',
             'assets as assets_count',
@@ -30,5 +34,7 @@ class DestroySupplierAction
         }
 
         $supplier->delete();
+
+        return true;
     }
 }

@@ -199,13 +199,15 @@ class SuppliersController extends Controller
     {
         $this->authorize('delete', $supplier);
         try {
-            DestroySupplierAction::run($supplier);
+            DestroySupplierAction::run(supplier: $supplier);
         } catch (ModelStillHasAssets $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count])));
         } catch (ModelStillHasAssetMaintenances $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count])));
         } catch (ModelStillHasLicenses $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
+        } catch (\Throwable $e) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, 'something went wrong'));
         }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/suppliers/message.delete.success')));

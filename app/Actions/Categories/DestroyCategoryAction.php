@@ -11,9 +11,18 @@ use App\Exceptions\ModelStillHasConsumables;
 use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class DestroyCategoryAction
 {
+    /**
+     * @throws ModelStillHasAssets
+     * @throws ModelStillHasAssetModels
+     * @throws ModelStillHasComponents
+     * @throws ModelStillHasAccessories
+     * @throws ModelStillHasLicenses
+     * @throws ModelStillHasConsumables
+     */
     static function run(Category $category): bool
     {
         $category->loadCount([
@@ -43,6 +52,8 @@ class DestroyCategoryAction
         if ($category->models_count > 0) {
             throw new ModelStillHasAssetModels($category);
         }
+
+        Storage::disk('public')->delete('categories'.'/'.$category->image);
         $category->delete();
 
         return true;

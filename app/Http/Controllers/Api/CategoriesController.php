@@ -4,6 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Categories\DestroyCategoryAction;
 use App\Exceptions\ModelIsNotDeletable;
+use App\Exceptions\ModelStillHasAccessories;
+use App\Exceptions\ModelStillHasAssetModels;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasComponents;
+use App\Exceptions\ModelStillHasConsumables;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
@@ -217,15 +223,14 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run(category: $category);
-        } catch (ModelNotFoundException $e) {
+        } catch (ModelStillHasConsumables|ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasLicenses $e) {
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
             );
         } catch (\Throwable $e) {
-            // oooooooo, using exceptions we don't need to catch these individually unless we need to
-            // actually _behave_ differently, so we can just `$e-getMessage()` and define the message when we actually throw.
+            report($e);
             return response()->json(
-                Helper::formatStandardApiResponse('error', null, $e->getMessage())
+                Helper::formatStandardApiResponse('error', null, 'something went wrong, call support')
             );
         }
 

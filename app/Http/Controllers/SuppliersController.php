@@ -134,6 +134,9 @@ class SuppliersController extends Controller
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
         } catch (ModelStillHasLicenses $e) {
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.error'));
         }
 
         return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));

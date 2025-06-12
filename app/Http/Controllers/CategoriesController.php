@@ -2,6 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Categories\DestroyCategoryAction;
+use App\Exceptions\ModelStillHasAccessories;
+use App\Exceptions\ModelStillHasAssetModels;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasComponents;
+use App\Exceptions\ModelStillHasConsumables;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Category;
@@ -141,20 +148,18 @@ class CategoriesController extends Controller
      * @since [v1.0]
      * @param int $categoryId
      */
-    public function destroy($categoryId) : RedirectResponse
+    public function destroy(Category $category): RedirectResponse
     {
         $this->authorize('delete', Category::class);
-        // Check if the category exists
-        if (is_null($category = Category::withCount('assets as assets_count', 'accessories as accessories_count', 'consumables as consumables_count', 'components as components_count', 'licenses as licenses_count', 'models as models_count')->findOrFail($categoryId))) {
-            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.not_found'));
+        try {
+            DestroyCategoryAction::run($category);
+        } catch (ModelStillHasAssets|ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]));
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.delete.error'));
         }
 
-        if (! $category->isDeletable()) {
-            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type'=> $category->category_type]));
-        }
-
-        Storage::disk('public')->delete('categories'.'/'.$category->image);
-        $category->delete();
         return redirect()->route('categories.index')->with('success', trans('admin/categories/message.delete.success'));
     }
 
