@@ -54,6 +54,15 @@ class BulkAssetsController extends Controller
         $asset_ids = $request->input('ids');
 
         if ($request->input('bulk_actions') === 'checkout') {
+            $status_check =$this->hasUndeployableStatus($asset_ids);
+            if($status_check && $status_check['status'] === true){
+
+                $asset_tags = implode(', ', array_column($status_check['tags'], 'asset_tag'));
+                $asset_ids = $status_check['asset_ids'];
+
+                session()->flash('warning', trans('admin/hardware/message.undeployable', ['asset_tags' => $asset_tags]));
+            }
+
             $request->session()->flashInput(['selected_assets' => $asset_ids]);
             return redirect()->route('hardware.bulkcheckout.show');
         }
@@ -695,5 +704,26 @@ class BulkAssetsController extends Controller
             } 
             return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.restore.success'));
         }
+    }
+    public function hasUndeployableStatus (array $asset_ids)
+    {
+        $undeployable = Asset::whereIn('id', $asset_ids)
+            ->undeployable()
+            ->get();
+
+        $undeployableTags = $undeployable->map(function ($asset) {
+            return [
+                'id' => $asset->id,
+                'asset_tag' => $asset->asset_tag,
+            ];
+        })->toArray();
+
+        $undeployableIds = array_column($undeployableTags, 'id');
+        $filtered_ids = array_diff($asset_ids, $undeployableIds);
+
+         if($undeployable->isNotEmpty()) {
+             return ['status' => true, 'tags' => $undeployableTags, 'asset_ids' => $filtered_ids];
+         }
+        return false;
     }
 }
