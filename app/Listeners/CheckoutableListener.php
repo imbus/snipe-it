@@ -237,7 +237,7 @@ class CheckoutableListener
         $acceptance->assignedTo()->associate($event->checkedOutTo);
 
         // @todo: adjust for other categories
-        if (data_get($event, 'checkoutable.model.category.alert_on_response')) {
+        if (data_get($event, 'checkoutable.model.category.alert_on_response') || data_get($event, 'checkoutable.category.alert_on_response')) {
             $acceptance->alert_on_response_id = auth()->id();
         }
         

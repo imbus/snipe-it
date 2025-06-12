@@ -47,7 +47,26 @@ class SettingAlertOnResponseTest extends TestCase
 
     public function test_does_not_set_alert_on_response_if_disabled_by_category_for_accessory()
     {
-        $this->markTestIncomplete();
+        $accessory = Accessory::factory()->create();
+        $accessory->category->update([
+            'require_acceptance' => true,
+            'alert_on_response' => false,
+        ]);
+
+        $this->actingAs($this->actor)
+            ->post(route('accessories.checkout.store', $accessory), [
+                'checkout_to_type' => 'user',
+                'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
+                'assigned_user' => $this->assignedUser->id,
+                'checkout_qty' => 1,
+            ]);
+
+        $this->assertDatabaseHas('checkout_acceptances', [
+            'checkoutable_type' => Accessory::class,
+            'checkoutable_id' => $accessory->id,
+            'assigned_to_id' => $this->assignedUser->id,
+            'alert_on_response_id' => null,
+        ]);
     }
 
     public function test_sets_alert_on_response_if_enabled_by_category_for_asset()
