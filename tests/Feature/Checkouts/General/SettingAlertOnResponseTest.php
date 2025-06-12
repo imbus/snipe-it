@@ -29,13 +29,7 @@ class SettingAlertOnResponseTest extends TestCase
             'alert_on_response' => true,
         ]);
 
-        $this->actingAs($this->actor)
-            ->post(route('accessories.checkout.store', $accessory), [
-                'checkout_to_type' => 'user',
-                'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
-                'assigned_user' => $this->assignedUser->id,
-                'checkout_qty' => 1,
-            ]);
+        $this->postAccessoryCheckout($accessory);
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => Accessory::class,
@@ -53,13 +47,7 @@ class SettingAlertOnResponseTest extends TestCase
             'alert_on_response' => false,
         ]);
 
-        $this->actingAs($this->actor)
-            ->post(route('accessories.checkout.store', $accessory), [
-                'checkout_to_type' => 'user',
-                'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
-                'assigned_user' => $this->assignedUser->id,
-                'checkout_qty' => 1,
-            ]);
+        $this->postAccessoryCheckout($accessory);
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => Accessory::class,
@@ -105,16 +93,6 @@ class SettingAlertOnResponseTest extends TestCase
         ]);
     }
 
-    public function test_sets_alert_on_response_if_enabled_by_category_for_component()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function test_does_not_set_alert_on_response_if_disabled_by_category_for_component()
-    {
-        $this->markTestIncomplete();
-    }
-
     public function test_sets_alert_on_response_if_enabled_by_category_for_consumable()
     {
         $this->markTestIncomplete();
@@ -142,6 +120,17 @@ class SettingAlertOnResponseTest extends TestCase
                 'checkout_to_type' => 'user',
                 'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
                 'assigned_user' => $this->assignedUser->id,
+            ]);
+    }
+
+    private function postAccessoryCheckout(Accessory $accessory): void
+    {
+        $this->actingAs($this->actor)
+            ->post(route('accessories.checkout.store', $accessory), [
+                'checkout_to_type' => 'user',
+                'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
+                'assigned_user' => $this->assignedUser->id,
+                'checkout_qty' => 1,
             ]);
     }
 }
