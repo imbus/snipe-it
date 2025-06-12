@@ -70,7 +70,6 @@ class UpdateCategoriesTest extends TestCase
             'require_acceptance' => 1,
             'alert_on_response' => 1,
         ]);
-
     }
 
     public function testUserCanChangeCategoryTypeIfNoAssetsAssociated()
