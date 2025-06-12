@@ -346,6 +346,7 @@ class AcceptanceController extends Controller
 
                 if ($recipient) {
                     Mail::to($recipient)->send(new CheckoutAcceptanceResponseMail(
+                        $acceptance,
                         $recipient,
                         $request->input('asset_acceptance') === 'accepted'
                     ));

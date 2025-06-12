@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\CheckoutAcceptance;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,14 +15,16 @@ class CheckoutAcceptanceResponseMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public bool $wasAccepted;
+    public CheckoutAcceptance $acceptance;
     public User $recipient;
+    public bool $wasAccepted;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $recipient, bool $wasAccepted)
+    public function __construct(CheckoutAcceptance $acceptance, User $recipient, bool $wasAccepted)
     {
+        $this->acceptance = $acceptance;
         $this->recipient = $recipient;
         $this->wasAccepted = $wasAccepted;
     }
@@ -31,8 +34,13 @@ class CheckoutAcceptanceResponseMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        // @todo: translate
+        $subject = $this->wasAccepted
+            ? 'A checkout you initiated was accepted'
+            : 'A checkout you initiated was declined';
+
         return new Envelope(
-            subject: 'A checkout you initiated was ' . ($this->wasAccepted ? 'accepted' : 'declined'),
+            subject: $subject,
         );
     }
 
@@ -44,10 +52,21 @@ class CheckoutAcceptanceResponseMail extends Mailable
         return new Content(
             markdown: 'mail.markdown.checkout-acceptance-response',
             with: [
+                'assignedTo' => $this->acceptance->assignedTo,
+                'introduction' => $this->introduction(),
+                'item' => $this->acceptance->checkoutable,
+                'note' => $this->acceptance->note,
                 'recipient' => $this->recipient,
-                'wasAccepted' => $this->wasAccepted,
             ]
         );
+    }
+
+    private function introduction(): string
+    {
+        // @todo: translate
+        return $this->wasAccepted
+            ? 'The following was accepted'
+            : 'The following was declined';
     }
 
     /**
