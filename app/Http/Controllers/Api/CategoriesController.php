@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
 use App\Http\Transformers\SelectlistTransformer;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ImageUploadRequest;
@@ -216,9 +217,15 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run(category: $category);
-        } catch (ModelIsNotDeletable $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
+            );
+        } catch (\Throwable $e) {
+            // oooooooo, using exceptions we don't need to catch these individually unless we need to
+            // actually _behave_ differently, so we can just `$e-getMessage()` and define the message when we actually throw.
+            return response()->json(
+                Helper::formatStandardApiResponse('error', null, $e->getMessage())
             );
         }
 

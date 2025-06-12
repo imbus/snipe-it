@@ -3,6 +3,12 @@
 namespace App\Actions\Categories;
 
 use App\Exceptions\ModelIsNotDeletable;
+use App\Exceptions\ModelStillHasAccessories;
+use App\Exceptions\ModelStillHasAssetModels;
+use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasComponents;
+use App\Exceptions\ModelStillHasConsumables;
+use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Models\Category;
 
@@ -10,8 +16,6 @@ class DestroyCategoryAction
 {
     static function run(Category $category): bool
     {
-        // why do we need to do this?
-        // hm,
         $category->loadCount([
             'assets as assets_count',
             'accessories as accessories_count',
@@ -21,10 +25,23 @@ class DestroyCategoryAction
             'models as models_count'
         ]);
 
-        // this should give better errors, do we throw down in the model for this one, or move that logic up here?
-        // one of those fat-model vs action things...
-        if (!$category->isDeletable()) {
-            throw new ModelIsNotDeletable($category);
+        if ($category->assets_count > 0) {
+            throw new ModelStillHasAssets($category);
+        }
+        if ($category->accessories_count > 0) {
+            throw new ModelStillHasAccessories($category);
+        }
+        if ($category->consumables_count > 0) {
+            throw new ModelStillHasConsumables($category);
+        }
+        if ($category->components_count > 0) {
+            throw new ModelStillHasComponents($category);
+        }
+        if ($category->licenses_count > 0) {
+            throw new ModelStillHasLicenses($category);
+        }
+        if ($category->models_count > 0) {
+            throw new ModelStillHasAssetModels($category);
         }
         $category->delete();
 
