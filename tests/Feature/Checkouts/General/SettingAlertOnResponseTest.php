@@ -29,7 +29,7 @@ class SettingAlertOnResponseTest extends TestCase
             'alert_on_response' => true,
         ]);
 
-        $this->postCheckout($this->asset);
+        $this->postCheckout();
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => Asset::class,
@@ -46,7 +46,7 @@ class SettingAlertOnResponseTest extends TestCase
             'alert_on_response' => false,
         ]);
 
-        $this->postCheckout($this->asset);
+        $this->postCheckout();
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => Asset::class,
@@ -56,10 +56,10 @@ class SettingAlertOnResponseTest extends TestCase
         ]);
     }
 
-    private function postCheckout($item): void
+    private function postCheckout(): void
     {
         $this->actingAs($this->actor)
-            ->post(route('hardware.checkout.store', $item), [
+            ->post(route('hardware.checkout.store', $this->asset), [
                 'checkout_to_type' => 'user',
                 'status_id' => (string) Statuslabel::factory()->readyToDeploy()->create()->id,
                 'assigned_user' => $this->assignedUser->id,
