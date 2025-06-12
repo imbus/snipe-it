@@ -13,7 +13,7 @@ class UpdateCategoriesTest extends TestCase
         $category = Category::factory()->create();
 
         $this->actingAsForApi(User::factory()->create())
-            ->postJson(route('api.categories.update', $category))
+            ->patchJson(route('api.categories.update', $category))
             ->assertForbidden();
     }
 
