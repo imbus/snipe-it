@@ -393,10 +393,12 @@ class BulkAssetsController extends Controller
                     // This could probably be added to a form request.
                     // If the asset isn't assigned, we don't care what the status is.
                     // Otherwise we need to make sure the status type is still a deployable one.
-                    if (
-                        ($asset->assigned_to == '')
-                        || ($updated_status->deployable == '1') && ($asset->assetstatus?->deployable == '1')
-                    ) {
+
+                    $unassigned = $asset->assigned_to == '';
+                    $deployable = $updated_status->deployable == '1' && $asset->assetstatus?->deployable == '1';
+                    $pending =  $updated_status->pending === 1;
+
+                    if ($unassigned || $deployable || $pending) {
                         $this->update_array['status_id'] = $updated_status->id;
                     }
 
