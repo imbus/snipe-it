@@ -19,19 +19,6 @@ use \Illuminate\Http\RedirectResponse;
  */
 class AssetMaintenancesController extends Controller
 {
-    /**
-    * Checks for permissions for this action.
-    *
-    * @todo This should be replaced with middleware and/or policies
-    * @author  Vincent Sposato <vincent.sposato@gmail.com>
-    * @version v1.0
-    * @since [v1.8]
-    */
-    private static function getInsufficientPermissionsRedirect(): RedirectResponse
-    {
-        return redirect()->route('maintenances.index')
-          ->with('error', trans('general.insufficient_permissions'));
-    }
 
     /**
     *  Returns a view that invokes the ajax tables which actually contains
@@ -90,9 +77,6 @@ class AssetMaintenancesController extends Controller
 
         // Loop through the selected assets
         foreach ($assets as $asset) {
-            if ((! Company::isCurrentUserHasAccess($asset)) && ($asset != null)) {
-                return static::getInsufficientPermissionsRedirect();
-            }
 
             $assetMaintenance = new AssetMaintenance();
             $assetMaintenance->supplier_id = $request->input('supplier_id');
@@ -140,6 +124,7 @@ class AssetMaintenancesController extends Controller
     public function edit(AssetMaintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
+        $this->authorize('update', $maintenance->asset);
 
         return view('asset_maintenances/edit')
             ->with('selected_assets', $maintenance->asset->pluck('id')->toArray())
@@ -161,8 +146,7 @@ class AssetMaintenancesController extends Controller
     public function update(Request $request, AssetMaintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
-        $asset = Asset::find(request('asset_id'));
-        $this->authorize('update', $asset);
+        $this->authorize('update', $maintenance->asset);
 
         $maintenance->supplier_id = $request->input('supplier_id');
         $maintenance->is_warranty = $request->input('is_warranty', 0);
@@ -209,21 +193,12 @@ class AssetMaintenancesController extends Controller
     * @version v1.0
     * @since [v1.8]
     */
-    public function destroy($assetMaintenanceId) : RedirectResponse
+    public function destroy(AssetMaintenance $maintenance) : RedirectResponse
     {
         $this->authorize('update', Asset::class);
-        // Check if the asset maintenance exists
-        if (is_null($assetMaintenance = AssetMaintenance::find($assetMaintenanceId))) {
-            // Redirect to the asset maintenance management page
-            return redirect()->route('maintenances.index')
-                           ->with('error', trans('admin/asset_maintenances/message.not_found'));
-        } elseif (! Company::isCurrentUserHasAccess($assetMaintenance->asset)) {
-            return static::getInsufficientPermissionsRedirect();
-        }
-
+        $this->authorize('update', $maintenance->asset);
         // Delete the asset maintenance
-        $assetMaintenance->delete();
-
+        $maintenance->delete();
         // Redirect to the asset_maintenance management page
         return redirect()->route('maintenances.index')
                        ->with('success', trans('admin/asset_maintenances/message.delete.success'));
@@ -239,11 +214,6 @@ class AssetMaintenancesController extends Controller
     */
     public function show(AssetMaintenance $maintenance) : View | RedirectResponse
     {
-        $this->authorize('view', Asset::class);
-        if (! Company::isCurrentUserHasAccess($maintenance->asset)) {
-            return static::getInsufficientPermissionsRedirect();
-        }
-
         return view('asset_maintenances/view')->with('assetMaintenance', $maintenance);
     }
 }
