@@ -32,13 +32,14 @@
     {{ csrf_field() }}
 
     <div class="box box-default">
-      <div class="box-header with-border">
-        <h2 class="box-title">
-          @if ($item)
-          {{ $item->name }}
-          @endif
-        </h2>
-      </div><!-- /.box-header -->
+
+        @if ($item->id)
+          <div class="box-header with-border">
+            <h2 class="box-title">
+              {{ $item->title }}
+            </h2>
+          </div><!-- /.box-header -->
+        @endif
 
       <div class="box-body">
 
@@ -53,8 +54,10 @@
           </div>
         </div>
 
-        <!-- This is an edit -->
+        <!-- This is a new maintenance -->
         @if (!$item->id)
+
+
           @include ('partials.forms.edit.asset-select', [
             'translated_name' => trans('general.assets'),
             'fieldname' => 'selected_assets[]',
@@ -66,13 +69,27 @@
             'asset_id' => $item->id ? $item->asset()->pluck('id')->toArray() : null
           ])
         @else
+
+          @if ($item->asset->company)
+            <label for="company" class="control-label col-md-3">
+              {{ trans('general.company') }}
+            </label>
+
+            <div class="col-md-9">
+              <p class="form-control-static">
+                {{ ($item->asset && $item->asset->company) ? $item->asset->company->name : '' }}
+              </p>
+            </div>
+          @endif
+
+
             <label for="asset" class="control-label col-md-3">
               {{ trans('general.asset') }}
             </label>
 
           <div class="col-md-9">
             <p class="form-control-static">
-              {{ $item->asset() ? $item->asset->present()->fullName : '' }}
+              {{ $item->asset ? $item->asset->present()->fullName : '' }}
             </p>
           </div>
 
