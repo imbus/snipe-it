@@ -418,9 +418,9 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             ->push($maintenance->title, route('maintenances.show', $maintenance))
         );
 
-        Breadcrumbs::for('manufacturers.edit', fn (Trail $trail, Manufacturer $manufacturer) =>
-        $trail->parent('manufacturers.index', route('manufacturers.index'))
-            ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $manufacturer->name]), route('manufacturers.edit', $manufacturer))
+        Breadcrumbs::for('maintenances.edit', fn (Trail $trail, AssetMaintenance $maintenance) =>
+        $trail->parent('maintenances.index', route('maintenances.index'))
+            ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $maintenance->name]), route('maintenances.edit', $maintenance))
         );
 
 
