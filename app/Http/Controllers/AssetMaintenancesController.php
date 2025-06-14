@@ -88,6 +88,7 @@ class AssetMaintenancesController extends Controller
 
         $assets = Asset::whereIn('id', $request->input('selected_assets'))->get();
 
+        // Loop through the selected assets
         foreach ($assets as $asset) {
             if ((! Company::isCurrentUserHasAccess($asset)) && ($asset != null)) {
                 return static::getInsufficientPermissionsRedirect();
@@ -160,33 +161,22 @@ class AssetMaintenancesController extends Controller
     public function update(Request $request, AssetMaintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
-
-       if ((!$maintenance->asset) || ($maintenance->asset->deleted_at!='')) {
-                return redirect()->route('maintenances.index')->with('error', 'asset does not exist');
-        } elseif (! Company::isCurrentUserHasAccess($maintenance->asset)) {
-            return static::getInsufficientPermissionsRedirect();
-        }
+        $asset = Asset::find(request('asset_id'));
+        $this->authorize('update', $asset);
 
         $maintenance->supplier_id = $request->input('supplier_id');
-        $maintenance->is_warranty = $request->input('is_warranty');
+        $maintenance->is_warranty = $request->input('is_warranty', 0);
         $maintenance->cost =  $request->input('cost');
         $maintenance->notes = $request->input('notes');
-
-        $asset = Asset::find(request('asset_id'));
-
-        if (! Company::isCurrentUserHasAccess($asset)) {
-            return static::getInsufficientPermissionsRedirect();
-        }
-
-        // Save the asset maintenance data
-        $maintenance->asset_id = $request->input('asset_id');
         $maintenance->asset_maintenance_type = $request->input('asset_maintenance_type');
         $maintenance->title = $request->input('title');
         $maintenance->start_date = $request->input('start_date');
         $maintenance->completion_date = $request->input('completion_date');
 
-        if (($maintenance->completion_date == null)
-        ) {
+
+        // Todo - put this in a getter/setter?
+        if (($maintenance->completion_date == null))
+        {
             if (($maintenance->asset_maintenance_time !== 0)
               || (! is_null($maintenance->asset_maintenance_time))
             ) {
@@ -203,10 +193,7 @@ class AssetMaintenancesController extends Controller
             $maintenance->asset_maintenance_time = (int) $completionDate->diffInDays($startDate, true);
         }
 
-      // Was the asset maintenance created?
         if ($maintenance->save()) {
-
-            // Redirect to the new asset maintenance page
             return redirect()->route('maintenances.index')
                             ->with('success', trans('admin/asset_maintenances/message.edit.success'));
         }
