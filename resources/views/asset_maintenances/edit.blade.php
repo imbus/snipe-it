@@ -107,7 +107,7 @@
           <div class="input-group col-md-3">
             <x-input.datepicker
                     name="completion_date"
-                    :value="old('start_date', $item->start_date)"
+                    :value="old('start_date', $item->completion_date)"
                     placeholder="{{ trans('general.select_date') }}"
                     required="Helper::checkIfRequired($item, 'completion_date')"
             />
