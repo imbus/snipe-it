@@ -133,26 +133,18 @@ class AssetMaintenancesController extends Controller
     *
     * @see AssetMaintenancesController::postEdit() method that stores the data
     * @author  Vincent Sposato <vincent.sposato@gmail.com>
-    * @param int $assetMaintenanceId
     * @version v1.0
     * @since [v1.8]
     */
     public function edit(AssetMaintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
-        if ((!$maintenance->asset) || ($maintenance->asset->deleted_at!='')) {
-            return redirect()->route('maintenances.index')->with('error', 'asset does not exist');
-        } elseif (! Company::isCurrentUserHasAccess($maintenance->asset)) {
-            return static::getInsufficientPermissionsRedirect();
-        }
-
-        // Prepare Improvement Type List
-        $assetMaintenanceType = ['' => trans('general.select')] + AssetMaintenance::getImprovementOptions();
 
         return view('asset_maintenances/edit')
-                   ->with('selectedAsset', null)
-                   ->with('assetMaintenanceType', $assetMaintenanceType)
-                   ->with('item', $maintenance);
+            ->with('selected_assets', $maintenance->asset->pluck('id')->toArray())
+            ->with('asset_ids', request()->input('asset_ids', []))
+            ->with('assetMaintenanceType', AssetMaintenance::getImprovementOptions())
+            ->with('item', $maintenance);
     }
 
     /**

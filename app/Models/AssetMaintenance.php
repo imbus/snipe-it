@@ -168,6 +168,20 @@ class AssetMaintenance extends Model implements ICompanyableChild
     }
 
     /**
+     * asset
+     * Get asset for this improvement
+     *
+     * @return mixed
+     * @author  Vincent Sposato <vincent.sposato@gmail.com>
+     * @version v1.0
+     */
+    public function assets()
+    {
+        return $this->hasMany(Asset::class, 'asset_id')
+            ->withTrashed();
+    }
+
+    /**
      * Get the admin who created the maintenance
      *
      * @return mixed

@@ -53,17 +53,30 @@
           </div>
         </div>
 
+        <!-- This is an edit -->
+        @if (!$item->id)
+          @include ('partials.forms.edit.asset-select', [
+            'translated_name' => trans('general.assets'),
+            'fieldname' => 'selected_assets[]',
+            'multiple' => true,
+            'required' => true,
+            'select_id' => 'assigned_assets_select',
+            'asset_selector_div_id' => 'assets_for_maintenance_div',
+            'asset_ids' => $item->id ? $item->asset()->pluck('id')->toArray() : old('selected_assets'),
+            'asset_id' => $item->id ? $item->asset()->pluck('id')->toArray() : null
+          ])
+        @else
+            <label for="asset" class="control-label col-md-3">
+              {{ trans('general.asset') }}
+            </label>
 
+          <div class="col-md-9">
+            <p class="form-control-static">
+              {{ $item->asset() ? $item->asset->present()->fullName : '' }}
+            </p>
+          </div>
 
-        @include ('partials.forms.edit.asset-select', [
-          'translated_name' => trans('general.assets'),
-          'fieldname' => 'selected_assets[]',
-          'multiple' => true,
-          'required' => true,
-          'select_id' => 'assigned_assets_select',
-          'asset_selector_div_id' => 'assets_to_checkout_div',
-          'asset_ids' => old('selected_assets')
-        ])
+        @endif
 
 
         @include ('partials.forms.edit.maintenance_type')
