@@ -28,17 +28,16 @@
                 <option value="maintenance">{{ trans('button.add_maintenance') }}</option>
             @endcan
 
-            @if((!isset($status)) || ((($status != 'Deployed') && ($status != 'Archived') && ($status != 'Deleted'))))
+            @if((!isset($status)) || (($status != 'Deployed') && ($status != 'Archived')))
                 @can('checkout', \App\Models\Asset::class)
                     <option value="checkout">{{ trans('general.bulk_checkout') }}</option>
                 @endcan
             @endif
 
-            @if ((isset($status) && ($status != 'Deleted')))
-                @can('delete', \App\Models\Asset::class)
-                    <option value="delete">{{ trans('button.delete') }}</option>
-                @endcan
-            @endif
+            @can('delete', \App\Models\Asset::class)
+                <option value="delete">{{ trans('button.delete') }}</option>
+            @endcan
+
             <option value="labels" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=l" : ''}}>{{ trans_choice('button.generate_labels', 2) }}</option>
         @endif
     </select>
