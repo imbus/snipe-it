@@ -44,10 +44,13 @@ return array(
         'error'   => 'היתה בעיה לבדוק את הרישיון. בבקשה נסה שוב.',
         'success' => 'הרשיון נבדק בהצלחה',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'היתה בעיה בבדיקת הרישיון. בבקשה נסה שוב.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'הרישיון נבדק בהצלחה'
     ),
 

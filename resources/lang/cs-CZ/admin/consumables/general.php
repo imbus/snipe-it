@@ -8,4 +8,5 @@ return array(
     'remaining' 			            => 'Zbývá',
     'total' 			                => 'Celkem',
     'update'                            => 'Upravit sp. materiál',
+    'inventory_warning'                 => 'Zásoba tohoto spotřebního materiálu klesla pod minimální hodnotu :min_count',
 );

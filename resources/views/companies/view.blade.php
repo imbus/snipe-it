@@ -71,7 +71,7 @@
                     <li>
                         <a href="#users_tab" data-toggle="tab">
                             <span class="hidden-lg hidden-md">
-                            <i class="fas fa-users"></i></span>
+                            <x-icon type="users" /></span>
                             <span class="hidden-xs hidden-sm">{{ trans('general.people') }}
                                 {!! (($company->users) && ($company->users->count() > 0 )) ? '<badge class="badge badge-secondary">'.number_format($company->users->count()).'</badge>' : '' !!}
                             </span>
@@ -95,6 +95,8 @@
                                     data-pagination="true"
                                     data-id-table="assetsListingTable"
                                     data-search="true"
+                                    data-search-highlight="true"
+                                    data-show-print="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"
@@ -124,6 +126,7 @@
                                     data-pagination="true"
                                     data-id-table="licensesTable"
                                     data-search="true"
+                                    data-search-highlight="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"
@@ -150,6 +153,7 @@
                                     data-pagination="true"
                                     data-id-table="accessoriesTable"
                                     data-search="true"
+                                    data-search-highlight="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"
@@ -176,6 +180,7 @@
                                     data-pagination="true"
                                     data-id-table="consumablesTable"
                                     data-search="true"
+                                    data-search-highlight="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"
@@ -202,6 +207,7 @@
                                     data-pagination="true"
                                     data-id-table="componentsTable"
                                     data-search="true"
+                                    data-search-highlight="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"
@@ -228,6 +234,7 @@
                                     data-pagination="true"
                                     data-id-table="usersTable"
                                     data-search="true"
+                                    data-search-highlight="true"
                                     data-side-pagination="server"
                                     data-show-columns="true"
                                     data-show-export="true"

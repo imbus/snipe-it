@@ -44,10 +44,13 @@ return array(
         'error'   => 'Hiba történt az engedély megvizsgálásakor. Kérlek próbáld újra.',
         'success' => 'Az engedélyt sikeresen kiállították',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Hiba történt az engedélyben. Kérlek próbáld újra.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Az engedélyt sikeresen ellenőrizték'
     ),
 

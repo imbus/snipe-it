@@ -5,7 +5,12 @@
     'topSubmit' => true,
     'helpText' => trans('help.assets'),
     'helpPosition' => 'right',
-    'formAction' => ($item->id) ? route('hardware.update', ['hardware' => $item->id]) : route('hardware.store'),
+    'formAction' => ($item->id) ? route('hardware.update', $item) : route('hardware.store'),
+    'index_route' => 'hardware.index',
+    'options' => [
+                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'assets']),
+                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset')]),
+               ]
 ])
 
 
@@ -23,8 +28,7 @@
 
       @if  ($item->id)
           <!-- we are editing an existing asset,  there will be only one asset tag -->
-          <div class="col-md-7 col-sm-12{{  (Helper::checkIfRequired($item, 'asset_tag')) ? ' required' : '' }}">
-
+          <div class="col-md-7 col-sm-12">
 
           <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tag', $item->asset_tag) }}" required>
               {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
@@ -32,14 +36,17 @@
           </div>
       @else
           <!-- we are creating a new asset - let people use more than one asset tag -->
-          <div class="col-md-7 col-sm-12{{  (Helper::checkIfRequired($item, 'asset_tag')) ? ' required' : '' }}">
+          <div class="col-md-7 col-sm-12">
               <input class="form-control" type="text" name="asset_tags[1]" id="asset_tag" value="{{ old('asset_tags.1', \App\Models\Asset::autoincrement_asset()) }}" required>
               {!! $errors->first('asset_tags', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
               {!! $errors->first('asset_tag', '<span class="alert-msg"><i class="fas fa-times"></i> :message</span>') !!}
           </div>
           <div class="col-md-2 col-sm-12">
-              <button class="add_field_button btn btn-default btn-sm">
-                  <i class="fas fa-plus"></i>
+              <button class="add_field_button btn btn-default btn-sm" name="add_field_button">
+                  <x-icon type="plus" />
+                  <span class="sr-only">
+                      {{ trans('general.new') }}
+                  </span>
               </button>
           </div>
       @endif
@@ -78,7 +85,7 @@
         @if ($item->model && $item->model->fieldset)
         <?php $model = $item->model; ?>
         @endif
-        @if (Request::old('model_id'))
+        @if (old('model_id'))
             @php
                 $model = \App\Models\AssetModel::find(old('model_id'));
             @endphp
@@ -92,88 +99,72 @@
         @endif
     </div>
 
-    <div class="form-group">
-    <label class="col-md-3 control-label"></label>
 
-        <div class="col-md-9 col-sm-9 col-md-offset-3">
+        <div class="col-md-12 col-sm-12">
 
-        <a id="optional_info" class="text-primary">
-            <i class="fa fa-caret-right fa-2x" id="optional_info_icon"></i>
-            <strong>{{ trans('admin/hardware/form.optional_infos') }}</strong>
-        </a>
+        <fieldset name="optional-details">
 
-        </div>
-        
-        <div id="optional_details" class="col-md-12" style="display:none">
-        <br>
-            @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])
-            @include ('partials.forms.edit.warranty')
+            <legend class="highlight">
+                <a id="optional_info">
+                    <x-icon type="caret-right" id="optional_info_icon" />
+                    {{ trans('admin/hardware/form.optional_infos') }}
+                </a>
+            </legend>
 
-            <!-- Datepicker -->
-            <div class="form-group{{ $errors->has('next_audit_date') ? ' has-error' : '' }}">
-
-                <label class="col-md-3 control-label">
-                    {{ trans('general.next_audit_date') }}
-                </label>
-
-                <div class="input-group col-md-4">
-                    <div class="input-group date" data-provide="datepicker" data-date-clear-btn="true" data-date-format="yyyy-mm-dd"  data-autoclose="true">
-                        <input type="text" class="form-control" placeholder="{{ trans('general.select_date') }}" name="next_audit_date" id="next_audit_date" value="{{ old('next_audit_date', $item->next_audit_date) }}" readonly style="background-color:inherit" maxlength="10">
-                        <span class="input-group-addon"><i class="fas fa-calendar" aria-hidden="true"></i></span>
+            <div id="optional_details" class="col-md-12" style="display:none">
+                @include ('partials.forms.edit.name', ['translated_name' => trans('admin/hardware/form.name')])
+                @include ('partials.forms.edit.warranty')
+                @include ('partials.forms.edit.datepicker', ['translated_name' => trans('admin/hardware/form.expected_checkin'),'fieldname' => 'expected_checkin'])
+                @include ('partials.forms.edit.datepicker', ['translated_name' => trans('general.next_audit_date'),'fieldname' => 'next_audit_date', 'help_text' => trans('general.next_audit_date_help')])
+                <!-- byod checkbox -->
+                <div class="form-group byod">
+                    <div class="col-md-7 col-md-offset-3">
+                        <label class="form-control">
+                            <input type="checkbox" value="1" name="byod" {{ (old('remote', $item->byod)) == '1' ? ' checked="checked"' : '' }} aria-label="byod">
+                            {{ trans('general.byod') }}
+                        </label>
+                        <p class="help-block">
+                            {{ trans('general.byod_help') }}
+                        </p>
                     </div>
                 </div>
-                <div class="col-md-8 col-md-offset-3">
-                    {!! $errors->first('next_audit_date', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
-                    <p class="help-block">{!! trans('general.next_audit_date_help') !!}</p>
-                </div>
 
-            </div>
+            </div> <!-- end optional details -->
+        </fieldset>
 
+        </div><!-- end col-md-12 col-sm-12-->
 
 
 
-            <!-- byod checkbox -->
-            <div class="form-group">
-                <div class="col-md-7 col-md-offset-3">
-                    <label for="byod" class="form-control">
-                        <input type="checkbox" value="1" name="byod" {{ (old('remote', $item->byod)) == '1' ? ' checked="checked"' : '' }} aria-label="byod">
-                        {{ trans('general.byod') }}
+        <div class="col-md-12 col-sm-12">
+            <fieldset name="order-info">
+                <legend class="highlight">
+                    <a id="order_info">
+                        <x-icon type="caret-right" id="order_info_icon" />
+                        {{ trans('admin/hardware/form.order_details') }}
+                    </a>
+                </legend>
 
-                    </label>
-                    <p class="help-block">{{ trans('general.byod_help') }}
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+                <div id='order_details' class="col-md-12" style="display:none">
+                    @include ('partials.forms.edit.order_number')
+                    @include ('partials.forms.edit.datepicker', ['translated_name' => trans('general.purchase_date'),'fieldname' => 'purchase_date'])
+                    @include ('partials.forms.edit.datepicker', ['translated_name' => trans('admin/hardware/form.eol_date'),'fieldname' => 'asset_eol_date'])
+                    @include ('partials.forms.edit.supplier-select', ['translated_name' => trans('general.supplier'), 'fieldname' => 'supplier_id'])
 
-    <div class="form-group">
-        <div class="col-md-9 col-sm-9 col-md-offset-3">
-            <a id="order_info" class="text-primary">
-                <i class="fa fa-caret-right fa-2x" id="order_info_icon"></i>
-                <strong>{{ trans('admin/hardware/form.order_details') }}</strong>
-            </a>
+                    @php
+                        $currency_type = null;
+                        if ($item->id && $item->location) {
+                            $currency_type = $item->location->currency;
+                        }
+                    @endphp
 
-        </div>
+                    @include ('partials.forms.edit.purchase_cost', ['currency_type' => $currency_type])
 
-        <div id='order_details' class="col-md-12" style="display:none">
-            <br>
-            @include ('partials.forms.edit.order_number')
-            @include ('partials.forms.edit.purchase_date')
-            @include ('partials.forms.edit.eol_date')
-            @include ('partials.forms.edit.supplier-select', ['translated_name' => trans('general.supplier'), 'fieldname' => 'supplier_id'])
-
-                @php
-                $currency_type = null;
-                if ($item->id && $item->location) {
-                    $currency_type = $item->location->currency;
-                }
-                @endphp
-
-            @include ('partials.forms.edit.purchase_cost', ['currency_type' => $currency_type])
-
-        </div>
-    </div>
+                </div> <!-- end order details -->
+            </fieldset>
+        </div><!-- end col-md-12 col-sm-12-->
+    </div><!-- end col-md-12 col-sm-12-->
+    </div><!-- end col-md-12 col-sm-12-->
    
 @stop
 
@@ -219,6 +210,17 @@
                     //now re-populate the custom fields based on the previously saved values
                     $('#custom_fields_content').find('input,select').each(function (index,elem) {
                         if(transformed_oldvals[elem.name]) {
+                            if (elem.type === 'checkbox' || elem.type === 'radio'){
+                                let shouldBeChecked = oldvals.find(oldValElement => {
+                                    return oldValElement.name === elem.name && oldValElement.value === $(elem).val();
+                                });
+
+                                if (shouldBeChecked){
+                                    $(elem).prop('checked', true);
+                                }
+
+                                return;
+                            }
                              {{-- If there already *is* is a previously-input 'transformed_oldvals' handy,
                                   overwrite with that previously-input value *IF* this is an edit of an existing item *OR*
                                   if there is no new default custom field value coming from the model --}}
@@ -252,17 +254,15 @@
                         $("#assigned_user").show();
 
                         $("#selected_status_status").removeClass('text-danger');
-                        $("#selected_status_status").removeClass('text-warning');
                         $("#selected_status_status").addClass('text-success');
-                        $("#selected_status_status").html('<i class="fas fa-check"></i> {{ trans('admin/hardware/form.asset_deployable')}}');
+                        $("#selected_status_status").html('<x-icon type="checkmark" /> {{ trans('admin/hardware/form.asset_deployable')}}');
 
 
                     } else {
                         $("#assignto_selector").hide();
-                        $("#selected_status_status").removeClass('text-danger');
                         $("#selected_status_status").removeClass('text-success');
-                        $("#selected_status_status").addClass('text-warning');
-                        $("#selected_status_status").html('<i class="fas fa-exclamation-triangle"></i> {{ trans('admin/hardware/form.asset_not_deployable')}} ');
+                        $("#selected_status_status").addClass('text-danger');
+                        $("#selected_status_status").html('<x-icon type="warning" /> {{ (($item->assigned_to!='') && ($item->assigned_type!='') && ($item->deleted_at == '')) ? trans('admin/hardware/form.asset_not_deployable_checkin') : trans('admin/hardware/form.asset_not_deployable')  }} ');
                     }
                 }
             });
@@ -300,7 +300,7 @@
 
             e.preventDefault();
 
-            var auto_tag        = $("#asset_tag").val().replace(/[^\d]/g, '');
+            var auto_tag = $("#asset_tag").val().replace(/^{{ preg_quote(App\Models\Setting::getSettings()->auto_increment_prefix, '/') }}/g, '');
             var box_html        = '';
 			const zeroPad 		= (num, places) => String(num).padStart(places, '0');
 
@@ -321,7 +321,7 @@
                 box_html += '<input type="text"  class="form-control" name="asset_tags[' + x + ']" value="{{ (($snipeSettings->auto_increment_prefix!='') && ($snipeSettings->auto_increment_assets=='1')) ? $snipeSettings->auto_increment_prefix : '' }}'+ auto_tag +'" required>';
                 box_html += '</div>';
                 box_html += '<div class="col-md-2 col-sm-12">';
-                box_html += '<a href="#" class="remove_field btn btn-default btn-sm"><i class="fas fa-minus"></i></a>';
+                box_html += '<a href="#" class="remove_field btn btn-default btn-sm"><x-icon type="minus" /></a>';
                 box_html += '</div>';
                 box_html += '</div>';
                 box_html += '</div>';

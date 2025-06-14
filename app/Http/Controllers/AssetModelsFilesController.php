@@ -6,8 +6,11 @@ use App\Helpers\StorageHelper;
 use App\Http\Requests\UploadFileRequest;
 use App\Models\Actionlog;
 use App\Models\AssetModel;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use \Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AssetModelsFilesController extends Controller
 {
@@ -21,7 +24,7 @@ class AssetModelsFilesController extends Controller
      *@since [v1.0]
      * @author [A. Gianotto] [<snipe@snipe.net>]
      */
-    public function store(UploadFileRequest $request, $modelId = null)
+    public function store(UploadFileRequest $request, $modelId = null) : RedirectResponse
     {
         if (! $model = AssetModel::find($modelId)) {
             return redirect()->route('models.index')->with('error', trans('admin/hardware/message.does_not_exist'));
@@ -41,10 +44,10 @@ class AssetModelsFilesController extends Controller
                 $model->logUpload($file_name, $request->get('notes'));
             }
 
-            return redirect()->back()->with('success', trans('general.file_upload_success'));
+            return redirect()->back()->withFragment('files')->with('success', trans('general.file_upload_success'));
         }
 
-        return redirect()->back()->with('error', trans('admin/hardware/message.upload.nofiles'));
+        return redirect()->back()->withFragment('files')->with('error', trans('admin/hardware/message.upload.nofiles'));
     }
 
     /**
@@ -54,14 +57,10 @@ class AssetModelsFilesController extends Controller
      * @param  int $modelId
      * @param  int $fileId
      * @since [v1.0]
-     * @return View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($modelId = null, $fileId = null)
+    public function show(AssetModel $model, $fileId = null) : StreamedResponse | Response | RedirectResponse | BinaryFileResponse
     {
-        $model = AssetModel::find($modelId);
-        // the asset is valid
-        if (isset($model->id)) {
+
             $this->authorize('view', $model);
 
             if (! $log = Actionlog::find($fileId)) {
@@ -86,12 +85,6 @@ class AssetModelsFilesController extends Controller
             }
 
             return StorageHelper::downloader($file);
-        }
-        // Prepare the error message
-        $error = trans('admin/hardware/message.does_not_exist', ['id' => $fileId]);
-
-        // Redirect to the hardware management page
-        return redirect()->route('hardware.index')->with('error', $error);
     }
 
     /**
@@ -101,33 +94,22 @@ class AssetModelsFilesController extends Controller
      * @param  int $modelId
      * @param  int $fileId
      * @since [v1.0]
-     * @return View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($modelId = null, $fileId = null)
+    public function destroy(AssetModel $model, $fileId = null) : RedirectResponse
     {
-        $model = AssetModel::find($modelId);
-        $this->authorize('update', $model);
         $rel_path = 'private_uploads/assetmodels';
-
-        // the asset is valid
-        if (isset($model->id)) {
-            $this->authorize('update', $model);
-            $log = Actionlog::find($fileId);
-            if ($log) {
-                if (Storage::exists($rel_path.'/'.$log->filename)) {
-                    Storage::delete($rel_path.'/'.$log->filename);
-                }
-                $log->delete();
-
-                return redirect()->back()->with('success', trans('admin/hardware/message.deletefile.success'));
+        $this->authorize('update', $model);
+        $log = Actionlog::find($fileId);
+        if ($log) {
+            if (Storage::exists($rel_path.'/'.$log->filename)) {
+                Storage::delete($rel_path.'/'.$log->filename);
             }
+            $log->delete();
 
-            return redirect()->back()
-                ->with('success', trans('admin/hardware/message.deletefile.success'));
+            return redirect()->back()->withFragment('files')->with('success', trans('admin/hardware/message.deletefile.success'));
         }
 
-        // Redirect to the hardware management page
-        return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.does_not_exist'));
+        return redirect()->back()->withFragment('files')->with('success', trans('admin/hardware/message.deletefile.success'));
+
     }
 }

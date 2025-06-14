@@ -16,13 +16,13 @@
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-body">
-                    <div class="table-responsive">
-
                         <table
                                 data-cookie-id-table="departmentsTable"
                                 data-pagination="true"
                                 data-id-table="departmentsTable"
                                 data-search="true"
+                                data-search-highlight="true"
+                                data-show-print="true"
                                 data-side-pagination="server"
                                 data-show-columns="true"
                                 data-show-fullscreen="true"
@@ -45,12 +45,12 @@
                                 <th data-sortable="true" data-formatter="usersLinkObjFormatter" data-field="manager" data-searchable="false">{{ trans('admin/departments/table.manager') }}</th>
                                 <th data-sortable="true" data-field="users_count" data-searchable="false">{{ trans('general.users') }}</th>
                                 <th data-sortable="true" data-formatter="locationsLinkObjFormatter" data-field="location" data-searchable="false">{{ trans('admin/departments/table.location') }}</th>
+                                <th data-sortable="true" data-field="notes" data-searchable="true">{{ trans('general.notes') }}</th>
                                 <th data-sortable="false" data-formatter="departmentsActionsFormatter" data-field="actions" data-searchable="false">{{ trans('table.actions') }}</th>
 
                             </tr>
                             </thead>
                         </table>
-                    </div>
                 </div>
             </div>
         </div>

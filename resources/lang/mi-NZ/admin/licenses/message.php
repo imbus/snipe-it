@@ -44,10 +44,13 @@ return array(
         'error'   => 'I puta he take hei tirotiro i te raihana. Tena ngana ano.',
         'success' => 'I tohua te raihana',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'I kitea he take e tirotirohia ana i roto i te raihana. Tena ngana ano.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'I tohua te raihana i te angitu'
     ),
 

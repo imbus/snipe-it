@@ -7,12 +7,12 @@
 @stop
 
 @section('header_right')
-    <a href="{{ route('settings.index') }}" class="btn btn-default pull-right" style="margin-left: 5px;"> 
+    <a href="{{ route('settings.index') }}" class="btn btn-default pull-right" style="margin-left: 5px;">
       {{ trans('general.back') }}
     </a>
 
     <form method="POST" style="display: inline">
-      {{ Form::hidden('_token', csrf_token()) }}
+            @csrf
             <button class="btn btn-primary {{ (config('app.lock_passwords')) ? ' disabled': '' }}">{{ trans('admin/settings/general.generate_backup') }}</button>
       </form>
 
@@ -21,8 +21,38 @@
 {{-- Page content --}}
 @section('content')
 
+    <div class="modal modal-warning fade" tabindex="-1" role="dialog" id="backupRestoreModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="post" role="form">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Modal title</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ trans('admin/settings/message.backup.restore_warning') }}</p>
+                        <div class="form-group">
+                            <label class="form-control">
+                                <input type="checkbox" name="clean" {{ config('backup.sanitize_by_default') ? "checked='checked'" : "" }}>{{ trans('admin/settings/general.backups_clean') }}
+                            </label>
+                            <p class="help-block modal-help">{{ trans('admin/settings/general.backups_clean_helptext') }}</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {{ csrf_field() }}
+                        {{ method_field('POST') }}
+                        <button type="button" class="btn btn-default pull-left"
+                                data-dismiss="modal">{{ trans('general.cancel') }}</button>
+                        <button type="submit" class="btn btn-outline">{{ trans('general.yes') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-<div class="row">
+    <div class="row">
 
   <div class="col-md-8">
     
@@ -85,13 +115,12 @@
                           </a>
                       @endif
 
-                     <a data-html="true" 
-                     href="{{ route('settings.backups.restore', $file['filename']) }}" 
-                     class="btn btn-warning btn-sm restore-asset {{ (config('app.lock_passwords')) ? ' disabled': '' }}" 
-                     data-toggle="modal" 
-                     data-content="{{ trans('admin/settings/message.backup.restore_warning') }}" 
-                     data-title="{{ trans('admin/settings/message.backup.restore_confirm', array('filename' => e($file['filename']))) }}"
-                     onClick="return false;">
+                          <a data-html="true"
+                             href="{{ route('settings.backups.restore', $file['filename']) }}"
+                             class="btn btn-warning btn-sm restore-backup {{ (config('app.lock_passwords')) ? ' disabled': '' }}"
+                             data-target="#backupRestoreModal"
+                             data-title="{{ trans('admin/settings/message.backup.restore_confirm', array('filename' => e($file['filename']))) }}"
+                             onClick="return false;">
                       <i class="fas fa-retweet" aria-hidden="true"></i>
                       <span class="sr-only">{{ trans('general.restore') }}</span>
                     </a>
@@ -113,7 +142,7 @@
     <div class="box box-default">
       <div class="box-header with-border">
         <h2 class="box-title">
-          <i class="far fa-file-archive" aria-hidden="true"></i>
+            <x-icon type="backups"/>
           {{ trans('admin/settings/general.backups_upload') }}
         </h2>
         <div class="box-tools pull-right">
@@ -129,12 +158,8 @@
         @if (config('app.lock_passwords')===true)
         <p class="alert alert-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
           @else
-              
-      {{ Form::open([
-        'method' => 'POST',
-        'route' => 'settings.backups.upload',
-        'files' => true,
-        'class' => 'form-horizontal' ]) }}
+
+      <form method="POST" action="{{ route('settings.backups.upload') }}" accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data">
         @csrf
 
         
@@ -144,13 +169,16 @@
           
              <!-- displayed on screen -->
             <label class="btn btn-default col-md-12 col-xs-12" aria-hidden="true">
-              <i class="fas fa-paperclip" aria-hidden="true"></i>
+              <x-icon type="paperclip" />
                 {{ trans('button.select_file')  }}
                 <input type="file" name="file" class="js-uploadFile" id="uploadFile" data-maxsize="{{ Helper::file_upload_max_size() }}" accept="application/zip" style="display:none;" aria-label="file" aria-hidden="true">
             </label>
         </div>
         <div class="col-md-4 col-xs-4">
-            <button class="btn btn-primary col-md-12 col-xs-12" id="uploadButton" disabled>{{ trans('button.upload') }} <span id="uploadIcon"></span></button>
+            <button class="btn btn-primary col-md-12 col-xs-12" id="uploadButton" disabled>
+                {{ trans('button.upload') }}
+                <span id="uploadIcon"></span>
+            </button>
         </div>
         <div class="col-md-12">
           
@@ -162,7 +190,7 @@
             
     </div>
     
-    {{ Form::close() }}
+    </form>
     @endif  
       </div>
     </div>
@@ -170,7 +198,8 @@
     <div class="box box-warning">
       <div class="box-header with-border">
         <h2 class="box-title">
-          <i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i> {{ trans('admin/settings/general.backups_restoring') }}</h2>
+            <x-icon type="warning" class="text-orange"/> {{ trans('admin/settings/general.backups_restoring') }}
+        </h2>
         <div class="box-tools pull-right">
         </div>
       </div><!-- /.box-header -->
@@ -226,11 +255,21 @@
                 });
             }
 
-
-
-
         });
       });
+
+      // due to dynamic loading, we have to use the below 'weird' way of adding event handlers instead of just saying
+      // $('.restore-backup').on( .....
+      $('table').on('click', '.restore-backup', function (event) {
+          event.preventDefault();
+          var modal = $('#backupRestoreModal');
+          modal.find('.modal-title').text($(this).data('title'));
+          modal.find('form').attr('action', $(this).attr('href'));
+          modal.modal({
+              show: true
+          });
+          return false;
+      })
   </script>
 @stop
 

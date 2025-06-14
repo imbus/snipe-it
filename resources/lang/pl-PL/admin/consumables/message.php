@@ -2,6 +2,7 @@
 
 return array(
 
+    'invalid_category_type' => 'Kategoria musi być materiałem eksploatacyjnym.',
     'does_not_exist' => 'Materiał eksploatacyjny nie istnieje.',
 
     'create' => array(

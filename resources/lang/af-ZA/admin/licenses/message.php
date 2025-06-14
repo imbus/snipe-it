@@ -44,10 +44,13 @@ return array(
         'error'   => 'Daar was \'n probleem om die lisensie te kontroleer. Probeer asseblief weer.',
         'success' => 'Die lisensie is suksesvol nagegaan',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Daar was \'n probleem om die lisensie te kontroleer. Probeer asseblief weer.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Die lisensie is suksesvol nagegaan'
     ),
 

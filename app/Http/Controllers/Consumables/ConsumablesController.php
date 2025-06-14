@@ -8,8 +8,10 @@ use App\Http\Requests\ImageUploadRequest;
 use App\Models\Company;
 use App\Models\Consumable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
+use \Illuminate\Contracts\View\View;
+use App\Http\Requests\StoreConsumableRequest;
 
 /**
  * This controller handles all actions related to Consumables for
@@ -48,7 +50,7 @@ class ConsumablesController extends Controller
     {
         $this->authorize('create', Consumable::class);
 
-        return view('consumables/edit')->with('category_type', 'consumable')
+        return view('consumables.edit')->with('category_type', 'consumable')
             ->with('item', new Consumable);
     }
 
@@ -62,7 +64,7 @@ class ConsumablesController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(ImageUploadRequest $request)
+    public function store(StoreConsumableRequest $request)
     {
         $this->authorize('create', Consumable::class);
         $consumable = new Consumable();
@@ -79,14 +81,16 @@ class ConsumablesController extends Controller
         $consumable->purchase_date          = $request->input('purchase_date');
         $consumable->purchase_cost          = $request->input('purchase_cost');
         $consumable->qty                    = $request->input('qty');
-        $consumable->user_id                = Auth::id();
+        $consumable->created_by                = auth()->id();
         $consumable->notes                  = $request->input('notes');
 
 
         $consumable = $request->handleImages($consumable);
 
+        session()->put(['redirect_option' => $request->get('redirect_option')]);
+
         if ($consumable->save()) {
-            return redirect()->route('consumables.index')->with('success', trans('admin/consumables/message.create.success'));
+            return redirect()->to(Helper::getRedirectOption($request, $consumable->id, 'Consumables'))->with('success', trans('admin/consumables/message.create.success'));
         }
 
         return redirect()->back()->withInput()->withErrors($consumable->getErrors());
@@ -99,18 +103,14 @@ class ConsumablesController extends Controller
      * @param  int $consumableId
      * @see ConsumablesController::postEdit() method that stores the form data.
      * @since [v1.0]
-     * @return \Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($consumableId = null)
+    public function edit(Consumable $consumable) : View | RedirectResponse
     {
-        if ($item = Consumable::find($consumableId)) {
-            $this->authorize($item);
+            $this->authorize($consumable);
+            return view('consumables/edit')
+                ->with('item', $consumable)
+                ->with('category_type', 'consumable');
 
-            return view('consumables/edit', compact('item'))->with('category_type', 'consumable');
-        }
-
-        return redirect()->route('consumables.index')->with('error', trans('admin/consumables/message.does_not_exist'));
     }
 
     /**
@@ -124,11 +124,8 @@ class ConsumablesController extends Controller
      * @see ConsumablesController::getEdit() method that stores the form data.
      * @since [v1.0]
      */
-    public function update(ImageUploadRequest $request, $consumableId = null)
+    public function update(StoreConsumableRequest $request, Consumable $consumable)
     {
-        if (is_null($consumable = Consumable::find($consumableId))) {
-            return redirect()->route('consumables.index')->with('error', trans('admin/consumables/message.does_not_exist'));
-        }
 
         $min = $consumable->numCheckedOut();
         $validator = Validator::make($request->all(), [
@@ -160,8 +157,10 @@ class ConsumablesController extends Controller
 
         $consumable = $request->handleImages($consumable);
 
+        session()->put(['redirect_option' => $request->get('redirect_option')]);
+
         if ($consumable->save()) {
-            return redirect()->route('consumables.index')->with('success', trans('admin/consumables/message.update.success'));
+            return redirect()->to(Helper::getRedirectOption($request, $consumable->id, 'Consumables'))->with('success', trans('admin/consumables/message.update.success'));
         }
 
         return redirect()->back()->withInput()->withErrors($consumable->getErrors());
@@ -182,6 +181,7 @@ class ConsumablesController extends Controller
             return redirect()->route('consumables.index')->with('error', trans('admin/consumables/message.not_found'));
         }
         $this->authorize($consumable);
+
         $consumable->delete();
         // Redirect to the locations management page
         return redirect()->route('consumables.index')->with('success', trans('admin/consumables/message.delete.success'));
@@ -197,15 +197,22 @@ class ConsumablesController extends Controller
      * @return \Illuminate\Contracts\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($consumableId = null)
+    public function show(Consumable $consumable)
     {
-        $consumable = Consumable::find($consumableId);
+        $consumable = Consumable::withCount('users as users_consumables')->find($consumable->id);
         $this->authorize($consumable);
-        if (isset($consumable->id)) {
-            return view('consumables/view', compact('consumable'));
-        }
+        return view('consumables/view', compact('consumable'));
+    }
 
-        return redirect()->route('consumables.index')
-            ->with('error', trans('admin/consumables/message.does_not_exist'));
+    public function clone(Consumable $consumable) : View
+    {
+        $this->authorize('create', $consumable);
+        $consumable_to_close = $consumable;
+        $consumable = clone $consumable_to_close;
+        $consumable->id = null;
+        $consumable->image = null;
+        $consumable->created_by = null;
+
+        return view('consumables/edit')->with('item', $consumable);
     }
 }

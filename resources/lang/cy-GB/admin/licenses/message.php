@@ -44,10 +44,13 @@ return array(
         'error'   => 'Nid oedd yn bosib nodi\'r trwydded allan. Ceisiwch eto o. g. y. dd.',
         'success' => 'Trwydded wedi nodi allan yn llwyddiannus',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Nid oedd yn bosib nodi\'r trwydded i mewn. Ceisiwch eto o. g. y. dd.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Trwydded wedi nodi i fewn yn llwyddiannus'
     ),
 

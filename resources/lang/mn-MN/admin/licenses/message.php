@@ -44,10 +44,13 @@ return array(
         'error'   => 'Лицензийг шалгах асуудал гарлаа. Дахин оролдоно уу.',
         'success' => 'Лицензийг амжилттай шалгасан',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Лиценз дээр асуудал гарлаа. Дахин оролдоно уу.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Лицензийг амжилттай шалгасан байна'
     ),
 

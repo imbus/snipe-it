@@ -27,17 +27,23 @@
         {{ trans('admin/statuslabels/table.status_type') }}
     </label>
     <div class="col-md-7 required">
-        {{ Form::select('statuslabel_types', $statuslabel_types, $item->getStatuslabelType(), array('class'=>'select2', 'style'=>'width: 100%; min-width:400px', 'aria-label'=>'statuslabel_types')) }}
+        <x-input.select
+            name="statuslabel_types"
+            :options="$statuslabel_types"
+            :selected="$item->getStatuslabelType()"
+            style="width: 100%; min-width:400px"
+            aria-label="statuslabel_types"
+        />
         {!! $errors->first('statuslabel_types', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
     </div>
 </div>
 
 <!-- Chart color -->
 <div class="form-group{{ $errors->has('color') ? ' has-error' : '' }}">
-    {{ Form::label('color', trans('admin/statuslabels/table.color'), ['class' => 'col-md-3 control-label']) }}
+    <label for="color" class="col-md-3 control-label">{{ trans('admin/statuslabels/table.color') }}</label>
     <div class="col-md-9">
         <div class="input-group color">
-            {{ Form::text('color', Request::old('color', $item->color), array('class' => 'form-control col-md-10', 'maxlength'=>'20')) }}
+            <input class="form-control col-md-10" maxlength="20" name="color" type="text" id="color" value="{{ old('color', $item->color) }}">
             <div class="input-group-addon"><i></i></div>
         </div><!-- /.input group -->
         {!! $errors->first('color', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
@@ -50,7 +56,7 @@
 <div class="form-group{{ $errors->has('notes') ? ' has-error' : '' }}">
     <div class="col-md-9 col-md-offset-3">
         <label class="form-control">
-            <input type="checkbox" value="1" name="show_in_nav" id="show_in_nav" {{ Request::old('show_in_nav', $item->show_in_nav) == '1' ? ' checked="checked"' : '' }}> {{ trans('admin/statuslabels/table.show_in_nav') }}
+            <input type="checkbox" value="1" name="show_in_nav" id="show_in_nav" {{ old('show_in_nav', $item->show_in_nav) == '1' ? ' checked="checked"' : '' }}> {{ trans('admin/statuslabels/table.show_in_nav') }}
         </label>
     </div>
 </div>
@@ -60,7 +66,7 @@
 
     <div class="col-md-9 col-md-offset-3">
         <label class="form-control">
-            <input type="checkbox" value="1" name="default_label" id="default_label" {{ Request::old('default_label', $item->default_label) == '1' ? ' checked="checked"' : '' }}>
+            <input type="checkbox" value="1" name="default_label" id="default_label" {{ old('default_label', $item->default_label) == '1' ? ' checked="checked"' : '' }}>
              {{ trans('admin/statuslabels/table.default_label') }}
         </label>
         <p class="help-block"> {{ trans('admin/statuslabels/table.default_label_help') }}</p>

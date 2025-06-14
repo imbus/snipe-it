@@ -13,13 +13,13 @@
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-body">
-                    <div class="table-responsive">
-
                         <table
                                 data-cookie-id-table="accessoriesReport"
                                 data-pagination="true"
                                 data-id-table="accessoriesReport"
                                 data-search="true"
+                                data-search-highlight="true"
+                                data-show-print="true"
                                 data-side-pagination="server"
                                 data-show-columns="true"
                                 data-show-export="true"
@@ -45,8 +45,6 @@
                             <tbody>
                             </tbody>
                         </table>
-
-                    </div>
                 </div>
             </div>
         </div>

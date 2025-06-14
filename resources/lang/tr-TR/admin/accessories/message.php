@@ -26,7 +26,13 @@ return array(
         'error'   		=> 'Aksesuar çıkışı yapılamadı, lütfen tekrar deneyin',
         'success' 		=> 'Aksesuar çıkışı yapıldı.',
         'unavailable'   => 'Bu ürün zimmetlenemez. Ürün sayısını kontrol edin.',
-        'user_does_not_exist' => 'Bu kullanıcı geçersiz. Lütfen tekrar deneyin.'
+        'user_does_not_exist' => 'Bu kullanıcı geçersiz. Lütfen tekrar deneyin.',
+         'checkout_qty' => array(
+            'lte'  => 'Şu anda bu türden yalnızca bir adet aksesuar mevcut ve siz :checkout_qty adet almaya çalışıyorsunuz. Lütfen alma miktarını veya bu aksesuarın toplam stokunu ayarlayıp tekrar deneyin.
+
+Toplamda :number_currently_remaining adet mevcut aksesuar var ve siz :checkout_qty adet almaya çalışıyorsunuz. Lütfen alma miktarını veya bu aksesuarın toplam stokunu ayarlayıp tekrar deneyin.',
+            ),
+           
     ),
 
     'checkin' => array(

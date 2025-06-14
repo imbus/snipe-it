@@ -16,14 +16,14 @@
     <div class="col-md-9">
       <div class="box box-default">
         <div class="box-body">
-          <div class="table-responsive">
-
             <table
               data-columns="{{ \App\Presenters\CompanyPresenter::dataTableLayout() }}"
               data-cookie-id-table="companiesTable"
               data-pagination="true"
               data-id-table="companiesTable"
               data-search="true"
+              data-search-highlight="true"
+              data-show-print="true"
               data-side-pagination="server"
               data-show-columns="true"
               data-show-export="true"
@@ -37,9 +37,7 @@
                         "fileName": "export-companies-{{ date('Y-m-d') }}",
                         "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                         }'>
-
             </table>
-          </div>
         </div>
       </div>
     </div>

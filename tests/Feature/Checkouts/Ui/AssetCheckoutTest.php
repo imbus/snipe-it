@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Checkouts\Ui;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Events\CheckoutableCheckedOut;
+use App\Models\Accessory;
 use App\Models\Asset;
 use App\Models\Company;
 use App\Models\LicenseSeat;
@@ -116,11 +118,17 @@ class AssetCheckoutTest extends TestCase
         Event::assertNotDispatched(CheckoutableCheckedOut::class);
     }
 
+    public function testPageRenders()
+    {
+        $this->actingAs(User::factory()->superuser()->create())
+            ->get(route('hardware.checkout.create', Asset::factory()->create()))
+            ->assertOk();
+    }
     /**
      * This data provider contains checkout targets along with the
      * asset's expected location after the checkout process.
      */
-    public function checkoutTargets(): array
+    public static function checkoutTargets(): array
     {
         return [
             'User' => [function () {
@@ -166,7 +174,7 @@ class AssetCheckoutTest extends TestCase
         ];
     }
 
-    /** @dataProvider checkoutTargets */
+    #[DataProvider('checkoutTargets')]
     public function testAssetCanBeCheckedOut($data)
     {
         ['checkout_type' => $type, 'target' => $target, 'expected_location' => $expectedLocation] = $data();
@@ -175,16 +183,23 @@ class AssetCheckoutTest extends TestCase
         $asset = Asset::factory()->create();
         $admin = User::factory()->checkoutAssets()->create();
 
+        $defaultFieldsAlwaysIncludedInUIFormSubmission = [
+            'assigned_user' => null,
+            'assigned_asset' => null,
+            'assigned_location' => null,
+        ];
+
         $this->actingAs($admin)
-            ->post(route('hardware.checkout.store', $asset), [
+            ->post(route('hardware.checkout.store', $asset), array_merge($defaultFieldsAlwaysIncludedInUIFormSubmission, [
                 'checkout_to_type' => $type,
-                'assigned_' . $type => $target->id,
+                // overwrite the value from the default fields set above
+                'assigned_' . $type => (string) $target->id,
                 'name' => 'Changed Name',
-                'status_id' => $newStatus->id,
+                'status_id' => (string) $newStatus->id,
                 'checkout_at' => '2024-03-18',
                 'expected_checkin' => '2024-03-28',
                 'note' => 'An awesome note',
-            ]);
+            ]));
 
         $asset->refresh();
         $this->assertTrue($asset->assignedTo()->is($target));
@@ -234,7 +249,7 @@ class AssetCheckoutTest extends TestCase
 
         $asset->refresh();
 
-        $this->assertTrue(Carbon::parse($asset->last_checkout)->diffInSeconds(now()) < 2);
+        $this->assertTrue((int) Carbon::parse($asset->last_checkout)->diffInSeconds(now(), true) < 2);
     }
 
     public function testAssetCheckoutPageIsRedirectedIfModelIsInvalid()
@@ -245,26 +260,91 @@ class AssetCheckoutTest extends TestCase
         $asset->forceSave();
 
         $this->actingAs(User::factory()->admin()->create())
-            ->get(route('hardware.checkout.create', ['assetId' => $asset->id]))
+            ->get(route('hardware.checkout.create', $asset))
             ->assertStatus(302)
             ->assertSessionHas('error')
-            ->assertRedirect(route('hardware.show',['hardware' => $asset->id]));
+            ->assertRedirect(route('hardware.show', $asset));
     }
 
-    public function testAssetCheckoutPagePostIsRedirectedIfModelIsInvalid()
+    public function testAssetCheckoutPagePostIsRedirectedIfRedirectSelectionIsIndex()
     {
         $asset = Asset::factory()->create();
-        $asset->model_id = 0;
-        $asset->forceSave();
-        $user = User::factory()->create();
-        
+
         $this->actingAs(User::factory()->admin()->create())
+            ->from(route('hardware.checkout.create', $asset))
             ->post(route('hardware.checkout.store', $asset), [
                 'checkout_to_type' => 'user',
-                'assigned_user' => $user->id,
+                'assigned_user' =>  User::factory()->create()->id,
+                'redirect_option' => 'index',
             ])
             ->assertStatus(302)
-            ->assertSessionHas('error')
-            ->assertRedirect(route('hardware.show', ['hardware' => $asset->id]));
+            ->assertRedirect(route('hardware.index'));
+    }
+
+    public function testAssetCheckoutPagePostIsRedirectedIfRedirectSelectionIsItem()
+    {
+        $asset = Asset::factory()->create();
+
+        $this->actingAs(User::factory()->admin()->create())
+            ->from(route('hardware.checkout.create', $asset))
+            ->post(route('hardware.checkout.store' , $asset), [
+                'checkout_to_type' => 'user',
+                'assigned_user' =>  User::factory()->create()->id,
+                'redirect_option' => 'item',
+            ])
+            ->assertStatus(302)
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('hardware.show', $asset));
+    }
+
+    public function testAssetCheckoutPagePostIsRedirectedIfRedirectSelectionIsUserTarget()
+    {
+        $user = User::factory()->create();
+        $asset = Asset::factory()->create();
+
+        $this->actingAs(User::factory()->admin()->create())
+            ->from(route('hardware.checkout.create', $asset))
+            ->post(route('hardware.checkout.store' , $asset), [
+                'checkout_to_type' => 'user',
+                'assigned_user' =>  $user->id,
+                'redirect_option' => 'target',
+                'assigned_qty' => 1,
+            ])
+            ->assertStatus(302)
+            ->assertRedirect(route('users.show', ['user' => $user]));
+    }
+
+    public function testAssetCheckoutPagePostIsRedirectedIfRedirectSelectionIsAssetTarget()
+    {
+        $target = Asset::factory()->create();
+        $asset = Asset::factory()->create();
+
+        $this->actingAs(User::factory()->admin()->create())
+            ->from(route('hardware.checkout.create', $asset))
+            ->post(route('hardware.checkout.store' , $asset), [
+                'checkout_to_type' => 'asset',
+                'assigned_asset' =>  $target->id,
+                'redirect_option' => 'target',
+                'assigned_qty' => 1,
+            ])
+            ->assertStatus(302)
+            ->assertRedirect(route('hardware.show', $target));
+    }
+
+    public function testAssetCheckoutPagePostIsRedirectedIfRedirectSelectionIsLocationTarget()
+    {
+        $target = Location::factory()->create();
+        $asset = Asset::factory()->create();
+
+        $this->actingAs(User::factory()->admin()->create())
+            ->from(route('hardware.checkout.create', $asset))
+            ->post(route('hardware.checkout.store' , $asset), [
+                'checkout_to_type' => 'location',
+                'assigned_location' =>  $target->id,
+                'redirect_option' => 'target',
+                'assigned_qty' => 1,
+            ])
+            ->assertStatus(302)
+            ->assertRedirect(route('locations.show', ['location' => $target]));
     }
 }

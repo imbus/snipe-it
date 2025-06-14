@@ -6,7 +6,7 @@ return array(
     'declined'                  => 'Bu varlığı başarıyla reddettiniz.',
     'bulk_manager_warn'	        => 'Kullanıcılarınızın başarıyla güncelleştirildi, ancak kaydedilmedi Yöneticisi giriş Yöneticisi\'ni seçtiğiniz çünkü aynı zamanda düzenlenecek kullanıcı listesinde oldu ve kullanıcıların kendi yöneticisi olmayabilir. Yine, yönetici hariç olmak üzere, kullanıcılarınızı seçiniz.',
     'user_exists'               => 'Kullanıcı zaten var!',
-    'user_not_found'            => 'Kullanıcı yok.',
+    'user_not_found'            => 'Kullanıcı mevcut değil veya görüntüleme izniniz yok.',
     'user_login_required'       => 'Oturum açma alanı gerekli',
     'user_has_no_assets_assigned' => 'Kullanıcıya zimmetlenmiş bir şey yok.',
     'user_password_required'    => 'Şifre Gerekli.',
@@ -37,7 +37,7 @@ return array(
         'update' => 'Kullanıcı oluştururken bir sorun oluştu. Lütfen yeniden deneyin.',
         'delete' => 'Kullanıcı silinirken bir problem oluştu. Lütfen tekrar deneyin.',
         'delete_has_assets' => 'Bu kullanıcının atadığı öğeler var ve silinemiyor.',
-        'delete_has_assets_var' => 'This user still has an asset assigned. Please check it in first.|This user still has :count assets assigned. Please check their assets in first.',
+        'delete_has_assets_var' => 'Bu kullanıcının atanan bir varlığı var. Lütfen önce bunu teslim alın.|Bu kullanıcının :count adet atanan varlığı var. Lütfen önce bu varlıkları teslim alın.',
         'delete_has_licenses_var' => 'This user still has a license seats assigned. Please check it in first.|This user still has :count license seats assigned. Please check them in first.',
         'delete_has_accessories_var' => 'This user still has an accessory assigned. Please check it in first.|This user still has :count accessories assigned. Please check their assets in first.',
         'delete_has_locations_var' => 'This user still manages a location. Please select another manager first.|This user still manages :count locations. Please select another manager first.',
@@ -53,6 +53,7 @@ return array(
         'ldap_could_not_search' => 'LDAP sunucusuna bağlanamadı. LDAP yapılandırma dosyası LDAP sunucusu yapılandırmanızda gözden geçirin. <br> LDAP sunucusundan Hata:',
         'ldap_could_not_get_entries' => 'LDAP sunucusuna bağlanamadı. LDAP yapılandırma dosyası LDAP sunucusu yapılandırmanızda gözden geçirin. <br> LDAP sunucusundan Hata:',
         'password_ldap' => 'Bu hesabın parolası LDAP / Active Directory tarafından yönetilir. Lütfen şifrenizi değiştirmek için BT departmanınızla iletişime geçin.',
+        'multi_company_items_assigned' => 'This user has items assigned that belong to a different company. Please check them in or edit their company.'
     ),
 
     'deletefile' => array(

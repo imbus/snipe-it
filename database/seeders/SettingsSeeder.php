@@ -19,12 +19,12 @@ class SettingsSeeder extends Seeder
         $settings->logo = 'snipe-logo.png';
         $settings->alert_email = 'service@snipe-it.io';
         $settings->header_color = null;
-        $settings->barcode_type = 'QRCODE';
+        $settings->label2_2d_type = 'QRCODE';
         $settings->default_currency = 'USD';
         $settings->brand = 3;
         $settings->ldap_enabled = 0;
         $settings->full_multiple_companies_support = 0;
-        $settings->alt_barcode = 'C128';
+        $settings->label2_1d_type = 'C128';
         $settings->skin = '';
         $settings->email_domain = 'example.org';
         $settings->email_format = 'filastname';
@@ -36,6 +36,7 @@ class SettingsSeeder extends Seeder
         $settings->version_footer = 'on';
         $settings->support_footer = 'on';
         $settings->pwd_secure_min = '8';
+        $settings->default_avatar = 'default.png';
         $settings->save();
 
         if ($user = User::where('username', '=', 'admin')->first()) {

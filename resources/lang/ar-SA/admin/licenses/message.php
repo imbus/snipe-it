@@ -44,10 +44,13 @@ return array(
         'error'   => 'حدثت مشكلة أثناء اخراج الترخيص. يرجى إعادة المحاولة.',
         'success' => 'تم اخراج الترخيص بنجاح',
         'not_enough_seats' => 'لا توجد مقاعد ترخيص كافية متاحة للدفع',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'حدثت مشكلة في التحقق من الترخيص. يرجى إعادة المحاولة.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'تم ادخال الترخيص بنجاح'
     ),
 

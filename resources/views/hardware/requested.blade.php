@@ -20,7 +20,6 @@
                     <div class="row">
                         <div class="col-md-12">
 
-        @if ($requestedItems->count() > 0)
         <div class="table-responsive">
             <table
                     name="requestedAssets"
@@ -29,6 +28,8 @@
                     id="requestedAssets"
                     data-advanced-search="true"
                     data-search="true"
+                    data-search-highlight="true"
+                    data-show-print="true"
                     data-show-columns="true"
                     data-show-export="true"
                     data-pagination="true"
@@ -40,8 +41,8 @@
                     }'>
                 <thead>
                     <tr role="row">
-                        <th class="col-md-1">Image</th>
-                        <th class="col-md-2">Item Name</th>
+                        <th class="col-md-1">{{ trans('general.image') }}</th>
+                        <th class="col-md-2">{{ trans('general.name') }}</th>
                         <th class="col-md-2" data-sortable="true">{{ trans('admin/hardware/table.location') }}</th>
                         <th class="col-md-2" data-sortable="true">{{ trans('admin/hardware/form.expected_checkin') }}</th>
                         <th class="col-md-3" data-sortable="true">{{ trans('admin/hardware/table.requesting_user') }}</th>
@@ -100,12 +101,19 @@
                             </td>
                             <td>{{ App\Helpers\Helper::getFormattedDateObject($request->created_at, 'datetime', false) }}</td>
                             <td>
-                                {{ Form::open([
-                                    'method' => 'POST',
-                                    'route' => ['account/request-item', $request->itemType(), $request->requestable->id, true, $request->requestingUser()->id],
-                                    ]) }}
+                                <form
+                                    method="POST"
+                                    action="{{ route('account/request-item', [
+                                        $request->itemType(),
+                                        $request->requestable->id,
+                                         true,
+                                         $request->requestingUser()->id
+                                    ]) }}"
+                                    accept-charset="UTF-8"
+                                >
+                                    @csrf
                                     <button class="btn btn-warning btn-sm" data-tooltip="true" title="{{ trans('general.cancel_request') }}">{{ trans('button.cancel') }}</button>
-                                {{ Form::close() }}
+                                </form>
                             </td>
                             <td>
                                 @if ($request->itemType() == "asset")
@@ -126,14 +134,7 @@
             </table>
         </div>
 
-        @else
-        <div class="col-md-12">
-            <div class="alert alert-info alert-block">
-                <i class="fas fa-info-circle"></i>
-                {{ trans('general.no_results') }}
-            </div>
-        </div>
-        @endif
+
                         </div>
                     </div>
                 </div>

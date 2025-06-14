@@ -23,7 +23,7 @@
     <label for="eol" class="col-md-3 control-label">{{ trans('general.eol') }}</label>
     <div class="col-md-3 col-sm-4 col-xs-7">
         <div class="input-group">
-            <input class="form-control" type="text" name="eol" id="eol" value="{{ Request::old('eol', isset($item->eol)) ? $item->eol : ''  }}" />
+            <input class="form-control" type="text" name="eol" id="eol" value="{{ old('eol', isset($item->eol)) ? $item->eol : ''  }}" />
             <span class="input-group-addon">
                 {{ trans('general.months') }}
             </span>
@@ -36,7 +36,7 @@
 
 <!-- Custom Fieldset -->
 <!-- If $item->id is null we are cloning the model and we need the $model_id variable -->
-@livewire('custom-field-set-default-values-for-model',["model_id" => $item->id ?? $model_id ?? null  ])
+@livewire('custom-field-set-default-values-for-model', ["model_id" => $item->id ?? $model_id ?? null])
 
 @include ('partials.forms.edit.notes')
 @include ('partials.forms.edit.requestable', ['requestable_text' => trans('admin/models/general.requestable')])

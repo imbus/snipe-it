@@ -44,10 +44,13 @@ return array(
         'error'   => 'Un problème a eu lieu pendant l\'association de la licence. Veuillez essayer à nouveau.',
         'success' => 'La licence a été associée avec succès',
         'not_enough_seats' => 'Pas assez de sièges de licence disponibles pour le paiement',
+        'mismatch' => 'Le poste de licence fourni ne correspond pas à la licence',
+        'unavailable' => 'Ce poste n\'est pas disponible pour attribution.',
     ),
 
     'checkin' => array(
         'error'   => 'Un problème a eu lieu pendant la dissociation de la licence. Veuillez essayer à nouveau.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'La licence a été dissociée avec succès'
     ),
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Rules\AlphaEncrypted;
+use App\Rules\NumericEncrypted;
 use Gate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +71,25 @@ class CustomFieldset extends Model
         return $this->belongsTo(\App\Models\User::class); //WARNING - not all CustomFieldsets have a User!!
     }
 
+    public function displayAnyFieldsInForm($form_type = null)
+    {
+        if ($this->fields) {
+
+            switch ($form_type) {
+                case 'audit':
+                    return $this->fields->where('display_audit', '1')->count() > 0;
+                case 'checkin':
+                    return $this->fields->where('display_checkin', '1')->count() > 0;
+                case 'checkout':
+                    return $this->fields->where('display_checkout', '1')->count() > 0;
+                default:
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Determine the validation rules we should apply based on the
      * custom field format
@@ -92,8 +113,24 @@ class CustomFieldset extends Model
                     $rule[] = 'unique_undeleted';
             }
 
-            array_push($rule, $field->attributes['format']);
+            if ($field->attributes['format']!='') {
+                array_push($rule, $field->attributes['format']);
+            }
+
             $rules[$field->db_column_name()] = $rule;
+
+
+            // these are to replace the standard 'numeric' and 'alpha' rules if the custom field is also encrypted.
+            // the values need to be decrypted first, because encrypted strings are alphanumeric
+            if ($field->format === 'NUMERIC' && $field->field_encrypted) {
+                $numericKey = array_search('numeric', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$numericKey] = new NumericEncrypted;
+            }
+
+            if ($field->format === 'ALPHA' && $field->field_encrypted) {
+                $alphaKey = array_search('alpha', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$alphaKey] = new AlphaEncrypted;
+            }
 
             // add not_array to rules for all fields but checkboxes
             if ($field->element != 'checkbox') {

@@ -26,7 +26,11 @@ return array(
         'error'   		=> 'Akcesoria nie zostały przypisane, spróbuj ponownie',
         'success' 		=> 'Akcesoria przypisany pomyślnie.',
         'unavailable'   => 'Akcesoria nie są dostępne do zakupu. Sprawdź ilość dostępną',
-        'user_does_not_exist' => 'Użytkownik nie istnieje. Spróbuj ponownie.'
+        'user_does_not_exist' => 'Użytkownik nie istnieje. Spróbuj ponownie.',
+         'checkout_qty' => array(
+            'lte'  => 'Obecnie dostępne jest tylko jedno akcesorium tego typu i próbujesz wydać :checkout_qty. Dostostosuj ilość wydania lub stan magazynowy tego akcesorium i spróbuj ponownie. Obecnie jest :number_currently_remaining dostępnych akcesoriów i próbujesz wydać :checkout_qty. Dostostosuj ilość wydania lub stan magazynowy tego akcesorium i spróbuj ponownie.',
+            ),
+           
     ),
 
     'checkin' => array(

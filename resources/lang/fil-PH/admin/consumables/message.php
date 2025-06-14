@@ -2,6 +2,7 @@
 
 return array(
 
+    'invalid_category_type' => 'Ang kategorya ay dapat nasa kategorya ng consumable.',
     'does_not_exist' => 'Ang consumable ay hindi umiiral.',
 
     'create' => array(

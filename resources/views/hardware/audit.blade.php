@@ -21,11 +21,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="box box-default">
 
-                {{ Form::open([
-                  'method' => 'POST',
-                  'route' => ['asset.audit.store', $asset->id],
-                  'files' => true,
-                  'class' => 'form-horizontal' ]) }}
+                <form method="POST" action="{{ route('asset.audit.store', $asset) }}" accept-charset="UTF-8" class="form-horizontal" enctype="multipart/form-data">
 
                     <div class="box-header with-border">
                         <h2 class="box-title"> {{ trans('admin/hardware/form.tag') }} {{ $asset->asset_tag }}</h2>
@@ -44,7 +40,7 @@
                                             {{ $asset->model->name }}
                                         @else
                                             <span class="text-danger text-bold">
-                                              <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                                              <x-icon type="warning" />
                                               {{ trans('admin/hardware/general.model_invalid')}}
                                             </span>
                                             {{ trans('admin/hardware/general.model_invalid_fix')}}
@@ -58,6 +54,8 @@
 
 
                     <!-- Asset Name -->
+
+                        @if ($asset->name)
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             <label for="name" class="col-sm-3 control-label">
                                 {{ trans('general.name') }}
@@ -66,6 +64,7 @@
                                 <p class="form-control-static">{{ $asset->name }}</p>
                             </div>
                         </div>
+                        @endif
 
                         <!-- Locations -->
                     @include ('partials.forms.edit.location-select', ['translated_name' => trans('general.location'), 'fieldname' => 'location_id'])
@@ -75,7 +74,7 @@
 
                             <div class="col-md-8 col-md-offset-3">
                                 <label class="form-control">
-                                    <input type="checkbox" value="1" name="update_location" {{ Request::old('update_location') == '1' ? ' checked="checked"' : '' }}> {{ trans('admin/hardware/form.asset_location') }}
+                                    <input type="checkbox" value="1" name="update_location" {{ old('update_location') == '1' ? ' checked="checked"' : '' }}> {{ trans('admin/hardware/form.asset_location') }}
                                 </label>
                                 <p class="help-block">{!! trans('help.audit_help') !!}</p>
                             </div>
@@ -109,7 +108,7 @@
                             <div class="col-md-8">
                                 <div class="input-group date col-md-5" data-provide="datepicker" data-date-format="yyyy-mm-dd" data-date-clear-btn="true">
                                     <input type="text" class="form-control" placeholder="{{ trans('general.next_audit_date') }}" name="next_audit_date" id="next_audit_date" value="{{ old('next_audit_date', $next_audit_date) }}">
-                                    <span class="input-group-addon"><i class="fas fa-calendar" aria-hidden="true"></i></span>
+                                    <span class="input-group-addon"><x-icon type="calendar" /></span>
                                 </div>
                                 {!! $errors->first('next_audit_date', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                                  <p class="help-block">{!! trans('general.next_audit_date_help') !!}</p>
@@ -131,15 +130,26 @@
                         <!-- Audit Image -->
                         @include ('partials.forms.edit.image-upload', ['help_text' => trans('general.audit_images_help')])
 
+                        <!-- Custom fields -->
+                        @include("models/custom_fields_form", [
+                                'model' => $asset->model,
+                                'show_custom_fields_type' => 'audit'
+                        ])
+
 
                     </div> <!--/.box-body-->
-                    <div class="box-footer">
-                        <a class="btn btn-link" href="{{ URL::previous() }}"> {{ trans('button.cancel') }}</a>
-                        <button type="submit" class="btn btn-success pull-right{{ (!$asset->model ? ' disabled' : '') }}"{!! (!$asset->model ? ' data-tooltip="true" title="'.trans('admin/hardware/general.model_invalid_fix').'" disabled' : '') !!}>
-                            <i class="fas fa-check icon-white" aria-hidden="true"></i>
-                            {{ trans('general.audit') }}
-                        </button>
-                    </div>
+
+                    <x-redirect_submit_options
+                            index_route="hardware.index"
+                            :button_label="trans('general.audit')"
+                            :disabled_select="!$asset->model"
+                            :options="[
+                                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => trans('general.assets')]),
+                                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset')]),
+                                'other_redirect' => trans('general.audit_due')
+                               ]"
+                    />
+
                 </form>
             </div>
         </div> <!--/.col-md-7-->

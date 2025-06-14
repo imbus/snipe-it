@@ -8,4 +8,5 @@ return array(
     'remaining' 			            => 'Pozostało',
     'total' 			                => 'Łącznie',
     'update'                            => 'Aktualizuj materiał eksploatacyjny',
+    'inventory_warning'                 => 'Stan magazynowy tego materiału jest poniżej minimum :min_count',
 );

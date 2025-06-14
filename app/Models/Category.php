@@ -29,17 +29,17 @@ class Category extends SnipeModel
     use SoftDeletes;
 
     protected $table = 'categories';
-    protected $hidden = ['user_id', 'deleted_at'];
+    protected $hidden = ['created_by', 'deleted_at'];
 
     protected $casts = [
-        'user_id'      => 'integer',
+        'created_by'      => 'integer',
     ];
 
     /**
      * Category validation rules
      */
     public $rules = [
-        'user_id' => 'numeric|nullable',
+        'created_by' => 'numeric|nullable',
         'name'   => 'required|min:1|max:255|two_column_unique_undeleted:category_type',
         'require_acceptance'   => 'boolean',
         'use_default_eula'   => 'boolean',
@@ -70,7 +70,8 @@ class Category extends SnipeModel
         'name',
         'require_acceptance',
         'use_default_eula',
-        'user_id',
+        'created_by',
+        'notes',
     ];
 
     use Searchable;
@@ -80,7 +81,7 @@ class Category extends SnipeModel
      *
      * @var array
      */
-    protected $searchableAttributes = ['name', 'category_type'];
+    protected $searchableAttributes = ['name', 'category_type', 'notes'];
 
     /**
      * The relations and their attributes that should be included when searching the model.
@@ -98,6 +99,14 @@ class Category extends SnipeModel
      */
     public function isDeletable()
     {
+
+        // We have to check for models as well if the category type is asset
+        if ($this->category_type == 'asset') {
+            return Gate::allows('delete', $this)
+                && ($this->itemCount() == 0)
+                && ($this->models_count == 0)
+                && ($this->deleted_at == '');
+        }
 
         return Gate::allows('delete', $this)
                 && ($this->itemCount() == 0)
@@ -171,15 +180,15 @@ class Category extends SnipeModel
 
         switch ($this->category_type) {
             case 'asset':
-                return $this->assets()->count();
+                return $this->assets->count();
             case 'accessory':
-                return $this->accessories()->count();
+                return $this->accessories->count();
             case 'component':
-                return $this->components()->count();
+                return $this->components->count();
             case 'consumable':
-                return $this->consumables()->count();
+                return $this->consumables->count();
             case 'license':
-                return $this->licenses()->count();
+                return $this->licenses->count();
             default:
                 return 0;
         }
@@ -226,6 +235,11 @@ class Category extends SnipeModel
     public function models()
     {
         return $this->hasMany(\App\Models\AssetModel::class, 'category_id');
+    }
+
+    public function adminuser()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 
     /**
@@ -285,5 +299,10 @@ class Category extends SnipeModel
     public function scopeRequiresAcceptance($query)
     {
         return $query->where('require_acceptance', '=', true);
+    }
+
+    public function scopeOrderByCreatedBy($query, $order)
+    {
+        return $query->leftJoin('users as admin_sort', 'categories.created_by', '=', 'admin_sort.id')->select('categories.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 }

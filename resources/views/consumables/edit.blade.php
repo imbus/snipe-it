@@ -4,6 +4,11 @@
     'helpPosition'  => 'right',
     'helpText' => trans('help.consumables'),
     'formAction' => (isset($item->id)) ? route('consumables.update', ['consumable' => $item->id]) : route('consumables.store'),
+    'index_route' => 'consumables.index',
+    'options' => [
+                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'consumables']),
+                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.consumable')]),
+               ]
 ])
 {{-- Page content --}}
 @section('inputFields')
@@ -17,7 +22,7 @@
 @include ('partials.forms.edit.model_number')
 @include ('partials.forms.edit.item_number')
 @include ('partials.forms.edit.order_number')
-@include ('partials.forms.edit.purchase_date')
+@include ('partials.forms.edit.datepicker', ['translated_name' => trans('general.purchase_date'),'fieldname' => 'purchase_date'])
 @include ('partials.forms.edit.purchase_cost')
 @include ('partials.forms.edit.quantity')
 @include ('partials.forms.edit.minimum_quantity')

@@ -9,11 +9,12 @@ return array(
     'edit'  					=> 'Wax ka beddel shatiga',
     'filetype_info'				=> 'Noocyada faylalka la oggol yahay waa png, gif, jpg, jpeg, doc, docx, pdf, txt, zip, iyo rar.',
     'clone'  					=> 'Shatiga Clone',
-    'history_for'  				=> 'Taariikhda',
+    'history_for'  				=> 'Taariikhda ',
     'in_out'  					=> 'Gudaha/kabaxsan',
     'info'  					=> 'Macluumaadka shatiga',
     'license_seats'  			=> 'Kuraasta shatiga',
     'seat'  					=> 'Kursiga',
+    'seat_count'  				=> 'Seat :count',
     'seats'  					=> 'Kuraasta',
     'software_licenses'  		=> 'Shatiyada Software',
     'user'  					=> 'Isticmaale',
@@ -23,12 +24,12 @@ return array(
         [
             'checkin_all'           => [
                 'button'            => 'Hubi Dhammaan Kuraasta',
-                'modal'             => 'Tani waxay tallaabo ku hubin doontaa hal kursi. | Tallaabadani waxay hubin doontaa dhammaan :checkedout_seats_count kuraasida shatigan.',
+                'modal'             => 'This action will checkin one seat. | This action will checkin all :checkedout_seats_count seats for this license.',
                 'enabled_tooltip'   => 'Hubi dhammaan kuraasta shatigan isticmaalayaasha iyo hantida labadaba',
                 'disabled_tooltip'  => 'Tani waa naafo sababtoo ah ma jiraan kuraas hadda la hubiyay',
                 'disabled_tooltip_reassignable'  => 'Tani waa naafo sababtoo ah shatiga dib looma wareejin karo',
                 'success'           => 'Shatiga si guul leh ayaa loo hubiyay! | Dhammaan shatiyada si guul leh ayaa loo hubiyay!',
-                'log_msg'           => 'Lagu hubiyay hubinta shatiga bulk ee shatiga GUI',
+                'log_msg'           => 'Checked in via bulk license checkin in license GUI',
             ],
 
             'checkout_all'              => [
@@ -46,6 +47,6 @@ return array(
             ],
     ],
 
-    'below_threshold' => 'There are only :remaining_count seats left for this license with a minimum quantity of :min_amt. You may want to consider purchasing more seats.',
-    'below_threshold_short' => 'This item is below the minimum required quantity.',
+    'below_threshold' => 'Kama banaana kuraastan waxaan ka ahayn :remaining_count waxaa dhici karta inaad ku fakareyso iibashada boosas kale.',
+    'below_threshold_short' => 'Cunsurkan wuu ka yaryahay xadkii ugu hooseysay ee la rabay.',
 );

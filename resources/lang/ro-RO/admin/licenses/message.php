@@ -44,10 +44,13 @@ return array(
         'error'   => 'A aparut o problema la predarea licentei. Va rugam incercati iar.',
         'success' => 'Licenta a fost predata',
         'not_enough_seats' => 'Nu sunt disponibile suficiente locuri de licență pentru checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'A aparut o problema la primirea licentei. Va rugam incercati iar.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Licenta a fost primita'
     ),
 

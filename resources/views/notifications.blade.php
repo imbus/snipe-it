@@ -1,5 +1,5 @@
 @if ($errors->any())
-<div class="col-md-12">
+<div class="col-md-12" id="error-notification">
     <div class="alert alert-danger fade in">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <i class="fas fa-exclamation-triangle faa-pulse animated"></i>
@@ -12,7 +12,7 @@
 
 
 @if ($message = session()->get('status'))
-    <div class="col-md-12">
+    <div class="col-md-12" id="success-notification">
         <div class="alert alert-success fade in">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <i class="fas fa-check faa-pulse animated"></i>
@@ -24,7 +24,7 @@
 
 
 @if ($message = session()->get('success'))
-<div class="col-md-12">
+<div class="col-md-12" id="success-notification">
     <div class="alert alert-success fade in">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <i class="fas fa-check faa-pulse animated"></i>
@@ -32,11 +32,12 @@
         {{ $message }}
     </div>
 </div>
+@include ('partials.confetti-js')
 @endif
 
 
 @if ($message = session()->get('success-unescaped'))
-    <div class="col-md-12">
+    <div class="col-md-12" id="success-notification">
         <div class="alert alert-success fade in">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <i class="fas fa-check faa-pulse animated"></i>
@@ -44,12 +45,13 @@
             {!!  $message !!}
         </div>
     </div>
+    @include ('partials.confetti-js')
 @endif
 
 
 @if ($assets = session()->get('assets'))
     @foreach ($assets as $asset)
-        <div class="col-md-12">
+        <div class="col-md-12" id="multi-error-notification">
             <div class="alert alert-info fade in">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <i class="fas fa-info-circle faa-pulse animated"></i>
@@ -75,7 +77,7 @@
 
 @if ($consumables = session()->get('consumables'))
     @foreach ($consumables as $consumable)
-        <div class="col-md-12">
+        <div class="col-md-12" id="success-notification">
             <div class="alert alert-info fade in">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <i class="fas fa-info-circle faa-pulse animated"></i>

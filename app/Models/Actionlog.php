@@ -4,10 +4,9 @@ namespace App\Models;
 
 use App\Models\Traits\Searchable;
 use App\Presenters\Presentable;
-use Carbon;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Model for the Actionlog (the table that keeps a historical log of
@@ -17,10 +16,12 @@ use Illuminate\Support\Facades\Auth;
  */
 class Actionlog extends SnipeModel
 {
+    use CompanyableTrait;
     use HasFactory;
 
     // This is to manually set the source (via setActionSource()) for determineActionSource()
     protected ?string $source = null;
+    protected $with = ['adminuser'];
 
     protected $presenter = \App\Presenters\ActionlogPresenter::class;
     use SoftDeletes;
@@ -31,7 +32,7 @@ class Actionlog extends SnipeModel
     protected $fillable = [
         'created_at',
         'item_type',
-        'user_id',
+        'created_by',
         'item_id',
         'action_type',
         'note',
@@ -51,10 +52,14 @@ class Actionlog extends SnipeModel
         'action_type',
         'note',
         'log_meta',
-        'user_id',
+        'created_by',
         'remote_ip',
         'user_agent',
-        'action_source'
+        'item_type',
+        'target_type',
+        'action_source',
+        'created_at',
+        'action_date',
     ];
 
     /**
@@ -63,10 +68,28 @@ class Actionlog extends SnipeModel
      * @var array
      */
     protected $searchableRelations = [
-        'company' => ['name'],
-        'admin' => ['first_name','last_name','username', 'email'],
-        'user'  => ['first_name','last_name','username', 'email'],
-        'assets'  => ['asset_tag','name'],
+        'company'     => ['name'],
+        'adminuser'   => ['first_name','last_name','username', 'email'],
+        'user'        => ['first_name','last_name','username', 'email'],
+        'assets'      => ['asset_tag','name', 'serial', 'order_number', 'notes', 'purchase_date'],
+        'assets.model'              => ['name', 'model_number', 'eol', 'notes'],
+        'assets.model.category'     => ['name', 'notes'],
+        'assets.model.manufacturer' => ['name', 'notes'],
+        'licenses'    => ['name', 'serial', 'notes', 'order_number', 'license_email', 'license_name', 'purchase_order', 'purchase_date'],
+        'licenses.category'     => ['name', 'notes'],
+        'licenses.supplier'     => ['name'],
+        'consumables'    => ['name', 'notes', 'order_number', 'model_number', 'item_no', 'purchase_date'],
+        'consumables.category'     => ['name', 'notes'],
+        'consumables.location'     => ['name', 'notes'],
+        'consumables.supplier'     => ['name', 'notes'],
+        'components'     => ['name', 'notes', 'purchase_date'],
+        'components.category'     => ['name', 'notes'],
+        'components.location'     => ['name', 'notes'],
+        'components.supplier'     => ['name', 'notes'],
+        'accessories'     => ['name', 'purchase_date'],
+        'accessories.category'     => ['name'],
+        'accessories.location'     => ['name', 'notes'],
+        'accessories.supplier'     => ['name', 'notes'],
     ];
 
     /**
@@ -81,16 +104,22 @@ class Actionlog extends SnipeModel
         parent::boot();
         static::creating(function (self $actionlog) {
             // If the admin is a superadmin, let's see if the target instead has a company.
-            if (Auth::user() && Auth::user()->isSuperUser()) {
+            if (auth()->user() && auth()->user()->isSuperUser()) {
                 if ($actionlog->target) {
                     $actionlog->company_id = $actionlog->target->company_id;
                 } elseif ($actionlog->item) {
                     $actionlog->company_id = $actionlog->item->company_id;
                 }
-            } elseif (Auth::user() && Auth::user()->company) {
-                $actionlog->company_id = Auth::user()->company_id;
+            } elseif (auth()->user() && auth()->user()->company) {
+                $actionlog->company_id = auth()->user()->company_id;
             }
+
+            if ($actionlog->action_date == '') {
+                $actionlog->action_date = Carbon::now();
+            }
+
         });
+
     }
 
 
@@ -129,6 +158,54 @@ class Actionlog extends SnipeModel
     public function assets()
     {
         return $this->hasMany(\App\Models\Asset::class, 'id', 'item_id');
+    }
+
+    /**
+     * Establishes the actionlog -> license relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function licenses()
+    {
+        return $this->hasMany(\App\Models\License::class, 'id', 'item_id');
+    }
+
+    /**
+     * Establishes the actionlog -> consumable relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function consumables()
+    {
+        return $this->hasMany(\App\Models\Consumable::class, 'id', 'item_id');
+    }
+
+    /**
+     * Establishes the actionlog -> consumable relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function accessories()
+    {
+        return $this->hasMany(\App\Models\Accessory::class, 'id', 'item_id');
+    }
+
+    /**
+     * Establishes the actionlog -> components relationship
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function components()
+    {
+        return $this->hasMany(\App\Models\Component::class, 'id', 'item_id');
     }
 
     /**
@@ -197,9 +274,9 @@ class Actionlog extends SnipeModel
      * @since [v3.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function admin()
+    public function adminuser()
     {
-        return $this->belongsTo(User::class, 'user_id')
+        return $this->belongsTo(User::class, 'created_by')
                     ->withTrashed();
     }
 
@@ -290,16 +367,22 @@ class Actionlog extends SnipeModel
     public function daysUntilNextAudit($monthInterval = 12, $asset = null)
     {
         $now = Carbon::now();
-        $last_audit_date = $this->created_at;
-        $next_audit = $last_audit_date->addMonth($monthInterval);
-        $next_audit_days = $now->diffInDays($next_audit);
+        $last_audit_date = $this->created_at; // this is the action log's created at, not the asset itself
+        $next_audit = $last_audit_date->addMonth($monthInterval); // this actually *modifies* the $last_audit_date
+        $next_audit_days = (int) round($now->diffInDays($next_audit, true));
+        $override_default_next = $next_audit;
 
         // Override the default setting for interval if the asset has its own next audit date
         if (($asset) && ($asset->next_audit_date)) {
-            $override_default_next = \Carbon::parse($asset->next_audit_date);
-            $next_audit_days = $override_default_next->diffInDays($now);
+            $override_default_next = Carbon::parse($asset->next_audit_date);
+            $next_audit_days = (int) round($override_default_next->diffInDays($now, true));
         }
 
+        // Show as negative number if the next audit date is before the audit date we're looking at
+        if ($this->created_at > $override_default_next) {
+            $next_audit_days = '-'.$next_audit_days;
+        }
+        
         return $next_audit_days;
     }
 
@@ -371,5 +454,10 @@ class Actionlog extends SnipeModel
     public function setActionSource($source = null): void
     {
         $this->source = $source;
+    }
+
+    public function scopeOrderByCreatedBy($query, $order)
+    {
+        return $query->leftJoin('users as admin_sort', 'action_logs.created_by', '=', 'admin_sort.id')->select('action_logs.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 }

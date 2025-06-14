@@ -6,16 +6,14 @@ return array(
     'account_not_found'      => 'Невалиден потребител или парола.',
     'account_not_activated'  => 'Потребителят все още не е активиран.',
     'account_suspended'      => 'Потребителят е временно спрян.',
-    'account_banned'         => 'Потребителят е неактивен.',
-    'throttle'               => 'Твърде много грешни опити. Моля опитайте отново след :minutes минути.',
 
     'two_factor' => array(
         'already_enrolled'      => 'Вашето устройство е вече вписано.',
         'success'               => 'Вие влязохте успешно.',
         'code_required'         => 'Необходим е код за двуфакторова идентификация.',
         'invalid_code'          => 'Кода за двуфакторна идентификация е невалиден.',
-        'enter_two_factor_code' => 'Please enter your two-factor authentication code.',
-        'please_enroll'         => 'Please enroll a device in two-factor authentication.',
+        'enter_two_factor_code' => 'Моля, въведете вашия двуфакторен код за удостоверяване.',
+        'please_enroll'         => 'Моля, регистрирайте устройство с двуфакторно удостоверяване.',
     ),
 
     'signin' => array(

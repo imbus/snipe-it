@@ -44,10 +44,13 @@ return array(
         'error'   => 'Terjadi masalah saat menghapus lisensi. Silahkan coba lagi.',
         'success' => 'Lisensi berhasil diperiksa',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Terjadi masalah saat menghapus lisensi. Silahkan coba lagi.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Lisensi berhasil diperiksa'
     ),
 

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Accessory;
+use App\Models\Asset;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\Manufacturer;
@@ -33,7 +34,7 @@ class AccessoryFactory extends Factory
                 $this->faker->randomElement(['Bluetooth', 'Wired']),
                 $this->faker->randomElement(['Keyboard', 'Wired'])
             ),
-            'user_id' => User::factory()->superuser(),
+            'created_by' => User::factory()->superuser(),
             'category_id' => Category::factory()->forAccessories(),
             'model_number' => $this->faker->numberBetween(1000000, 50000000),
             'location_id' => Location::factory(),
@@ -125,11 +126,12 @@ class AccessoryFactory extends Factory
         })->afterCreating(function ($accessory) {
             $user = User::factory()->create();
 
-            $accessory->users()->attach($accessory->id, [
+            $accessory->checkouts()->create([
                 'accessory_id' => $accessory->id,
-                'created_at' => now(),
-                'user_id' => $user->id,
+                'created_at' => Carbon::now(),
+                'created_by' => $user->id,
                 'assigned_to' => $user->id,
+                'assigned_type' => User::class,
                 'note' => '',
             ]);
         });
@@ -145,11 +147,53 @@ class AccessoryFactory extends Factory
     public function checkedOutToUser(User $user = null)
     {
         return $this->afterCreating(function (Accessory $accessory) use ($user) {
-            $accessory->users()->attach($accessory->id, [
+            $accessory->checkouts()->create([
                 'accessory_id' => $accessory->id,
                 'created_at' => Carbon::now(),
-                'user_id' => 1,
+                'created_by' => 1,
                 'assigned_to' => $user->id ?? User::factory()->create()->id,
+                'assigned_type' => User::class,
+            ]);
+        });
+    }
+
+    public function checkedOutToUsers(array $users)
+    {
+        return $this->afterCreating(function (Accessory $accessory) use ($users) {
+            foreach ($users as $user) {
+                $accessory->checkouts()->create([
+                    'accessory_id' => $accessory->id,
+                    'created_at' => Carbon::now(),
+                    'created_by' => 1,
+                    'assigned_to' => $user->id,
+                    'assigned_type' => User::class,
+                ]);
+            }
+        });
+    }
+
+    public function checkedOutToAsset(Asset $asset = null)
+    {
+        return $this->afterCreating(function (Accessory $accessory) use ($asset) {
+            $accessory->checkouts()->create([
+                'accessory_id' => $accessory->id,
+                'created_at' => Carbon::now(),
+                'created_by' => 1,
+                'assigned_to' => $asset->id ?? Asset::factory()->create()->id,
+                'assigned_type' => Asset::class,
+            ]);
+        });
+    }
+
+    public function checkedOutToLocation(Location $location = null)
+    {
+        return $this->afterCreating(function (Accessory $accessory) use ($location) {
+            $accessory->checkouts()->create([
+                'accessory_id' => $accessory->id,
+                'created_at' => Carbon::now(),
+                'created_by' => 1,
+                'assigned_to' => $location->id ?? Location::factory()->create()->id,
+                'assigned_type' => Location::class,
             ]);
         });
     }

@@ -209,7 +209,7 @@ class Saml
                 }
             }
 
-            $custom_settings = preg_split('/\r\n|\r|\n/', $setting->saml_custom_settings);
+            $custom_settings = preg_split('/\r\n|\r|\n/', $setting->saml_custom_settings ?? '');
             if ($custom_settings) {
                 foreach ($custom_settings as $custom_setting) {
                     $split = explode('=', $custom_setting, 2);
@@ -337,12 +337,12 @@ class Saml
     /**
      * Get a setting.
      *
-     * @author Johnson Yi <jyi.dev@outlook.com>
-     *
      * @param string|array|int $key
      * @param mixed $default
      *
-     * @return void
+     * @return mixed
+     * @author Johnson Yi <jyi.dev@outlook.com>
+     *
      */
     public function getSetting($key, $default = null)
     {

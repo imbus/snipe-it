@@ -7,7 +7,7 @@ use EasySlugger\Utf8Slugger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
-use Schema;
+use Illuminate\Support\Facades\Schema;
 use Watson\Validating\ValidatingTrait;
 class CustomField extends Model
 {
@@ -79,6 +79,9 @@ class CustomField extends Model
         'auto_add_to_fieldsets',
         'show_in_listview',
         'show_in_email',
+        'display_checkout',
+        'display_checkin',
+        'display_audit',
         'show_in_requestable_list',
     ];
 
@@ -149,11 +152,6 @@ class CustomField extends Model
                     return true;
                 }
 
-                // This is just a dumb thing we have to include because Laraval/Doctrine doesn't
-                // play well with enums or a table that EVER had enums. :(
-                $platform = Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform();
-                $platform->registerDoctrineTypeMapping('enum', 'string');
-
                 // Rename the field if the name has changed
                 Schema::table(self::$table_name, function ($table) use ($custom_field) {
                     $table->renameColumn($custom_field->convertUnicodeDbSlug($custom_field->getOriginal('name')), $custom_field->convertUnicodeDbSlug());
@@ -188,7 +186,44 @@ class CustomField extends Model
     {
         return $this->belongsToMany(\App\Models\CustomFieldset::class);
     }
-   
+
+    public function displayFieldInCheckinForm()
+    {
+        if ($this->display_checkin == '1') {
+            return true;
+        }
+        return false;
+    }
+
+    public function displayFieldInCheckoutForm()
+    {
+        if ($this->display_checkout == '1') {
+            return true;
+        }
+        return false;
+    }
+
+    public function displayFieldInAuditForm()
+    {
+        if ($this->display_audit == '1') {
+            return true;
+        }
+        return false;
+    }
+
+    public function displayFieldInCurrentForm($form_type = null)
+    {
+        switch ($form_type) {
+            case 'audit':
+                return $this->displayFieldInAuditForm();
+            case 'checkin':
+                return $this->displayFieldInCheckinForm();
+            case 'checkout':
+                return $this->displayFieldInCheckoutForm();
+        }
+    }
+
+
     public function assetModels()
     {
        return $this->fieldset()->with('models')->get()->pluck('models')->flatten()->unique('id'); 
@@ -307,7 +342,7 @@ class CustomField extends Model
     public function formatFieldValuesAsArray()
     {
         $result = [];
-        $arr = preg_split('/\\r\\n|\\r|\\n/', $this->field_values);
+        $arr = preg_split('/\\r\\n|\\r|\\n/', $this->field_values ?? '');
 
         if (($this->element != 'checkbox') && ($this->element != 'radio')) {
             $result[''] = 'Select '.strtolower($this->format);
@@ -383,7 +418,7 @@ class CustomField extends Model
 
     /**
      * Check to see if there is a custom regex format type
-     * @see https://github.com/snipe/snipe-it/issues/5896
+     * @see https://github.com/grokability/snipe-it/issues/5896
      *
      * @author Wes Hulette <jwhulette@gmail.com>
      *

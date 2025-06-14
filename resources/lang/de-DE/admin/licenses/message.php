@@ -44,10 +44,13 @@ return array(
         'error'   => 'Lizenz wurde nicht herausgegeben, bitte versuchen Sie es erneut.',
         'success' => 'Lizenz wurde erfolgreich herausgegeben',
         'not_enough_seats' => 'Nicht genügend Lizenz-Sitze zur Herausgabe verfügbar',
+        'mismatch' => 'Der angegebene Lizenzplatz entspricht nicht der Lizenz',
+        'unavailable' => 'Dieser Platz ist nicht zur Herausgabe verfügbar.',
     ),
 
     'checkin' => array(
         'error'   => 'Lizenz wurde nicht zurückgenommen, bitte versuchen Sie es erneut.',
+        'not_reassignable' => 'Lizenz nicht neu zuweisbar',
         'success' => 'Die Lizenz wurde erfolgreich zurückgenommen'
     ),
 

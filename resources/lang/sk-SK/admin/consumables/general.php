@@ -1,11 +1,12 @@
 <?php
 
 return array(
-    'checkout'                          => 'Checkout Consumable to User',
-    'consumable_name'                   => 'Consumable Name',
-    'create'                            => 'Create Consumable',
-    'item_no'                           => 'Item No.',
-    'remaining' 			            => 'Remaining',
+    'checkout'                          => 'Odovzdať spotrebný materiál používateľovi',
+    'consumable_name'                   => 'Názov spotrebného materiálu',
+    'create'                            => 'Pridať spotrebný materiál',
+    'item_no'                           => 'Položka číslo',
+    'remaining' 			            => 'Zostáva',
     'total' 			                => 'Celkom',
-    'update'                            => 'Update Consumable',
+    'update'                            => 'Upraviť spotrebný materiál',
+    'inventory_warning'                 => 'Zostatok stavu tohto spotrebného materiálu je pod minimálnym množstvom :min_count',
 );

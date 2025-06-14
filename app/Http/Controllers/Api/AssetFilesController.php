@@ -3,29 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Helpers\StorageHelper;
+use App\Http\Transformers\UploadedFilesTransformer;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Gate;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
-use App\Models\AssetModel;
 use App\Models\Actionlog;
-use \Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use DB;
-use Illuminate\Http\Request;
 use App\Http\Requests\UploadFileRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-use Input;
-use Paginator;
-use Slack;
-use Str;
-use TCPDF;
-use Validator;
-use Route;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Http\Request;
 
 
 /**
@@ -44,12 +33,10 @@ class AssetFilesController extends Controller
      *
      * @param \App\Http\Requests\UploadFileRequest $request
      * @param int $assetId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @since [v6.0]
      * @author [T. Scarsbrook] [<snipe@scarzybrook.co.uk>]
      */
-    public function store(UploadFileRequest $request, $assetId = null)
+    public function store(UploadFileRequest $request, $assetId = null) : JsonResponse
     {
         // Start by checking if the asset being acted upon exists
         if (! $asset = Asset::find($assetId)) {
@@ -59,7 +46,7 @@ class AssetFilesController extends Controller
         // Make sure we are allowed to update this asset
         $this->authorize('update', $asset);
 
-	if ($request->hasFile('file')) {
+	    if ($request->hasFile('file')) {
             // If the file storage directory doesn't exist; create it
             if (! Storage::exists('private_uploads/assets')) {
                 Storage::makeDirectory('private_uploads/assets', 775);
@@ -84,38 +71,40 @@ class AssetFilesController extends Controller
      * List the files for an asset.
      *
      * @param  int $assetId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @since [v6.0]
      * @author [T. Scarsbrook] [<snipe@scarzybrook.co.uk>]
      */
-    public function list($assetId = null)
+    public function list(Asset $asset, Request $request) : JsonResponse | array
     {
-        // Start by checking if the asset being acted upon exists
-        if (! $asset = Asset::find($assetId)) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/hardware/message.does_not_exist')), 404);
-        }
-	
-	// the asset is valid
-        if (isset($asset->id)) {
-            $this->authorize('view', $asset);
 
-            // Check that there are some uploads on this asset that can be listed
-            if ($asset->uploads->count() > 0) {
-                $files = array();
-                foreach ($asset->uploads as $upload) {
-                    array_push($files, $upload);
-		}
-                // Give the list of files back to the user
-                return response()->json(Helper::formatStandardApiResponse('success', $files, trans('admin/hardware/message.upload.success')));
-            }
+        $this->authorize('view', $asset);
 
-	    // There are no files.
-            return response()->json(Helper::formatStandardApiResponse('success', array(), trans('admin/hardware/message.upload.success')));
+        $allowed_columns =
+            [
+                'id',
+                'filename',
+                'eol',
+                'notes',
+                'created_at',
+                'updated_at',
+            ];
+
+        $files = Actionlog::select('action_logs.*')->where('action_type', '=', 'uploaded')->where('item_type', '=', Asset::class)->where('item_id', '=', $asset->id);
+
+        if ($request->filled('search')) {
+            $files = $files->TextSearch($request->input('search'));
         }
 
-        // Send back an error message
-        return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/hardware/message.download.error')), 500);
+        // Make sure the offset and limit are actually integers and do not exceed system limits
+        $offset = ($request->input('offset') > $files->count()) ? $files->count() : abs($request->input('offset'));
+        $limit = app('api_limit_value');
+        $order = $request->input('order') === 'asc' ? 'asc' : 'desc';
+        $sort = in_array($request->input('sort'), $allowed_columns) ? $request->input('sort') : 'created_at';
+        $files = $files->orderBy($sort, $order);
+
+        $files = $files->skip($offset)->take($limit)->get();
+        return (new UploadedFilesTransformer())->transformFiles($files, $files->count());
+
     }
 
     /**
@@ -128,12 +117,8 @@ class AssetFilesController extends Controller
      * @since [v6.0]
      * @author [T. Scarsbrook] [<snipe@scarzybrook.co.uk>]
      */
-    public function show($assetId = null, $fileId = null)
+    public function show(Asset $asset, $fileId = null) : JsonResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
-        // Start by checking if the asset being acted upon exists
-        if (! $asset = Asset::find($assetId)) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/hardware/message.does_not_exist')), 404);
-        }
 
         // the asset is valid
         if (isset($asset->id)) {
@@ -146,7 +131,7 @@ class AssetFilesController extends Controller
 
 	    // Form the full filename with path
             $file = 'private_uploads/assets/'.$log->filename;
-            \Log::debug('Checking for '.$file);
+            Log::debug('Checking for '.$file);
 
             if ($log->action_type == 'audit') {
                 $file = 'private_uploads/audits/'.$log->filename;
@@ -178,17 +163,11 @@ class AssetFilesController extends Controller
      *
      * @param  int $assetId
      * @param  int $fileId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @since [v6.0]
      * @author [T. Scarsbrook] [<snipe@scarzybrook.co.uk>]
      */
-    public function destroy($assetId = null, $fileId = null)
+    public function destroy(Asset $asset, $fileId = null) : JsonResponse
     {
-        // Start by checking if the asset being acted upon exists
-        if (! $asset = Asset::find($assetId)) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/hardware/message.does_not_exist')), 404);
-        }
 
         $rel_path = 'private_uploads/assets';
 
@@ -198,12 +177,14 @@ class AssetFilesController extends Controller
 
             // Check for the file
             $log = Actionlog::find($fileId);
-	    if ($log) {
-                // Check the file actually exists, and delete it
-                if (Storage::exists($rel_path.'/'.$log->filename)) {
-                    Storage::delete($rel_path.'/'.$log->filename);
-		}
-		// Delete the record of the file
+
+                if ($log) {
+                        // Check the file actually exists, and delete it
+                        if (Storage::exists($rel_path.'/'.$log->filename)) {
+                            Storage::delete($rel_path.'/'.$log->filename);
+                }
+
+		        // Delete the record of the file
                 $log->delete();
 
                 // All deleting done - notify the user of success

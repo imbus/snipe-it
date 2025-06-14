@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' }}">
+dir="{{ Helper::determineLanguageDirection() }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,6 +24,8 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
 
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="language" content="{{ Helper::mapBackToLegacyLocale(app()->getLocale()) }}">
+    <meta name="language-direction" content="{{ Helper::determineLanguageDirection() }}">
     <meta name="baseUrl" content="{{ config('app.url') }}/">
 
     <script nonce="{{ csrf_token() }}">
@@ -142,40 +144,40 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                         <ul class="nav navbar-nav">
                             @can('index', \App\Models\Asset::class)
                                 <li aria-hidden="true"{!! (Request::is('hardware*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ url('hardware') }}" accesskey="1" tabindex="-1">
-                                        <i class="fas fa-barcode fa-fw"></i>
+                                    <a href="{{ url('hardware') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=1" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.assets') }}">
+                                        <x-icon type="assets" class="fa-fw" />
                                         <span class="sr-only">{{ trans('general.assets') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('view', \App\Models\License::class)
                                 <li aria-hidden="true"{!! (Request::is('licenses*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('licenses.index') }}" accesskey="2" tabindex="-1">
-                                        <i class="far fa-save fa-fw"></i>
+                                    <a href="{{ route('licenses.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=2" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.licenses') }}">
+                                        <x-icon type="licenses" class="fa-fw" />
                                         <span class="sr-only">{{ trans('general.licenses') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('index', \App\Models\Accessory::class)
                                 <li aria-hidden="true"{!! (Request::is('accessories*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('accessories.index') }}" accesskey="3" tabindex="-1">
-                                        <i class="far fa-keyboard fa-fw"></i>
+                                    <a href="{{ route('accessories.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=3" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.accessories') }}">
+                                        <x-icon type="accessories" class="fa-fw" />
                                         <span class="sr-only">{{ trans('general.accessories') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('index', \App\Models\Consumable::class)
                                 <li aria-hidden="true"{!! (Request::is('consumables*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ url('consumables') }}" accesskey="4" tabindex="-1">
-                                        <i class="fas fa-tint fa-fw"></i>
+                                    <a href="{{ url('consumables') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=4" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.consumables') }}">
+                                        <x-icon type="consumables" class="fa-fw" />
                                         <span class="sr-only">{{ trans('general.consumables') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('view', \App\Models\Component::class)
                                 <li aria-hidden="true"{!! (Request::is('components*') ? ' class="active"' : '') !!}>
-                                    <a href="{{ route('components.index') }}" accesskey="5" tabindex="-1">
-                                        <i class="far fa-hdd fa-fw"></i>
+                                    <a href="{{ route('components.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=5" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.components') }}">
+                                        <x-icon type="components" class="fa-fw" />
                                         <span class="sr-only">{{ trans('general.components') }}</span>
                                     </a>
                                 </li>
@@ -187,15 +189,15 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                           action="{{ route('findbytag/hardware') }}" method="get">
                                         <div class="col-xs-12 col-md-12">
                                             <div class="col-xs-12 form-group">
-                                                <label class="sr-only"
-                                                       for="tagSearch">{{ trans('general.lookup_by_tag') }}</label>
-                                                <input type="text" class="form-control" id="tagSearch" name="assetTag"
-                                                       placeholder="{{ trans('general.lookup_by_tag') }}">
+                                                <label class="sr-only" for="tagSearch">
+                                                    {{ trans('general.lookup_by_tag') }}
+                                                </label>
+                                                <input type="text" class="form-control" id="tagSearch" name="assetTag" placeholder="{{ trans('general.lookup_by_tag') }}">
                                                 <input type="hidden" name="topsearch" value="true" id="search">
                                             </div>
                                             <div class="col-xs-1">
-                                                <button type="submit" class="btn btn-primary pull-right">
-                                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                                <button type="submit" id="topSearchButton" class="btn btn-primary pull-right">
+                                                    <x-icon type="search" />
                                                     <span class="sr-only">{{ trans('general.search') }}</span>
                                                 </button>
                                             </div>
@@ -212,17 +214,17 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                     </a>
                                     <ul class="dropdown-menu">
                                         @can('create', \App\Models\Asset::class)
-                                            <li {!! (Request::is('hardware/create') ? 'class="active>"' : '') !!}>
+                                            <li{!! (Request::is('hardware/create') ? ' class="active"' : '') !!}>
                                                 <a href="{{ route('hardware.create') }}" tabindex="-1">
-                                                    <i class="fas fa-barcode fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="assets" />
                                                     {{ trans('general.asset') }}
                                                 </a>
                                             </li>
                                         @endcan
                                         @can('create', \App\Models\License::class)
-                                            <li {!! (Request::is('licenses/create') ? 'class="active"' : '') !!}>
+                                            <li{!! (Request::is('licenses/create') ? ' class="active"' : '') !!}>
                                                 <a href="{{ route('licenses.create') }}" tabindex="-1">
-                                                    <i class="far fa-save fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="licenses" />
                                                     {{ trans('general.license') }}
                                                 </a>
                                             </li>
@@ -230,7 +232,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         @can('create', \App\Models\Accessory::class)
                                             <li {!! (Request::is('accessories/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('accessories.create') }}" tabindex="-1">
-                                                    <i class="far fa-keyboard fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="accessories" />
                                                     {{ trans('general.accessory') }}
                                                 </a>
                                             </li>
@@ -238,7 +240,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         @can('create', \App\Models\Consumable::class)
                                             <li {!! (Request::is('consunmables/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('consumables.create') }}" tabindex="-1">
-                                                    <i class="fas fa-tint fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="consumables" />
                                                     {{ trans('general.consumable') }}
                                                 </a>
                                             </li>
@@ -246,7 +248,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         @can('create', \App\Models\Component::class)
                                             <li {!! (Request::is('components/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('components.create') }}" tabindex="-1">
-                                                    <i class="far fa-hdd fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="components" />
                                                     {{ trans('general.component') }}
                                                 </a>
                                             </li>
@@ -254,7 +256,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         @can('create', \App\Models\User::class)
                                             <li {!! (Request::is('users/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('users.create') }}" tabindex="-1">
-                                                    <i class="fas fa-user fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="users" />
                                                     {{ trans('general.user') }}
                                                 </a>
                                             </li>
@@ -264,28 +266,38 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                             @endcan
 
                             @can('admin')
-                                @if ($snipeSettings->show_alerts_in_menu=='1')
-                                    <!-- Tasks: style can be found in dropdown.less -->
-                                    <?php $alert_items = Helper::checkLowInventory(); ?>
+                                <!-- Tasks: style can be found in dropdown.less -->
+                                <?php $alert_items = ($snipeSettings->show_alerts_in_menu=='1') ? Helper::checkLowInventory() : [];
+                                      $deprecations = Helper::deprecationCheck()
+                                        ?>
 
-                                    <li class="dropdown tasks-menu">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                            <i class="far fa-flag" aria-hidden="true"></i>
-                                            <span class="sr-only">{{ trans('general.alerts') }}</span>
-                                            @if (count($alert_items))
-                                                <span class="label label-danger">{{ count($alert_items) }}</span>
+                                <li class="dropdown tasks-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <x-icon type="alerts" />
+                                        <span class="sr-only">{{ trans('general.alerts') }}</span>
+                                        @if(count($alert_items) + count($deprecations))
+                                            <span class="label label-danger">{{ count($alert_items) + count($deprecations)}}</span>
+                                        @endif
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        @can('superadmin')
+                                            @if($deprecations)
+                                                @foreach ($deprecations as $key => $deprecation)
+                                                    @if ($deprecation['check'])
+                                                        <li class="header alert-warning">{!! $deprecation['message'] !!}</li>
+                                                    @endif
+                                                @endforeach
                                             @endif
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li class="header">{{ trans('general.quantity_minimum', array('count' => count($alert_items))) }}</li>
+                                        @endcan
+                                        @if($alert_items)
+                                        <li class="header">{{ trans_choice('general.quantity_minimum', count($alert_items)) }}</li>
                                             <li>
-                                                <!-- inner menu: contains the actual data -->
+                                            <!-- inner menu: contains the actual data -->
                                                 <ul class="menu">
-
                                                     @for($i = 0; count($alert_items) > $i; $i++)
 
                                                         <li><!-- Task item -->
-                                                            <a href="{{route($alert_items[$i]['type'].'.show', $alert_items[$i]['id'])}}">
+                                                            <a href="{{ route($alert_items[$i]['type'].'.show', $alert_items[$i]['id'])}}">
                                                                 <h2 class="task_menu">{{ $alert_items[$i]['name'] }}
                                                                     <small class="pull-right">
                                                                         {{ $alert_items[$i]['remaining'] }} {{ trans('general.remaining') }}
@@ -306,13 +318,13 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                                     @endfor
                                                 </ul>
                                             </li>
-                                            {{-- <li class="footer">
-                                              <a href="#">{{ trans('general.tasks_view_all') }}</a>
-                                            </li> --}}
-                                        </ul>
-                                    </li>
-                                @endcan
-                            @endif
+                                        @endif
+                                        {{-- <li class="footer">
+                                          <a href="#">{{ trans('general.tasks_view_all') }}</a>
+                                        </li> --}}
+                                    </ul>
+                                </li>
+                            @endcan
 
 
 
@@ -324,31 +336,33 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                             <img src="{{ Auth::user()->present()->gravatar() }}" class="user-image"
                                                  alt="">
                                         @else
-                                            <i class="fas fa-users" aria-hidden="true"></i>
+                                            <x-icon type="user" />
                                         @endif
 
-                                        <span class="hidden-xs">{{ Auth::user()->getFullNameAttribute() }} <strong
-                                                    class="caret"></strong></span>
+                                        <span class="hidden-xs">
+                                            {{ Auth::user()->getFullNameAttribute() }}
+                                            <strong class="caret"></strong>
+                                        </span>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <!-- User image -->
                                         <li {!! (Request::is('account/profile') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('view-assets') }}">
-                                                <i class="fas fa-check fa-fw" aria-hidden="true"></i>
+                                                <x-icon type="checkmark" class="fa-fw" />
                                                 {{ trans('general.viewassets') }}
                                             </a></li>
 
                                         @can('viewRequestable', \App\Models\Asset::class)
                                             <li {!! (Request::is('account/requested') ? ' class="active"' : '') !!}>
                                                 <a href="{{ route('account.requested') }}">
-                                                    <i class="fas fa-check fa-disk fa-fw" aria-hidden="true"></i>
+                                                    <x-icon type="checkmark" class="fa-fw" />
                                                     {{ trans('general.requested_assets_menu') }}
                                                 </a></li>
                                         @endcan
 
                                         <li {!! (Request::is('account/accept') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('account.accept') }}">
-                                                <i class="fas fa-check fa-disk fa-fw"></i>
+                                                <x-icon type="checkmark" class="fa-fw" />
                                                 {{ trans('general.accept_assets_menu') }}
                                             </a></li>
 
@@ -356,25 +370,27 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         @can('self.profile')
                                         <li>
                                             <a href="{{ route('profile') }}">
-                                                <i class="fas fa-user fa-fw" aria-hidden="true"></i>
+                                                <x-icon type="user" class="fa-fw" />
                                                 {{ trans('general.editprofile') }}
                                             </a>
                                         </li>
                                         @endcan
 
+                                        @if (Auth::user()->ldap_import!='1')
                                         <li>
                                             <a href="{{ route('account.password.index') }}">
-                                                <i class="fa-solid fa-asterisk fa-fw" aria-hidden="true"></i>
+                                                <x-icon type="password" class="fa-fw" />
                                                 {{ trans('general.changepassword') }}
                                             </a>
                                         </li>
+                                        @endif
 
 
                                         @can('self.api')
                                             <li>
                                                 <a href="{{ route('user.api') }}">
-                                                    <i class="fa-solid fa-user-secret fa-fw"
-                                                       aria-hidden="true"></i></i> {{ trans('general.manage_api_keys') }}
+                                                    <x-icon type="api-key" class="fa-fw" />
+                                                     {{ trans('general.manage_api_keys') }}
                                                 </a>
                                             </li>
                                         @endcan
@@ -383,11 +399,12 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
 
                                             <a href="{{ route('logout.get') }}"
                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                <i class="fa fa-sign-out fa-fw"></i> {{ trans('general.logout') }}
+                                                <x-icon type="logout" class="fa-fw" />
+                                                 {{ trans('general.logout') }}
                                             </a>
 
-                                            <form id="logout-form" action="{{ route('logout.post') }}" method="POST"
-                                                  style="display: none;">
+                                            <form id="logout-form" action="{{ route('logout.post') }}" method="POST" style="display: none;">
+                                                <button type="submit" style="display: none;" title="logout"></button>
                                                 {{ csrf_field() }}
                                             </form>
 
@@ -400,7 +417,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                             @can('superadmin')
                                 <li>
                                     <a href="{{ route('settings.index') }}">
-                                        <i class="fa fa-cogs fa-fw" aria-hidden="true"></i>
+                                        <x-icon type="admin-settings" />
                                         <span class="sr-only">{{ trans('general.admin') }}</span>
                                     </a>
                                 </li>
@@ -411,7 +428,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 <a href="#" style="float:left" class="sidebar-toggle-mobile visible-xs btn" data-toggle="push-menu"
                    role="button">
                     <span class="sr-only">{{ trans('general.toggle_navigation') }}</span>
-                    <i class="fas fa-bars"></i>
+                    <x-icon type="nav-toggle" />
                 </a>
                 <!-- Sidebar toggle button-->
             </header>
@@ -421,25 +438,26 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-                    <ul class="sidebar-menu" data-widget="tree">
+                    <ul class="sidebar-menu" data-widget="tree" {{ \App\Helpers\Helper::determineLanguageDirection() == 'rtl' ? 'style="margin-right:12px' : '' }}>
                         @can('admin')
                             <li {!! (\Request::route()->getName()=='home' ? ' class="active"' : '') !!} class="firstnav">
                                 <a href="{{ route('home') }}">
-                                    <i class="fas fa-tachometer-alt fa-fw" aria-hidden="true"></i>
+                                    <x-icon type="dashboard" class="fa-fw" />
                                     <span>{{ trans('general.dashboard') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('index', \App\Models\Asset::class)
                             <li class="treeview{{ ((Request::is('statuslabels/*') || Request::is('hardware*')) ? ' active' : '') }}">
-                                <a href="#"><i class="fas fa-barcode fa-fw" aria-hidden="true"></i>
+                                <a href="#">
+                                    <x-icon type="assets" class="fa-fw" />
                                     <span>{{ trans('general.assets') }}</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
+                                    <x-icon type="angle-left" class="pull-right fa-fw"/>
                                 </a>
                                 <ul class="treeview-menu">
                                     <li>
                                         <a href="{{ url('hardware') }}">
-                                            <i class="far fa-circle text-grey fa-fw" aria-hidden="true"></i>
+                                            <x-icon type="circle" class="text-grey fa-fw"/>
                                             {{ trans('general.list_all') }}
                                             <span class="badge">
                                                 {{ (isset($total_assets)) ? $total_assets : '' }}
@@ -460,68 +478,69 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                     @endif
 
 
-                                    <li{!! (Request::query('status') == 'Deployed' ? ' class="active"' : '') !!}>
+                                    <li id="deployed-sidenav-option" {!! (Request::query('status') == 'Deployed' ? ' class="active"' : '') !!}>
                                         <a href="{{ url('hardware?status=Deployed') }}">
-                                            <i class="far fa-circle text-blue fa-fw"></i>
+                                            <x-icon type="circle" class="text-blue fa-fw" />
                                             {{ trans('general.deployed') }}
                                             <span class="badge">{{ (isset($total_deployed_sidebar)) ? $total_deployed_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'RTD' ? ' class="active"' : '') !!}>
+                                    <li id="rtd-sidenav-option"{!! (Request::query('status') == 'RTD' ? ' class="active"' : '') !!}>
                                         <a href="{{ url('hardware?status=RTD') }}">
-                                            <i class="far fa-circle text-green fa-fw"></i>
+                                            <x-icon type="circle" class="text-green fa-fw" />
                                             {{ trans('general.ready_to_deploy') }}
                                             <span class="badge">{{ (isset($total_rtd_sidebar)) ? $total_rtd_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'Pending' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=Pending') }}"><i
-                                                    class="far fa-circle text-orange fa-fw"></i>
+                                    <li id="pending-sidenav-option"{!! (Request::query('status') == 'Pending' ? ' class="active"' : '') !!}><a href="{{ url('hardware?status=Pending') }}">
+                                            <x-icon type="circle" class="text-orange fa-fw" />
                                             {{ trans('general.pending') }}
                                             <span class="badge">{{ (isset($total_pending_sidebar)) ? $total_pending_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a
-                                                href="{{ url('hardware?status=Undeployable') }}"><i
-                                                    class="fas fa-times text-red fa-fw"></i>
+                                    <li id="undeployable-sidenav-option"{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a
+                                                href="{{ url('hardware?status=Undeployable') }}">
+                                            <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('general.undeployable') }}
                                             <span class="badge">{{ (isset($total_undeployable_sidebar)) ? $total_undeployable_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'byod' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=byod') }}"><i
-                                                    class="fas fa-times text-red fa-fw"></i>
+                                    <li id="byod-sidenav-option"{!! (Request::query('status') == 'byod' ? ' class="active"' : '') !!}><a
+                                                href="{{ url('hardware?status=byod') }}">
+                                            <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('general.byod') }}
                                             <span class="badge">{{ (isset($total_byod_sidebar)) ? $total_byod_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=Archived') }}"><i
-                                                    class="fas fa-times text-red fa-fw"></i>
+                                    <li id="archived-sidenav-option"{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a
+                                                href="{{ url('hardware?status=Archived') }}">
+                                            <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('admin/hardware/general.archived') }}
                                             <span class="badge">{{ (isset($total_archived_sidebar)) ? $total_archived_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=Requestable') }}"><i
-                                                    class="fas fa-check text-blue fa-fw"></i>
+                                    <li id="requestable-sidenav-option"{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a
+                                                href="{{ url('hardware?status=Requestable') }}">
+                                            <x-icon type="checkmark" class="text-blue fa-fw" />
                                             {{ trans('admin/hardware/general.requestable') }}
                                         </a>
                                     </li>
 
                                     @can('audit', \App\Models\Asset::class)
-                                        <li{!! (Request::is('hardware/audit/due') ? ' class="active"' : '') !!}>
+                                        <li id="audit-due-sidenav-option"{!! (Request::is('hardware/audit/due') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('assets.audit.due') }}">
-                                                <i class="fas fa-history text-yellow fa-fw"></i> {{ trans('general.audit_due') }}
+                                                <x-icon type="audit" class="text-yellow fa-fw"/>
+                                                {{ trans('general.audit_due') }}
                                                 <span class="badge">{{ (isset($total_due_and_overdue_for_audit)) ? $total_due_and_overdue_for_audit : '' }}</span>
                                             </a>
                                         </li>
                                     @endcan
 
                                     @can('checkin', \App\Models\Asset::class)
-                                    <li{!! (Request::is('hardware/checkins/due') ? ' class="active"' : '') !!}>
+                                    <li id="checkin-due-sidenav-option"{!! (Request::is('hardware/checkins/due') ? ' class="active"' : '') !!}>
                                         <a href="{{ route('assets.checkins.due') }}">
-                                            <i class="fas fa-history text-yellow fa-fw"></i> {{ trans('general.checkin_due') }}
+                                            <x-icon type="due" class="text-orange fa-fw"/>
+                                            {{ trans('general.checkin_due') }}
                                             <span class="badge">{{ (isset($total_due_and_overdue_for_checkin)) ? $total_due_and_overdue_for_checkin : '' }}</span>
                                         </a>
                                     </li>
@@ -561,14 +580,14 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                                         </li>
                                     @endcan
                                     @can('admin')
-                                        <li>
+                                        <li id="import-history-sidenav-option">
                                             <a href="{{ url('hardware/history') }}">
                                                 {{ trans('general.import-history') }}
                                             </a>
                                         </li>
                                     @endcan
                                     @can('audit', \App\Models\Asset::class)
-                                        <li>
+                                        <li id="bulk-audit-sidenav-option">
                                             <a href="{{ route('assets.bulkaudit') }}">
                                                 {{ trans('general.bulkaudit') }}
                                             </a>
@@ -580,67 +599,67 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                         @can('view', \App\Models\License::class)
                             <li{!! (Request::is('licenses*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('licenses.index') }}">
-                                    <i class="far fa-save fa-fw"></i>
+                                    <x-icon type="licenses" class="fa-fw"/>
                                     <span>{{ trans('general.licenses') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('index', \App\Models\Accessory::class)
-                            <li{!! (Request::is('accessories*') ? ' class="active"' : '') !!}>
+                            <li id="accessories-sidenav-option"{!! (Request::is('accessories*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('accessories.index') }}">
-                                    <i class="far fa-keyboard fa-fw"></i>
+                                    <x-icon type="accessories" class="fa-fw" />
                                     <span>{{ trans('general.accessories') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('view', \App\Models\Consumable::class)
-                            <li{!! (Request::is('consumables*') ? ' class="active"' : '') !!}>
+                            <li id="consumables-sidenav-option"{!! (Request::is('consumables*') ? ' class="active"' : '') !!}>
                                 <a href="{{ url('consumables') }}">
-                                    <i class="fas fa-tint fa-fw"></i>
+                                    <x-icon type="consumables" class="fa-fw" />
                                     <span>{{ trans('general.consumables') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('view', \App\Models\Component::class)
-                            <li{!! (Request::is('components*') ? ' class="active"' : '') !!}>
+                            <li id="components-sidenav-option"{!! (Request::is('components*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('components.index') }}">
-                                    <i class="far fa-hdd fa-fw"></i>
+                                    <x-icon type="components" class="fa-fw" />
                                     <span>{{ trans('general.components') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('view', \App\Models\PredefinedKit::class)
-                            <li{!! (Request::is('kits') ? ' class="active"' : '') !!}>
+                            <li id="kits-sidenav-option"{!! (Request::is('kits') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('kits.index') }}">
-                                    <i class="fa fa-object-group fa-fw"></i>
+                                    <x-icon type="kits" class="fa-fw" />
                                     <span>{{ trans('general.kits') }}</span>
                                 </a>
                             </li>
                         @endcan
 
                         @can('view', \App\Models\User::class)
-                            <li{!! (Request::is('users*') ? ' class="active"' : '') !!}>
-                                <a href="{{ route('users.index') }}" accesskey="6">
-                                    <i class="fas fa-users fa-fw"></i>
+                            <li id="users-sidenav-option"{!! (Request::is('users*') ? ' class="active"' : '') !!}>
+                                <a href="{{ route('users.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}}>
+                                    <x-icon type="users" class="fa-fw" />
                                     <span>{{ trans('general.people') }}</span>
                                 </a>
                             </li>
                         @endcan
                         @can('import')
-                            <li{!! (Request::is('import/*') ? ' class="active"' : '') !!}>
+                            <li id="import-sidenav-option"{!! (Request::is('import/*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('imports.index') }}">
-                                    <i class="fas fa-cloud-upload-alt fa-fw" aria-hidden="true"></i>
+                                    <x-icon type="import" class="fa-fw" />
                                     <span>{{ trans('general.import') }}</span>
                                 </a>
                             </li>
                         @endcan
 
                         @can('backend.interact')
-                            <li class="treeview {!! in_array(Request::route()->getName(),App\Helpers\Helper::SettingUrls()) ? ' active': '' !!}">
+                            <li id="settings-sidenav-option" class="treeview {!! in_array(Request::route()->getName(),App\Helpers\Helper::SettingUrls()) ? ' active': '' !!}">
                                 <a href="#" id="settings">
-                                    <i class="fas fa-cog" aria-hidden="true"></i>
+                                    <x-icon type="settings" class="fa-fw" />
                                     <span>{{ trans('general.settings') }}</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
+                                    <x-icon type="angle-left" class="pull-right fa-fw"/>
                                 </a>
 
                                 <ul class="treeview-menu">
@@ -730,9 +749,9 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                         @can('reports.view')
                             <li class="treeview{{ (Request::is('reports*') ? ' active' : '') }}">
                                 <a href="#" class="dropdown-toggle">
-                                    <i class="fas fa-chart-bar fa-fw"></i>
+                                    <x-icon type="reports" class="fa-fw" />
                                     <span>{{ trans('general.reports') }}</span>
-                                    <i class="fa fa-angle-left pull-right"></i>
+                                    <x-icon type="angle-left" class="pull-right"/>
                                 </a>
 
                                 <ul class="treeview-menu">
@@ -782,7 +801,7 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                         @can('viewRequestable', \App\Models\Asset::class)
                             <li{!! (Request::is('account/requestable-assets') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('requestable-assets') }}">
-                                    <i class="fa fa-laptop fa-fw"></i>
+                                    <x-icon type="requestable" class="fa-fw" />
                                     <span>{{ trans('general.requestable_items') }}</span>
                                 </a>
                             </li>
@@ -797,13 +816,12 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
             <!-- Content Wrapper. Contains page content -->
 
             <div class="content-wrapper" role="main" id="setting-list">
-                <barepay></barepay>
 
                 @if ($debug_in_production)
                     <div class="row" style="margin-bottom: 0px; background-color: red; color: white; font-size: 15px;">
                         <div class="col-md-12"
                              style="margin-bottom: 0px; background-color: #b50408 ; color: white; padding: 10px 20px 10px 30px; font-size: 16px;">
-                            <i class="fas fa-exclamation-triangle fa-3x pull-left"></i>
+                            <x-icon type="warning" class="fa-3x pull-left"/>
                             <strong>{{ strtoupper(trans('general.debug_warning')) }}:</strong>
                             {!! trans('general.debug_warning_text') !!}
                         </div>
@@ -811,25 +829,72 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 @endif
 
                 <!-- Content Header (Page header) -->
-                <section class="content-header" style="padding-bottom: 30px;">
-                    <h1 class="pull-left pagetitle">@yield('title') </h1>
+                <section class="content-header">
 
-                    @if (isset($helpText))
-                        @include ('partials.more-info',
-                                               [
-                                                   'helpText' => $helpText,
-                                                   'helpPosition' => (isset($helpPosition)) ? $helpPosition : 'left'
-                                               ])
-                    @endif
-                    <div class="pull-right">
-                        @yield('header_right')
+
+                    <div class="row">
+                        <div class="col-md-12" style="margin-bottom: 0px;">
+
+                        <style>
+                            .breadcrumb-item {
+                                display: inline;
+                                list-style: none;
+                            }
+                        </style>
+
+                            <h1 class="pull-left pagetitle" style="font-size: 22px; margin-top: 5px;">
+
+                                @if (Breadcrumbs::has() && (Breadcrumbs::current()->count() > 1))
+                                    <ul style="padding-left: 0;">
+
+                                    @foreach (Breadcrumbs::current() as $crumbs)
+                                        @if ($crumbs->url() && !$loop->last)
+                                            <li class="breadcrumb-item">
+                                                <a href="{{ $crumbs->url() }}">
+                                                    @if ($loop->first)
+                                                        <x-icon type="home" />
+                                                    @else
+                                                        {{ $crumbs->title() }}
+                                                    @endif
+                                                </a>
+                                                <x-icon type="angle-right" />
+                                            </li>
+                                        @elseif (is_null($crumbs->url()) && !$loop->last)
+                                            <li class="breadcrumb-item active">
+                                                {{ $crumbs->title() }}
+                                                <x-icon type="angle-right" />
+                                            </li>
+                                       @else
+                                            <li class="breadcrumb-item active">
+                                                {{ $crumbs->title() }}
+                                            </li>
+                                        @endif
+                                    @endforeach
+
+                                    </ul>
+                                @else
+                                    @yield('title')
+                                @endif
+
+                            </h1>
+
+                                @if (isset($helpText))
+                                    @include ('partials.more-info',
+                                                           [
+                                                               'helpText' => $helpText,
+                                                               'helpPosition' => (isset($helpPosition)) ? $helpPosition : 'left'
+                                                           ])
+                                @endif
+                                <div class="pull-right">
+                                    @yield('header_right')
+                                </div>
+
+                        </div>
                     </div>
-
-
                 </section>
 
 
-                <section class="content" id="main" tabindex="-1">
+                <section class="content" id="main" tabindex="-1" style="padding-top: 0px;">
 
                     <!-- Notifications -->
                     <div class="row">
@@ -856,16 +921,14 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
             <footer class="main-footer hidden-print" style="display:grid;flex-direction:column;">
 
                 <div class="1hidden-xs pull-left">
-                    <div class="pull-left" >
-                        <a target="_blank" href="https://snipeitapp.com" rel="noopener">Snipe-IT</a> is open source software,
-                        made with <i class="fas fa-heart" style="color: #a94442; font-size: 10px" aria-hidden="true"></i><span
-                                class="sr-only">love</span> by <a href="https://twitter.com/snipeitapp" rel="noopener">@snipeitapp</a>.
+                    <div class="pull-left">
+                         {!! trans('general.footer_credit') !!}
                     </div>
                     <div class="pull-right">
                     @if ($snipeSettings->version_footer!='off')
                         @if (($snipeSettings->version_footer=='on') || (($snipeSettings->version_footer=='admin') && (Auth::user()->isSuperUser()=='1')))
-                            &nbsp; <strong>Version</strong> {{ config('version.app_version') }} -
-                            build {{ config('version.build_version') }} ({{ config('version.branch') }})
+                            &nbsp; <strong>{{ trans('general.version') }}</strong> {{ config('version.app_version') }} -
+                            {{ trans('general.build') }} {{ config('version.build_version') }} ({{ config('version.branch') }})
                         @endif
                     @endif
 
@@ -947,8 +1010,11 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
             </div>
         </div>
 
+
+
         {{-- Javascript files --}}
         <script src="{{ url(mix('js/dist/all.js')) }}" nonce="{{ csrf_token() }}"></script>
+        <script src="{{ url('js/select2/i18n/'.Helper::mapBackToLegacyLocale(app()->getLocale()).'.js') }}"></script>
 
         <!-- v5-beta: This pGenerator call must remain here for v5 - until fixed - so that the JS password generator works for the user create modal. -->
         <script src="{{ url('js/pGenerator.jquery.js') }}"></script>
@@ -962,6 +1028,68 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
 
         <script nonce="{{ csrf_token() }}">
 
+            $.fn.datepicker.dates['{{ app()->getLocale() }}'] = {
+                days: [
+                    "{{ trans('datepicker.days.sunday') }}",
+                    "{{ trans('datepicker.days.monday') }}",
+                    "{{ trans('datepicker.days.tuesday') }}",
+                    "{{ trans('datepicker.days.wednesday') }}",
+                    "{{ trans('datepicker.days.thursday') }}",
+                    "{{ trans('datepicker.days.friday') }}",
+                    "{{ trans('datepicker.days.saturday') }}"
+                ],
+                daysShort: [
+                    "{{ trans('datepicker.short_days.sunday') }}",
+                    "{{ trans('datepicker.short_days.monday') }}",
+                    "{{ trans('datepicker.short_days.tuesday') }}",
+                    "{{ trans('datepicker.short_days.wednesday') }}",
+                    "{{ trans('datepicker.short_days.thursday') }}",
+                    "{{ trans('datepicker.short_days.friday') }}",
+                    "{{ trans('datepicker.short_days.saturday') }}"
+                ],
+                daysMin: [
+                    "{{ trans('datepicker.min_days.sunday') }}",
+                    "{{ trans('datepicker.min_days.monday') }}",
+                    "{{ trans('datepicker.min_days.tuesday') }}",
+                    "{{ trans('datepicker.min_days.wednesday') }}",
+                    "{{ trans('datepicker.min_days.thursday') }}",
+                    "{{ trans('datepicker.min_days.friday') }}",
+                    "{{ trans('datepicker.min_days.saturday') }}"
+                ],
+                months: [
+                    "{{ trans('datepicker.months.january') }}",
+                    "{{ trans('datepicker.months.february') }}",
+                    "{{ trans('datepicker.months.march') }}",
+                    "{{ trans('datepicker.months.april') }}",
+                    "{{ trans('datepicker.months.may') }}",
+                    "{{ trans('datepicker.months.june') }}",
+                    "{{ trans('datepicker.months.july') }}",
+                    "{{ trans('datepicker.months.august') }}",
+                    "{{ trans('datepicker.months.september') }}",
+                    "{{ trans('datepicker.months.october') }}",
+                    "{{ trans('datepicker.months.november') }}",
+                    "{{ trans('datepicker.months.december') }}",
+                ],
+                monthsShort:  [
+                    "{{ trans('datepicker.months_short.january') }}",
+                    "{{ trans('datepicker.months_short.february') }}",
+                    "{{ trans('datepicker.months_short.march') }}",
+                    "{{ trans('datepicker.months_short.april') }}",
+                    "{{ trans('datepicker.months_short.may') }}",
+                    "{{ trans('datepicker.months_short.june') }}",
+                    "{{ trans('datepicker.months_short.july') }}",
+                    "{{ trans('datepicker.months_short.august') }}",
+                    "{{ trans('datepicker.months_short.september') }}",
+                    "{{ trans('datepicker.months_short.october') }}",
+                    "{{ trans('datepicker.months_short.november') }}",
+                    "{{ trans('datepicker.months_short.december') }}",
+                ],
+                today: "{{ trans('datepicker.today') }}",
+                clear: "{{ trans('datepicker.clear') }}",
+                format: "yyyy-mm-dd",
+                weekStart: 0
+            };
+
             var clipboard = new ClipboardJS('.js-copy-link');
 
             clipboard.on('success', function(e) {
@@ -974,14 +1102,14 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
             });
 
             // Reference: https://jqueryvalidation.org/validate/
-            $('#create-form').validate({
+            var validator = $('#create-form').validate({
                 ignore: 'input[type=hidden]',
-                errorClass: 'help-block form-error',
+                errorClass: 'alert-msg',
                 errorElement: 'span',
                 errorPlacement: function(error, element) {
                     $(element).hasClass('select2') || $(element).hasClass('js-data-ajax')
-                        // If the element is a select2 then place the error above the input
-                        ? element.parents('.required').append(error)
+                        // If the element is a select2 then append the error to the parent div
+                        ? element.parent('div').append(error)
                         // Otherwise place it after
                         : error.insertAfter(element);
                 },
@@ -992,6 +1120,12 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 onfocusout: function(element) {
                     return $(element).valid();
                 },
+
+            });
+
+            $.extend($.validator.messages, {
+                required: "{{ trans('validation.generic.required') }}",
+                email: "{{ trans('validation.generic.email') }}"
             });
 
 
@@ -999,16 +1133,25 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 // Use element id to find the text element to hide / show
                 var targetElement = e.id+"-to-show";
                 var hiddenElement = e.id+"-to-hide";
+                var audio = new Audio('{{ config('app.url') }}/sounds/lock.mp3');
                 if($(e).hasClass('fa-lock')) {
+                    @if ((isset($user)) && ($user->enable_sounds))
+                        audio.play()
+                    @endif
                     $(e).removeClass('fa-lock').addClass('fa-unlock');
                     // Show the encrypted custom value and hide the element with asterisks
                     document.getElementById(targetElement).style.fontSize = "100%";
                     document.getElementById(hiddenElement).style.display = "none";
+
                 } else {
+                    @if ((isset($user)) && ($user->enable_sounds))
+                        audio.play()
+                    @endif
                     $(e).removeClass('fa-unlock').addClass('fa-lock');
                     // ClipboardJS can't copy display:none elements so use a trick to hide the value
                     document.getElementById(targetElement).style.fontSize = "0px";
                     document.getElementById(hiddenElement).style.display = "";
+
                  }
              }
 
@@ -1124,9 +1267,6 @@ dir="{{ in_array(app()->getLocale(),['ar-SA','fa-IR', 'he-IL']) ? 'rtl' : 'ltr' 
                 $("#tagSearch").focus();
             </script>
         @endif
-
-        @include('partials.bpay')
-
 
         </body>
 </html>

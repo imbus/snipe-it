@@ -44,10 +44,13 @@ return array(
         'error'   => '借出授權時發生問題，請重試。',
         'success' => '借出授權成功。',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => '繳回授權時發生問題，請重試。',
+        'not_reassignable' => 'License not reassignable',
         'success' => '繳回授權成功。'
     ),
 

@@ -175,6 +175,10 @@ a:visited {
 .text-primary {
   color: #fff;
 }
+#sort tr.cansort {
+  background-color: var(--back-main);
+  color: var(--text-main);
+}
 :root {
   --background: #222;
   --back-main: #333;
@@ -391,11 +395,6 @@ input[type=search] {
 .search-highlight,
 .search-highlight:hover {
   background-color: var(--back-sub) !important;
-}
-.input-group,
-.input-group-addon {
-  background-color: var(--back-sub);
-  color: var(--text-main);
 }
 #licensesTable > tbody > tr > td > nobr > a > i.fa {
   color: var(--text-main);

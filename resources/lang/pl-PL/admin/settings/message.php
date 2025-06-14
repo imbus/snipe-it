@@ -14,6 +14,9 @@ return [
         'restore_warning'       => 'Tak, przywróć. Mam świadomość, że spowoduje to nadpisanie istniejących danych w bazie danych. Spowoduje to również wylogowanie wszystkich istniejących użytkowników (w tym Ciebie).',
         'restore_confirm'       => 'Czy na pewno chcesz przywrócić bazę danych z :filename?'
     ],
+    'restore' => [
+        'success'               => 'Kopia zapasowa została przywrócona. Zaloguj się ponownie.'
+    ],
     'purge' => [
         'error'     => 'Wystąpił błąd podczas czyszczenia. ',
         'validation_failed'     => 'Potwierdzenie czyszczenia jest niepoprawne. Wpisz słowo "DELETE" w polu potwierdzenia.',
@@ -33,6 +36,9 @@ return [
         'testing_authentication' => 'Testowanie uwierzytelniania LDAP...',
         'authentication_success' => 'Użytkownik uwierzytelniony z LDAP pomyślnie!'
     ],
+    'labels' => [
+        'null_template' => 'Label template not found. Please select a template.',
+        ],
     'webhook' => [
         'sending' => 'Wysyłanie wiadomości testowej :app...',
         'success' => 'Twoja integracja :webhook_name działa!',
@@ -42,5 +48,12 @@ return [
         'error' => 'Coś poszło nie tak. :app odpowiedział: :error_message',
         'error_redirect' => 'BŁĄD: 301/302 :endpoint zwraca przekierowanie. Ze względów bezpieczeństwa nie podążamy za przekierowaniami. Proszę użyć aktualnego punktu końcowego.',
         'error_misc' => 'Coś poszło nie tak. :( ',
-    ]
+        'webhook_fail' => ' Powiadomienie webhook nie powiodło się: Sprawdź, czy adres URL jest nadal prawidłowy.',
+        'webhook_channel_not_found' => ' Nie znaleziono kanału webhook.',
+        'ms_teams_deprecation' => 'The selected Microsoft Teams webhook URL will be deprecated Dec 31st, 2025. Please use a workflow URL. Microsoft\'s documentation on creating a workflow can be found <a href="https://support.microsoft.com/en-us/office/create-incoming-webhooks-with-workflows-for-microsoft-teams-8ae491c7-0394-4861-ba59-055e33f75498" target="_blank"> here.</a>',
+    ],
+    'location_scoping' => [
+        'not_saved' => 'Your settings were not saved.',
+        'mismatch' => 'There is 1 item in the database that need your attention before you can enable location scoping.|There are :count items in the database that need your attention before you can enable location scoping.',
+    ],
 ];

@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-    {{ trans_choice('general.checkin_due_days', $settings->audit_warning_days, ['days' => $settings->audit_warning_days]) }}
+    {{ trans_choice('general.checkin_due_days', $settings->due_checkin_days, ['days' => $settings->due_checkin_days]) }}
 @stop
 
 {{-- Page content --}}
@@ -53,6 +53,8 @@
                                             data-pagination="true"
                                             data-id-table="dueAssetcheckinListing"
                                             data-search="true"
+                                            data-search-highlight="true"
+                                            data-show-print="true"
                                             data-side-pagination="server"
                                             data-show-columns="true"
                                             data-show-fullscreen="true"

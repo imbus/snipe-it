@@ -8,6 +8,8 @@ use App\Models\CustomField;
 use App\Models\CustomFieldset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use \Illuminate\Contracts\View\View;
 
 /**
  * This controller handles all actions related to Custom Asset Fields for
@@ -25,10 +27,8 @@ class CustomFieldsController extends Controller
      *
      * @author [Brady Wetherington] [<uberbrady@gmail.com>]
      * @since [v1.8]
-     * @return \Illuminate\Support\Facades\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index() : View
     {
         $this->authorize('view', CustomField::class);
 
@@ -45,10 +45,8 @@ class CustomFieldsController extends Controller
      * @see CustomFieldsController::storeField()
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v5.1.5]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show()
+    public function show() : RedirectResponse
     {
         return redirect()->route('fields.index');
     }
@@ -60,10 +58,8 @@ class CustomFieldsController extends Controller
      * @see CustomFieldsController::storeField()
      * @author [Brady Wetherington] [<uberbrady@gmail.com>]
      * @since [v1.8]
-     * @return \Illuminate\Support\Facades\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create(Request $request)
+    public function create(Request $request) : View
     {
         $this->authorize('create', CustomField::class);
         $fieldsets = CustomFieldset::get();
@@ -82,35 +78,36 @@ class CustomFieldsController extends Controller
      * @see CustomFieldsController::createField()
      * @author [Brady Wetherington] [<uberbrady@gmail.com>]
      * @since [v1.8]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(CustomFieldRequest $request)
+    public function store(CustomFieldRequest $request) : RedirectResponse
     {
         $this->authorize('create', CustomField::class);
 
-        $show_in_email = $request->get("show_in_email", 0);
-        $display_in_user_view = $request->get("display_in_user_view", 0);
+        $show_in_email = $request->input("show_in_email", 0);
+        $display_in_user_view = $request->input("display_in_user_view", 0);
 
         // Override the display settings if the field is encrypted
-        if ($request->get("field_encrypted") == '1') {
+        if ($request->input("field_encrypted") == '1') {
             $show_in_email = '0';
             $display_in_user_view = '0';
         }
-
+        
         $field = new CustomField([
-            "name" => trim($request->get("name")),
-            "element" => $request->get("element"),
-            "help_text" => $request->get("help_text"),
-            "field_values" => $request->get("field_values"),
-            "field_encrypted" => $request->get("field_encrypted", 0),
+            "name" => trim($request->input("name")),
+            "element" => $request->input("element"),
+            "help_text" => $request->input("help_text"),
+            "field_values" => $request->input("field_values"),
+            "field_encrypted" => $request->input("field_encrypted", 0),
             "show_in_email" => $show_in_email,
-            "is_unique" => $request->get("is_unique", 0),
+            "is_unique" => $request->input("is_unique", 0),
             "display_in_user_view" => $display_in_user_view,
-            "auto_add_to_fieldsets" => $request->get("auto_add_to_fieldsets", 0),
-            "show_in_listview" => $request->get("show_in_listview", 0),
-            "show_in_requestable_list" => $request->get("show_in_requestable_list", 0),
-            "user_id" => Auth::id()
+            "auto_add_to_fieldsets" => $request->input("auto_add_to_fieldsets", 0),
+            "show_in_listview" => $request->input("show_in_listview", 0),
+            "show_in_requestable_list" => $request->input("show_in_requestable_list", 0),
+            "display_checkin" => $request->input("display_checkin", 0),
+            "display_checkout" => $request->input("display_checkout", 0),
+            "display_audit" => $request->input("display_audit", 0),
+            "created_by" => auth()->id()
         ]);
 
 
@@ -144,10 +141,8 @@ class CustomFieldsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v3.0]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function deleteFieldFromFieldset($field_id, $fieldset_id)
+    public function deleteFieldFromFieldset($field_id, $fieldset_id) : RedirectResponse
     {
         $field = CustomField::find($field_id);
 
@@ -176,10 +171,8 @@ class CustomFieldsController extends Controller
      *
      * @author [Brady Wetherington] [<uberbrady@gmail.com>]
      * @since [v1.8]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($field_id)
+    public function destroy($field_id) : RedirectResponse
     {
         if ($field = CustomField::find($field_id)) {
             $this->authorize('delete', $field);
@@ -202,13 +195,9 @@ class CustomFieldsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @param  int $id
      * @since [v4.0]
-     * @return \Illuminate\Support\Facades\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, CustomField $field) : View | RedirectResponse
     {
-        if ($field = CustomField::find($id)) {
-
         $this->authorize('update', $field);
         $fieldsets = CustomFieldset::get();
         $customFormat = '';
@@ -222,11 +211,7 @@ class CustomFieldsController extends Controller
             'fieldsets'         => $fieldsets,
             'predefinedFormats' => Helper::predefined_formats(),
         ]);
-        } 
 
-        return redirect()->route("fields.index")
-            ->with("error", trans('admin/custom_fields/message.field.invalid'));
-        
     }
 
 
@@ -241,13 +226,9 @@ class CustomFieldsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function update(CustomFieldRequest $request, $id)
+    public function update(CustomFieldRequest $request, CustomField $field) : RedirectResponse
     {
-        $field = CustomField::find($id);
-
         $this->authorize('update', $field);
-
-
         $show_in_email = $request->get("show_in_email", 0);
         $display_in_user_view = $request->get("display_in_user_view", 0);
 
@@ -257,10 +238,10 @@ class CustomFieldsController extends Controller
             $display_in_user_view = '0';
         }
         
-        $field->name          = trim(e($request->get("name")));
-        $field->element       = e($request->get("element"));
+        $field->name          = trim($request->get("name"));
+        $field->element       = $request->get("element");
         $field->field_values  = $request->get("field_values");
-        $field->user_id       = Auth::id();
+        $field->created_by       = auth()->id();
         $field->help_text     = $request->get("help_text");
         $field->show_in_email = $show_in_email;
         $field->is_unique     = $request->get("is_unique", 0);
@@ -268,11 +249,14 @@ class CustomFieldsController extends Controller
         $field->auto_add_to_fieldsets = $request->get("auto_add_to_fieldsets", 0);
         $field->show_in_listview = $request->get("show_in_listview", 0);
         $field->show_in_requestable_list = $request->get("show_in_requestable_list", 0);
+        $field->display_checkin = $request->get("display_checkin", 0);
+        $field->display_checkout = $request->get("display_checkout", 0);
+        $field->display_audit = $request->get("display_audit", 0);
 
         if ($request->get('format') == 'CUSTOM REGEX') {
-            $field->format = e($request->get('custom_format'));
+            $field->format = $request->get('custom_format');
         } else {
-            $field->format = e($request->get('format'));
+            $field->format = $request->get('format');
         }
 
         if ($field->element == 'checkbox' || $field->element == 'radio'){

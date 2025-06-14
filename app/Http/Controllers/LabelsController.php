@@ -14,8 +14,6 @@ use App\Models\Setting;
 use App\Models\Supplier;
 use App\Models\User;
 use App\View\Label as LabelView;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class LabelsController extends Controller
 {
@@ -23,7 +21,6 @@ class LabelsController extends Controller
      * Returns the Label view with test data
      *
      * @param string $labelName
-     * @return \Illuminate\Contracts\View\View
      * @author Grant Le Roux <grant.leroux+snipe-it@gmail.com>
      */
     public function show(string $labelName)
@@ -41,6 +38,7 @@ class LabelsController extends Controller
         $exampleAsset->order_number = '12345';
         $exampleAsset->purchase_date = '2023-01-01';
         $exampleAsset->status_id = 1;
+        $exampleAsset->location_id = 1;
 
         $exampleAsset->company = new Company([
             'name' => trans('admin/labels/table.example_company'),
@@ -96,6 +94,5 @@ class LabelsController extends Controller
             ->with('bulkedit', false)
             ->with('count', 0);
 
-        return redirect()->route('home')->with('error', trans('admin/labels/message.does_not_exist'));
     }
 }

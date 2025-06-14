@@ -2,6 +2,9 @@
 
 namespace Tests\Feature\Checkouts\Api;
 
+use Illuminate\Support\Facades\Mail;
+use Notification;
+use PHPUnit\Framework\Attributes\DataProvider;
 use App\Events\CheckoutableCheckedOut;
 use App\Models\Asset;
 use App\Models\Location;
@@ -18,6 +21,22 @@ class AssetCheckoutTest extends TestCase
         parent::setUp();
 
         Event::fake([CheckoutableCheckedOut::class]);
+    }
+
+    public function testCheckoutRequest()
+    {
+        Notification::fake();
+        $requestable = Asset::factory()->requestable()->create();
+        $nonRequestable = Asset::factory()->nonrequestable()->create();
+
+        $this->actingAsForApi(User::factory()->create())
+            ->post(route('api.assets.requests.store', $requestable->id))
+            ->assertStatusMessageIs('success');
+
+        $this->actingAsForApi(User::factory()->create())
+            ->post(route('api.assets.requests.store', $nonRequestable->id))
+            ->assertStatusMessageIs('error');
+
     }
 
     public function testCheckingOutAssetRequiresCorrectPermission()
@@ -82,7 +101,7 @@ class AssetCheckoutTest extends TestCase
      * This data provider contains checkout targets along with the
      * asset's expected location after the checkout process.
      */
-    public function checkoutTargets(): array
+    public static function checkoutTargets(): array
     {
         return [
             'Checkout to User' => [
@@ -148,7 +167,7 @@ class AssetCheckoutTest extends TestCase
         ];
     }
 
-    /** @dataProvider checkoutTargets */
+    #[DataProvider('checkoutTargets')]
     public function testAssetCanBeCheckedOut($data)
     {
         ['checkout_type' => $type, 'target' => $target, 'expected_location' => $expectedLocation] = $data();
@@ -208,6 +227,6 @@ class AssetCheckoutTest extends TestCase
 
         $asset->refresh();
 
-        $this->assertTrue(Carbon::parse($asset->last_checkout)->diffInSeconds(now()) < 2);
+        $this->assertTrue((int) Carbon::parse($asset->last_checkout)->diffInSeconds(now(), true) < 2);
     }
 }

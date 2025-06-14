@@ -87,11 +87,11 @@ class AuthServiceProvider extends ServiceProvider
         ]);
 
         $this->registerPolicies();
-        //Passport::routes(); //this is no longer required in newer passport versions
-        Passport::tokensExpireIn(Carbon::now()->addYears(config('passport.expiration_years')));
-        Passport::refreshTokensExpireIn(Carbon::now()->addYears(config('passport.expiration_years')));
-        Passport::personalAccessTokensExpireIn(Carbon::now()->addYears(config('passport.expiration_years')));
-        Passport::withCookieSerialization();
+        Passport::tokensExpireIn(Carbon::now()->addYears((int)config('passport.expiration_years')));
+        Passport::refreshTokensExpireIn(Carbon::now()->addYears((int)config('passport.expiration_years')));
+        Passport::personalAccessTokensExpireIn(Carbon::now()->addYears((int)config('passport.expiration_years')));
+
+        Passport::cookie(config('passport.cookie_name'));
 
 
         /**
@@ -169,6 +169,15 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // -----------------------------------------
+        // Activity
+        // -----------------------------------------
+        Gate::define('activity.view', function ($user) {
+            if (($user->hasAccess('reports.view')) || ($user->hasAccess('admin'))) {
+                return true;
+            }
+        });
+
+        // -----------------------------------------
         // Self
         // -----------------------------------------
         Gate::define('self.two_factor', function ($user) {
@@ -230,7 +239,8 @@ class AuthServiceProvider extends ServiceProvider
                 || $user->can('update', Accessory::class)
                 || $user->can('create', Accessory::class)   
                 || $user->can('update', User::class)
-                || $user->can('create', User::class);  
+                || $user->can('create', User::class)
+                || ($user->hasAccess('reports.view'));
         });
 
 

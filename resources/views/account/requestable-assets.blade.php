@@ -56,6 +56,8 @@
                                         data-pagination="true"
                                         data-id-table="requestableAssetsListingTable"
                                         data-search="true"
+                                        data-search-highlight="true"
+                                        data-show-print="true"
                                         data-side-pagination="server"
                                         data-show-columns="true"
                                         data-show-export="false"
@@ -106,6 +108,9 @@
                                         data-toolbar="#toolbar"
                                         class="table table-striped snipe-table"
                                         id="table"
+                                        data-search="true"
+                                        data-search-highlight="true"
+                                        data-show-print="true"
                                         data-advanced-search="true"
                                         data-id-table="advancedTable"
                                         data-cookie-id-table="requestableAssets">
@@ -148,9 +153,9 @@
                                                         {{ csrf_field() }}
                                                     <input type="text" style="width: 70px; margin-right: 10px;" class="form-control pull-left" name="request-quantity" value="" placeholder="{{ trans('general.qty') }}">
                                                     @if ($requestableModel->isRequestedBy(Auth::user()))
-                                                        {{ Form::submit(trans('button.cancel'), ['class' => 'btn btn-danger btn-sm'])}}
+                                                        <input class="btn btn-danger btn-sm" type="submit" value="{{ trans('button.cancel') }}">
                                                     @else
-                                                        {{ Form::submit(trans('button.request'), ['class' => 'btn btn-primary btn-sm'])}}
+                                                        <input class="btn btn-primary btn-sm" type="submit" value="{{ trans('button.request') }}">
                                                     @endif
                                                     </form>
                                                 </td>

@@ -18,7 +18,7 @@
         @if ($snipeSettings->ldap_enabled == 1)
             <a href="{{ route('ldap/user') }}" class="btn btn-default pull-right"><span class="fas fa-sitemap"></span>{{trans('general.ldap_sync')}}</a>
         @endif
-        <a href="{{ route('users.create') }}" accesskey="n" class="btn btn-primary pull-right" style="margin-right: 5px;">  {{ trans('general.create') }}</a>
+        <a href="{{ route('users.create') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "n" : ''}} class="btn btn-primary pull-right" style="margin-right: 5px;">  {{ trans('general.create') }}</a>
     @endcan
 
     @if (request('status')=='deleted')
@@ -42,12 +42,15 @@
             @include('partials.users-bulk-actions')
 
             <table
+                    data-advanced-search="true"
                     data-click-to-select="true"
                     data-columns="{{ \App\Presenters\UserPresenter::dataTableLayout() }}"
                     data-cookie-id-table="usersTable"
                     data-pagination="true"
                     data-id-table="usersTable"
                     data-search="true"
+                    data-search-highlight="true"
+                    data-show-print="true"
                     data-side-pagination="server"
                     data-show-columns="true"
                     data-show-fullscreen="true"
@@ -66,9 +69,6 @@
                 "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                 }'>
                     </table>
-
-
-                    {{ Form::close() }}
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
         </div>

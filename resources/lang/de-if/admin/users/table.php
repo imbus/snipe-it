@@ -22,7 +22,7 @@ return array(
     'managed_locations'     => 'Verwaltete Standorte',
     'managed_users'         => 'Verwaltete Benutzer',
     'name' 					=> 'Name',
-    'nogroup'               => 'Es wurden noch keine Gruppen erstellt. Um eine hinzuzufügen, besuche: ',
+    'nogroup'               => 'Es wurden noch keine Gruppen erstellt. Um eine hinzuzufügen, besuche:',
     'notes'                 => 'Notizen',
     'password_confirm' 		=> 'Passwort bestätigen',
     'password' 				=> 'Passwort',
@@ -35,7 +35,7 @@ return array(
     'updateuser' 			=> 'Benutzer aktualisieren',
     'username' 				=> 'Benutzername',
 	'user_deleted_text' 	=> 'Dieser Benutzer wurde als gelöscht markiert.',
-    'username_note' 		=> '(Dies wird nur für Active Directory Bindung verwendet, nicht für Login.)',
+    'username_note' 		=> '(Dies wird nur für die Active Directory-Bindung verwendet, nicht für die Anmeldung.)',
     'cloneuser'             => 'Benutzer kopieren',
     'viewusers' 			=> 'Benutzer anzeigen',
 );

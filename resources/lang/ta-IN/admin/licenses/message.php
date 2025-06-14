@@ -44,10 +44,13 @@ return array(
         'error'   => 'உரிமத்தை சரிபார்க்க ஒரு சிக்கல் இருந்தது. தயவு செய்து மீண்டும் முயற்சிக்கவும்.',
         'success' => 'உரிமம் வெற்றிகரமாக சரிபார்க்கப்பட்டது',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'உரிமத்தில் சோதனை ஒரு சிக்கல் இருந்தது. தயவு செய்து மீண்டும் முயற்சிக்கவும்.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'உரிமம் வெற்றிகரமாக சரிபார்க்கப்பட்டது'
     ),
 

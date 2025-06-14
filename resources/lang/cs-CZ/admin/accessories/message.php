@@ -26,7 +26,12 @@ return array(
         'error'   		=> 'Příslušenství nebylo převzato, zkuste to znovu',
         'success' 		=> 'Příslušenství úspěšně předáno.',
         'unavailable'   => 'Příslušenství nelze vydat. Zkontrolujte skladové zásoby.',
-        'user_does_not_exist' => 'Neplatný uživatel. Zkuste to znovu.'
+        'user_does_not_exist' => 'Neplatný uživatel. Zkuste to znovu.',
+         'checkout_qty' => array(
+            'lte'  => 'V současné době je k dispozici pouze jeden doplněk tohoto příslušenství a snažíte se vydat :checkout_qty. Upravte prosím množství k výdeji nebo celkový počet dostupných doplňků a zkuste to znovu.
+K dispozici je celkem :number_currently_remaining doplňků, přičemž se pokoušíte vydat :checkout_qty. Upravte prosím množství k výdeji nebo celkový počet a zkuste to znovu.',
+            ),
+           
     ),
 
     'checkin' => array(

@@ -24,6 +24,7 @@ class UserPresenter extends Presenter
             [
                 'field' => 'checkbox',
                 'checkbox' => true,
+                'titleTooltip' => trans('general.select_all_none'),
             ],
             [
                 'field' => 'id',
@@ -189,6 +190,14 @@ class UserPresenter extends Presenter
                 'visible' => false,
             ],
             [
+                'field' => 'locale',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.language'),
+                'visible' => false,
+            ],
+            [
                 'field' => 'department',
                 'searchable' => true,
                 'sortable' => true,
@@ -232,6 +241,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-barcode',
                 'title' => trans('general.assets'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserAssetsFormatter',
             ],
             [
                 'field' => 'licenses_count',
@@ -241,6 +251,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-license',
                 'title' => trans('general.licenses'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserLicensesFormatter',
             ],
             [
                 'field' => 'consumables_count',
@@ -250,6 +261,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-consumable',
                 'title' => trans('general.consumables'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserConsumablesFormatter',
             ],
             [
                 'field' => 'accessories_count',
@@ -259,6 +271,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-accessory',
                 'title' => trans('general.accessories'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserAccessoriesFormatter',
             ],
             [
                 'field' => 'manages_users_count',
@@ -268,6 +281,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-users',
                 'title' => trans('admin/users/table.managed_users'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserManagedUsersFormatter',
             ],
             [
                 'field' => 'manages_locations_count',
@@ -277,6 +291,7 @@ class UserPresenter extends Presenter
                 'class' => 'css-location',
                 'title' => trans('admin/users/table.managed_locations'),
                 'visible' => true,
+                'formatter' => 'linkNumberToUserManagedLocationsFormatter',
             ],
             [
                 'field' => 'notes',
@@ -354,6 +369,14 @@ class UserPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' => trans('general.created_at'),
+                'visible' => false,
+                'formatter' => 'dateDisplayFormatter',
+            ], [
+                'field' => 'updated_at',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.updated_at'),
                 'visible' => false,
                 'formatter' => 'dateDisplayFormatter',
             ],
@@ -435,6 +458,8 @@ class UserPresenter extends Presenter
      */
     public function gravatar()
     {
+
+        // User's specific avatar
         if ($this->avatar) {
 
             // Check if it's a google avatar or some external avatar
@@ -446,21 +471,31 @@ class UserPresenter extends Presenter
             return Storage::disk('public')->url('avatars/'.e($this->avatar));
         }
 
-        if (Setting::getSettings()->load_remote == '1') {
-            if ($this->model->gravatar != '') {
 
+        // If the default is system default
+        if (Setting::getSettings()->default_avatar == 'default.png') {
+            return Storage::disk('public')->url('default.png');
+        }
+
+        // If there is a custom default avatar
+        if (Setting::getSettings()->default_avatar != '') {
+            return Storage::disk('public')->url('avatars/'.e(Setting::getSettings()->default_avatar));
+        }
+
+        // If there is no default and no custom avatar, check for gravatar
+        if ((Setting::getSettings()->load_remote == '1') && (Setting::getSettings()->default_avatar == '')) {
+
+            if ($this->model->gravatar != '') {
                 $gravatar = md5(strtolower(trim($this->model->gravatar)));
                 return '//gravatar.com/avatar/'.$gravatar;
 
             } elseif ($this->email != '') {
-
                 $gravatar = md5(strtolower(trim($this->email)));
                 return '//gravatar.com/avatar/'.$gravatar;
             }
         }
 
-        // Set a fun, gender-neutral default icon
-        return config('app.url').'/img/default-sm.png';
+        return false;
     }
 
     /**
@@ -483,6 +518,6 @@ class UserPresenter extends Presenter
 
     public function glyph()
     {
-        return '<i class="fas fa-user" aria-hidden="true"></i>';
+        return '<x-icon type="user"/>';
     }
 }

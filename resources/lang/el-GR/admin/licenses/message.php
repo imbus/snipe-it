@@ -44,10 +44,13 @@ return array(
         'error'   => 'Παρουσιάστηκε πρόβλημα κατά την εξακρίβωση της άδειας. ΠΑΡΑΚΑΛΩ προσπαθησε ξανα.',
         'success' => 'Η άδεια εκτυπώθηκε με επιτυχία',
         'not_enough_seats' => 'Δεν υπάρχουν αρκετές θέσεις άδειας χρήσης για ολοκλήρωση της παραγγελίας',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Παρουσιάστηκε ένα ζήτημα ελέγχου της άδειας. ΠΑΡΑΚΑΛΩ προσπαθησε ξανα.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Η άδεια έχει ελεγχθεί με επιτυχία'
     ),
 

@@ -54,21 +54,28 @@
                                     <!-- CSRF Token -->
 
 
-                                    <fieldset>
+                                    <fieldset name="login" aria-label="login">
+                                        <legend></legend>
 
                                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
-                                            <label for="username"><i class="fas fa-user" aria-hidden="true"></i> {{ trans('admin/users/table.username')  }}</label>
+                                            <label for="username">
+                                                <x-icon type="user" />
+                                                {{ trans('admin/users/table.username')  }}
+                                            </label>
                                             <input class="form-control" placeholder="{{ trans('admin/users/table.username')  }}" name="username" type="text" id="username" autocomplete="{{ (config('auth.login_autocomplete') === true) ? 'on' : 'off'  }}" autofocus>
                                             {!! $errors->first('username', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                                         </div>
                                         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                                            <label for="password"><i class="fa fa-key" aria-hidden="true"></i> {{ trans('admin/users/table.password')  }}</label>
+                                            <label for="password">
+                                                <x-icon type="password" />
+                                                {{ trans('admin/users/table.password')  }}
+                                            </label>
                                             <input class="form-control" placeholder="{{ trans('admin/users/table.password')  }}" name="password" type="password" id="password" autocomplete="{{ (config('auth.login_autocomplete') === true) ? 'on' : 'off'  }}">
                                             {!! $errors->first('password', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                                         </div>
-                                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+                                        <div class="form-group">
                                             <label class="form-control">
-                                                <input name="remember" type="checkbox" value="1"> {{ trans('auth/general.remember_me')  }}
+                                                <input name="remember" type="checkbox" value="1" id="remember"> {{ trans('auth/general.remember_me')  }}
                                             </label>
                                         </div>
                                     </fieldset>
@@ -88,7 +95,9 @@
                             @if (config('app.require_saml'))
                                 <a class="btn btn-primary btn-block" href="{{ route('saml.login')  }}">{{ trans('auth/general.saml_login')  }}</a>
                             @else
-                                <button class="btn btn-primary btn-block">{{ trans('auth/general.login')  }}</button>
+                                <button class="btn btn-primary btn-block" type="submit" id="submit">
+                                    {{ trans('auth/general.login')  }}
+                                </button>
                             @endif
 
                             @if ($snipeSettings->custom_forgot_pass_url)

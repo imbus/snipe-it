@@ -2,18 +2,23 @@
 
 return [
 
-    'undeployable' 		=> '<strong>Aviso:</strong> Este ativo foi marcado como atualmente não implementável.                        Se este status mudou, atualize o status do ativo.',
-    'does_not_exist' 	=> 'O ativo não existe.',
-    'does_not_exist_var'=> 'Asset with tag :asset_tag not found.',
-    'no_tag' 	        => 'No asset tag provided.',
+    'undeployable' 		 => '<strong>Aviso:</strong> Este ativo foi marcado como atualmente não implementável. Se esta situação mudou, por favor, atualize a situação do ativo.',
+    'does_not_exist' 	 => 'O ativo não existe.',
+    'does_not_exist_var' => 'Ativo com a etiqueta :asset_tag não encontrado.',
+    'no_tag' 	         => 'Nenhuma etiqueta de ativo fornecida.',
     'does_not_exist_or_not_requestable' => 'Esse ativo não existe ou não pode ser solicitado.',
-    'assoc_users'	 	=> 'Este bem está no momento associado com pelo menos um usuário e não pode ser deletado. Por favor, atualize seu bem para que não referencie mais este usuário e tente novamente. ',
-    'warning_audit_date_mismatch' 	=> 'This asset\'s next audit date (:next_audit_date) is before the last audit date (:last_audit_date). Please update the next audit date.',
+    'assoc_users'	 	 => 'Este ativo está no momento associado com pelo menos um usuário e não pode ser deletado. Por favor, atualize seu ativo para que não referencie mais este usuário e tente novamente. ',
+    'warning_audit_date_mismatch' 	=> 'A próxima data de auditoria deste ativo (:next_audit_date) é anterior à última data de auditoria (:last_audit_date). Por favor, atualize a próxima data de auditoria.',
+    'labels_generated'   => 'Labels were successfully generated.',
+    'error_generating_labels' => 'Error while generating labels.',
+    'no_assets_selected' => 'No assets selected.',
 
     'create' => [
         'error'   		=> 'O ativo não foi criado, tente novamente. :(',
         'success' 		=> 'Ativo criado com sucesso. :)',
         'success_linked' => 'O ativo com a tag :tag foi criado com sucesso. <strong><a href=":link" style="color: white;">clique aqui para ver</a></strong>.',
+        'multi_success_linked' => 'Asset with tag :links was created successfully.|:count assets were created succesfully. :links.',
+        'partial_failure' => 'An asset was unable to be created. Reason: :failures|:count assets were unable to be created. Reasons: :failures',
     ],
 
     'update' => [
@@ -33,7 +38,7 @@ return [
     ],
 
     'audit' => [
-        'error'   		=> 'Asset audit unsuccessful: :error ',
+        'error'   		=> 'Auditoria de ativo malsucedida: :error ',
         'success' 		=> 'Auditoria de equipamentos logada com sucesso.',
     ],
 
@@ -51,20 +56,24 @@ return [
     ],
 
     'import' => [
+        'import_button'         => 'Processar Importação',
         'error'                 => 'Alguns itens não foram importados corretamente.',
         'errorDetail'           => 'Os seguintes itens não foram importados devido a erros.',
         'success'               => 'O seu arquivo foi importado',
         'file_delete_success'   => 'O arquivo foi excluído com sucesso',
         'file_delete_error'      => 'Não foi possível excluir o arquivo',
         'file_missing' => 'O arquivo selecionado está faltando',
+        'file_already_deleted' => 'O arquivo selecionado já foi excluído',
         'header_row_has_malformed_characters' => 'Um ou mais atributos na linha do cabeçalho contém caracteres UTF-8 malformados',
         'content_row_has_malformed_characters' => 'Um ou mais atributos na primeira linha de conteúdo contém caracteres UTF-8 malformados',
+        'transliterate_failure' => 'Transliteration from :encoding to UTF-8 failed due to invalid characters in input'
     ],
 
 
     'delete' => [
         'confirm'   	=> 'Tem certeza de que deseja excluir este ativo?',
         'error'   		=> 'Houve um problema ao excluir o ativo. Tente novamente.',
+        'assigned_to_error' => '{1}Asset Tag: :asset_tag is currently checked out. Check in this device before deletion.|[2,*]Asset Tags: :asset_tag are currently checked out. Check in these devices before deletion.',
         'nothing_updated'   => 'Nenhum ativo foi selecionado, então nada foi deletado.',
         'success' 		=> 'O ativo foi excluído com sucesso.',
     ],
@@ -77,6 +86,11 @@ return [
         'no_assets_selected' => 'Você deve selecionar pelo menos um recurso da lista',
     ],
 
+    'multi-checkout' => [
+        'error'   => 'O ativo não foi registrado, por favor tente novamente. | Os ativos não foram registrados, por favor tente novamente',
+        'success' => 'Ativo registrado com sucesso. | Ativos registrados com sucesso.',
+    ],
+
     'checkin' => [
         'error'   		=> 'Ativo não foi retornado, favor tentar novamente',
         'success' 		=> 'Ativo retornado com sucesso.',
@@ -86,9 +100,10 @@ return [
     ],
 
     'requests' => [
-        'error'   		=> 'Ativo não foi solicitado, por favor tente novamente',
-        'success' 		=> 'Ativo solicitado com sucesso.',
-        'canceled'      => 'Requisição cancelada com sucesso',
+        'error'   		=> 'Request was not successful, please try again.',
+        'success' 		=> 'Request successfully submitted.',
+        'canceled'      => 'Request successfully canceled.',
+        'cancel'        => 'Cancelar solicitação deste item',
     ],
 
 ];

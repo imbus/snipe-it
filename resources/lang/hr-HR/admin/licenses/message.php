@@ -44,10 +44,13 @@ return array(
         'error'   => 'Došlo je do problema prilikom provjere licence. Molim te pokušaj ponovno.',
         'success' => 'Licenca je uspješno provjerena',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'U licenci se provjeravala problem. Molim te pokušaj ponovno.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Licenca je uspješno provjerena'
     ),
 

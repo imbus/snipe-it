@@ -8,14 +8,18 @@ trait CompanyableTrait
      * This trait is used to scope models to the current company. To use this scope on companyable models,
      * we use the "use Companyable;" statement at the top of the mode.
      *
-     * We CANNOT USE THIS ON USERS, as it causes an infinite loop and prevents users from logging in, since this scope will be
-     * applied to the currently logged in (or logging in) user in addition to the user model for viewing lists of users.
-     *
      * @see \App\Models\Company\Company::scopeCompanyables()
      * @return void
      */
     public static function bootCompanyableTrait()
     {
-        static::addGlobalScope(new CompanyableScope);
+        // In Version 7.0 and before locations weren't scoped by companies, so add a check for the backward compatibility setting
+        if (__CLASS__ != 'App\Models\Location') {
+            static::addGlobalScope(new CompanyableScope);
+        } else {
+            if (Setting::getSettings()->scope_locations_fmcs == 1) {
+                static::addGlobalScope(new CompanyableScope);
+            }
+        }
     }
 }

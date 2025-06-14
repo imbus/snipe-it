@@ -44,10 +44,13 @@ return array(
         'error'   => 'Došlo je do problema prilikom provere licence. Molim pokušajte ponovo.',
         'success' => 'Licenca je uspešno proverena',
         'not_enough_seats' => 'Nema dovoljno dostupnih licenci za zaduživanje',
+        'mismatch' => 'Dostavljeno mesto licence se ne poklapa sa licencom',
+        'unavailable' => 'Ovo mesto nije dostupno za zaduživanje.',
     ),
 
     'checkin' => array(
         'error'   => 'Došlo je do problema prilikom provere licence. Molim pokušajte ponovo.',
+        'not_reassignable' => 'Licenca nije premestiva',
         'success' => 'Licenca je uspešno proverena'
     ),
 

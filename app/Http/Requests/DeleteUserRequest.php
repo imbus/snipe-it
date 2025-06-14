@@ -24,12 +24,12 @@ class DeleteUserRequest extends FormRequest
 
     public function prepareForValidation(): void
     {
-        $user_to_delete = User::withTrashed()->find(request()->route('user'));
+        $user_to_delete = User::withTrashed()->with('managesUsers')->find(request()->route('user'));
 
         if ($user_to_delete) {
             $this->merge([
                 'user' => request()->route('user'),
-                'admin_id' => Auth::user()->id,
+                'admin_id' => auth()->id(),
                 'managed_users' => $user_to_delete->managesUsers()->count(),
                 'managed_locations' => $user_to_delete->managedLocations()->count(),
                 'assigned_assets' => $user_to_delete->assets()->count(),
@@ -48,7 +48,7 @@ class DeleteUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user' =>  Rule::notIn([auth()->user()->id]),
+            'user' =>  Rule::notIn([auth()->id()]),
             'managed_users' =>  Rule::in([0]),
             'managed_locations' => Rule::in([0]),
             'assigned_assets' => Rule::in([0]),
@@ -61,7 +61,8 @@ class DeleteUserRequest extends FormRequest
     public function messages(): array
     {
 
-        $user_to_delete = User::withTrashed()->find(request()->route('user'));
+        $user_to_delete = User::withTrashed()->with('managesUsers')->find(request()->route('user'));
+
         $messages = [];
 
         if ($user_to_delete) {

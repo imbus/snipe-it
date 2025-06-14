@@ -44,10 +44,13 @@ return array(
         'error'   => 'Có vấn đề xảy ra khi checkout bản quyền. Xin vui lòng thử lại.',
         'success' => 'Bản quyền đã được checkout thành công',
         'not_enough_seats' => 'Not enough license seats available for checkout',
+        'mismatch' => 'The license seat provided does not match the license',
+        'unavailable' => 'This seat is not available for checkout.',
     ),
 
     'checkin' => array(
         'error'   => 'Có vấn đề xảy ra khi checkin bản quyền. Xin vui lòng thử lại.',
+        'not_reassignable' => 'License not reassignable',
         'success' => 'Bản quyền đã được checkin thành công'
     ),
 

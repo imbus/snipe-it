@@ -26,7 +26,11 @@ return array(
         'error'   		=> 'Lisatarvikut ei kontrollitud, palun proovige uuesti',
         'success' 		=> 'Lisaseade edukalt kontrollitud.',
         'unavailable'   => 'Tarvik ei ole väljastamiseks saadaval. Kontrolli laoseisu',
-        'user_does_not_exist' => 'See kasutaja on kehtetu. Palun proovi uuesti.'
+        'user_does_not_exist' => 'See kasutaja on kehtetu. Palun proovi uuesti.',
+         'checkout_qty' => array(
+            'lte'  => 'Praegu on saadaval ainult üks seda tüüpi lisaseade ja te üritate väljastada :checkout_qty. Palun kohandage väljastatavate lisaseadmete kogust või selle lisaseadme koguarvu ja proovige uuesti.Saadaval on :number_currently_remaining lisaseadet ja te üritate väljastada :checkout_qty. Palun kohandage väljastavate lisaseadmete kogust või selle lisaseadme koguarvu ja proovige uuesti.',
+            ),
+           
     ),
 
     'checkin' => array(

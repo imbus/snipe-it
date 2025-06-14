@@ -2,34 +2,38 @@
 
 return [
 
-    'undeployable' 		=> '<strong>Atención:</strong> Este elemento ha sido marcado como no utilizable.
-                        Si no es correcto, actualice el estado.',
-    'does_not_exist' 	=> 'Equipo inexistente.',
-    'does_not_exist_var'=> 'Activo con etiqueta :asset_tag no encontrado.',
-    'no_tag' 	        => 'No se ha proporcionado ninguna etiqueta de activo.',
+    'undeployable' 		 => '<strong>Advertencia:</strong> Este activo actualmente está marcado como no utilizable. Si este estado ha cambiado, por favor, actualice el estado del activo.',
+    'does_not_exist' 	 => 'Equipo inexistente.',
+    'does_not_exist_var' => 'Activo con placa :asset_tag no encontrado.',
+    'no_tag' 	         => 'No se ha proporcionado ninguna placa de activo.',
     'does_not_exist_or_not_requestable' => 'Ese activo no existe o no puede ser solicitado.',
-    'assoc_users'	 	=> 'Equipo asignado a un usuario, no se puede eliminar.',
+    'assoc_users'	 	 => 'Actualmente este activo está asignado a un usuario y no puede ser eliminado. Por favor, primero ingrese el activo y vuelva a intentarlo. ',
     'warning_audit_date_mismatch' 	=> 'La próxima fecha de auditoría de este activo (:next_audit_date) es anterior a la última fecha de auditoría (:last_audit_date). Por favor, actualice la próxima fecha de auditoría.',
+    'labels_generated'   => 'Las etiquetas fueron generadas exitosamente.',
+    'error_generating_labels' => 'Error en la generación de etiquetas.',
+    'no_assets_selected' => 'No se han seleccionado activos.',
 
     'create' => [
         'error'   		=> 'El activo no fue creado, por favor, inténtelo de nuevo. :(',
-        'success' 		=> 'Equipo creado. :)',
-        'success_linked' => 'Activo con etiqueta :tag creado con éxito. <strong><a href=":link" style="color: white;">Haga clic aquí para ver</a></strong>.',
+        'success' 		=> 'Activo creado con éxito. :)',
+        'success_linked' => 'Activo con placa :tag creado con éxito. <strong><a href=":link" style="color: white;">Haga clic aquí para ver</a></strong>.',
+        'multi_success_linked' => 'Activo con etiqueta :links fue creado exitosamente.|:count activos fueron creados correctamente. :links.',
+        'partial_failure' => 'No se ha podido crear un activo: Motivo: :failures|No se pudieron crear :count activos. Motivos: :failures',
     ],
 
     'update' => [
-        'error'   			=> 'Equipo no actualizado, intentalo de nuevo',
-        'success' 			=> 'Equipo actualizado.',
-        'encrypted_warning' => 'Activo actualizado con éxito, pero los campos personalizados cifrados no se actualizaron debido a permisos',
-        'nothing_updated'	=>  'Ningún campo fue seleccionado, por lo que nada ha sido actualizado.',
-        'no_assets_selected'  =>  'Ningún recurso fue seleccionado, por lo que no se actualizó nada.',
+        'error'   			=> 'El activo no pudo ser actualizado, por favor inténtelo de nuevo',
+        'success' 			=> 'Equipo actualizado correctamente.',
+        'encrypted_warning' => 'El activo se actualizó correctamente, pero los campos personalizados cifrados no lo hicieron debido a los permisos',
+        'nothing_updated'	=>  'Ningún campo fue seleccionado, por lo que no se actualizó nada.',
+        'no_assets_selected'  =>  'Ningún activo fue seleccionado, por lo que no se actualizó nada.',
         'assets_do_not_exist_or_are_invalid' => 'Los activos seleccionados no se pueden actualizar.',
     ],
 
     'restore' => [
-        'error'   		=> 'El equipo no fue restaurado, por favor intente nuevamente',
-        'success' 		=> 'Equipo restaurado correctamente.',
-        'bulk_success' 		=> 'Activo restaurado con éxito.',
+        'error'   		=> 'El activo no fue restaurado, por favor inténtelo nuevamente',
+        'success' 		=> 'Activo restaurado exitosamente.',
+        'bulk_success' 		=> 'Activo restaurado exitosamente.',
         'nothing_updated'   => 'No se seleccionaron activos, por lo que no se restauró nada.', 
     ],
 
@@ -40,7 +44,7 @@ return [
 
 
     'deletefile' => [
-        'error'   => 'Archivo no eliminado. Por favor, vuelva a intentarlo.',
+        'error'   => 'Archivo no eliminado. Por favor inténtelo nuevamente.',
         'success' => 'Archivo eliminado correctamente.',
     ],
 
@@ -48,48 +52,58 @@ return [
         'error'   => 'Archivo(s) no cargado(s). Por favor, inténtelo nuevamente.',
         'success' => 'Archivo(s) cargado(s) exitosamente.',
         'nofiles' => 'No seleccionó ningún archivo para ser cargado, o el archivo que está tratando de cargar es demasiado grande',
-        'invalidfiles' => 'Uno o más sus archivos es demasiado grande o es de un tipo no permitido. Los tipos de archivo permitidos son png, gif, jpg, doc, docx, pdf y txt.',
+        'invalidfiles' => 'Uno o más de sus archivos son demasiado grandes o son de un tipo de archivo que no está permitido. Los tipos de archivo permitidos son png, gif, jpg, doc, docx, pdf y txt.',
     ],
 
     'import' => [
+        'import_button'         => 'Importar',
         'error'                 => 'Algunos elementos no se pudieron importar correctamente.',
         'errorDetail'           => 'Estos elementos no pudieron importarse debido a errores.',
-        'success'               => 'Tu archivo ha sido importado',
-        'file_delete_success'   => 'Tu archivo ha sido eliminado con éxito',
-        'file_delete_error'      => 'No pudimos eliminar tu archivo',
+        'success'               => 'Su archivo ha sido importado',
+        'file_delete_success'   => 'Su archivo se ha eliminado correctamente',
+        'file_delete_error'      => 'El archivo no se pudo eliminar',
         'file_missing' => 'Falta el archivo seleccionado',
+        'file_already_deleted' => 'El archivo seleccionado ya fue eliminado',
         'header_row_has_malformed_characters' => 'Uno o más atributos de la fila de encabezado contiene caracteres UTF-8 mal formados',
-        'content_row_has_malformed_characters' => 'Uno o más atributos de la fila de encabezado contiene caracteres UTF-8 mal formados',
+        'content_row_has_malformed_characters' => 'Uno o más atributos en la primera fila contienen caracteres UTF-8 mal formados',
+        'transliterate_failure' => 'La transliteración de :encoding a UTF-8 falló debido a caracteres no válidos en la entrada'
     ],
 
 
     'delete' => [
         'confirm'   	=> '¿Está seguro de que desea eliminar este activo?',
-        'error'   		=> 'Equipo no eliminado, intentalo de nuevo.',
+        'error'   		=> 'Hubo un problema al eliminar el activo. Por favor, inténtelo de nuevo.',
+        'assigned_to_error' => '{1}Tag de activos: :asset_tag está actualmente desprotegido. Compruebe este dispositivo antes de eliminarlo. [2,*]Etiquetas de activos: :asset_tag están desactivadas. Revisa estos dispositivos antes de eliminarlos.',
         'nothing_updated'   => 'No se seleccionaron los activos, por lo que no se eliminó nada.',
-        'success' 		=> 'Equipo eliminado.',
+        'success' 		=> 'El activo se ha eliminado correctamente.',
     ],
 
     'checkout' => [
         'error'   		=> 'El activo no fue asignado, por favor inténtelo de nuevo',
-        'success' 		=> 'Equipo asignado.',
-        'user_does_not_exist' => 'Este usuario no es correcto. Intentalo de nuevo.',
-        'not_available' => '¡Ese artículo no está disponible para retirada!',
-        'no_assets_selected' => 'Debes seleccionar al menos un elemento de la lista',
+        'success' 		=> 'Equipo asignado correctamente.',
+        'user_does_not_exist' => 'Este usuario no es correcto. Por favor, inténtelo de nuevo.',
+        'not_available' => '¡Ese equipo no está disponible para ser asignado!',
+        'no_assets_selected' => 'Debe seleccionar al menos un activo de la lista',
+    ],
+
+    'multi-checkout' => [
+        'error'   => 'El activo no fue asignado, por favor, intente nuevamente|Los activos no fueron asignados, por favor, intente nuevamente',
+        'success' => 'El activo fue asignado correctamente|Los activos fueron asignados correctamente.',
     ],
 
     'checkin' => [
-        'error'   		=> 'El equipo no se pudo devolver, por favor inténtelo de nuevo',
-        'success' 		=> 'El activo fue devuelto exitosamente.',
-        'user_does_not_exist' => 'Es usuario no es correcto, por favor inténtelo de nuevo.',
-        'already_checked_in'  => 'El equipo ya ha sido devuelto.',
+        'error'   		=> 'El activo no se pudo ingresar, por favor inténtelo de nuevo',
+        'success' 		=> 'El activo fue ingresado exitosamente.',
+        'user_does_not_exist' => 'Este usuario no es correcto. Por favor, inténtelo de nuevo.',
+        'already_checked_in'  => 'El equipo ya ha sido recibido.',
 
     ],
 
     'requests' => [
-        'error'   		=> 'Bien no solicitado, por favor inténtelo de nuevo',
-        'success' 		=> 'Bien solicitado correctamente.',
-        'canceled'      => 'Solicitud de retirada cancelada con éxito',
+        'error'   		=> 'Solicitud no exitosa, por favor inténtelo de nuevo.',
+        'success' 		=> 'Solicitud enviada con éxito.',
+        'canceled'      => 'Solicitud cancelada con éxito.',
+        'cancel'        => 'Cancelar solicitud para este elemento',
     ],
 
 ];
