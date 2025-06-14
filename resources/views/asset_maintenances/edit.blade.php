@@ -71,27 +71,30 @@
         @else
 
           @if ($item->asset->company)
-            <label for="company" class="control-label col-md-3">
-              {{ trans('general.company') }}
-            </label>
+            <div class="form-group">
+              <label for="company" class="control-label col-md-3">
+                {{ trans('general.company') }}
+              </label>
 
-            <div class="col-md-9">
-              <p class="form-control-static">
-                {{ ($item->asset && $item->asset->company) ? $item->asset->company->name : '' }}
-              </p>
+              <div class="col-md-9">
+                <p class="form-control-static">
+                  {{ ($item->asset && $item->asset->company) ? $item->asset->company->name : '' }}
+                </p>
+              </div>
             </div>
           @endif
 
+            <div class="form-group">
+              <label for="asset" class="control-label col-md-3">
+                {{ trans('general.asset') }}
+              </label>
 
-            <label for="asset" class="control-label col-md-3">
-              {{ trans('general.asset') }}
-            </label>
-
-          <div class="col-md-9">
-            <p class="form-control-static">
-              {{ $item->asset ? $item->asset->present()->fullName : '' }}
-            </p>
-          </div>
+              <div class="col-md-9">
+                <p class="form-control-static">
+                  {{ $item->asset ? $item->asset->present()->fullName : '' }}
+                </p>
+              </div>
+            </div>
 
         @endif
 
@@ -102,9 +105,11 @@
 
         <!-- Start Date -->
         <div class="form-group {{ $errors->has('start_date') ? ' has-error' : '' }}">
-          <label for="start_date" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.start_date') }}</label>
+          <label for="start_date" class="col-md-3 control-label">
+            {{ trans('admin/asset_maintenances/form.start_date') }}
+          </label>
 
-          <div class="input-group col-md-3">
+          <div class="col-md-4">
             <x-input.datepicker
                     name="start_date"
                     :value="old('start_date', $item->start_date)"
@@ -121,7 +126,7 @@
         <div class="form-group {{ $errors->has('completion_date') ? ' has-error' : '' }}">
           <label for="start_date" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.completion_date') }}</label>
 
-          <div class="input-group col-md-3">
+          <div class="input-group col-md-4">
             <x-input.datepicker
                     name="completion_date"
                     :value="old('start_date', $item->completion_date)"
