@@ -78,7 +78,7 @@
 
               <div class="col-md-9">
                 <p class="form-control-static">
-                  {{ ($item->asset && $item->asset->company) ? $item->asset->company->name : '' }}
+                  {{  $item->asset->company->name }}
                 </p>
               </div>
             </div>
@@ -95,6 +95,20 @@
                 </p>
               </div>
             </div>
+
+            @if ($item->asset->location)
+              <div class="form-group">
+                <label for="location" class="control-label col-md-3">
+                  {{ trans('general.location') }}
+                </label>
+
+                <div class="col-md-9">
+                  <p class="form-control-static">
+                    {{ $item->asset->location->name }}
+                  </p>
+                </div>
+              </div>
+            @endif
 
         @endif
 
