@@ -1557,7 +1557,6 @@ class Asset extends Depreciable
      */
     public function scopeAssignedSearch($query, $search)
     {
-        \Log::debug('use scope');
         $search = explode(' OR ', $search);
 
         return $query->leftJoin('users as assets_users', function ($leftJoin) {
