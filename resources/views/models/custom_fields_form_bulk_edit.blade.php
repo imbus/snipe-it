@@ -1,9 +1,18 @@
 @php
 //set array up before loop so it doesn't get wiped at every iteration
     $fields = [];
+    $anyModelHasCustomFields = 0;
 @endphp
 
-@if (isset($models) && count($models) > 0)
+@foreach($models as $model)
+    @if ($model->fieldset ? $model->fieldset->count() > 0 : false)
+        @php
+            $anyModelHasCustomFields++;
+        @endphp
+    @endif
+@endforeach
+
+@if ($anyModelHasCustomFields > 0)
     <fieldset name="custom-fields" class="bottom-padded">
         <legend class="highlight">
             {{ trans('admin/custom_fields/general.custom_fields') }}
