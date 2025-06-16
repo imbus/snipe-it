@@ -130,6 +130,10 @@ class SettingsSamlRequest extends FormRequest
                             'saml_sp_x509cert' => $x509cert,
                             'saml_sp_privatekey' => $privateKey,
                         ]);
+                        $setting = Setting::getSettings();
+                        $setting->saml_sp_x509cert = $x509cert;
+                        $setting->saml_sp_privatekey = $privateKey;
+                        $setting->save();
                     }
                 } else {
                     $validator->errors()->add('saml_integration', 'openssl.cnf is missing/invalid');

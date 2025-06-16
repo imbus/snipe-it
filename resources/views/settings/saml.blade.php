@@ -85,6 +85,7 @@
                                          <label for="saml_sp_x509cert">{{ trans('admin/settings/general.saml_sp_x509cert') }}</label>
                                             <x-input.textarea
                                                 name="saml_sp_x509cert"
+                                                id="saml_sp_x509cert"
                                                 :value="$setting->saml_sp_x509cert"
                                                 wrap="off"
                                                 readonly
