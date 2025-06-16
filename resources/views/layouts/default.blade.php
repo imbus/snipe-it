@@ -455,8 +455,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                     <x-icon type="angle-left" class="pull-right fa-fw"/>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li {!! (Request::is('hardware') ? ' class="active"' : '') !!}>
-{{--                                        this makes list all ALWAYS active for the dropdown submenu. need this but NOT that--}}
+                                    <li>
                                         <a href="{{ url('hardware') }}">
                                             <x-icon type="circle" class="text-grey fa-fw"/>
                                             {{ trans('general.list_all') }}
@@ -575,7 +574,6 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             </a>
                                         </li>
                                         <li {!! (Request::is('maintenances') ? ' class="active"' : '') !!}>
-{{--                                            dropdown menu still closes when selecting this--}}
                                             <a href="{{ route('maintenances.index') }}">
                                                 {{ trans('general.asset_maintenances') }}
                                             </a>
