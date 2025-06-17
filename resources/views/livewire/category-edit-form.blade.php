@@ -74,8 +74,7 @@
                         value="1"
                         wire:model="alertOnResponse"
                     />
-                    {{-- @todo: translate--}}
-                    Send email to you when user accepts or declines checkout.
+                    {{ trans('admin/categories/general.email_to_initiator') }}
                 </label>
             </div>
         </div>

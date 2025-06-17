@@ -34,10 +34,9 @@ class CheckoutAcceptanceResponseMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        // @todo: translate
         $subject = $this->wasAccepted
-            ? 'A checkout you initiated was accepted'
-            : 'A checkout you initiated was declined';
+            ? trans('mail.initiated_accepted')
+            : trans('mail.initiated_declined');
 
         return new Envelope(
             subject: $subject,
@@ -63,10 +62,9 @@ class CheckoutAcceptanceResponseMail extends Mailable
 
     private function introduction(): string
     {
-        // @todo: translate
         return $this->wasAccepted
-            ? 'The following was accepted'
-            : 'The following was declined';
+            ? trans('mail.following_accepted')
+            : trans('mail.following_declined');
     }
 
     /**
