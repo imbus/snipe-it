@@ -93,6 +93,16 @@ class SettingAlertOnResponseTest extends TestCase
         ]);
     }
 
+    public function test_sets_alert_on_response_if_enabled_by_category_for_license()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_does_not_set_alert_on_response_if_disabled_by_category_for_license()
+    {
+        $this->markTestIncomplete();
+    }
+
     private function postAssetCheckout(Asset $asset): void
     {
         $this->actingAs($this->actor)
