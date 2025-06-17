@@ -151,6 +151,6 @@
     @endforeach
 @endif
  @endforeach
-@if (isset($models) && count($models) > 0)
+@if ($anyModelHasCustomFields > 0)
     </fieldset>
 @endif
