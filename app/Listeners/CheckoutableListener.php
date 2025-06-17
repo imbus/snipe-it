@@ -12,6 +12,7 @@ use App\Mail\CheckoutConsumableMail;
 use App\Mail\CheckoutLicenseMail;
 use App\Models\Accessory;
 use App\Models\Asset;
+use App\Models\Category;
 use App\Models\CheckoutAcceptance;
 use App\Models\Component;
 use App\Models\Consumable;
@@ -236,8 +237,9 @@ class CheckoutableListener
         $acceptance->checkoutable()->associate($event->checkoutable);
         $acceptance->assignedTo()->associate($event->checkedOutTo);
 
-        // @todo: adjust for other categories
-        if (data_get($event, 'checkoutable.model.category.alert_on_response') || data_get($event, 'checkoutable.category.alert_on_response')) {
+        $category = $this->getCategoryFromCheckoutable($event->checkoutable);
+
+        if ($category?->alert_on_response) {
             $acceptance->alert_on_response_id = auth()->id();
         }
         
@@ -467,5 +469,15 @@ class CheckoutableListener
         }
 
         return array($to, $cc);
+    }
+
+    private function getCategoryFromCheckoutable(Model $checkoutable): ?Category
+    {
+        return match (true) {
+            $checkoutable instanceof Asset => $checkoutable->model->category,
+            $checkoutable instanceof Accessory,
+                $checkoutable instanceof Consumable => $checkoutable->category,
+            $checkoutable instanceof LicenseSeat => $checkoutable->license->category,
+        };
     }
 }
