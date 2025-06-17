@@ -25,6 +25,7 @@
             <div class="box-body">
 
                 <table
+                        data-advanced-search="true"
                         data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout($serial = true) }}"
                         data-cookie-id-table="activityReport"
                         data-pagination="true"
