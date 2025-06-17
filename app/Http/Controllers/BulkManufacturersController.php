@@ -21,7 +21,7 @@ class BulkManufacturersController extends Controller
         foreach ($ids as $id) {
             try {
                 DestroyManufacturerAction::run(manufacturer: $id);
-            } catch (ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+            } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
                 $errors[] = `{$id} still has {$id->thing}`;
             } catch (\Exception $e) {
                 report($e);

@@ -6,6 +6,8 @@ use App\Models\Supplier;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasAssetMaintenances;
 use App\Exceptions\ModelStillHasLicenses;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DestroySupplierAction
 {
@@ -31,6 +33,14 @@ class DestroySupplierAction
 
         if ($supplier->licenses_count > 0) {
             throw new ModelStillHasLicenses($supplier);
+        }
+
+        if ($supplier->image) {
+            try {
+                Storage::disk('public')->delete('suppliers/'.$supplier->image);
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
 
         $supplier->delete();
