@@ -45,7 +45,7 @@ class HistoryPresenter extends Presenter
             ],
             [
                 'field' => 'created_by',
-                'searchable' => false,
+                'searchable' => true,
                 'sortable' => true,
                 'title' => trans('general.created_by'),
                 'visible' => true,
