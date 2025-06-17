@@ -60,13 +60,6 @@ class CheckoutAcceptanceResponseMail extends Mailable
         );
     }
 
-    private function introduction(): string
-    {
-        return $this->wasAccepted
-            ? trans('mail.following_accepted')
-            : trans('mail.following_declined');
-    }
-
     /**
      * Get the attachments for the message.
      *
@@ -75,5 +68,12 @@ class CheckoutAcceptanceResponseMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    private function introduction(): string
+    {
+        return $this->wasAccepted
+            ? trans('mail.following_accepted')
+            : trans('mail.following_declined');
     }
 }
