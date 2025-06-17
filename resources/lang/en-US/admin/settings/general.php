@@ -403,7 +403,7 @@ return [
     'text' => 'Text',
     'manager_view' => 'Manager View',
     'manager_view_enabled_text' => 'Enable Manager View',
-    'manager_view_enabled_help' => 'Allow managers to view assets assigned to their direct and indirect reports in their account view.',
+    'manager_view_enabled_help' => 'Allow managers to view assigned items to their direct and indirect reports in their account view.',
 
     'username_formats' => [
         'username_format'		=> 'Username Format',
