@@ -1279,16 +1279,16 @@
                                         <table
                                                 data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                                                 data-cookie-id-table="assetsTable"
-                                                data-pagination="true"
+
                                                 data-id-table="assetsTable"
-                                                data-search="true"
-                                                data-search-highlight="true"
-                                                data-show-print="true"
+
+
+
                                                 data-side-pagination="server"
-                                                data-show-columns="true"
-                                                data-show-fullscreen="true"
-                                                data-show-export="true"
-                                                data-show-refresh="true"
+
+
+
+
                                                 data-sort-order="asc"
                                                 data-bulk-button-id="#bulkAssetEditButton"
                                                 id="assetsListingTable"
@@ -1323,17 +1323,17 @@
                         <table
                                 data-columns="{{ \App\Presenters\AssetPresenter::assignedAccessoriesDataTableLayout() }}"
                                 data-cookie-id-table="accessoriesAssignedListingTable"
-                                data-pagination="true"
+
                                 data-id-table="accessoriesAssignedListingTable"
-                                data-search="true"
-                                data-search-highlight="true"
-                                data-show-print="true"
+
+
+
                                 data-side-pagination="server"
-                                data-show-columns="true"
-                                data-show-export="true"
-                                data-show-refresh="true"
+
+
+
                                 data-sort-order="asc"
-                                data-click-to-select="true"
+
                                 id="accessoriesAssignedListingTable"
                                 class="table table-striped snipe-table"
                                 data-url="{{ route('api.assets.assigned_accessories', ['asset' => $asset]) }}"
@@ -1361,17 +1361,17 @@
                                         data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
                                         id="assetMaintenancesTable"
-                                        data-pagination="true"
+
                                         data-id-table="assetMaintenancesTable"
-                                        data-search="true"
-                                        data-search-highlight="true"
-                                        data-show-print="true"
+
+
+
                                         data-side-pagination="server"
                                         data-toolbar="#maintenance-toolbar"
-                                        data-show-columns="true"
-                                        data-show-fullscreen="true"
-                                        data-show-refresh="true"
-                                        data-show-export="true"
+
+
+
+
                                         data-export-options='{
                            "fileName": "export-{{ $asset->asset_tag }}-maintenances",
                            "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
@@ -1392,19 +1392,19 @@
                             <table
                                     class="table table-striped snipe-table"
                                     id="asseAuditHistory"
-                                    data-pagination="true"
+
                                     data-id-table="asseAuditHistory"
-                                    data-search="true"
-                                    data-search-highlight="true"
-                                    data-show-print="true"
-                                    data-show-print="true"
+
+
+
+
                                     data-side-pagination="server"
-                                    data-show-columns="true"
-                                    data-show-fullscreen="true"
-                                    data-show-refresh="true"
+
+
+
                                     data-sort-order="desc"
                                     data-sort-name="created_at"
-                                    data-show-export="true"
+
                                     data-export-options='{
                          "fileName": "export-asset-{{  $asset->id }}-audits",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
@@ -1441,18 +1441,18 @@
                                         data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
                                         id="assetHistory"
-                                        data-pagination="true"
+
                                         data-id-table="assetHistory"
-                                        data-search="true"
-                                        data-search-highlight="true"
-                                        data-show-print="true"
+
+
+
                                         data-side-pagination="server"
-                                        data-show-columns="true"
-                                        data-show-fullscreen="true"
-                                        data-show-refresh="true"
+
+
+
                                         data-sort-order="desc"
                                         data-sort-name="created_at"
-                                        data-show-export="true"
+
                                         data-export-options='{
                          "fileName": "export-asset-{{  $asset->id }}-history",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]

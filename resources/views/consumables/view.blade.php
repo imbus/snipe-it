@@ -407,15 +407,15 @@
 
             <table
                     data-cookie-id-table="consumablesCheckedoutTable"
-                    data-pagination="true"
+
                     data-id-table="consumablesCheckedoutTable"
                     data-search="false"
-                    data-show-print="true"
+
                     data-side-pagination="server"
-                    data-show-columns="true"
-                    data-show-export="true"
+
+
                     data-show-footer="true"
-                    data-show-refresh="true"
+
                     data-sort-order="asc"
                     data-sort-name="name"
                     id="consumablesCheckedoutTable"
@@ -463,18 +463,18 @@
                       data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
                       class="table table-striped snipe-table"
                       id="consumableHistory"
-                      data-pagination="true"
+
                       data-id-table="consumableHistory"
-                      data-search="true"
-                      data-search-highlight="true"
-                      data-show-print="true"
+
+
+
                       data-side-pagination="server"
-                      data-show-columns="true"
-                      data-show-fullscreen="true"
-                      data-show-refresh="true"
+
+
+
                       data-sort-order="desc"
                       data-sort-name="created_at"
-                      data-show-export="true"
+
                       data-export-options='{
                          "fileName": "export-consumable-{{  $consumable->id }}-history",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]

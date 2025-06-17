@@ -34,7 +34,7 @@
 
             @if ($clients->count() > 0)
                     <table data-cookie-id-table="OAuthClientsTable"
-                           data-pagination="true"
+
                            data-id-table="OAuthClientsTable"
                            data-side-pagination="client"
                            data-sort-order="desc"
@@ -131,7 +131,7 @@
                         <div class="box-body">
                             <!-- Authorized Tokens -->
                             <table data-cookie-id-table="AuthorizedAppsTable"
-                                   data-pagination="true"
+
                                    data-id-table="AuthorizedAppsTable"
                                    data-toolbar="#AuthorizedAppsToolbar"
                                    data-side-pagination="client"

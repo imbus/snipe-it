@@ -22,15 +22,15 @@
           <table
                   data-columns="{{ \App\Presenters\DepreciationPresenter::dataTableLayout() }}"
                   data-cookie-id-table="depreciationsTable"
-                  data-pagination="true"
+
                   data-id-table="depreciationsTable"
-                  data-search="true"
-                  data-search-highlight="true"
-                  data-show-print="true"
+
+
+
                   data-side-pagination="server"
-                  data-show-columns="true"
-                  data-show-export="true"
-                  data-show-refresh="true"
+
+
+
                   data-sort-order="asc"
                   id="depreciationsTable"
                   class="table table-striped snipe-table"

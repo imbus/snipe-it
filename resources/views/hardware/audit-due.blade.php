@@ -49,20 +49,20 @@
                             <div class="table table-responsive">
                         <div class="col-md-12">
                             <table
-                                    data-click-to-select="true"
+
                                     data-columns="{{ \App\Presenters\AssetAuditPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="dueAssetAuditListing"
-                                    data-pagination="true"
+
                                     data-id-table="dueAssetAuditListing"
-                                    data-search="true"
-                                    data-search-highlight="true"
-                                    data-show-print="true"
+
+
+
                                     data-side-pagination="server"
-                                    data-show-columns="true"
-                                    data-show-fullscreen="true"
-                                    data-show-export="true"
+
+
+
                                     data-show-footer="true"
-                                    data-show-refresh="true"
+
                                     data-sort-order="asc"
                                     data-sort-name="name"
                                             data-toolbar="#dueAssetEditToolbar"
@@ -93,18 +93,18 @@
                             <div class="table table-responsive">
                                 <div class="col-md-12">
                                     <table
-                                        data-click-to-select="true"
+
                                         data-columns="{{ \App\Presenters\AssetAuditPresenter::dataTableLayout() }}"
                                         data-cookie-id-table="overdueAssetAuditListing"
-                                        data-pagination="true"
+
                                         data-id-table="overdueAssetAuditListing"
-                                        data-search="true"
+
                                         data-side-pagination="server"
-                                        data-show-columns="true"
-                                        data-show-fullscreen="true"
-                                        data-show-export="true"
+
+
+
                                         data-show-footer="true"
-                                        data-show-refresh="true"
+
                                         data-sort-order="asc"
                                         data-sort-name="name"
                                         data-toolbar="#overdueAssetEditToolbar"

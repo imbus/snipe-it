@@ -49,12 +49,13 @@
                 return htmlData
             }
             $(this).bootstrapTable({
-                classes: 'table table-responsive table-no-bordered',
+
                 ajaxOptions: {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 },
+                classes: 'table table-responsive table-striped snipe-table table-no-bordered',
                 // reorderableColumns: true,
                 stickyHeader: true,
                 stickyHeaderOffsetLeft: parseInt($('body').css('padding-left'), 10),
@@ -64,7 +65,18 @@
                 cookieStorage: '{{ config('session.bs_table_storage') }}',
                 cookie: true,
                 cookieExpire: '2y',
+                search: true,
+                advancedSearch: true,
+                searchHighlight: true,
+                clickToSelect: true,
+                showPrint: true,
+                showFullscreen: true,
+                showColumns: true,
+                showExport: true,
                 showColumnsToggleAll: true,
+                showRefresh: true,
+                pagination: true,
+                sortOrder: 'asc',
                 minimumCountColumns: 2,
                 mobileResponsive: true,
                 maintainSelected: true,
