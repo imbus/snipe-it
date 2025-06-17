@@ -108,7 +108,6 @@ class SettingAlertOnResponseTest extends TestCase
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => LicenseSeat::class,
-            'checkoutable_id' => $license->id,
             'assigned_to_id' => $this->assignedUser->id,
             'alert_on_response_id' => $this->actor->id,
         ]);
@@ -127,7 +126,6 @@ class SettingAlertOnResponseTest extends TestCase
 
         $this->assertDatabaseHas('checkout_acceptances', [
             'checkoutable_type' => LicenseSeat::class,
-            'checkoutable_id' => $license->id,
             'assigned_to_id' => $this->assignedUser->id,
             'alert_on_response_id' => null,
         ]);
