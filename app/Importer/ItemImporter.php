@@ -357,11 +357,14 @@ class ItemImporter extends Importer
     {
         if ($user_manager_username!='') {
             $manager = User::where('username', '=', $user_manager_username)->first();
+            $this->log('Checking on username '.$user_manager_username);
         } elseif ($user_manager_employee_num!='') {
             $manager = User::where('employee_num', '=', $user_manager_employee_num)->first();
+            $this->log('Checking on employee_num '.$user_manager_employee_num);
         } else {
             $manager = User::where('first_name', '=', $user_manager_first_name)
                 ->where('last_name', '=', $user_manager_last_name)->first();
+            $this->log('Checking on full name');
         }
 
         if ($manager) {
