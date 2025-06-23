@@ -399,7 +399,7 @@
                                             @if (isset($asset->expected_checkin))
                                                 <li>
                                                     <x-icon type="calendar" class="fa-fw" />
-                                                    {{ trans('admin/hardware/form.expected_checkin') }}: {{ Helper::getFormattedDateObject($asset->expected_checkin, 'date', false) }}
+                                                    {{ trans('general.expected_checkin') }}: {{ Helper::getFormattedDateObject($asset->expected_checkin, 'date', false) }}
                                                 </li>
                                             @endif
                                         </ul>
@@ -1094,7 +1094,7 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <strong>
-                                                    {{ trans('admin/hardware/form.expected_checkin') }}
+                                                    {{ trans('general.expected_checkin') }}
                                                 </strong>
                                             </div>
                                             <div class="col-md-9">
