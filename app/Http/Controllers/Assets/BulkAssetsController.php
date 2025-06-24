@@ -221,11 +221,11 @@ class BulkAssetsController extends Controller
         $error_array = array();
 
         // Get the back url from the session and then destroy the session
-        $bulk_back_url = route('hardware.index');
 
-        if ($request->session()->has('bulk_back_url')) {
-            $bulk_back_url = $request->session()->pull('bulk_back_url');
-        }
+        $bulk_back_url = $request->session()->pull('bulk_back_url', url()->previous());
+//        if ($request->session()->has('bulk_back_url')) {
+//            $bulk_back_url = $request->session()->pull('bulk_back_url');
+//        }
 
        $custom_field_columns = CustomField::all()->pluck('db_column')->toArray();
 
@@ -540,7 +540,13 @@ class BulkAssetsController extends Controller
             } // end asset foreach
 
             if ($has_errors > 0) {
-                return redirect($bulk_back_url)->with('bulk_asset_errors', $error_array);
+                session()->put('bulkedit_ids', $request->input('ids'));
+                session()->put('bulk_asset_errors',$error_array);
+
+
+                return redirect(url()->previous())
+                    ->with('bulk_asset_errors', $error_array)
+                    ->withInput();
             }
 
             return redirect($bulk_back_url)->with('success', trans('admin/hardware/message.update.success'));
@@ -732,4 +738,35 @@ class BulkAssetsController extends Controller
          }
         return false;
     }
+
+    public function bulkEditForm(Request $request): View|RedirectResponse
+    {
+        $this->authorize('update', Asset::class);
+
+        $asset_ids = session()->pull('bulkedit_ids', []);
+
+        if (empty($asset_ids)) {
+            return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.update.no_assets_selected'));
+        }
+
+        $assets = Asset::with('model')->withTrashed()->whereIn('id', $asset_ids)->get();
+
+        if ($assets->isEmpty()) {
+            return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.update.assets_do_not_exist_or_are_invalid'));
+        }
+
+        $models = $assets->unique('model_id');
+        $modelNames = [];
+        foreach ($models as $model) {
+            $modelNames[] = $model->model->name;
+        }
+
+        return view('hardware/bulk')
+            ->with('assets', $asset_ids)
+            ->with('statuslabel_list', Helper::statusLabelList())
+            ->with('models', $models->pluck(['model']))
+            ->with('modelNames', $modelNames)
+            ->with('bulk_asset_errors', session('bulk_asset_errors'));
+    }
+
 }

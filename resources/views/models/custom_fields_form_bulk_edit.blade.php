@@ -143,7 +143,7 @@
 
         <div class="col-md-8 col-md-offset-3" style="padding-bottom: 10px;">
             <label class="form-control">
-                <input type="checkbox" name="{{ 'null'.$field->db_column_name() }}" value="1">
+                <input type="checkbox" name="{{ 'null'.$field->db_column_name() }}" value="1" {{ old('null'.$field->db_column_name()) ? 'checked' : '' }}>
                 {{ trans_choice('general.set_to_null', count($assets),['selection_count' => count($assets)]) }}
             </label>
         </div>
