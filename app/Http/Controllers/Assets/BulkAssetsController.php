@@ -739,7 +739,7 @@ class BulkAssetsController extends Controller
         return false;
     }
 
-    public function bulkEditForm(Request $request): View|RedirectResponse
+    public function bulkEditForm(): View|RedirectResponse
     {
         $this->authorize('update', Asset::class);
 
@@ -765,8 +765,7 @@ class BulkAssetsController extends Controller
             ->with('assets', $asset_ids)
             ->with('statuslabel_list', Helper::statusLabelList())
             ->with('models', $models->pluck(['model']))
-            ->with('modelNames', $modelNames)
-            ->with('bulk_asset_errors', session('bulk_asset_errors'));
+            ->with('modelNames', $modelNames);
     }
 
 }
