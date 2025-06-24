@@ -145,6 +145,7 @@
             return true; // ensure form still submits
         });
 
+        $('#assigned_assets_select').select2('open');
     });
 </script>
 
