@@ -101,10 +101,6 @@
                                         data-toolbar="#toolbar"
                                         class="table table-striped snipe-table"
                                         id="table"
-
-
-
-
                                         data-id-table="advancedTable"
                                         data-cookie-id-table="requestableAssets">
                                 <thead>
