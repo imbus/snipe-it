@@ -66,9 +66,7 @@
             <table
                     data-cookie="true"
                     data-cookie-id-table="system-backups"
-
                     data-id-table="system-backups"
-
                     data-side-pagination="client"
                     data-sort-order="desc"
                     data-sort-name="modified_display"
