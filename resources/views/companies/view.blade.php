@@ -178,14 +178,8 @@
                             <table
                                     data-columns="{{ \App\Presenters\ComponentPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="componentsTable"
-
                                     data-id-table="componentsTable"
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     id="componentsTable"
                                     class="table table-striped snipe-table"
@@ -205,14 +199,8 @@
                             <table
                                     data-columns="{{ \App\Presenters\UserPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="usersTable"
-
                                     data-id-table="usersTable"
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     id="usersTable"
                                     class="table table-striped snipe-table"
