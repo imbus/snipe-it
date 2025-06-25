@@ -152,17 +152,12 @@
                                     <table
                                             data-columns="{{ \App\Presenters\AssetModelPresenter::dataTableLayout() }}"
                                             data-cookie-id-table="asssetModelsTable"
-
                                             data-id-table="asssetModelsTable"
-
                                             data-show-footer="true"
                                             data-side-pagination="server"
-
                                             data-toolbar="#modelsBulkEditToolbar"
                                             data-bulk-button-id="#bulkModelsEditButton"
                                             data-bulk-form-id="#modelsBulkForm"
-
-
                                             data-sort-order="asc"
                                             id="asssetModelsTable"
                                             class="table table-striped snipe-table"
