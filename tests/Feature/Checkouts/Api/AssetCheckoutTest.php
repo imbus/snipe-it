@@ -12,10 +12,12 @@ use App\Models\Statuslabel;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AssetCheckoutTest extends TestCase
 {
+    use AssertsActionLogs;
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,6 +38,8 @@ class AssetCheckoutTest extends TestCase
         $this->actingAsForApi(User::factory()->create())
             ->post(route('api.assets.requests.store', $nonRequestable->id))
             ->assertStatusMessageIs('error');
+
+        $this->assertHasTheseActionLogs($requestable, ['create', 'requested', 'update']); //FIXME - is this right?!
 
     }
 

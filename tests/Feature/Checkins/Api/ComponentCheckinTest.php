@@ -10,10 +10,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Tests\Concerns\TestsFullMultipleCompaniesSupport;
 use Tests\Concerns\TestsPermissionsRequirement;
+use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class ComponentCheckinTest extends TestCase implements TestsFullMultipleCompaniesSupport, TestsPermissionsRequirement
 {
+    use AssertsActionLogs;
     public function testRequiresPermission()
     {
         $component = Component::factory()->checkedOutToAsset()->create();
@@ -82,6 +84,8 @@ class ComponentCheckinTest extends TestCase implements TestsFullMultipleCompanie
             ->assertStatusMessageIs('success');
 
         $this->assertEquals(1, $component->fresh()->assets->first()->pivot->assigned_qty);
+        $this->assertHasTheseActionLogs($component, ['create']); //FIXME?
+
 
         Event::assertDispatched(function (CheckoutableCheckedIn $event) use ($user, $component) {
             return $event->checkoutable->is($component)
@@ -160,5 +164,6 @@ class ComponentCheckinTest extends TestCase implements TestsFullMultipleCompanie
             'item_id' => $component->id,
             'item_type' => Component::class,
         ]);
+        $this->assertHasTheseActionLogs($component, ['create', /*'checkout',*/ 'checkin from']); //FIXME?
     }
 }

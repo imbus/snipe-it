@@ -4,9 +4,11 @@ namespace Tests\Feature\Checkins\Api;
 use App\Models\License;
 use App\Models\LicenseSeat;
 use App\Models\User;
+use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class LicenseCheckInTest extends TestCase {
+    use AssertsActionLogs;
     public function testLicenseCheckin()
     {
         $authUser = User::factory()->superuser()->create();
@@ -41,5 +43,6 @@ class LicenseCheckInTest extends TestCase {
         $this->assertNull($licenseSeat->asset_id);
 
         $this->assertEquals('Checking in the seat', $licenseSeat->notes);
+        $this->assertHasTheseActionLogs($license, ['add seats', 'create', 'checkin from']); //FIXME - bad order!
     }
 }

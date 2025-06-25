@@ -5,10 +5,13 @@ namespace Tests\Feature\Checkins\Ui;
 use App\Models\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class ComponentCheckinTest extends TestCase
 {
+    use AssertsActionLogs;
+
     public function testCheckingInComponentRequiresCorrectPermission()
     {
         $component = Component::factory()->checkedOutToAsset()->create();
@@ -47,6 +50,7 @@ class ComponentCheckinTest extends TestCase
             ])
             ->assertStatus(302)
             ->assertRedirect(route('components.index'));
+        $this->assertHasTheseActionLogs($component, ['create', 'checkin from']);
     }
 
     public function testComponentCheckinPagePostIsRedirectedIfRedirectSelectionIsItem()
@@ -66,5 +70,7 @@ class ComponentCheckinTest extends TestCase
             ->assertStatus(302)
             ->assertSessionHasNoErrors()
             ->assertRedirect(route('components.show', $component));
+        $this->assertHasTheseActionLogs($component, ['create', 'checkin from']);
+
     }
 }

@@ -11,10 +11,12 @@ use App\Models\Statuslabel;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AssetCheckinTest extends TestCase
 {
+    use AssertsActionLogs;
     public function testCheckingInAssetRequiresCorrectPermission()
     {
         $this->actingAs(User::factory()->create())
@@ -102,6 +104,7 @@ class AssetCheckinTest extends TestCase
             ->post(route('hardware.checkin.store', [$asset]));
 
         $this->assertTrue($asset->refresh()->location()->is($rtdLocation));
+        $this->assertHasTheseActionLogs($asset, ['create', 'checkin from']);
     }
 
     public function testDefaultLocationCanBeUpdatedUponCheckin()
