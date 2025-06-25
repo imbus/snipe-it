@@ -66,24 +66,14 @@
                 @include('partials.asset-bulk-actions', ['status' => Request::get('status')])
                    
               <table
-
-
                 data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                 data-cookie-id-table="assetsListingTable"
-
                 data-id-table="assetsListingTable"
-
-
-
                 data-search-text="{{ e(Session::get('search')) }}"
                 data-side-pagination="server"
-
-
                 data-show-footer="true"
-
                 data-sort-order="asc"
                 data-sort-name="name"
-
                 data-toolbar="#assetsBulkEditToolbar"
                 data-bulk-button-id="#bulkAssetEditButton"
                 data-bulk-form-id="#assetsBulkForm"

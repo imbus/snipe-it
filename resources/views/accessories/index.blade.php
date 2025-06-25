@@ -24,16 +24,8 @@
             <table
                 data-columns="{{ \App\Presenters\AccessoryPresenter::dataTableLayout() }}"
                 data-cookie-id-table="accessoriesTable"
-
                 data-id-table="accessoriesTable"
-
-
-
                 data-side-pagination="server"
-
-
-
-
                 data-show-footer="true"
                 data-sort-order="asc"
                 data-footer-style="footerStyle"
