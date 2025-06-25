@@ -1298,17 +1298,9 @@
                         <table
                                 data-columns="{{ \App\Presenters\AssetPresenter::assignedAccessoriesDataTableLayout() }}"
                                 data-cookie-id-table="accessoriesAssignedListingTable"
-
                                 data-id-table="accessoriesAssignedListingTable"
-
-
-
                                 data-side-pagination="server"
-
-
-
                                 data-sort-order="asc"
-
                                 id="accessoriesAssignedListingTable"
                                 class="table table-striped snipe-table"
                                 data-url="{{ route('api.assets.assigned_accessories', ['asset' => $asset]) }}"

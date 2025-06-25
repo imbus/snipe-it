@@ -52,17 +52,9 @@
 
                                     data-columns="{{ \App\Presenters\AssetAuditPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="dueAssetAuditListing"
-
                                     data-id-table="dueAssetAuditListing"
-
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-show-footer="true"
-
                                     data-sort-order="asc"
                                     data-sort-name="name"
                                             data-toolbar="#dueAssetEditToolbar"
@@ -96,15 +88,9 @@
 
                                         data-columns="{{ \App\Presenters\AssetAuditPresenter::dataTableLayout() }}"
                                         data-cookie-id-table="overdueAssetAuditListing"
-
                                         data-id-table="overdueAssetAuditListing"
-
                                         data-side-pagination="server"
-
-
-
                                         data-show-footer="true"
-
                                         data-sort-order="asc"
                                         data-sort-name="name"
                                         data-toolbar="#overdueAssetEditToolbar"

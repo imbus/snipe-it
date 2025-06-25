@@ -458,18 +458,10 @@
                       data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
                       class="table table-striped snipe-table"
                       id="consumableHistory"
-
                       data-id-table="consumableHistory"
-
-
-
                       data-side-pagination="server"
-
-
-
                       data-sort-order="desc"
                       data-sort-name="created_at"
-
                       data-export-options='{
                          "fileName": "export-consumable-{{  $consumable->id }}-history",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
