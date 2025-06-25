@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -167,6 +168,15 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         });
     }
 
+
+    public function isAvatarExternal() {
+        // Check if it's a google avatar or some external avatar
+        if (Str::startsWith($this->avatar, ['http://', 'https://'])) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Internally check the user permission for the given section
