@@ -92,20 +92,12 @@
                             <table
                                     data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="assetsListingTable"
-
                                     data-id-table="assetsListingTable"
-
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     data-toolbar="#assetsBulkEditToolbar"
                                     data-bulk-button-id="#bulkAssetEditButton"
                                     data-bulk-form-id="#assetsBulkForm"
-
                                     id="assetsListingTable"
                                     class="table table-striped snipe-table"
                                     data-url="{{route('api.assets.index',['company_id' => $company->id]) }}"
@@ -123,14 +115,8 @@
                             <table
                                     data-columns="{{ \App\Presenters\LicensePresenter::dataTableLayout() }}"
                                     data-cookie-id-table="licensesTable"
-
                                     data-id-table="licensesTable"
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     id="licensesTable"
                                     class="table table-striped snipe-table"
@@ -150,14 +136,8 @@
                             <table
                                     data-columns="{{ \App\Presenters\AccessoryPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="accessoriesTable"
-
                                     data-id-table="accessoriesTable"
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     id="accessoriesTable"
                                     class="table table-striped snipe-table"
@@ -177,14 +157,8 @@
                             <table
                                     data-columns="{{ \App\Presenters\ConsumablePresenter::dataTableLayout() }}"
                                     data-cookie-id-table="consumablesTable"
-
                                     data-id-table="consumablesTable"
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="asc"
                                     id="consumablesTable"
                                     class="table table-striped snipe-table"

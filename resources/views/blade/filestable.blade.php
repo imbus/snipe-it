@@ -12,17 +12,9 @@
             data-cookie-id-table="{{ str_slug($object->name ?? $object->id) }}UploadsTable"
             data-id-table="{{ str_slug($object->name ?? $object->id) }}UploadsTable"
             id="{{ str_slug($object->name ?? $object->id) }}UploadsTable"
-
-
-
-
             data-side-pagination="client"
-
-
-
             data-show-footer="true"
             data-toolbar="#upload-toolbar"
-
             data-sort-order="asc"
             data-sort-name="name"
             class="table table-striped snipe-table"

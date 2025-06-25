@@ -407,15 +407,10 @@
 
             <table
                     data-cookie-id-table="consumablesCheckedoutTable"
-
                     data-id-table="consumablesCheckedoutTable"
                     data-search="false"
-
                     data-side-pagination="server"
-
-
                     data-show-footer="true"
-
                     data-sort-order="asc"
                     data-sort-name="name"
                     id="consumablesCheckedoutTable"

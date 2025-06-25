@@ -21,18 +21,10 @@
         <table
                 data-columns="{{ \App\Presenters\ComponentPresenter::dataTableLayout() }}"
                 data-cookie-id-table="componentsTable"
-
                 data-id-table="componentsTable"
-
-
-
                 data-side-pagination="server"
                 data-footer-style="footerStyle"
-
-
-
                 data-show-footer="true"
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="componentsTable"

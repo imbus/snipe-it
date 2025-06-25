@@ -16,13 +16,9 @@
 
                     <table
                             data-cookie-id-table="loginReport"
-
                             data-id-table="loginReport"
                             data-search="false"
                             data-side-pagination="server"
-
-
-
                             data-sort-order="desc"
                             data-sort-name="created_at"
                             id="loginReport"

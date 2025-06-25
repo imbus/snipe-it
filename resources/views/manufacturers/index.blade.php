@@ -51,16 +51,8 @@
             <table
               data-columns="{{ \App\Presenters\ManufacturerPresenter::dataTableLayout() }}"
               data-cookie-id-table="manufacturersTable"
-
               data-id-table="manufacturersTable"
-
-
-
               data-side-pagination="server"
-
-
-
-
               data-sort-order="asc"
               id="manufacturersTable"
               class="table table-striped snipe-table"

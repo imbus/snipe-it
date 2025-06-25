@@ -23,18 +23,10 @@
         <table
                 data-columns="{{ \App\Presenters\ConsumablePresenter::dataTableLayout() }}"
                 data-cookie-id-table="consumablesTable"
-
                 data-id-table="consumablesTable"
-
-
-
                 data-side-pagination="server"
                 data-footer-style="footerStyle"
-
-
-
                 data-show-footer="true"
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 data-toolbar="#toolbar"

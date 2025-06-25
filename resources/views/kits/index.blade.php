@@ -22,15 +22,7 @@
             <table
                 data-cookie-id-table="kitsTable"
                 data-columns="{{ \App\Presenters\PredefinedKitPresenter::dataTableLayout() }}"
-
-
-
-
                 data-side-pagination="server"
-
-
-
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="kitsTable"

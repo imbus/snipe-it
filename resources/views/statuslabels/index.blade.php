@@ -22,17 +22,9 @@
             <table
                     data-columns="{{ \App\Presenters\StatusLabelPresenter::dataTableLayout() }}"
                     data-cookie-id-table="statuslabelsTable"
-
                     data-id-table="statuslabelsTable"
-
-
-
                     data-show-footer="false"
                     data-side-pagination="server"
-
-
-
-
                     data-sort-order="asc"
                     data-sort-name="name"
                     id="statuslabelsTable"

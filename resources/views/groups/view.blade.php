@@ -27,14 +27,7 @@
                                 <table
                                     data-columns="{{  \App\Presenters\UserPresenter::dataTableLayout() }}"
                                     data-cookie-id-table="groupsUsersTable"
-
-
-
-
                                     data-side-pagination="server"
-
-
-
                                     id="groupsUsersTable"
                                     class="table table-striped snipe-table"
                                     data-url="{{ route('api.users.index',['group_id'=> $group->id]) }}"

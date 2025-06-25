@@ -23,20 +23,11 @@
           <table
                   data-columns="{{ \App\Presenters\LocationPresenter::dataTableLayout() }}"
                   data-cookie-id-table="locationTable"
-
-
                   data-id-table="locationTable"
                   data-toolbar="#locationsBulkEditToolbar"
                   data-bulk-button-id="#bulkLocationsEditButton"
                   data-bulk-form-id="#locationsBulkForm"
-
-
-
                   data-side-pagination="server"
-
-
-
-
                   data-sort-order="asc"
                   id="locationTable"
                   class="table table-striped snipe-table"

@@ -114,22 +114,13 @@
               <table
                       data-cookie-id-table="suppliersAssetsTable"
                       data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
-
                       data-id-table="suppliersAssetsTable"
-
-
-
                       data-show-footer="true"
                       data-side-pagination="server"
-
-
-
-
                       data-sort-order="asc"
                       data-toolbar="#assetsBulkEditToolbar"
                       data-bulk-button-id="#bulkAssetEditButton"
                       data-bulk-form-id="#assetsBulkForm"
-
                       id="suppliersAssetsTable"
                       class="table table-striped snipe-table"
                       data-url="{{route('api.assets.index', ['supplier_id' => $supplier->id]) }}"

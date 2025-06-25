@@ -438,14 +438,8 @@
                         data-cookie-id-table="seatsTable"
                         data-id-table="seatsTable"
                         id="seatsTable"
-
                         data-search="false"
-
                         data-side-pagination="server"
-
-
-
-
                         data-sort-order="asc"
                         data-sort-name="name"
                         class="table table-striped snipe-table"
@@ -485,15 +479,8 @@
                       data-cookie-id-table="licenseHistoryTable"
                       data-id-table="licenseHistoryTable"
                       id="licenseHistoryTable"
-
-
                       data-side-pagination="server"
-
-
                       data-sort-order="desc"
-
-
-
                       data-export-options='{
                        "fileName": "export-{{ str_slug($license->name) }}-history-{{ date('Y-m-d') }}",
                        "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]

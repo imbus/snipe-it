@@ -30,13 +30,7 @@
         <table
                 data-cookie-id-table="customFieldsetsTable"
                 data-id-table="customFieldsetsTable"
-
-
-
                 data-side-pagination="client"
-
-
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="customFieldsTable"
@@ -132,13 +126,7 @@
         <table
                 data-cookie-id-table="customFieldsTable"
                 data-id-table="customFieldsTable"
-
-
-
                 data-side-pagination="client"
-
-
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="customFieldsTable"

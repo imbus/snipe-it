@@ -83,7 +83,6 @@
                                             data-toolbar="#assetsBulkEditToolbar"
                                             data-bulk-button-id="#bulkAssetEditButton"
                                             data-bulk-form-id="#assetsBulkForm"
-
                                             data-export-options='{
                     "fileName": "export-{{ str_slug($category->name) }}-assets-{{ date('Y-m-d') }}",
                     "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
@@ -126,15 +125,8 @@
                       }'
                                             @endif
 
-
-
-
-
                                             data-show-footer="true"
                                             data-side-pagination="server"
-
-
-
                                             data-sort-order="asc"
                                             class="table table-striped snipe-table"
                                             data-url="{{ route('api.'.$category_type_route.'.index',['category_id'=> $category->id]) }}">

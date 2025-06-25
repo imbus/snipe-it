@@ -22,16 +22,8 @@
         <table
             data-columns="{{ \App\Presenters\CategoryPresenter::dataTableLayout() }}"
             data-cookie-id-table="categoryTable"
-
             data-id-table="categoryTable"
-
-
-
             data-side-pagination="server"
-
-
-
-
             data-sort-order="asc"
             id="categoryTable"
             class="table table-striped snipe-table"

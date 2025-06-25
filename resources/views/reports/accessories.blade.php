@@ -15,15 +15,8 @@
                 <div class="box-body">
                         <table
                                 data-cookie-id-table="accessoriesReport"
-
                                 data-id-table="accessoriesReport"
-
-
-
                                 data-side-pagination="server"
-
-
-
                                 data-sort-order="asc"
                                 id="accessoriesReport"
                                 class="table table-striped snipe-table"

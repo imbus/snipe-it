@@ -19,16 +19,8 @@
             <table
               data-columns="{{ \App\Presenters\CompanyPresenter::dataTableLayout() }}"
               data-cookie-id-table="companiesTable"
-
               data-id-table="companiesTable"
-
-
-
               data-side-pagination="server"
-
-
-
-
               data-sort-order="asc"
               id="companiesTable"
               class="table table-striped snipe-table"

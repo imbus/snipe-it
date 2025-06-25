@@ -189,21 +189,12 @@
                       <table
                               data-columns="{{ \App\Presenters\UserPresenter::dataTableLayout() }}"
                               data-cookie-id-table="usersTable"
-
                               data-id-table="usersTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
                               data-toolbar="#userBulkEditToolbar"
                               data-bulk-button-id="#bulkUserEditButton"
                               data-bulk-form-id="#usersBulkForm"
-
                               id="usersTable"
                               class="table table-striped snipe-table"
                               data-url="{{route('api.users.index', ['location_id' => $location->id])}}"
@@ -221,21 +212,12 @@
                       <table
                               data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                               data-cookie-id-table="assetsListingTable"
-
                               data-id-table="assetsListingTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
                               data-toolbar="#assetsBulkEditToolbar"
                               data-bulk-button-id="#bulkAssetEditButton"
                               data-bulk-form-id="#assetsBulkForm"
-
                               id="assetsListingTable"
                               class="table table-striped snipe-table"
                               data-url="{{route('api.assets.index', ['location_id' => $location->id]) }}"
@@ -256,21 +238,12 @@
                               role="table"
                               data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                               data-cookie-id-table="assetsAssignedListingTable"
-
                               data-id-table="assetsAssignedListingTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
                               data-toolbar="#AssignedAssetsBulkEditToolbar"
                               data-bulk-button-id="#AssignedbulkAssetEditButton"
                               data-bulk-form-id="#assignedAssetsBulkForm"
-
                               id="assetsAssignedListingTable"
                               class="table table-striped snipe-table"
                               data-url="{{route('api.assets.index', ['assigned_to' => $location->id, 'assigned_type' => 'App\Models\Location']) }}"
@@ -289,21 +262,12 @@
                               role="table"
                               data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                               data-cookie-id-table="RTDassetsListingTable"
-
                               data-id-table="RTDassetsListingTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
                               data-toolbar="#RTDassetsBulkEditToolbar"
                               data-bulk-button-id="#RTDbulkAssetEditButton"
                               data-bulk-form-id="#RTDassetsBulkEditToolbar"
-
                               id="RTDassetsListingTable"
                               class="table table-striped snipe-table"
                               data-url="{{route('api.assets.index', ['rtd_location_id' => $location->id]) }}"
@@ -322,17 +286,9 @@
                               role="table"
                               data-columns="{{ \App\Presenters\AccessoryPresenter::dataTableLayout() }}"
                               data-cookie-id-table="accessoriesListingTable"
-
                               data-id-table="accessoriesListingTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
                               id="accessoriesListingTable"
                               class="table table-striped snipe-table"
                               data-url="{{route('api.accessories.index', ['location_id' => $location->id]) }}"
@@ -352,18 +308,9 @@
                               role="table"
                               data-columns="{{ \App\Presenters\LocationPresenter::assignedAccessoriesDataTableLayout() }}"
                               data-cookie-id-table="accessoriesAssignedListingTable"
-
                               data-id-table="accessoriesAssignedListingTable"
-
-
-
                               data-side-pagination="server"
-
-
-
                               data-sort-order="asc"
-
-
                               id="accessoriesAssignedListingTable"
                               class="table table-striped snipe-table"
                               data-url="{{ route('api.locations.assigned_accessories', ['location' => $location]) }}"
@@ -381,17 +328,9 @@
                                   role="table"
                                   data-columns="{{ \App\Presenters\ConsumablePresenter::dataTableLayout() }}"
                                   data-cookie-id-table="consumablesListingTable"
-
                                   data-id-table="consumablesListingTable"
-
-
-
                                   data-side-pagination="server"
-
-
-
                                   data-sort-order="asc"
-
                                   id="consumablesListingTable"
                                   class="table table-striped snipe-table"
                                   data-url="{{route('api.consumables.index', ['location_id' => $location->id]) }}"
@@ -408,17 +347,9 @@
                                   role="table"
                                   data-columns="{{ \App\Presenters\ComponentPresenter::dataTableLayout() }}"
                                   data-cookie-id-table="componentsTable"
-
                                   data-id-table="componentsTable"
-
-
-
                                   data-side-pagination="server"
-
-
-
                                   data-sort-order="asc"
-
                                   id="componentsTable"
                                   class="table table-striped snipe-table"
                                   data-url="{{route('api.components.index', ['location_id' => $location->id])}}"
@@ -453,18 +384,10 @@
                             <table
                                     class="table table-striped snipe-table"
                                     id="assetHistory"
-
                                     data-id-table="assetHistory"
-
-
-
                                     data-side-pagination="server"
-
-
-
                                     data-sort-order="desc"
                                     data-sort-name="created_at"
-
                                     data-export-options='{
                         "fileName": "export-location-asset-{{  $location->id }}-history",
                         "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]

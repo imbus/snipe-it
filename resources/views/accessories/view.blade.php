@@ -78,16 +78,8 @@
                                 <table
                                     data-columns="{{ \App\Presenters\AccessoryPresenter::assignedDataTableLayout() }}"
                                     data-cookie-id-table="checkoutsTable"
-
                                     data-id-table="checkoutsTable"
-
-
-
                                     data-side-pagination="server"
-
-
-
-
                                     data-sort-order="asc"
                                     id="checkoutsTable"
                                     class="table table-striped snipe-table"
@@ -113,15 +105,8 @@
                                         data-cookie-id-table="AccessoryHistoryTable"
                                         data-id-table="AccessoryHistoryTable"
                                         id="AccessoryHistoryTable"
-
-
                                         data-side-pagination="server"
-
-
                                         data-sort-order="desc"
-
-
-
                                         data-export-options='{
                        "fileName": "export-{{ str_slug($accessory->name) }}-history-{{ date('Y-m-d') }}",
                        "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]

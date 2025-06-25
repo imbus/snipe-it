@@ -51,18 +51,11 @@
                         <div class="col-md-12">
                                 <div class="table-responsive">
                                     <table
-
                                         data-cookie-id-table="requestableAssetsListingTable"
-
                                         data-id-table="requestableAssetsListingTable"
-
-
-
                                         data-side-pagination="server"
-
                                         data-show-export="false"
                                         data-show-footer="false"
-
                                         data-sort-order="asc"
                                         data-sort-name="name"
                                         data-toolbar="#assetsBulkEditToolbar"

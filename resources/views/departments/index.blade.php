@@ -18,16 +18,8 @@
                 <div class="box-body">
                         <table
                                 data-cookie-id-table="departmentsTable"
-
                                 data-id-table="departmentsTable"
-
-
-
                                 data-side-pagination="server"
-
-
-
-
                                 data-sort-order="asc"
                                 id="departmentsTable"
                                 class="table table-striped snipe-table"

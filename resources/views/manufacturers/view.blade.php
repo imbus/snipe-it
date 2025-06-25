@@ -136,16 +136,9 @@
           <table
                   data-columns="{{ \App\Presenters\LicensePresenter::dataTableLayout() }}"
                   data-cookie-id-table="licensesTable"
-
                   data-id-table="licensesTable"
-
-
-
                   data-show-footer="true"
                   data-side-pagination="server"
-
-
-
                   data-sort-order="asc"
                   id="licensesTable"
                   class="table table-striped snipe-table"
@@ -164,16 +157,9 @@
           <table
                   data-columns="{{ \App\Presenters\AccessoryPresenter::dataTableLayout() }}"
                   data-cookie-id-table="accessoriesTable"
-
                   data-id-table="accessoriesTable"
-
-
-
                   data-show-footer="true"
                   data-side-pagination="server"
-
-
-
                   data-sort-order="asc"
                   id="accessoriesTable"
                   class="table table-striped snipe-table"
@@ -192,16 +178,9 @@
           <table
                   data-columns="{{ \App\Presenters\ConsumablePresenter::dataTableLayout() }}"
                   data-cookie-id-table="consumablesTable"
-
                   data-id-table="consumablesTable"
-
-
-
                   data-show-footer="true"
                   data-side-pagination="server"
-
-
-
                   data-sort-order="asc"
                   id="consumablesTable"
                   class="table table-striped snipe-table"
@@ -219,16 +198,9 @@
           <table
                   data-columns="{{ \App\Presenters\ComponentPresenter::dataTableLayout() }}"
                   data-cookie-id-table="componentsTable"
-
                   data-id-table="componentsTable"
-
-
-
                   data-show-footer="true"
                   data-side-pagination="server"
-
-
-
                   data-sort-order="asc"
                   id="componentsTable"
                   class="table table-striped snipe-table"

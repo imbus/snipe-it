@@ -88,20 +88,11 @@
                     <table
                             data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                             data-cookie-id-table="assetListingTable"
-
                             data-id-table="assetListingTable"
-
-
-
                             data-side-pagination="server"
-
-
                             data-toolbar="#assetsBulkEditToolbar"
                             data-bulk-button-id="#bulkAssetEditButton"
                             data-bulk-form-id="#assetsBulkForm"
-
-
-
                             data-sort-order="asc"
                             id="assetListingTable"
                             data-url="{{ route('api.assets.index',['model_id'=> $model->id]) }}"

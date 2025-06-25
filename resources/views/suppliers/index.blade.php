@@ -23,16 +23,8 @@
         <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
             data-cookie-id-table="suppliersTable"
-
             data-id-table="suppliersTable"
-
-
-
             data-side-pagination="server"
-
-
-
-
             data-sort-order="asc"
             id="suppliersTable"
             class="table table-striped snipe-table"

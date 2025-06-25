@@ -22,15 +22,7 @@
 
             <table
                 data-cookie-id-table="groupsTable"
-
-
-
-
                 data-side-pagination="server"
-
-
-
-
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="groupsTable"

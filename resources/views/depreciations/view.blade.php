@@ -68,20 +68,12 @@
                                 data-cookie-id-table="depreciationsAssetTable"
                                 data-id-table="depreciationsAssetTable"
                                 id="depreciationsAssetTable"
-
-
-
-
                                 data-side-pagination="server"
-
-
-
                                 data-sort-order="asc"
                                 data-sort-name="name"
                                 data-toolbar="#assetsBulkEditToolbar"
                                 data-bulk-button-id="#assetEditButton"
                                 data-bulk-form-id="#assetsBulkForm"
-
                                 class="table table-striped snipe-table"
                                 data-url="{{ route('api.assets.index',['depreciation_id'=> $depreciation->id]) }}"
                                 data-export-options='{
@@ -104,14 +96,7 @@
                                             data-cookie-id-table="depreciationsLicenseTable"
                                             data-id-table="depreciationsLicenseTable"
                                             id="depreciationsLicenseTable"
-
-
-
-
                                             data-side-pagination="server"
-
-
-
                                             data-sort-order="asc"
                                             data-sort-name="name"
                                             class="table table-striped snipe-table"
@@ -151,20 +136,12 @@
                                             data-cookie-id-table="depreciationsModelsTable"
                                             data-id-table="depreciationsModelsTable"
                                             id="depreciationsModelsTable"
-
-
-
-
                                             data-toolbar="#toolbar"
                                             data-side-pagination="server"
-
-
-
                                             data-sort-order="asc"
                                             data-sort-name="name"
                                             data-bulk-button-id="#AssetModelsBulkEditButton"
                                             data-bulk-form-id="#bulkForm"
-
                                             class="table table-striped snipe-table"
                                             data-url="{{ route('api.models.index',['depreciation_id'=> $depreciation->id]) }}"
                                             data-export-options='{

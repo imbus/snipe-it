@@ -17,12 +17,8 @@
                     <table
 
                             data-cookie-id-table="userRequests"
-
                             data-id-table="userRequests"
                             data-side-pagination="server"
-
-
-
                             data-sort-order="desc"
                             id="userRequests"
                             class="table table-striped snipe-table"
