@@ -48,6 +48,7 @@ class StorageHelper
             'avif',
             'webp',
             'png',
+            'gif',
         ];
 
 
@@ -58,6 +59,18 @@ class StorageHelper
         return false;
 
     }
+
+    public static function getFiletype($file_with_path) {
+
+        // The file exists and is allowed to be displayed inline
+        if (Storage::exists($file_with_path)) {
+            return pathinfo($file_with_path, PATHINFO_EXTENSION);
+        }
+
+        return null;
+
+    }
+
 
     /**
      * Decide whether to show the file inline or download it.
