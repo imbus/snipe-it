@@ -187,8 +187,8 @@ class UploadedFilesController extends Controller
         }
 
 
-        // Check that the file being requested exists for the asset
-        if (! $log = Actionlog::whereNotNull('filename')->where('item_type', AssetModel::class)->where('item_id', $object->id)->find($file_id)
+        // Check that the file being requested exists for the object
+        if (! $log = Actionlog::whereNotNull('filename')->where('item_type', self::$map_object_type[$object_type])->where('item_id', $object->id)->find($file_id)
         ) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_id')), 200);
         }

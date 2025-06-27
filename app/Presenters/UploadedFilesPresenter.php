@@ -12,12 +12,8 @@ class UploadsPresenter extends Presenter
      *
      * @return string
      */
-    public static function dataTableLayout($object)
+    public static function dataTableLayout()
     {
-
-        if ($object =='assets') {
-            $object = 'hardware';
-        }
 
         $layout = [
             [

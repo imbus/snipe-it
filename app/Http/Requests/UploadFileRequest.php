@@ -42,7 +42,8 @@ class UploadFileRequest extends Request
     public function handleFile(string $dirname, string $name_prefix, $file): string
     {
 
-        $file_name = $name_prefix.'-'.str_random(8).'-'.str_replace(' ', '-', $file->getClientOriginalName());
+        $extension = $file->getClientOriginalExtension();
+        $file_name = $name_prefix.'-'.str_random(8).'-'.str_slug(basename($file->getClientOriginalName(), '.'.$extension)).'.'.$file->guessExtension();
 
         // Check for SVG and sanitize it
         if ($file->getMimeType() === 'image/svg+xml') {
