@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Http\Traits\UniqueUndeletedTrait;
 use App\Models\Traits\Searchable;
+use App\Models\Traits\HasUploads;
 use App\Presenters\Presentable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -27,6 +28,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
 {
     use HasFactory;
     use CompanyableTrait;
+    use HasUploads;
 
     protected $presenter = \App\Presenters\UserPresenter::class;
     use SoftDeletes, ValidatingTrait, Loggable;
@@ -530,21 +532,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         return $this->hasMany(\App\Models\Asset::class, 'id')->withTrashed();
     }
 
-    /**
-     * Establishes the user -> uploads relationship
-     *
-     * @author A. Gianotto <snipe@snipe.net>
-     * @since [v3.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function uploads()
-    {
-        return $this->hasMany(\App\Models\Actionlog::class, 'item_id')
-            ->where('item_type', self::class)
-            ->where('action_type', '=', 'uploaded')
-            ->whereNotNull('filename')
-            ->orderBy('created_at', 'desc');
-    }
+
 
     /**
      * Establishes the user -> acceptances relationship
