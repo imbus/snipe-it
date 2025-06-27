@@ -65,14 +65,18 @@ class UploadedFilesController extends Controller
 
 
     /**
-     * List the files for an object.
+     * List files for an object
      *
-     * @since [v7.0.12]
-     * @author [r-xyz]
+     * @param \App\Http\Requests\UploadFileRequest $request
+     * @param string $object_type the type of object to upload the file to
+     * @param int $id the ID of the object to list files for
+     * @since [v8.1.17]
+     * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function index(Request $request, $object_type, $id) : JsonResponse | array
     {
 
+        // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
         $this->authorize('view', $object);
 
@@ -116,13 +120,15 @@ class UploadedFilesController extends Controller
      * Accepts a POST to upload a file to the server.
      *
      * @param \App\Http\Requests\UploadFileRequest $request
-     * @param int $assetModelId
-     * @since [v7.0.12]
-     * @author [r-xyz]
+     * @param string $object_type the type of object to upload the file to
+     * @param int $id the ID of the object to store so we can check permisisons
+     * @since [v8.1.17]
+     * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function store(UploadFileRequest $request, $object_type, $id) : JsonResponse
     {
 
+        // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
         $this->authorize('view', $object);
 
@@ -161,15 +167,16 @@ class UploadedFilesController extends Controller
     /**
      * Check for permissions and display the file.
      *
-     * @param  AssetModel $model
-     * @param  int $fileId
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @since [v7.0.12]
-     * @author [r-xyz]
-     */
+     * @param \App\Http\Requests\UploadFileRequest $request
+     * @param string $object_type the type of object to upload the file to
+     * @param int $id the ID of the object to delete from so we can check permisisons
+     * @param $file_id the ID of the file to delete from the action_logs table
+     * @since [v8.1.17]
+     * @author [A. Gianotto <snipe@snipe.net>]
+ */
     public function show($object_type, $id, $file_id) : JsonResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
+        // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
         $this->authorize('view', $object);
 
@@ -204,14 +211,17 @@ class UploadedFilesController extends Controller
     /**
      * Delete the associated file
      *
-     * @param  AssetModel $model
-     * @param  int $fileId
-     * @since [v7.0.12]
-     * @author [r-xyz]
+     * @param \App\Http\Requests\UploadFileRequest $request
+     * @param string $object_type the type of object to upload the file to
+     * @param int $id the ID of the object to delete from so we can check permisisons
+     * @param $file_id the ID of the file to delete from the action_logs table
+     * @since [v8.1.17]
+     * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function destroy($object_type, $id, $file_id) : JsonResponse
     {
 
+        // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
         $this->authorize('update', self::$map_object_type[$object_type]);
 
