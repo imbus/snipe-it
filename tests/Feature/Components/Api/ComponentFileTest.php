@@ -22,7 +22,8 @@ class ComponentFileTest extends TestCase
             ->post(
                 route('api.files.store', ['object_type' => 'components', 'id' => $component->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)]
-            ])
+                ]
+            )
             ->assertOk();
     }
 
@@ -39,12 +40,15 @@ class ComponentFileTest extends TestCase
         // List the files
         $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'components', 'id' => $component->id]))
+                route('api.files.index', ['object_type' => 'components', 'id' => $component->id])
+            )
             ->assertOk()
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'rows',
                 'total',
-            ]);
+                ]
+            );
     }
 
     public function testComponentFailsIfInvalidTypePassedInUrl()
@@ -60,7 +64,8 @@ class ComponentFileTest extends TestCase
         // List the files
         $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'shibboleeeeeet', 'id' => $component->id]))
+                route('api.files.index', ['object_type' => 'shibboleeeeeet', 'id' => $component->id])
+            )
             ->assertStatus(404);
     }
 
@@ -77,7 +82,8 @@ class ComponentFileTest extends TestCase
         // List the files
         $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'components', 'id' => 100000]))
+                route('api.files.index', ['object_type' => 'components', 'id' => 100000])
+            )
             ->assertOk()
             ->assertStatusMessageIs('error');
     }
@@ -97,12 +103,15 @@ class ComponentFileTest extends TestCase
             ->post(
                 route('api.files.store', ['object_type' => 'components', 'id' => $component->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
-            ])
+                ]
+            )
             ->assertOk()
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'status',
                 'messages',
-            ]);
+                ]
+            );
 
         // Upload a file with notes
         $this->actingAsForApi($user)
@@ -110,19 +119,24 @@ class ComponentFileTest extends TestCase
                 route('api.files.store', ['object_type' => 'components', 'id' => $component->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
                 'notes' => 'manual'
-            ])
+                ]
+            )
             ->assertOk()
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'status',
                 'messages',
-            ]);
+                ]
+            );
 
         // List the files to get the file ID
         $result = $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'components', 'id' => $component->id]))
+                route('api.files.index', ['object_type' => 'components', 'id' => $component->id])
+            )
             ->assertOk()
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'total',
                 'rows'=>[
                     '*' => [
@@ -136,18 +150,22 @@ class ComponentFileTest extends TestCase
                         'available_actions'
                     ]
                 ]
-            ])
-            ->assertJsonPath('rows.0.note',null)
-            ->assertJsonPath('rows.1.note','manual');
+                ]
+            )
+            ->assertJsonPath('rows.0.note', null)
+            ->assertJsonPath('rows.1.note', 'manual');
 
         // Get the file
         $this->actingAsForApi($user)
             ->get(
-                route('api.files.show', [
+                route(
+                    'api.files.show', [
                     'object_type' => 'components',
                     'id' => $component->id,
                     'file_id' => $result->decodeResponseJson()->json()["rows"][0]["id"],
-                ]))
+                    ]
+                )
+            )
             ->assertOk();
     }
 
@@ -166,27 +184,34 @@ class ComponentFileTest extends TestCase
             ->post(
                 route('api.files.store', ['object_type' => 'components', 'id' => $component->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)]
-            ])
+                ]
+            )
             ->assertOk();
 
         // List the files to get the file ID
         $result = $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'components', 'id' => $component->id]))
+                route('api.files.index', ['object_type' => 'components', 'id' => $component->id])
+            )
             ->assertOk();
 
         // Delete the file
         $this->actingAsForApi($user)
             ->delete(
-                route('api.files.destroy', [
+                route(
+                    'api.files.destroy', [
                     'object_type' => 'components',
                     'id' => $component->id,
                     'file_id' => $result->decodeResponseJson()->json()["rows"][0]["id"],
-                ]))
+                    ]
+                )
+            )
             ->assertOk()
-            ->assertJsonStructure([
+            ->assertJsonStructure(
+                [
                 'status',
                 'messages',
-            ]);
+                ]
+            );
     }
 }

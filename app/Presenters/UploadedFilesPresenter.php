@@ -9,6 +9,7 @@ class UploadsPresenter extends Presenter
 {
     /**
      * Json Column Layout for bootstrap table
+     *
      * @return string
      */
     public static function dataTableLayout($object)

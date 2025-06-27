@@ -60,7 +60,8 @@ class UploadFileRequest extends Request
         return $file_name;
     }
 
-    public function handleSVG($file) {
+    public function handleSVG($file)
+    {
         $sanitizer = new Sanitizer();
         $dirtySVG = file_get_contents($file->getRealPath());
         return $sanitizer->sanitize($dirtySVG);
@@ -71,6 +72,7 @@ class UploadFileRequest extends Request
      * Get the validation error messages that apply to the request, but
      * replace the attribute name with the name of the file that was attempted and failed
      * to make it clearer to the user which file is the bad one.
+     *
      * @return array
      */
     public function attributes(): array

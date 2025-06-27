@@ -67,10 +67,10 @@ class UploadedFilesController extends Controller
     /**
      * List files for an object
      *
-     * @param \App\Http\Requests\UploadFileRequest $request
-     * @param string $object_type the type of object to upload the file to
-     * @param int $id the ID of the object to list files for
-     * @since [v8.1.17]
+     * @param  \App\Http\Requests\UploadFileRequest $request
+     * @param  string                               $object_type the type of object to upload the file to
+     * @param  int                                  $id          the ID of the object to list files for
+     * @since  [v8.1.17]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function index(Request $request, $object_type, $id) : JsonResponse | array
@@ -105,10 +105,12 @@ class UploadedFilesController extends Controller
         // And we generally won't need that here
         if ($request->filled('search')) {
 
-            $uploads->where(function ($query) use ($request) {
-                $query->where('filename', 'LIKE', '%' . $request->input('search') . '%')
-                    ->orWhere('note', 'LIKE', '%' . $request->input('search') . '%');
-            });
+            $uploads->where(
+                function ($query) use ($request) {
+                    $query->where('filename', 'LIKE', '%' . $request->input('search') . '%')
+                        ->orWhere('note', 'LIKE', '%' . $request->input('search') . '%');
+                }
+            );
         }
 
         $uploads = $uploads->skip($offset)->take($limit)->orderBy($sort, $order)->get();
@@ -119,10 +121,10 @@ class UploadedFilesController extends Controller
     /**
      * Accepts a POST to upload a file to the server.
      *
-     * @param \App\Http\Requests\UploadFileRequest $request
-     * @param string $object_type the type of object to upload the file to
-     * @param int $id the ID of the object to store so we can check permisisons
-     * @since [v8.1.17]
+     * @param  \App\Http\Requests\UploadFileRequest $request
+     * @param  string                               $object_type the type of object to upload the file to
+     * @param  int                                  $id          the ID of the object to store so we can check permisisons
+     * @since  [v8.1.17]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function store(UploadFileRequest $request, $object_type, $id) : JsonResponse
@@ -145,7 +147,7 @@ class UploadedFilesController extends Controller
         if ($request->hasFile('file')) {
             // Loop over the attached files and add them to the object
             foreach ($request->file('file') as $file) {
-                $file_name = $request->handleFile(self::$map_storage_path[$object_type],self::$map_file_prefix[$object_type].'-'.$object->id, $file);
+                $file_name = $request->handleFile(self::$map_storage_path[$object_type], self::$map_file_prefix[$object_type].'-'.$object->id, $file);
                 $files[] = $file_name;
                 $object->logUpload($file_name, $request->get('notes'));
             }
@@ -167,13 +169,13 @@ class UploadedFilesController extends Controller
     /**
      * Check for permissions and display the file.
      *
-     * @param \App\Http\Requests\UploadFileRequest $request
-     * @param string $object_type the type of object to upload the file to
-     * @param int $id the ID of the object to delete from so we can check permisisons
-     * @param $file_id the ID of the file to delete from the action_logs table
-     * @since [v8.1.17]
+     * @param  \App\Http\Requests\UploadFileRequest $request
+     * @param  string                               $object_type the type of object to upload the file to
+     * @param  int                                  $id          the ID of the object to delete from so we can check permisisons
+     * @param  $file_id     the ID of the file to delete from the action_logs table
+     * @since  [v8.1.17]
      * @author [A. Gianotto <snipe@snipe.net>]
- */
+     */
     public function show($object_type, $id, $file_id) : JsonResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
         // Check the permissions to make sure the user can view the object
@@ -186,9 +188,8 @@ class UploadedFilesController extends Controller
 
 
         // Check that the file being requested exists for the asset
-        if (! $log = Actionlog::whereNotNull('filename')
-            ->where('item_type', AssetModel::class)
-            ->where('item_id', $object->id)->find($file_id)) {
+        if (! $log = Actionlog::whereNotNull('filename')->where('item_type', AssetModel::class)->where('item_id', $object->id)->find($file_id)
+        ) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_id')), 200);
         }
 
@@ -211,11 +212,11 @@ class UploadedFilesController extends Controller
     /**
      * Delete the associated file
      *
-     * @param \App\Http\Requests\UploadFileRequest $request
-     * @param string $object_type the type of object to upload the file to
-     * @param int $id the ID of the object to delete from so we can check permisisons
-     * @param $file_id the ID of the file to delete from the action_logs table
-     * @since [v8.1.17]
+     * @param  \App\Http\Requests\UploadFileRequest $request
+     * @param  string                               $object_type the type of object to upload the file to
+     * @param  int                                  $id          the ID of the object to delete from so we can check permisisons
+     * @param  $file_id     the ID of the file to delete from the action_logs table
+     * @since  [v8.1.17]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
     public function destroy($object_type, $id, $file_id) : JsonResponse
