@@ -7,12 +7,10 @@ use App\Models\Company;
 use App\Models\User;
 use Tests\Concerns\TestsFullMultipleCompaniesSupport;
 use Tests\Concerns\TestsPermissionsRequirement;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AccessoryCheckinTest extends TestCase implements TestsFullMultipleCompaniesSupport, TestsPermissionsRequirement
 {
-    use AssertsActionLogs;
     public function testRequiresPermission()
     {
         $accessory = Accessory::factory()->checkedOutToUser()->create();

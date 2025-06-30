@@ -10,12 +10,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Tests\Concerns\TestsFullMultipleCompaniesSupport;
 use Tests\Concerns\TestsPermissionsRequirement;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class ComponentCheckinTest extends TestCase implements TestsFullMultipleCompaniesSupport, TestsPermissionsRequirement
 {
-    use AssertsActionLogs;
     public function testRequiresPermission()
     {
         $component = Component::factory()->checkedOutToAsset()->create();

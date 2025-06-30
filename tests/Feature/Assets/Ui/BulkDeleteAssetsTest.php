@@ -84,6 +84,7 @@ class BulkDeleteAssetsTest extends TestCase
 
         Asset::findMany($id_array)->each(function (Asset $asset)  {
             $this->assertNotNull($asset->deleted_at);
+            $this->assertHasTheseActionLogs($asset, ['create', 'delete']);
         });
 
         $this->followRedirects($response)->assertSee('alert-success');
@@ -93,13 +94,17 @@ class BulkDeleteAssetsTest extends TestCase
     {
         $user = User::factory()->viewAssets()->deleteAssets()->editAssets()->create();
         $asset = Asset::factory()->deleted()->create();
+        $this->assertNotNull($asset);
 
         $asset->refresh();
-        $id_array = $asset->pluck('id')->toArray();
+        $id_array = [$asset->id];
+        $this->assertEquals(1, count($id_array));
 
         // Check that the assets are deleted
-        Asset::findMany($id_array)->each(function (Asset $asset)  {
-            $this->assertNull($asset->deleted_at);
+        Asset::whereIn('id', $id_array)->withTrashed()->each(function (Asset $asset) {
+            $this->fail('ppoooo');
+            $this->assertFalse(true);
+            $this->assertNotNull($asset->deleted_at);
         });
 
         $response = $this->actingAs($user)
@@ -112,7 +117,9 @@ class BulkDeleteAssetsTest extends TestCase
 
         Asset::findMany($id_array)->each(function (Asset $asset)  {
             $this->assertNull($asset->deleted_at);
+            $this->assertHasTheseActionLogs($asset, ['create', 'delete', 'restore', 'fart']); //SHIT
         });
+        $this->assertTrue(false);
     }
 
 

@@ -218,6 +218,7 @@ class AssetCheckoutTest extends TestCase
 
             return true;
         });
+        $this->assertHasTheseActionLogs($asset, ['create', 'checkout']); //FIXME - only getting one?
     }
 
     public function testLicenseSeatsAreAssignedToUserUponCheckout()

@@ -12,12 +12,10 @@ use App\Models\Statuslabel;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AssetCheckoutTest extends TestCase
 {
-    use AssertsActionLogs;
     protected function setUp(): void
     {
         parent::setUp();

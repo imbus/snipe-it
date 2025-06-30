@@ -11,12 +11,10 @@ use App\Models\Statuslabel;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AssetCheckinTest extends TestCase
 {
-    use AssertsActionLogs;
     public function testCheckingInAssetRequiresCorrectPermission()
     {
         $this->actingAsForApi(User::factory()->create())

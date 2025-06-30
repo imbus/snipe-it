@@ -13,12 +13,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Testing\Fluent\AssertableJson;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class StoreAssetTest extends TestCase
 {
-    use AssertsActionLogs;
 
     public function testRequiresPermissionToCreateAsset()
     {

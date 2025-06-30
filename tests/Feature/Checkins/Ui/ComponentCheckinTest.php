@@ -5,12 +5,10 @@ namespace Tests\Feature\Checkins\Ui;
 use App\Models\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class ComponentCheckinTest extends TestCase
 {
-    use AssertsActionLogs;
 
     public function testCheckingInComponentRequiresCorrectPermission()
     {

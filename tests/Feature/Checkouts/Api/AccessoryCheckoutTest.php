@@ -10,12 +10,10 @@ use App\Notifications\CheckoutAccessoryNotification;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\Concerns\TestsPermissionsRequirement;
-use Tests\Support\AssertsActionLogs;
 use Tests\TestCase;
 
 class AccessoryCheckoutTest extends TestCase implements TestsPermissionsRequirement
 {
-    use AssertsActionLogs;
 
     public function testRequiresPermission()
     {
