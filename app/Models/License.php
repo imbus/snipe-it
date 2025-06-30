@@ -115,6 +115,7 @@ class License extends Depreciable
         'company'      => ['name'],
         'category'     => ['name'],
         'depreciation' => ['name'],
+        'supplier'     => ['name'],
     ];
     protected $appends = ['free_seat_count'];
 
