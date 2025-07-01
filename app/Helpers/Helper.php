@@ -1484,7 +1484,7 @@ class Helper
     static public function getRedirectOption($request, $id, $table, $item_id = null) : RedirectResponse
     {
 
-        $redirect_option = Session::get('redirect_option');
+        $redirect_option = Session::get('redirect_option') ?? $request->input('redirect_option');
         $checkout_to_type = Session::get('checkout_to_type');
         $checkedInFrom = Session::get('checkedInFrom');
         $other_redirect = Session::get('other_redirect');
