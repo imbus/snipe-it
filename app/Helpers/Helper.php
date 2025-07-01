@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\License;
 use App\Models\Location;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Carbon\Carbon;
@@ -1480,7 +1481,7 @@ class Helper
     }
 
 
-    static public function getRedirectOption($request, $id, $table, $item_id = null)
+    static public function getRedirectOption($request, $id, $table, $item_id = null) : RedirectResponse
     {
 
         $redirect_option = Session::get('redirect_option');
