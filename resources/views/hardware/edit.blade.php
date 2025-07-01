@@ -10,6 +10,7 @@
     'options' => [
                 'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'assets']),
                 'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset')]),
+                'other_redirect' => trans('admin/hardware/form.redirect_to_type', [ 'type' => trans('general.asset').' '.trans('general.asset_model')])
                ]
 ])
 
