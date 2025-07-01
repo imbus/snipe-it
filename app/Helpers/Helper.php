@@ -1541,10 +1541,7 @@ class Helper
             switch ($other_redirect) {
                 case 'audit':
                     return route('assets.audit.due');
-            }
-            switch ($other_redirect) {
                 case 'model':
-
                     return route('models.show', $request->model_id );
             }
 
