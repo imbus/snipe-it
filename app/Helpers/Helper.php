@@ -1485,7 +1485,7 @@ class Helper
     {
 
         $redirect_option = Session::get('redirect_option') ?? $request->input('redirect_option');
-        $checkout_to_type = Session::get('checkout_to_type');
+        $checkout_to_type = Session::get('checkout_to_type') ?? $request->input('checkout_to_type');
         $checkedInFrom = Session::get('checkedInFrom');
         $other_redirect = Session::get('other_redirect');
         $backUrl = Session::pull('back_url', route('home'));
