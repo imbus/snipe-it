@@ -83,6 +83,8 @@ final class CompaniesController extends Controller
     public function edit(Company $company) : View | RedirectResponse
     {
         $this->authorize('update', $company);
+        Company::isCurrentUserHasAccess($company);
+        // $company = Company::scopeCompanyables($company, 'id', 'companies');
         return view('companies/edit')->with('item', $company);
     }
 
@@ -98,6 +100,7 @@ final class CompaniesController extends Controller
     {
 
         $this->authorize('update', $company);
+        $company = Company::scopeCompanyables($company, 'id', 'companies');
         $company->name = $request->input('name');
         $company->phone = $request->input('phone');
         $company->fax = $request->input('fax');
@@ -123,10 +126,13 @@ final class CompaniesController extends Controller
      */
     public function destroy($companyId) : RedirectResponse
     {
+
         if (is_null($company = Company::find($companyId))) {
             return redirect()->route('companies.index')
                 ->with('error', trans('admin/companies/message.not_found'));
         }
+
+        $company = Company::scopeCompanyables($company, 'id', 'companies');
 
         $this->authorize('delete', $company);
         if (! $company->isDeletable()) {

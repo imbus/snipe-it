@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Schema;
 final class Company extends SnipeModel
 {
     use HasFactory;
+    use CompanyableTrait;
+
 
     protected $table = 'companies';
 
@@ -146,10 +148,10 @@ final class Company extends SnipeModel
         if (!is_string($companyable)) {
             $company_table = $companyable->getModel()->getTable();
             try {
-                // This is primary for the gate:allows-check in location->isDeletable()
+                // This is primarily for the gate:allows-check in location->isDeletable()
                 // Locations don't have a company_id so without this it isn't possible to delete locations with FullMultipleCompanySupport enabled
                 // because this function is called by SnipePermissionsPolicy->before()
-                if (!$companyable instanceof Company && !Schema::hasColumn($company_table, 'company_id')) {
+                if (!Schema::hasColumn($company_table, 'company_id')) {
                     return true;
                 }
 
@@ -163,8 +165,18 @@ final class Company extends SnipeModel
             // Log::warning('Companyable is '.$companyable);
             $current_user_company_id = auth()->user()->company_id;
             $companyable_company_id = $companyable->company_id;
-            return $current_user_company_id == null || $current_user_company_id == $companyable_company_id || auth()->user()->isSuperUser();
+
+            // Set this to check companyable on company
+            if ($companyable instanceof Company) {
+                \Log::error('This is a company!');
+                $companyable_company_id = $companyable->id;
+                \Log::error('Companyable object ID: '.$companyable_company_id);
+                \Log::error('User company ID: '.$current_user_company_id);
+            }
+            return ($current_user_company_id == null) || ($current_user_company_id == $companyable_company_id) || auth()->user()->isSuperUser();
         }
+
+        return false;
 
     }
 
