@@ -662,8 +662,9 @@ return [
     'depreciation_options' => [
         'amount' => 'Amount',
         'percent' => 'Percentage',
-        'months' => '1 month|:count months',
     ],
+
+    'months_plural' => '1 month|:count months',
 
 
 ];

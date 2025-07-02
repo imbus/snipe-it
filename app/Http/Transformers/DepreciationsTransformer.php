@@ -26,7 +26,7 @@ class DepreciationsTransformer
         $array = [
             'id' => (int) $depreciation->id,
             'name' => e($depreciation->name),
-            'months' => trans_choice('general.depreciation_options.months', $depreciation->months),
+            'months' => trans_choice('general.months_plural', $depreciation->months),
             'depreciation_min' => $depreciation->depreciation_type === 'percent' ? $depreciation->depreciation_min.'%' : $depreciation->depreciation_min,
             'assets_count' => $depreciation->assets_count,
             'models_count' => $depreciation->models_count,
