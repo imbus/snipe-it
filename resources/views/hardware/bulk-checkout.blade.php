@@ -146,6 +146,21 @@
         });
 
         $('#assigned_assets_select').select2('open');
+        setTimeout(function () {
+            const $searchField = $('.select2-search__field');
+            const $results = $('.select2-results');
+
+            // Focus the search input
+            $searchField.focus();
+
+            // Hide results initially
+            $results.hide();
+
+            // Show results when a user starts typing
+            $searchField.on('input', function () {
+                $results.show();
+            });
+        }, 0);
     });
 </script>
 
