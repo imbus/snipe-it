@@ -599,6 +599,7 @@
                   index_route="users.index"
                   :button_label="trans('general.save')"
                   :options="[
+                        'back' => trans('admin/hardware/form.redirect_to_type',['type' => trans('general.previous_page')]),
                         'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'users']),
                         'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.user')]),
                         ]"
