@@ -639,11 +639,9 @@ $(document).ready(function() {
         @if (!config('app.lock_passwords'))
 
         if (this.value.length > 5){
-            console.log('email field is ' + this.value.length + ' - enable the checkbox');
             $('#email_user_checkbox').prop("disabled", false);
             $("#email_user_checkbox").parent().removeClass("form-control--disabled");
         } else {
-            console.log('email field is ' + this.value.length + ' - DISABLE the checkbox');
             $('#email_user_checkbox').prop("disabled", true);
             $('#email_user_checkbox').prop("checked", false);
             $("#email_user_checkbox").parent().addClass("form-control--disabled");
