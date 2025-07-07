@@ -3,20 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Categories\DestroyCategoryAction;
-use App\Exceptions\ModelIsNotDeletable;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetModels;
-use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasChildren;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
 use App\Http\Transformers\SelectlistTransformer;
 use App\Models\Category;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ImageUploadRequest;
