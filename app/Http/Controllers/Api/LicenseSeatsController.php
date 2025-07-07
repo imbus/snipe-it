@@ -34,7 +34,7 @@ class LicenseSeatsController extends Controller
             }
 
             if ($request->input('status') == 'assigned') {
-                $seats->whereNotNull('license_seats.assigned_to');
+                $seats->whereNotNull('license_seats.assigned_to')->whereNotNull('license_seats.assigned_to');
             }
 
 
