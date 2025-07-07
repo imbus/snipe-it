@@ -83,8 +83,6 @@ final class CompaniesController extends Controller
     public function edit(Company $company) : View | RedirectResponse
     {
         $this->authorize('update', $company);
-        Company::isCurrentUserHasAccess($company);
-        // $company = Company::scopeCompanyables($company, 'id', 'companies');
         return view('companies/edit')->with('item', $company);
     }
 

@@ -168,10 +168,7 @@ final class Company extends SnipeModel
 
             // Set this to check companyable on company
             if ($companyable instanceof Company) {
-                \Log::error('This is a company!');
                 $companyable_company_id = $companyable->id;
-                \Log::error('Companyable object ID: '.$companyable_company_id);
-                \Log::error('User company ID: '.$current_user_company_id);
             }
             return ($current_user_company_id == null) || ($current_user_company_id == $companyable_company_id) || auth()->user()->isSuperUser();
         }
