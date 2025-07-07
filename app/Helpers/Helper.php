@@ -869,7 +869,28 @@ class Helper
         $filetype = @finfo_file($finfo, $file);
         finfo_close($finfo);
 
-        if (($filetype == 'image/jpeg') || ($filetype == 'image/jpg') || ($filetype == 'image/png') || ($filetype == 'image/bmp') || ($filetype == 'image/gif') || ($filetype == 'image/avif') || ($filetype == 'image/webp')) {
+        if (($filetype == 'image/jpeg') || ($filetype == 'image/jpg') || ($filetype == 'image/png') || ($filetype == 'image/bmp') || ($filetype == 'image/gif') || ($filetype == 'image/avif') || ($filetype == 'image/webp') || ($filetype == 'video/mp4') || ($filetype == 'video/quicktime') || ($filetype == 'video/mpeg') || ($filetype == 'video/ogg') || ($filetype == 'video/webm') || ($filetype == 'video/x-msvide')) {
+            return $filetype;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the file is an image, so we can show a preview
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     * @param File $file
+     * @return string | Boolean
+     */
+    public static function checkUploadIsAudio($file)
+    {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        $filetype = @finfo_file($finfo, $file);
+        finfo_close($finfo);
+
+        if (($filetype == 'audio/mpeg') || ($filetype == 'audio/ogg')) {
             return $filetype;
         }
 
@@ -1170,6 +1191,15 @@ class Helper
             // Misc
             'pdf'   => 'far fa-file-pdf',
             'lic'   => 'far fa-save',
+
+            // video
+            'mov'   => 'fa-solid fa-video',
+            'mp4'   => 'fa-solid fa-video',
+
+            // audio
+            'ogg'   => 'fa-solid fa-file-audio',
+            'mp3'   => 'fa-solid fa-file-audio',
+            'wav'   => 'fa-solid fa-file-audio',
         ];
 
         if ($extension && array_key_exists($extension, $allowedExtensionMap)) {
