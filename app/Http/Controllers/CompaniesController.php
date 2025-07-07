@@ -100,7 +100,6 @@ final class CompaniesController extends Controller
     {
 
         $this->authorize('update', $company);
-        $company = Company::scopeCompanyables($company, 'id', 'companies');
         $company->name = $request->input('name');
         $company->phone = $request->input('phone');
         $company->fax = $request->input('fax');
@@ -132,7 +131,6 @@ final class CompaniesController extends Controller
                 ->with('error', trans('admin/companies/message.not_found'));
         }
 
-        $company = Company::scopeCompanyables($company, 'id', 'companies');
 
         $this->authorize('delete', $company);
         if (! $company->isDeletable()) {

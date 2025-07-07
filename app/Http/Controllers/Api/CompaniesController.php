@@ -45,7 +45,6 @@ class CompaniesController extends Controller
             $query->AssetsForShow();
         }])->withCount('licenses as licenses_count', 'accessories as accessories_count', 'consumables as consumables_count', 'components as components_count', 'users as users_count');
 
-        $companies = Company::scopeCompanyables($companies, 'id', 'companies');
 
         if ($request->filled('search')) {
             $companies->TextSearch($request->input('search'));
@@ -122,7 +121,6 @@ class CompaniesController extends Controller
         $this->authorize('view', Company::class);
         $company = Company::findOrFail($id);
         $this->authorize('view', $company);
-        $company = Company::scopeCompanyables($company, 'id', 'companies');
         return (new CompaniesTransformer)->transformCompany($company);
 
     }
@@ -141,7 +139,6 @@ class CompaniesController extends Controller
         $this->authorize('update', Company::class);
         $company = Company::findOrFail($id);
         $this->authorize('update', $company);
-        $company = Company::scopeCompanyables($company, 'id', 'companies');
         $company->fill($request->all());
         $company = $request->handleImages($company);
 
@@ -165,7 +162,6 @@ class CompaniesController extends Controller
     {
         $this->authorize('delete', Company::class);
         $company = Company::findOrFail($id);
-        $company = Company::scopeCompanyables($company, 'id', 'companies');
         $this->authorize('delete', $company);
 
         if (! $company->isDeletable()) {
@@ -195,7 +191,6 @@ class CompaniesController extends Controller
             'companies.image',
         ]);
 
-        $companies = Company::scopeCompanyables($companies, 'id', 'companies');
 
         if ($request->filled('search')) {
             $companies = $companies->where('companies.name', 'LIKE', '%'.$request->get('search').'%');

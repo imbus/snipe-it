@@ -275,7 +275,7 @@ final class Company extends SnipeModel
      */
     public static function scopeCompanyables($query, $column = 'company_id', $table_name = null)
     {
-        // If not logged in and hitting this, assume we are on the command line and don't scope?'
+        // If not logged in and hitting this, assume we are on the command line and don't scope?
         if (! static::isFullMultipleCompanySupportEnabled() || (Auth::hasUser() && auth()->user()->isSuperUser()) || (! Auth::hasUser())) {
             return $query;
         } else {
@@ -292,11 +292,16 @@ final class Company extends SnipeModel
     private static function scopeCompanyablesDirectly($query, $column = 'company_id', $table_name = null)
     {
 
+        $company_id = null;
         // Get the company ID of the logged-in user, or set it to null if there is no company associated with the user
         if (Auth::hasUser()) {
             $company_id = auth()->user()->company_id;
-        } else {
-            $company_id = null;
+        }
+
+
+        // If we are scoping the companies table itself, look for the company.id
+        if ($query->getModel()->getTable() == 'companies') {
+            return $query->where('companies.id', '=', $company_id);
         }
 
 
@@ -308,6 +313,8 @@ final class Company extends SnipeModel
 
             return $query->where($table.$column, '=', $company_id);
         }
+
+
 
     }
 
@@ -336,7 +343,6 @@ final class Company extends SnipeModel
             return $query;
         } else {
             $f = function ($q) {
-                Log::debug('scopeCompanyablesDirectly firing ');
                 static::scopeCompanyablesDirectly($q);
             };
 
