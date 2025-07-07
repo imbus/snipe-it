@@ -7,6 +7,7 @@ use App\Exceptions\ModelIsNotDeletable;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssetModels;
 use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasChildren;
 use App\Exceptions\ModelStillHasComponents;
 use App\Exceptions\ModelStillHasConsumables;
 use App\Exceptions\ModelStillHasLicenses;
@@ -223,7 +224,7 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run(category: $category);
-        } catch (ModelStillHasConsumables|ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasLicenses $e) {
+        } catch (ModelStillHasChildren $e) {
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
             );

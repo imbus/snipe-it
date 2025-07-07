@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Suppliers\DestroySupplierAction;
 use App\Exceptions\ModelStillHasAssetMaintenances;
 use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasChildren;
 use App\Exceptions\ModelStillHasLicenses;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Supplier;
@@ -128,12 +129,8 @@ class SuppliersController extends Controller
         $this->authorize('delete', Supplier::class);
         try {
             DestroySupplierAction::run(supplier: $supplier);
-        } catch (ModelStillHasAssets $e) {
+        } catch (ModelStillHasChildren $e) {
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
-        } catch (ModelStillHasAssetMaintenances $e) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
-        } catch (ModelStillHasLicenses $e) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
         } catch (\Throwable $e) {
             report($e);
             return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.error'));

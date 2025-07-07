@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class ModelStillHasAssetMaintenances extends Exception
+class ModelStillHasAssetMaintenances extends ModelStillHasChildren
 {
     //
 }

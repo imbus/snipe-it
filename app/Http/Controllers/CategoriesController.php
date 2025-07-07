@@ -6,6 +6,7 @@ use App\Actions\Categories\DestroyCategoryAction;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssetModels;
 use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasChildren;
 use App\Exceptions\ModelStillHasComponents;
 use App\Exceptions\ModelStillHasConsumables;
 use App\Exceptions\ModelStillHasLicenses;
@@ -153,7 +154,7 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run($category);
-        } catch (ModelStillHasAssets|ModelStillHasAccessories|ModelStillHasAssetModels|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+        } catch (ModelStillHasChildren $e) {
             return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]));
         } catch (\Exception $e) {
             report($e);
