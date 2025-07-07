@@ -66,7 +66,7 @@ class AcceptanceAssetAcceptedToUserNotification extends Notification
                 'accepted_date' => $this->accepted_date,
                 'assigned_to'   => $this->assigned_to,
                 'company_name'  => $this->company_name,
-                'intro_text'    => trans('mail.acceptance_asset_accepted_to_user', ['site_name' => $this->settings->site_name]),
+                'intro_text'    => trans('mail.acceptance_asset_accepted_to_user', ['site_name' => $this->company_name ?? $this->settings->site_name]),
             ])
             ->attach($pdf_path)
             ->subject(trans('mail.acceptance_asset_accepted_to_user', ['site_name' => $this->settings->site_name]));
