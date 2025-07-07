@@ -43,7 +43,7 @@
             <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
                 <div class="panel box box-default">
                     <div class="box-body">
-                        <div class="col-md-12">
+                        <div class="col-md-12" style="padding-top: 20px;">
                         @if ($acceptance->checkoutable->getEula())
                             <div id="eula_div" style="padding-bottom: 20px">
                                 {!!  $acceptance->checkoutable->getEula() !!}
@@ -86,6 +86,13 @@
                                         <button type="button" class="btn btn-sm btn-default clear" data-action="clear" id="clear_button">{{trans('general.clear_signature')}}</button>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="col-md-12" style="padding-top: 20px">
+                                <label class="form-control">
+                                    <input type="checkbox" value="1" name="send_copy" checked="checked" aria-label="send_copy">
+                                    {{ trans('mail.send_pdf_copy') }} ({{ auth()->user()->email }})
+                                </label>
                             </div>
                         @endif
 
