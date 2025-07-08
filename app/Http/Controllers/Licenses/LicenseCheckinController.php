@@ -98,7 +98,9 @@ class LicenseCheckinController extends Controller
         $licenseSeat->notes = $request->input('notes');
 
         session()->put(['redirect_option' => $request->get('redirect_option')]);
-
+        if ($request->get('redirect_option') === 'target'){
+            session()->put(['checkout_to_type' => 'user']);
+        }
 
         // Was the asset updated?
         if ($licenseSeat->save()) {
