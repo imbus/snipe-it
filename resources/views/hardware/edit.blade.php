@@ -184,7 +184,7 @@
 
     function fetchCustomFields() {
         //save custom field choices
-        var oldvals = $('#custom_fields_content').find('input,select').serializeArray();
+        var oldvals = $('#custom_fields_content').find('input,select,textarea').serializeArray();
         for(var i in oldvals) {
             transformed_oldvals[oldvals[i].name]=oldvals[i].value;
         }
@@ -207,7 +207,7 @@
                     $('#custom_fields_content').html(data);
                     $('#custom_fields_content select').select2(); //enable select2 on any custom fields that are select-boxes
                     //now re-populate the custom fields based on the previously saved values
-                    $('#custom_fields_content').find('input,select').each(function (index,elem) {
+                    $('#custom_fields_content').find('input,select,textarea').each(function (index,elem) {
                         if(transformed_oldvals[elem.name]) {
                             if (elem.type === 'checkbox' || elem.type === 'radio'){
                                 let shouldBeChecked = oldvals.find(oldValElement => {
