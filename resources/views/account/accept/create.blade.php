@@ -147,6 +147,15 @@
             signaturePad.clear();
         });
 
+        $('#submit-button').on("click", function (event) {
+            if (signaturePad.isEmpty()) {
+                alert("Please provide signature first.");
+                return false;
+            } else {
+                $('#signature_output').val(signaturePad.toDataURL());
+            }
+        });
+        
         $('[name="asset_acceptance"]').on('change', function() {
 
             if ($(this).is(':checked') && $(this).attr('id') == 'declined') {
