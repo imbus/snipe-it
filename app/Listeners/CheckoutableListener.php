@@ -25,6 +25,8 @@ use App\Notifications\CheckinAssetNotification;
 use App\Notifications\CheckinLicenseSeatNotification;
 use App\Notifications\CheckoutAccessoryNotification;
 use App\Notifications\CheckoutAssetNotification;
+use App\Notifications\CheckoutComponentNotification;
+use App\Notifications\CheckoutComponentsNotification;
 use App\Notifications\CheckoutConsumableNotification;
 use App\Notifications\CheckoutLicenseSeatNotification;
 use GuzzleHttp\Exception\ClientException;
@@ -269,6 +271,9 @@ class CheckoutableListener
             case LicenseSeat::class:
                 $notificationClass = CheckinLicenseSeatNotification::class;
                 break;
+//            case Component::class:
+//                $notificationClass = CheckinComponentNotification::class;
+//                break;
         }
 
         Log::debug('Notification class: '.$notificationClass);
@@ -299,6 +304,9 @@ class CheckoutableListener
             case LicenseSeat::class:
                 $notificationClass = CheckoutLicenseSeatNotification::class;
                 break;
+            case Component::class:
+                $notificationClass = CheckoutComponentNotification::class;
+            break;
         }
 
 
