@@ -114,7 +114,7 @@ class CheckoutComponentNotification extends Notification
                 ->to($this->settings->webhook_endpoint)
                 ->type('success')
                 ->addStartGroupToSection('activityTitle')
-                ->title(trans('mail.Consumable_checkout_notification'))
+                ->title(trans('mail.Component_checkout_notification'))
                 ->addStartGroupToSection('activityText')
                 ->fact(htmlspecialchars_decode($item->present()->name), '', 'activityTitle')
                 ->fact(trans('mail.Component_checkout_notification')." by ", $admin->present()->fullName())

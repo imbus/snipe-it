@@ -26,7 +26,6 @@ use App\Notifications\CheckinLicenseSeatNotification;
 use App\Notifications\CheckoutAccessoryNotification;
 use App\Notifications\CheckoutAssetNotification;
 use App\Notifications\CheckoutComponentNotification;
-use App\Notifications\CheckoutComponentsNotification;
 use App\Notifications\CheckoutConsumableNotification;
 use App\Notifications\CheckoutLicenseSeatNotification;
 use GuzzleHttp\Exception\ClientException;
@@ -41,7 +40,7 @@ use Osama\LaravelTeamsNotification\TeamsNotification;
 class CheckoutableListener
 {
     private array $skipNotificationsFor = [
-        Component::class,
+//        Component::class,
     ];
 
     /**
