@@ -121,16 +121,15 @@ class CheckinComponentNotification extends Notification
                 ->fact(htmlspecialchars_decode($item->present()->name), '', 'header')
                 ->fact(trans('mail.Component_checkin_notification')." by ", $admin->present()->fullName() ?: 'CLI tool')
                 ->fact(trans('mail.checkedin_from'), $target->present()->fullName())
-                ->fact(trans('admin/consumables/general.remaining'), $item->availCount()->count())
+                ->fact(trans('admin/consumables/general.remaining'), $item->numRemaining())
                 ->fact(trans('mail.notes'), $note ?: '');
         }
 
         $message = trans('mail.Component_checkin_notification');
         $details = [
             trans('mail.checkedin_from')=> $target->present()->fullName(),
-            trans('mail.license_for') => htmlspecialchars_decode($item->present()->name),
             trans('mail.Component_checkin_notification')." by " => $admin->present()->fullName() ?: 'CLI tool',
-            trans('admin/consumables/general.remaining') => $item->availCount()->count(),
+            trans('admin/consumables/general.remaining') => $item->numRemaining(),
             trans('mail.notes') => $note ?: '',
         ];
 
