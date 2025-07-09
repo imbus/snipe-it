@@ -70,7 +70,7 @@
                                 <label id="note_label" for="note" style="text-align:center;" >{{trans('admin/settings/general.acceptance_note')}}</label>
                             </div>
                             <div class="col-md-12">
-                                <textarea id="note" name="note" rows="4" cols="50" value="note" style="width:100%" ></textarea>
+                                <textarea id="note" name="note" rows="4" value="note" class="form-control" style="width:100%"></textarea>
                             </div>
                         </div>
 
