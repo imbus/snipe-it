@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Models\Component;
-
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -19,8 +18,7 @@ use NotificationChannels\GoogleChat\Widgets\KeyValue;
 use NotificationChannels\MicrosoftTeams\MicrosoftTeamsChannel;
 use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
 
-
-class CheckoutComponentNotification extends Notification
+class CheckinComponentNotification extends Notification
 {
     use Queueable;
     /**
@@ -33,19 +31,16 @@ class CheckoutComponentNotification extends Notification
      *
      * @param $params
      */
-    public function __construct(Component $component, $checkedOutTo, User $checkedOutBy, $acceptance, $note)
+    public function __construct(Component $component, $checkedOutTo, User $checkedInBy, $note)
     {
-        $this->item = $component;
-        $this->admin = $checkedOutBy;
-        $this->note = $note;
         $this->target = $checkedOutTo;
-        $this->acceptance = $acceptance;
-        $this->qty = $component->checkout_qty;
-
+        $this->item = $component;
+        $this->admin = $checkedInBy;
+        $this->note = $note;
         $this->settings = Setting::getSettings();
     }
 
-    /**`
+    /**
      * Get the notification's delivery channels.
      *
      * @return array
@@ -53,11 +48,11 @@ class CheckoutComponentNotification extends Notification
     public function via()
     {
         $notifyBy = [];
+
         if (Setting::getSettings()->webhook_selected == 'google' && Setting::getSettings()->webhook_endpoint) {
 
             $notifyBy[] = GoogleChatChannel::class;
         }
-
         if (Setting::getSettings()->webhook_selected == 'microsoft' && Setting::getSettings()->webhook_endpoint) {
 
             $notifyBy[] = MicrosoftTeamsChannel::class;
@@ -79,21 +74,29 @@ class CheckoutComponentNotification extends Notification
         $botname = ($this->settings->webhook_botname) ? $this->settings->webhook_botname : 'Snipe-Bot';
         $channel = ($this->settings->webhook_channel) ? $this->settings->webhook_channel : '';
 
-        $fields = [
-            trans('general.to') => '<'.$target->present()->viewUrl().'|'.$target->present()->fullName().'>',
-            trans('general.by') => '<'.$admin->present()->viewUrl().'|'.$admin->present()->fullName().'>',
-        ];
+        if ($admin) {
+            $fields = [
+                trans('general.from')  => '<'.$target->present()->viewUrl().'|'.$target->present()->fullName().'>',
+                trans('general.by') => '<'.$admin->present()->viewUrl().'|'.$admin->present()->fullName().'>',
+            ];
 
-        if ($item->location) {
-            $fields[trans('general.location')] = $item->location->name;
-        }
+            if ($item->location) {
+                $fields[trans('general.location')] = $item->location->name;
+            }
 
-        if ($item->company) {
-            $fields[trans('general.company')] = $item->company->name;
+            if ($item->company) {
+                $fields[trans('general.company')] = $item->company->name;
+            }
+
+        } else {
+            $fields = [
+                'To' => '<'.$target->present()->viewUrl().'|'.$target->present()->fullName().'>',
+                'By' => 'CLI tool',
+            ];
         }
 
         return (new SlackMessage)
-            ->content(':arrow_up: :package: '.trans('mail.Component_checkout_notification'))
+            ->content(':arrow_down: :package: '.trans('mail.Component_checkin_notification'))
             ->from($botname)
             ->to($channel)
             ->attachment(function ($attachment) use ($item, $note, $admin, $fields) {
@@ -108,27 +111,26 @@ class CheckoutComponentNotification extends Notification
         $admin = $this->admin;
         $item = $this->item;
         $note = $this->note;
-
         if(!Str::contains(Setting::getSettings()->webhook_endpoint, 'workflows')) {
             return MicrosoftTeamsMessage::create()
                 ->to($this->settings->webhook_endpoint)
                 ->type('success')
                 ->addStartGroupToSection('activityTitle')
-                ->title(trans('mail.Component_checkout_notification'))
+                ->title(trans('mail.Component_checkin_notification'))
                 ->addStartGroupToSection('activityText')
-                ->fact(htmlspecialchars_decode($item->present()->name), '', 'activityTitle')
-                ->fact(trans('mail.Component_checkout_notification')." by ", $admin->present()->fullName())
-                ->fact(trans('mail.assigned_to'), $target->present()->fullName())
-                ->fact(trans('admin/consumables/general.remaining'), $item->numRemaining())
+                ->fact(htmlspecialchars_decode($item->present()->name), '', 'header')
+                ->fact(trans('mail.Component_checkin_notification')." by ", $admin->present()->fullName() ?: 'CLI tool')
+                ->fact(trans('mail.checkedin_from'), $target->present()->fullName())
+                ->fact(trans('admin/consumables/general.remaining'), $item->availCount()->count())
                 ->fact(trans('mail.notes'), $note ?: '');
         }
 
-        $message = trans('mail.Component_checkout_notification');
+        $message = trans('mail.Component_checkin_notification');
         $details = [
-            trans('mail.assigned_to') => $target->present()->fullName(),
-            trans('mail.item') => htmlspecialchars_decode($item->present()->name),
-            trans('mail.Component_checkout_notification').' by' => $admin->present()->fullName(),
-            trans('admin/consumables/general.remaining') => $item->numRemaining(),
+            trans('mail.checkedin_from')=> $target->present()->fullName(),
+            trans('mail.license_for') => htmlspecialchars_decode($item->present()->name),
+            trans('mail.Component_checkin_notification')." by " => $admin->present()->fullName() ?: 'CLI tool',
+            trans('admin/consumables/general.remaining') => $item->availCount()->count(),
             trans('mail.notes') => $note ?: '',
         ];
 
@@ -145,17 +147,17 @@ class CheckoutComponentNotification extends Notification
             ->card(
                 Card::create()
                     ->header(
-                        '<strong>'.trans('mail.Component_checkout_notification').'</strong>' ?: '',
+                        '<strong>'.trans('mail.Component_checkin_notification').'</strong>' ?: '',
                         htmlspecialchars_decode($item->present()->name) ?: '',
                     )
                     ->section(
                         Section::create(
                             KeyValue::create(
-                                trans('mail.assigned_to') ?: '',
-                                $target->present()->fullName() ?: '',
-                                trans('admin/consumables/general.remaining').': '.$item->numRemaining(),
+                                trans('mail.checkedin_from') ?: '',
+                                $target->present()->fullName() ?:  '',
+                                trans('admin/consumables/general.remaining').': '.$item->availCount()->count(),
                             )
-                                ->onClick(route('api.assets.show', $target->id))
+                                ->onClick(route('components.show', $item->id))
                         )
                     )
             );

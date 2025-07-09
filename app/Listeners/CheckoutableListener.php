@@ -22,6 +22,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Notifications\CheckinAccessoryNotification;
 use App\Notifications\CheckinAssetNotification;
+use App\Notifications\CheckinComponentNotification;
 use App\Notifications\CheckinLicenseSeatNotification;
 use App\Notifications\CheckoutAccessoryNotification;
 use App\Notifications\CheckoutAssetNotification;
@@ -270,9 +271,9 @@ class CheckoutableListener
             case LicenseSeat::class:
                 $notificationClass = CheckinLicenseSeatNotification::class;
                 break;
-//            case Component::class:
-//                $notificationClass = CheckinComponentNotification::class;
-//                break;
+            case Component::class:
+                $notificationClass = CheckinComponentNotification::class;
+                break;
         }
 
         Log::debug('Notification class: '.$notificationClass);
