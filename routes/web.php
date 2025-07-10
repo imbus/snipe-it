@@ -5,6 +5,9 @@ use App\Http\Controllers\ActionlogController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\BulkCategoriesController;
+use App\Http\Controllers\BulkManufacturersController;
+use App\Http\Controllers\BulkSuppliersController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
@@ -43,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('categories', CategoriesController::class, [
         'parameters' => ['category' => 'category_id'],
     ]);
+
+    Route::delete('categories/bulk/delete', [BulkCategoriesController::class, 'destroy'])->name('categories.bulk.delete');
   
     /*
     * Labels
@@ -66,10 +71,14 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::resource('manufacturers', ManufacturersController::class);
 
+    Route::delete('manufacturers/bulk/delete', [BulkManufacturersController::class, 'destroy'])->name('manufacturers.bulk.delete');
+
     /*
     * Suppliers
     */
     Route::resource('suppliers', SuppliersController::class);
+
+    Route::delete('suppliers/bulk/delete', [BulkSuppliersController::class, 'destroy'])->name('suppliers.bulk.delete');
 
     /*
     * Depreciations

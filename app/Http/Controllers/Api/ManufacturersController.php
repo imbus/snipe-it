@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Actions\Manufacturers\DestroyManufacturerAction;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssets;
+use App\Exceptions\ModelStillHasChildren;
 use App\Exceptions\ModelStillHasComponents;
 use App\Exceptions\ModelStillHasConsumables;
 use App\Exceptions\ModelStillHasLicenses;
@@ -195,7 +196,7 @@ class ManufacturersController extends Controller
         $this->authorize('delete', $manufacturer);
         try {
             DestroyManufacturerAction::run($manufacturer);
-        } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+        } catch (ModelStillHasChildren $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
         } catch (\Exception $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, 'something went wrong'));
