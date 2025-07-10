@@ -154,7 +154,7 @@ class CheckinComponentNotification extends Notification
                             KeyValue::create(
                                 trans('mail.checkedin_from') ?: '',
                                 $target->present()->fullName() ?:  '',
-                                trans('admin/consumables/general.remaining').': '.$item->availCount()->count(),
+                                trans('admin/consumables/general.remaining').': '.$item->numRemaining(),
                             )
                                 ->onClick(route('components.show', $item->id))
                         )
