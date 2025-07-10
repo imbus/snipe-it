@@ -2,15 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Categories\DestroyCategoryAction;
 use App\Actions\Manufacturers\DeleteManufacturerAction;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetMaintenances;
-use App\Exceptions\ModelStillHasAssetModels;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ModelStillHasChildren;
 use App\Models\Manufacturer;
 use Illuminate\Http\Request;
 
@@ -30,7 +23,7 @@ class BulkManufacturersController extends Controller
             }
             try {
                 DeleteManufacturerAction::run(manufacturer: $manufacturer);
-            } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
+            } catch (ModelStillHasChildren $e) {
                 $errors[] = `{$manufacturer->name} still has models`;
             } catch (\Exception $e) {
                 report($e);
