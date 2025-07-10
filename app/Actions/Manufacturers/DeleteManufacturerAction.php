@@ -11,7 +11,7 @@ use App\Models\Manufacturer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-class DestroyManufacturerAction
+class DeleteManufacturerAction
 {
     /**
      * @throws ModelStillHasAssets
@@ -20,8 +20,9 @@ class DestroyManufacturerAction
      * @throws ModelStillHasLicenses
      * @throws ModelStillHasConsumables
      */
-    static function run(Manufacturer $manufacturer): bool
+    static function run(?Manufacturer $manufacturer): bool
     {
+        Manufacturer::firstOrFail($manufacturer->id);
         $manufacturer->loadCount([
             'assets as assets_count',
             'accessories as accessories_count',
@@ -55,6 +56,7 @@ class DestroyManufacturerAction
         }
 
         $manufacturer->delete();
+        //dd($manufacturer);
 
         return true;
     }

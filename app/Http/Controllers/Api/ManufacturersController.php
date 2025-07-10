@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\Manufacturers\DestroyManufacturerAction;
+use App\Actions\Manufacturers\DeleteManufacturerAction;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasChildren;
@@ -195,7 +195,7 @@ class ManufacturersController extends Controller
     {
         $this->authorize('delete', $manufacturer);
         try {
-            DestroyManufacturerAction::run($manufacturer);
+            DeleteManufacturerAction::run($manufacturer);
         } catch (ModelStillHasChildren $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
         } catch (\Exception $e) {

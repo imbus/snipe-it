@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Manufacturers\Ui;
 
+use App\Models\User;
 use Tests\Concerns\TestsPermissionsRequirement;
 use Tests\TestCase;
 
@@ -9,7 +10,11 @@ class BulkDeleteManufacturersTest extends TestCase implements TestsPermissionsRe
 {
     public function testRequiresPermission()
     {
-        // TODO: Implement testRequiresPermission() method.
+        $this->actingAs(User::factory()->create())
+            ->delete(route('manufacturers.bulk.delete'), [
+                'ids' => [1, 2, 3]
+            ])
+            ->assertForbidden();
     }
 
     public function test_manufacturer_cannot_be_bulk_deleted_if_models_still_associated()

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Manufacturers\DestroyManufacturerAction;
+use App\Actions\Manufacturers\DeleteManufacturerAction;
 use App\Exceptions\ModelStillHasAccessories;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasChildren;
@@ -169,7 +169,7 @@ class ManufacturersController extends Controller
     {
         $this->authorize('delete', $manufacturer);
         try {
-            DestroyManufacturerAction::run($manufacturer);
+            DeleteManufacturerAction::run($manufacturer);
         } catch (ModelStillHasChildren $e) {
             return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.assoc_users'));
         } catch (\Exception $e) {
@@ -178,11 +178,12 @@ class ManufacturersController extends Controller
 
         // Soft delete the manufacturer if active, permanent delete if is already deleted
         // do we really want to do that?...
-        if ($manufacturer->deleted_at === null) {
-            $manufacturer->delete();
-        } else {
-            $manufacturer->forceDelete();
-        }
+        // commenting it out for now because it's weird
+        //if ($manufacturer->deleted_at === null) {
+        //    $manufacturer->delete();
+        //} else {
+        //    $manufacturer->forceDelete();
+        //}
         // Redirect to the manufacturers management page
         return redirect()->route('manufacturers.index')->with('success', trans('admin/manufacturers/message.delete.success'));
     }
