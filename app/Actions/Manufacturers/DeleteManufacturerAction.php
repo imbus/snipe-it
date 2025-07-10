@@ -20,9 +20,8 @@ class DeleteManufacturerAction
      * @throws ModelStillHasLicenses
      * @throws ModelStillHasConsumables
      */
-    static function run(?Manufacturer $manufacturer): bool
+    static function run(Manufacturer $manufacturer): bool
     {
-        Manufacturer::firstOrFail($manufacturer->id);
         $manufacturer->loadCount([
             'assets as assets_count',
             'accessories as accessories_count',

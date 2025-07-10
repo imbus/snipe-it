@@ -18,12 +18,20 @@ class BulkManufacturersController extends Controller
 {
     public function destroy(Request $request)
     {
+        // hm, we actually probably need to do this on a per model basis below, but that makes this a little dirtier so leaving like this for now.
+        $this->authorize('delete', Manufacturer::class);
+
         $errors = [];
         foreach ($request->ids as $id) {
+            $manufacturer = Manufacturer::find($id);
+            if (is_null($manufacturer)) {
+                $errors[] = 'Manufacturer not found';
+                continue;
+            }
             try {
-                DeleteManufacturerAction::run(manufacturer: $id);
+                DeleteManufacturerAction::run(manufacturer: $manufacturer);
             } catch (ModelStillHasAccessories|ModelStillHasAssets|ModelStillHasComponents|ModelStillHasConsumables|ModelStillHasLicenses $e) {
-                $errors[] = `{$id} still has {$id->thing}`;
+                $errors[] = `{$manufacturer->name} still has models`;
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = 'Something went wrong';
