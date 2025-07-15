@@ -153,6 +153,12 @@
       </div>
     </div>
 
+    <!-- Email credentials -->
+    <div class="form-group col-lg-12">
+      <label class="form-control form-control">
+        <input type="checkbox" value="1" name="email_creds">{{ trans('admin/users/general.email_credentials_text') }}
+      </label>
+    </div>
   </div> <!--/.COL-LG-12-->
 @stop
 
