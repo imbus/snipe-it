@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Rules\AlphaEncrypted;
+use App\Rules\EmailEncrypted;
 use App\Rules\NumericEncrypted;
 use Gate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -132,6 +133,11 @@ class CustomFieldset extends Model
             if ($field->format === 'ALPHA' && $field->field_encrypted) {
                 $alphaKey = array_search('alpha', $rules[$field->db_column_name()]);
                 $rules[$field->db_column_name()][$alphaKey] = new AlphaEncrypted;
+            }
+
+            if ($field->format === 'EMAIL' && $field->field_encrypted) {
+                $emailKey = array_search('email', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$emailKey] = new EmailEncrypted;
             }
 
             // add not_array to rules for all fields but checkboxes
