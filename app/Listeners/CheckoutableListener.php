@@ -8,6 +8,7 @@ use App\Mail\CheckinLicenseMail;
 use App\Mail\CheckoutAccessoryMail;
 use App\Mail\CheckoutAssetMail;
 use App\Mail\CheckinAssetMail;
+use App\Mail\CheckoutComponentMail;
 use App\Mail\CheckoutConsumableMail;
 use App\Mail\CheckoutLicenseMail;
 use App\Models\Accessory;
@@ -152,7 +153,8 @@ class CheckoutableListener
             return;
         }
 
-        if ($shouldSendEmailToUser || $shouldSendEmailToAlertAddress) {
+        if (($shouldSendEmailToUser || $shouldSendEmailToAlertAddress) &&
+             !($event->checkoutable instanceof Component)) {
             /**
              * Send the appropriate notification
              */
@@ -318,6 +320,7 @@ class CheckoutableListener
             Asset::class => CheckoutAssetMail::class,
             LicenseSeat::class => CheckoutLicenseMail::class,
             Consumable::class => CheckoutConsumableMail::class,
+            Component::class => CheckoutComponentMail::class,
         ];
         $mailable= $lookup[get_class($event->checkoutable)];
 

@@ -11,6 +11,7 @@ return [
     'Confirm_accessory_delivery' => 'Accessory delivery confirmation',
     'Confirm_asset_delivery' => 'Asset delivery confirmation',
     'Confirm_consumable_delivery' => 'Consumable delivery confirmation',
+    'Confirm_component_delivery' => 'Component delivery confirmation',
     'Confirm_license_delivery' => 'License delivery confirmation',
     'Consumable_checkout_notification' => 'Consumable checked out',
     'Component_checkout_notification' => 'Component checked out',
