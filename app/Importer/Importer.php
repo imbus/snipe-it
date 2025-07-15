@@ -133,7 +133,7 @@ abstract class Importer
         } else {
             $this->csv = Reader::createFromString($file);
         }
-        $this->tempPassword = '*** NO PASSWORD ***';
+        $this->tempPassword = '*** NO PASSWORD - IMPORTED VIA CSV ***';
     }
 
     // Cached Values for import lookups
