@@ -3,11 +3,10 @@
 
 {{ trans('mail.admin_has_created', ['web' => $snipeSettings->site_name]) }}
 
-{{ trans('mail.login') }}: {{ $username }} <br>
-{{ trans('mail.password') }}: {{ $password }}
+<strong>{{ trans('mail.login') }}: </strong> {{ $username }}<br>
 
-@component('mail::button', ['url' => $url])
-Go To {{$snipeSettings->site_name}}
+@component('mail::button', ['url' => url(route('password.reset', ['token' => $token, 'email' => $email]))])
+{{ trans('general.set_password') }}
 @endcomponent
 
 {{ trans('mail.best_regards') }} <br>
