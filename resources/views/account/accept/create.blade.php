@@ -118,6 +118,8 @@
 
     <script nonce="{{ csrf_token() }}">
 
+        @if ($snipeSettings->require_accept_signature=='1')
+
         var wrapper = document.getElementById("signature-pad"),
             clearButton = wrapper.querySelector("[data-action=clear]"),
             saveButton = wrapper.querySelector("[data-action=save]"),
@@ -155,6 +157,7 @@
                 $('#signature_output').val(signaturePad.toDataURL());
             }
         });
+        @endif
         
         $('[name="asset_acceptance"]').on('change', function() {
 
