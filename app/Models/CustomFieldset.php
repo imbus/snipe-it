@@ -5,6 +5,10 @@ namespace App\Models;
 use App\Rules\AlphaEncrypted;
 use App\Rules\DateEncrypted;
 use App\Rules\EmailEncrypted;
+use App\Rules\IPEncrypted;
+use App\Rules\IPv4Encrypted;
+use App\Rules\IPv6Encrypted;
+use App\Rules\MACEncrypted;
 use App\Rules\NumericEncrypted;
 use App\Rules\UrlEncrypted;
 use Gate;
@@ -151,6 +155,28 @@ class CustomFieldset extends Model
                 $urlKey = array_search('url', $rules[$field->db_column_name()]);
                 $rules[$field->db_column_name()][$urlKey] = new UrlEncrypted;
             }
+
+            if ($field->format === 'IP' && $field->field_encrypted) {
+                $ipKey = array_search('ip', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$ipKey] = new IpEncrypted;
+            }
+
+            if ($field->format === 'IPV4' && $field->field_encrypted) {
+                $ipKey = array_search('ipv4', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$ipKey] = new IPv4Encrypted;
+            }
+
+            if ($field->format === 'IPV6' && $field->field_encrypted) {
+                $ipKey = array_search('ipv6', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$ipKey] = new IPv6Encrypted;
+            }
+
+            // hm, the format on these is just the regex string, so gonna have to figure out how to filter to get it...
+            if ($field->format === 'MAC' && $field->field_encrypted) {
+                $macKey = array_search('mac', $rules[$field->db_column_name()]);
+                $rules[$field->db_column_name()][$macKey] = new MacEncrypted;
+            }
+
 
             // add not_array to rules for all fields but checkboxes
             if ($field->element != 'checkbox') {
