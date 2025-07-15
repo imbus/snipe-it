@@ -11,9 +11,7 @@ use App\Models\User;
 class WelcomeNotification extends Notification
 {
     use Queueable;
-
-    public string $passwordResetUrl;
-
+    
     /**
      * Create a new notification instance.
      *
@@ -42,7 +40,7 @@ class WelcomeNotification extends Notification
      */
     public function toMail()
     {
-        
+
         return (new MailMessage())
             ->subject(trans('mail.welcome', ['name' => $this->user->first_name.' '.$this->user->last_name]))
             ->markdown('notifications.Welcome', $this->user->toArray());
