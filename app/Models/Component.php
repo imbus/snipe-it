@@ -9,6 +9,7 @@ use App\Presenters\Presentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Watson\Validating\ValidatingTrait;
 
 /**
@@ -276,6 +277,19 @@ class Component extends SnipeModel
                 ->withPivot('id', 'assigned_qty', 'created_at', 'created_by', 'note')
                 ->withoutGlobalScope(new CompanyableScope);
 
+    }
+
+    /**
+     * Determine whether to send a checkin/checkout email based on
+     * asset model category
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v4.0]
+     * @return bool
+     */
+    public function checkin_email()
+    {
+        return $this->category?->checkin_email;
     }
 
 

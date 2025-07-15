@@ -3,7 +3,6 @@
 
 {{ trans('mail.new_item_checked') }}
 
-
 @component('mail::table')
 |        |          |
 | ------------- | ------------- |

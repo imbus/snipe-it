@@ -8,6 +8,7 @@ return [
     'Asset_Checkout_Notification' => 'Asset checked out',
     'Confirm_Accessory_Checkin' => 'Accessory checkin confirmation',
     'Confirm_Asset_Checkin' => 'Asset checkin confirmation',
+    'Confirm_component_checkin' => 'Component checkin confirmation',
     'Confirm_accessory_delivery' => 'Accessory delivery confirmation',
     'Confirm_asset_delivery' => 'Asset delivery confirmation',
     'Confirm_consumable_delivery' => 'Consumable delivery confirmation',

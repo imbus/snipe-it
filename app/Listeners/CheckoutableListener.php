@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\CheckoutableCheckedOut;
 use App\Mail\CheckinAccessoryMail;
+use App\Mail\CheckinComponentMail;
 use App\Mail\CheckinLicenseMail;
 use App\Mail\CheckoutAccessoryMail;
 use App\Mail\CheckoutAssetMail;
@@ -28,7 +29,6 @@ use App\Notifications\CheckinLicenseSeatNotification;
 use App\Notifications\CheckoutAccessoryNotification;
 use App\Notifications\CheckoutAssetNotification;
 use App\Notifications\CheckoutComponentNotification;
-use App\Notifications\CheckoutComponentsNotification;
 use App\Notifications\CheckoutConsumableNotification;
 use App\Notifications\CheckoutLicenseSeatNotification;
 use GuzzleHttp\Exception\ClientException;
@@ -153,8 +153,7 @@ class CheckoutableListener
             return;
         }
 
-        if (($shouldSendEmailToUser || $shouldSendEmailToAlertAddress) &&
-             !($event->checkoutable instanceof Component)) {
+        if ($shouldSendEmailToUser || $shouldSendEmailToAlertAddress) {
             /**
              * Send the appropriate notification
              */
@@ -333,8 +332,8 @@ class CheckoutableListener
             Accessory::class => CheckinAccessoryMail::class,
             Asset::class => CheckinAssetMail::class,
             LicenseSeat::class => CheckinLicenseMail::class,
+            Component::class => CheckinComponentMail::class,
         ];
-
         $mailable= $lookup[get_class($event->checkoutable)];
 
         return new $mailable($event->checkoutable, $event->checkedOutTo, $event->checkedInBy, $event->note);
@@ -480,7 +479,8 @@ class CheckoutableListener
         return match (true) {
             $checkoutable instanceof Asset => $checkoutable->model->category,
             $checkoutable instanceof Accessory,
-                $checkoutable instanceof Consumable => $checkoutable->category,
+                $checkoutable instanceof Consumable,
+                $checkoutable instanceof Component => $checkoutable->category,
             $checkoutable instanceof LicenseSeat => $checkoutable->license->category,
         };
     }
