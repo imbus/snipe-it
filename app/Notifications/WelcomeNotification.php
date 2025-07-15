@@ -5,26 +5,24 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Password;
+use App\Models\User;
 
 class WelcomeNotification extends Notification
 {
     use Queueable;
 
-    private $_data = [];
+    public string $passwordResetUrl;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(array $content)
+    public function __construct(public User $user)
     {
-        $this->_data['email'] = htmlspecialchars_decode($content['email']);
-        $this->_data['first_name'] = htmlspecialchars_decode($content['first_name']);
-        $this->_data['last_name'] = htmlspecialchars_decode($content['last_name']);
-        $this->_data['username'] = htmlspecialchars_decode($content['username']);
-        $this->_data['password'] = htmlspecialchars_decode($content['password']);
-        $this->_data['url'] = config('app.url');
+        $this->user->token = Password::getRepository()->create($user);
+
     }
 
     /**
@@ -44,8 +42,11 @@ class WelcomeNotification extends Notification
      */
     public function toMail()
     {
+
+        \Log::error(print_r($this->user->toArray(), true));
+
         return (new MailMessage())
-            ->subject(trans('mail.welcome', ['name' => $this->_data['first_name'].' '.$this->_data['last_name']]))
-            ->markdown('notifications.Welcome', $this->_data);
+            ->subject(trans('mail.welcome', ['name' => $this->user->first_name.' '.$this->user->last_name]))
+            ->markdown('notifications.Welcome', $this->user->toArray());
     }
 }
