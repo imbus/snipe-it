@@ -124,7 +124,13 @@ class UserImporter extends ItemImporter
             if (($user->email) && ($user->activated == '1')) {
 
                 if ($this->send_welcome) {
-                    $user->notify(new WelcomeNotification($user));
+
+                    try {
+                        $user->notify(new WelcomeNotification($user));
+                    } catch (\Exception $e) {
+                        Log::warning('Could not send welcome notification for user ' . $e->getMessage());
+                    }
+
                 }
 
             }
