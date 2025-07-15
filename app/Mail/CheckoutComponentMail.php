@@ -26,8 +26,7 @@ class CheckoutComponentMail extends Mailable
         $this->note = $note;
         $this->target = $checkedOutTo;
         $this->acceptance = $acceptance;
-        $this->qty = optional(optional($component->assets->first())->pivot)->assigned_qty;
-
+        $this->qty = $component->assets->first()?->pivot?->assigned_qty;
 
         $this->settings = Setting::getSettings();
     }
