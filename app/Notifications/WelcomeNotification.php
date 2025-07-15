@@ -42,9 +42,7 @@ class WelcomeNotification extends Notification
      */
     public function toMail()
     {
-
-        \Log::error(print_r($this->user->toArray(), true));
-
+        
         return (new MailMessage())
             ->subject(trans('mail.welcome', ['name' => $this->user->first_name.' '.$this->user->last_name]))
             ->markdown('notifications.Welcome', $this->user->toArray());
