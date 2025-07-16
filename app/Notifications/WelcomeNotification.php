@@ -11,7 +11,8 @@ use App\Models\User;
 class WelcomeNotification extends Notification
 {
     use Queueable;
-    
+
+    public $expire_date;
     /**
      * Create a new notification instance.
      *
@@ -19,8 +20,8 @@ class WelcomeNotification extends Notification
      */
     public function __construct(public User $user)
     {
-        $this->user->token = Password::getRepository()->create($user);
-
+        $this->user->token = Password::broker('invites')->createToken($user);
+        $this->user->expire_date = now()->addMinutes((int) config('auth.passwords.invites.expire', 2880))->format('F j, Y, g:i a');
     }
 
     /**
