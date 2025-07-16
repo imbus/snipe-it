@@ -44,7 +44,9 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'remember_token',
         'permissions',
         'reset_password_code',
-        'persist_code'
+        'persist_code',
+        'two_factor_secret',
+        'activation_code',
     ];
 
     protected $table = 'users';
