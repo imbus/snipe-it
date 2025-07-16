@@ -36,11 +36,9 @@ class CheckoutRequestTest extends TestCase
 
     public function test_checkout_request_soft_deleted_when_requesting_user_soft_deleted()
     {
-        $this->markTestIncomplete();
-
         $checkoutRequest = CheckoutRequest::factory()->create();
 
-        $requestingUser = $checkoutRequest->requestingUser;
+        $requestingUser = $checkoutRequest->user;
 
         $requestingUser->delete();
 
@@ -53,7 +51,7 @@ class CheckoutRequestTest extends TestCase
 
         $checkoutRequest = CheckoutRequest::factory()->create();
 
-        $requestingUser = $checkoutRequest->requestingUser;
+        $requestingUser = $checkoutRequest->user;
 
         $requestingUser->forceDelete();
 
