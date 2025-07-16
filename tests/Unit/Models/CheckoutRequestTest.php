@@ -47,8 +47,6 @@ class CheckoutRequestTest extends TestCase
 
     public function test_checkout_request_deleted_when_requesting_user_force_deleted()
     {
-        $this->markTestIncomplete();
-
         $checkoutRequest = CheckoutRequest::factory()->create();
 
         $requestingUser = $checkoutRequest->user;
