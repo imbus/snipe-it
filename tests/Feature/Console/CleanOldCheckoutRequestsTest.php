@@ -34,6 +34,16 @@ class CleanOldCheckoutRequestsTest extends TestCase
         $this->assertDatabaseMissing('checkout_requests', ['requestable_id' => $missingAsset->requestable_id]);
     }
 
+    public function test_clean_old_checkout_requests_command_for_soft_deleted_model()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_clean_old_checkout_requests_command_for_missing_model()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function test_clean_old_checkout_requests_command_for_soft_deleted_user()
     {
         $validRequest = CheckoutRequest::factory()->create();
