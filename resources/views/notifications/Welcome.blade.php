@@ -3,11 +3,15 @@
 
 {{ trans('mail.admin_has_created', ['web' => $snipeSettings->site_name]) }}
 
-<strong>{{ trans('mail.login') }}: </strong> {{ $username }}<br>
+<strong>{{ trans('mail.username') }}: </strong> {{ $username }}<br>
 
-@component('mail::button', ['url' => url(route('password.reset', ['token' => $token, 'email' => $email]))])
-{{ trans('general.set_password') }}
+@component('mail::button',
+    ['url' => url(route('password.reset', ['token' => $token, 'email' => $email]))])
+    {{ trans('general.set_password') }}
 @endcomponent
+
+<p>{{ trans('auth/general.invite_password_expires', ['expire_date' => $expire_date]) }}: <a href="{{ url(route('password.request')) }}">{{ url(route('password.request')) }}</a>
+</p>
 
 {{ trans('mail.best_regards') }} <br>
 @if ($snipeSettings->show_url_in_emails=='1')
