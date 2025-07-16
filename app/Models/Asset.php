@@ -204,6 +204,17 @@ class Asset extends Depreciable
         'model.manufacturer' => ['name'],
     ];
 
+    protected static function booted(): void
+    {
+        static::forceDeleted(function (Asset $asset) {
+            $asset->requests()->forceDelete();
+        });
+
+        static::softDeleted(function (Asset $asset) {
+            $asset->requests()->delete();
+        });
+    }
+
     // To properly set the expected checkin as Y-m-d
     public function setExpectedCheckinAttribute($value)
     {

@@ -10,8 +10,6 @@ class CheckoutRequestTest extends TestCase
 {
     public function test_checkout_request_soft_deleted_when_requested_asset_soft_deleted()
     {
-        $this->markTestIncomplete();
-
         $checkoutRequest = CheckoutRequest::factory()->create();
 
         $requestedAsset = $checkoutRequest->requestedItem;
@@ -25,8 +23,6 @@ class CheckoutRequestTest extends TestCase
 
     public function test_checkout_request_deleted_when_requested_asset_force_deleted()
     {
-        $this->markTestIncomplete();
-
         $checkoutRequest = CheckoutRequest::factory()->create();
 
         $requestedAsset = $checkoutRequest->requestedItem;
