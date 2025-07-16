@@ -20,4 +20,14 @@ class CheckoutRequestFactory extends Factory
             'user_id' => User::factory(),
         ];
     }
+
+    public function forAsset()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'requestable_id' => Asset::factory(),
+                'requestable_type' => Asset::class,
+            ];
+        });
+    }
 }
