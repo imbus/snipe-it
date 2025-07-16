@@ -25,16 +25,16 @@
 @endcomponent
 
 @if (($req_accept == 1) && ($eula!=''))
-{{ trans('mail.read_the_terms_and_click') }}
+    {{ trans('mail.read_the_terms_and_click') }}
 @elseif (($req_accept == 1) && ($eula==''))
-{{ trans('mail.click_on_the_link_asset') }}
+    {{ trans('mail.click_on_the_link_asset') }}
 @elseif (($req_accept == 0) && ($eula!=''))
-{{ trans('mail.read_the_terms') }}
+    {{ trans('mail.read_the_terms') }}
 @endif
 
 @if ($eula)
 @component('mail::panel')
-{!! $eula !!}
+    {!! $eula !!}
 @endcomponent
 @endif
 

@@ -79,9 +79,4 @@ class CheckoutComponentMail extends Mailable
     {
         return [];
     }
-    public function build()
-    {
-        return $this
-            ->markdown('mail.markdown.checkout-component', $this->viewData);
-    }
 }
