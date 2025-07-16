@@ -128,7 +128,7 @@ class UserImporter extends ItemImporter
                     try {
                         $user->notify(new WelcomeNotification($user));
                     } catch (\Exception $e) {
-                        Log::warning('Could not send welcome notification for user ' . $e->getMessage());
+                        Log::warning('Could not send welcome notification for user: ' . $e->getMessage());
                     }
 
                 }
