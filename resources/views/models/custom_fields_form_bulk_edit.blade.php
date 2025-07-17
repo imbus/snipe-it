@@ -77,14 +77,24 @@
                   </label>
               @endforeach
             @elseif ($field->element=='radio')
-            @foreach ($field->formatFieldValuesAsArray() as $value)
+                  @php
+                      $fieldName = $field->db_column_name();
+                      $oldValue = old($fieldName);
+                      $default = trim($field->defaultValue($model->id));
+                      $current = isset($item) ? trim($item->{$fieldName}) : $default;
 
-                  <label class="form-control">
-                      <input type="radio" value="{{ $value }}" name="{{ $field->db_column_name() }}" {{ isset($item) ? ($item->{$field->db_column_name()} == $value ? ' checked="checked"' : '') : (old($field->db_column_name()) != '' ? ' checked="checked"' : (in_array($value, explode(', ', $field->defaultValue($model->id))) ? ' checked="checked"' : '')) }}>
-                      {{ $value }}
-                  </label>
-
-            @endforeach
+                      // use old input if available, otherwise fallback
+                      $selectedValue = $oldValue !== null ? $oldValue : $current;
+                  @endphp
+                  @foreach ($field->formatFieldValuesAsArray() as $key => $value)
+                      <label class="form-control">
+                          <input type="radio"
+                                 name="{{ $fieldName }}"
+                                 value="{{ $key }}"
+                                  {{ $selectedValue == $key ? 'checked' : '' }}>
+                          {{ $value }}
+                      </label>
+                  @endforeach
                 <button type="button"
                         class="btn btn-default btn-xs clear-radio"
                         data-target-name="{{ $field->db_column_name() }}">
