@@ -251,11 +251,8 @@
                   <label class="col-md-3 control-label" for="email">{{ trans('admin/users/table.email') }} </label>
                   <div class="col-md-6">
                       @can('canEditSensitiveFieldsForCurrentUser', $user)
-                        <input class="form-control" type="email" name="email" id="email" maxlength="191" value="{{ old('email', $user->email) }}" {{ ((config('app.lock_passwords') && ($user->id)) ? ' disabled' : '') }}
-                          autocomplete="off"
-                          readonly
-                          {{  (Helper::checkIfRequired($user, 'email')) ? ' required' : '' }}
-                          onfocus="this.removeAttribute('readonly');">
+                        <input class="form-control" type="email" name="email" id="email" maxlength="191" value="{{ old('email', $user->email) }}" autocomplete="off"
+                          readonly onfocus="this.removeAttribute('readonly');" {{  (Helper::checkIfRequired($user, 'email')) ? ' required' : '' }}{{ ((!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '') }}>
                         @if (config('app.lock_passwords') && ($user->id))
                         <p class="help-block">{{ trans('admin/users/table.lock_passwords') }}</p>
                         @endif
