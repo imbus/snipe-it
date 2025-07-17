@@ -55,7 +55,7 @@
                 @if(!$field->is_unique)
                     <textarea class="col-md-6 form-control" id="{{ $field->db_column_name() }}" name="{{ $field->db_column_name() }}">{{ old($field->db_column_name(),(isset($item) ? Helper::gracefulDecrypt($field, $item->{$field->db_column_name()}) : $field->defaultValue($model->id))) }}</textarea>
                 @endif
-              @elseif ($field->element=='checkbox')<pre>{{ var_dump(old()) }}</pre>
+              @elseif ($field->element=='checkbox')
                     <!-- Checkboxes -->
               @php
                   $fieldName = $field->db_column_name();
@@ -63,7 +63,6 @@
                   $defaultValues = array_map('trim', explode(',', $field->defaultValue($model->id)));
                   $currentValues = isset($item) ? array_map('trim', explode(',', $item->{$fieldName})) : $defaultValues;
 
-                  // if old values exist, use them, otherwise fallback
                   $selectedValues = is_array($oldValues) ? $oldValues : $currentValues;
               @endphp
 
@@ -83,7 +82,6 @@
                       $default = trim($field->defaultValue($model->id));
                       $current = isset($item) ? trim($item->{$fieldName}) : $default;
 
-                      // use old input if available, otherwise fallback
                       $selectedValue = $oldValue !== null ? $oldValue : $current;
                   @endphp
                   @foreach ($field->formatFieldValuesAsArray() as $key => $value)
