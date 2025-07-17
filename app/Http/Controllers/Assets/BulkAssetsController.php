@@ -540,8 +540,8 @@ class BulkAssetsController extends Controller
                 session()->put('bulkedit_ids', $request->input('ids'));
                 session()->put('bulk_asset_errors',$error_array);
 
-
-                return redirect(url()->previous())
+                return redirect()
+                    ->route('hardware.bulkedit')
                     ->with('bulk_asset_errors', $error_array)
                     ->withInput();
             }
