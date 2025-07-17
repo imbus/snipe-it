@@ -23,6 +23,7 @@ use Redirect;
 use Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Notifications\CurrentInventory;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * This controller handles all actions related to Users for
@@ -241,14 +242,12 @@ class UsersController extends Controller
         }
 
         // Update the user fields
-        $user->username = trim($request->input('username'));
-        $user->email = trim($request->input('email'));
+
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
         $user->two_factor_optin = $request->input('two_factor_optin') ?: 0;
         $user->locale = $request->input('locale');
         $user->employee_num = $request->input('employee_num');
-        $user->activated = $request->input('activated', 0);
         $user->jobtitle = $request->input('jobtitle', null);
         $user->phone = $request->input('phone');
         $user->location_id = $request->input('location_id', null);
@@ -260,8 +259,6 @@ class UsersController extends Controller
         $user->city = $request->input('city', null);
         $user->state = $request->input('state', null);
         $user->country = $request->input('country', null);
-        // if a user is editing themselves we should always keep activated true
-        $user->activated = $request->input('activated', $request->user()->is($user) ? 1 : 0);
         $user->zip = $request->input('zip', null);
         $user->remote = $request->input('remote', 0);
         $user->vip = $request->input('vip', 0);
@@ -270,15 +267,34 @@ class UsersController extends Controller
         $user->end_date = $request->input('end_date', null);
         $user->autoassign_licenses = $request->input('autoassign_licenses', 0);
 
+
         // Update the location of any assets checked out to this user
         Asset::where('assigned_type', User::class)
             ->where('assigned_to', $user->id)
             ->update(['location_id' => $request->input('location_id', null)]);
 
-        // Do we want to update the user password?
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->input('password'));
+
+        // check for permissions related fields and pull them out if the current user cannot edit them
+        if (Gate::allows('editCurrentUser', $user)) {
+
+            \Log::debug('Current user can edit these fields');
+            $user->username = trim($request->input('username'));
+            $user->email = trim($request->input('email'));
+            $user->activated = $request->input('activated', 0);
+
+            // Do we want to update the user password?
+            if ($request->filled('password')) {
+                $user->password = bcrypt($request->input('password'));
+            }
         }
+
+
+        // if a user is editing themselves we should always keep activated true
+        if (auth()->user()->id == $user->id) {
+            \Log::debug('User is editing themselves');
+            $user->activated = 1;
+        }
+
 
         // Update the location of any assets checked out to this user
         Asset::where('assigned_type', User::class)

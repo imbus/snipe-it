@@ -23,6 +23,7 @@ use App\Notifications\CurrentInventory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -475,8 +476,20 @@ class UsersController extends Controller
                 return response()->json(Helper::formatStandardApiResponse('error', null, 'You cannot be your own manager'));
             }
 
-            if ($request->filled('password')) {
-                $user->password = bcrypt($request->input('password'));
+            if (Gate::allows('editCurrentUser', $user)) {
+
+                if ($request->filled('password')) {
+                    $user->password = bcrypt($request->input('password'));
+                }
+
+                if ($request->filled('username')) {
+                    $user->username = $request->input('username');
+                }
+
+                if ($request->filled('email')) {
+                    $user->username = $request->input('username');
+                }
+
             }
 
             // We need to use has()  instead of filled()
