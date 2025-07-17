@@ -223,9 +223,6 @@ class BulkAssetsController extends Controller
         // Get the back url from the session and then destroy the session
 
         $bulk_back_url = $request->session()->pull('bulk_back_url', url()->previous());
-//        if ($request->session()->has('bulk_back_url')) {
-//            $bulk_back_url = $request->session()->pull('bulk_back_url');
-//        }
 
        $custom_field_columns = CustomField::all()->pluck('db_column')->toArray();
 
