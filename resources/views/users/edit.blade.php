@@ -130,7 +130,7 @@
                     <div class="col-md-8 col-md-offset-3">
                         <p class="text-warning">
                             <x-icon type="locked" />
-                            {{ trans('general.feature_disabled') }}
+                            {{ trans('admin/users/table.lock_passwords') }}
                         </p>
                     </div>
                 @endif
@@ -166,7 +166,15 @@
                               <x-icon type="locked" />
                               {{ trans('general.action_permission_generic', ['action' => trans('general.edit'), 'item_type' => trans('general.password')]) }}
                           </p>
+
                     @endcan
+
+                      @if (!Gate::allows('editableOnDemo') && ($user->id))
+                          <p class="text-warning">
+                              <x-icon type="locked" />
+                              {{ trans('admin/users/table.lock_passwords') }}
+                          </p>
+                      @endif
 
                   </div>
 
@@ -214,7 +222,7 @@
                                       <!-- app is locked -->
                                       <p class="text-warning">
                                           <x-icon type="locked" />
-                                          {{ trans('general.feature_disabled') }}
+                                          {{ trans('admin/users/table.lock_passwords') }}
                                       </p>
                                   @endcannot
 
