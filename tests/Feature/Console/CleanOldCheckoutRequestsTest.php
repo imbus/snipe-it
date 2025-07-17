@@ -30,27 +30,37 @@ class CleanOldCheckoutRequestsTest extends TestCase
 
     public function test_clean_old_checkout_requests_command_for_missing_asset()
     {
-        $missingAsset = CheckoutRequest::factory()->forAsset()->create(['requestable_id' => 99999999]);
+        $requestForMissingAsset = CheckoutRequest::factory()->forAsset()->create(['requestable_id' => 99999999]);
 
         $this->artisan('snipeit:clean-old-checkout-requests')->assertExitCode(0);
 
         $this->assertNotSoftDeleted($this->validRequest);
-        $this->assertDatabaseMissing('checkout_requests', ['requestable_id' => $missingAsset->requestable_id]);
+        $this->assertDatabaseMissing('checkout_requests', ['requestable_id' => $requestForMissingAsset->requestable_id]);
     }
 
     public function test_clean_old_checkout_requests_command_for_soft_deleted_model()
     {
-        $this->markTestIncomplete();
+        $requestForSoftDeletedAssetModel = CheckoutRequest::factory()->forAssetModel()->create();
+        Model::withoutEvents(fn() => $requestForSoftDeletedAssetModel->requestedItem->delete());
+
+        $this->artisan('snipeit:clean-old-checkout-requests')->assertExitCode(0);
+
+        $this->assertNotSoftDeleted($this->validRequest);
+        $this->assertSoftDeleted($requestForSoftDeletedAssetModel->fresh());
     }
 
     public function test_clean_old_checkout_requests_command_for_missing_model()
     {
-        $this->markTestIncomplete();
+        $requestForMissingModel = CheckoutRequest::factory()->forAssetModel()->create(['requestable_id' => 99999999]);
+
+        $this->artisan('snipeit:clean-old-checkout-requests')->assertExitCode(0);
+
+        $this->assertNotSoftDeleted($this->validRequest);
+        $this->assertDatabaseMissing('checkout_requests', ['requestable_id' => $requestForMissingModel->requestable_id]);
     }
 
     public function test_clean_old_checkout_requests_command_for_soft_deleted_user()
     {
-
         $requestForSoftDeletedUser = CheckoutRequest::factory()->forAsset()->create();
         Model::withoutEvents(fn() => $requestForSoftDeletedUser->user->delete());
 
@@ -62,11 +72,11 @@ class CleanOldCheckoutRequestsTest extends TestCase
 
     public function test_clean_old_checkout_requests_command_for_missing_user()
     {
-        $missingUser = CheckoutRequest::factory()->forAsset()->create(['user_id' => 99999999]);
+        $requestForMissingUser = CheckoutRequest::factory()->forAsset()->create(['user_id' => 99999999]);
 
         $this->artisan('snipeit:clean-old-checkout-requests')->assertExitCode(0);
 
         $this->assertNotSoftDeleted($this->validRequest);
-        $this->assertDatabaseMissing('checkout_requests', ['user_id' => $missingUser->user_id]);
+        $this->assertDatabaseMissing('checkout_requests', ['user_id' => $requestForMissingUser->user_id]);
     }
 }
