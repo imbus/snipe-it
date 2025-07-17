@@ -108,12 +108,57 @@ class AuthServiceProvider extends ServiceProvider
         });
 
 
+
+
         /**
          * GENERAL GATES
          *
          * These control general sections of the admin. These definitions are used in our blades via @can('blah) and also
          * use in our controllers to determine if a user has access to a certain area.
          */
+
+        Gate::define('editCurrentUser', function ($user, $item) {
+
+            if ($item instanceof User) {
+                if ($item) {
+
+                    // if they can only edit users, deny them if the user is admin or superadmin
+                    if ($user->hasAccess('users.edit')) {
+                        \Log::debug('User can edit users');
+                        if ($item->isAdmin() || $item->isSuperUser()) {
+                            \Log::debug('User cannot edit admins or superusers');
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    // if they are an admin, deny them only if the user is a superadmin
+                    if ($user->hasAccess('admin')) {
+                        \Log::debug('User is an admin');
+                        if ($item->isSuperUser()) {
+                            \Log::debug('User cannot edit superuser');
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                }
+            }
+        });
+
+
+        /**
+         * Define the demo mode gate so we have an easy way to use @can and Gate::allows()
+         */
+        Gate::define('editableOnDemo', function () {
+            if (config('app.lock_passwords')) {
+                \Log::debug('We are in demo mode');
+                return false;
+            }
+            return true;
+        });
 
         Gate::define('admin', function ($user) {
             if ($user->hasAccess('admin')) {
@@ -248,6 +293,7 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('self.profile', function ($user) {
             return $user->canEditProfile();
         });
+
 
     }
 }
