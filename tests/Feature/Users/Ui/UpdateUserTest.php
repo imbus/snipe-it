@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Hash;
 
 class UpdateUserTest extends TestCase
 {
+
+    public function testRequiresPermission()
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('users.edit', User::factory()->create()->id))
+            ->assertForbidden();
+    }
+
     public function testPageRenders()
     {
         $this->actingAs(User::factory()->editUsers()->create())
