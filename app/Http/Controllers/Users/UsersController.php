@@ -275,7 +275,7 @@ class UsersController extends Controller
 
 
         // check for permissions related fields and pull them out if the current user cannot edit them
-        if (Gate::allows('editCurrentUser', $user)) {
+        if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) {
 
             \Log::debug('Current user can edit these fields');
             $user->username = trim($request->input('username'));

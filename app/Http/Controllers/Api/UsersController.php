@@ -476,7 +476,7 @@ class UsersController extends Controller
                 return response()->json(Helper::formatStandardApiResponse('error', null, 'You cannot be your own manager'));
             }
 
-            if (Gate::allows('editCurrentUser', $user)) {
+            if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) {
 
                 if ($request->filled('password')) {
                     $user->password = bcrypt($request->input('password'));

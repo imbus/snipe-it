@@ -102,7 +102,7 @@
 
                   <div class="col-md-6">
 
-                      @can('editCurrentUser', $user)
+                      @can('canEditSensitiveFieldsForCurrentUser', $user)
 
                           @if ($user->ldap_import!='1' || str_contains(Route::currentRouteName(), 'clone'))
                               <input class="form-control" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" autocomplete="off" maxlength="191" {{  (Helper::checkIfRequired($user, 'username')) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {{ (!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '' }}">
@@ -151,7 +151,7 @@
                   </label>
 
                   <div class="col-md-6">
-                      @can('editCurrentUser', $user)
+                      @can('canEditSensitiveFieldsForCurrentUser', $user)
                         @if ($user->ldap_import!='1' || str_contains(Route::currentRouteName(), 'clone') )
                           <input type="password" name="password" class="form-control" id="password" value="" maxlength="500" autocomplete="off" onfocus="this.removeAttribute('readonly');" readonly {{  ((Helper::checkIfRequired($user, 'password')) && (!$user->id)) ? ' required' : '' }}{{ (!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '' }}>
                               <span id="generated-password"></span>
@@ -171,13 +171,13 @@
                   </div>
 
                   <div class="col-md-2">
-                    @if (Gate::allows('editCurrentUser', $user) && ($user->ldap_import!='1'))
+                    @if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user) && ($user->ldap_import!='1'))
                       <a href="#" class="left" id="genPassword">{{ trans('general.generate') }}</a>
                     @endif
                   </div>
                 </div>
 
-                @if ((Gate::allows('editCurrentUser', $user) && ($user->ldap_import!='1')) || str_contains(Route::currentRouteName(), 'clone'))
+                @if ((Gate::allows('canEditSensitiveFieldsForCurrentUser', $user) && ($user->ldap_import!='1')) || str_contains(Route::currentRouteName(), 'clone'))
                     <!-- Password Confirm -->
                     <div class="form-group {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                       <label class="col-md-3 control-label" for="password_confirmation">
@@ -202,7 +202,7 @@
                           <div class="col-md-9 col-md-offset-3">
 
                               <!-- disallow changes to the user's login status -->
-                              @if ((!Gate::allows('editableOnDemo')) || (!Gate::allows('editCurrentUser', $user)) || ($user->id == auth()->user()->id))
+                              @if ((!Gate::allows('editableOnDemo')) || (!Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) || ($user->id == auth()->user()->id))
                                   <!-- demo mode - disallow changes -->
                                   <label class="form-control form-control--disabled">
                                       <input type="checkbox" value="1" name="activated" class="disabled" {{ (old('activated', $user->activated)) == '1' ? ' checked="checked"' : '' }} disabled="disabled" aria-label="activated">
@@ -217,7 +217,7 @@
                                       </p>
                                   @endcannot
 
-                                  @cannot('editCurrentUser', $user)
+                                  @cannot('canEditSensitiveFieldsForCurrentUser', $user)
                                   <!-- authed user is an admin or regular user and is trying to edit someone higher -->
                                       <p class="help-block">
                                       <x-icon type="locked" />
@@ -250,7 +250,7 @@
                 <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                   <label class="col-md-3 control-label" for="email">{{ trans('admin/users/table.email') }} </label>
                   <div class="col-md-6">
-                      @can('editCurrentUser', $user)
+                      @can('canEditSensitiveFieldsForCurrentUser', $user)
                         <input class="form-control" type="email" name="email" id="email" maxlength="191" value="{{ old('email', $user->email) }}" {{ ((config('app.lock_passwords') && ($user->id)) ? ' disabled' : '') }}
                           autocomplete="off"
                           readonly
@@ -292,7 +292,7 @@
                               <!-- everything here should be what is considered optional -->
                               <br>
                               <!-- Company -->
-                              @if ((Gate::allows('editCurrentUser', $user)) && (\App\Models\Company::canManageUsersCompanies()))
+                              @if ((Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) && (\App\Models\Company::canManageUsersCompanies()))
                                   @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.select_company'), 'fieldname' => 'company_id'])
                               @else
                                   @if ($user->company)

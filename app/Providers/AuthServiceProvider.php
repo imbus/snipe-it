@@ -117,7 +117,7 @@ class AuthServiceProvider extends ServiceProvider
          * use in our controllers to determine if a user has access to a certain area.
          */
 
-        Gate::define('editCurrentUser', function ($user, $item) {
+        Gate::define('canEditSensitiveFieldsForCurrentUser', function ($user, $item) {
 
             if ($item instanceof User) {
                 if ($item) {
