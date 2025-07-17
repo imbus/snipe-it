@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Asset;
+use App\Models\AssetModel;
 use App\Models\CheckoutRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,6 +28,16 @@ class CheckoutRequestFactory extends Factory
             return [
                 'requestable_id' => Asset::factory(),
                 'requestable_type' => Asset::class,
+            ];
+        });
+    }
+
+    public function forAssetModel()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'requestable_id' => AssetModel::factory(),
+                'requestable_type' => AssetModel::class,
             ];
         });
     }

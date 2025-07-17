@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Console;
 
-use App\Models\Asset;
 use App\Models\CheckoutRequest;
 use Illuminate\Database\Eloquent\Model;
 use Tests\TestCase;

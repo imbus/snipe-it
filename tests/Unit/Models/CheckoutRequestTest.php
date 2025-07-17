@@ -31,12 +31,24 @@ class CheckoutRequestTest extends TestCase
 
     public function test_checkout_request_soft_deleted_when_requested_model_soft_deleted()
     {
-        $this->markTestIncomplete();
+        $checkoutRequest = CheckoutRequest::factory()->forAssetModel()->create();
+
+        $requestedAssetModel = $checkoutRequest->requestedItem;
+
+        $requestedAssetModel->delete();
+
+        $this->assertSoftDeleted($checkoutRequest->fresh());
     }
 
     public function test_checkout_request_deleted_when_requested_model_force_deleted()
     {
-        $this->markTestIncomplete();
+        $checkoutRequest = CheckoutRequest::factory()->forAssetModel()->create();
+
+        $requestedAsset = $checkoutRequest->requestedItem;
+
+        $requestedAsset->forceDelete();
+
+        $this->assertDatabaseMissing('checkout_requests', ['id' => $checkoutRequest->id]);
     }
 
     public function test_checkout_request_soft_deleted_when_requesting_user_soft_deleted()
