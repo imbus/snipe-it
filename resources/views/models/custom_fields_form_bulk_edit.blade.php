@@ -55,14 +55,27 @@
                 @if(!$field->is_unique)
                     <textarea class="col-md-6 form-control" id="{{ $field->db_column_name() }}" name="{{ $field->db_column_name() }}">{{ old($field->db_column_name(),(isset($item) ? Helper::gracefulDecrypt($field, $item->{$field->db_column_name()}) : $field->defaultValue($model->id))) }}</textarea>
                 @endif
-              @elseif ($field->element=='checkbox')
+              @elseif ($field->element=='checkbox')<pre>{{ var_dump(old()) }}</pre>
                     <!-- Checkboxes -->
-                  @foreach ($field->formatFieldValuesAsArray() as $key => $value)
-                      <label class="form-control">
-                          <input type="checkbox" value="{{ $value }}" name="{{ $field->db_column_name() }}[]" {{  isset($item) ? (in_array($value, array_map('trim', explode(',', $item->{$field->db_column_name()}))) ? ' checked="checked"' : '') : (old($field->db_column_name()) != '' ? ' checked="checked"' : (in_array($key, array_map('trim', explode(',', $field->defaultValue($model->id)))) ? ' checked="checked"' : '')) }}>
-                          {{ $value }}
-                      </label>
-                  @endforeach
+              @php
+                  $fieldName = $field->db_column_name();
+                  $oldValues = old($fieldName);
+                  $defaultValues = array_map('trim', explode(',', $field->defaultValue($model->id)));
+                  $currentValues = isset($item) ? array_map('trim', explode(',', $item->{$fieldName})) : $defaultValues;
+
+                  // if old values exist, use them, otherwise fallback
+                  $selectedValues = is_array($oldValues) ? $oldValues : $currentValues;
+              @endphp
+
+              @foreach ($field->formatFieldValuesAsArray() as $key => $value)
+                  <label class="form-control">
+                      <input type="checkbox"
+                             name="{{ $fieldName }}[]"
+                             value="{{ $key }}"
+                              {{ in_array($key, $selectedValues) ? 'checked' : '' }}>
+                      {{ $value }}
+                  </label>
+              @endforeach
             @elseif ($field->element=='radio')
             @foreach ($field->formatFieldValuesAsArray() as $value)
 

@@ -125,6 +125,7 @@ class BulkAssetsController extends Controller
 
         $models = $assets->unique('model_id');
         $modelNames = [];
+
         foreach($models as $model) {
             $modelNames[] = $model->model->name;
         }
@@ -160,7 +161,6 @@ class BulkAssetsController extends Controller
 
                 case 'edit':
                     $this->authorize('update', Asset::class);
-
                     return view('hardware/bulk')
                         ->with('assets', $asset_ids)
                         ->with('statuslabel_list', Helper::statusLabelList())
@@ -767,5 +767,4 @@ class BulkAssetsController extends Controller
             ->with('models', $models->pluck(['model']))
             ->with('modelNames', $modelNames);
     }
-
 }

@@ -128,7 +128,8 @@ class Handler extends ExceptionHandler
             $ids = method_exists($e, 'getIds') ? $e->getIds() : [];
 
             if (in_array('bulkedit', $ids, true)) {
-
+                $oldInput = session()->getOldInput();
+                session()->flashInput($oldInput ?? []);
                 return redirect()
                     ->route('hardware.bulkedit')
                     ->with('bulk_asset_errors', session()->pull('bulk_asset_errors'))
