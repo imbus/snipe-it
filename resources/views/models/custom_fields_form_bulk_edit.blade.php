@@ -59,7 +59,7 @@
                     <!-- Checkboxes -->
               @php
                   $fieldName = $field->db_column_name();
-                  $oldValues = old($fieldName);  log:debug($oldValues);
+                  $oldValues = old($fieldName);
                   $defaultValues = array_map('trim', explode(',', $field->defaultValue($model->id)));
                   $currentValues = isset($item) ? array_map('trim', explode(',', $item->{$fieldName})) : $defaultValues;
 
