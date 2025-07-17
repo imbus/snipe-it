@@ -105,7 +105,7 @@
                       @can('canEditSensitiveFieldsForCurrentUser', $user)
 
                           @if ($user->ldap_import!='1' || str_contains(Route::currentRouteName(), 'clone'))
-                              <input class="form-control" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" autocomplete="off" maxlength="191" {{  (Helper::checkIfRequired($user, 'username')) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {{ (!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '' }}">
+                              <input class="form-control" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" autocomplete="off" maxlength="191" {{  (Helper::checkIfRequired($user, 'username')) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {{ ((!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '') }}">
                           @else
                               <!-- insert the old username so we don't break validation -->
                               <p class="help-block">
@@ -171,7 +171,8 @@
                   </div>
 
                   <div class="col-md-2">
-                    @if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user) && ($user->ldap_import!='1'))
+
+                    @if (Gate::allows('editableOnDemo') && (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) && ($user->ldap_import!='1'))
                       <a href="#" class="left" id="genPassword">{{ trans('general.generate') }}</a>
                     @endif
                   </div>
@@ -253,9 +254,14 @@
                       @can('canEditSensitiveFieldsForCurrentUser', $user)
                         <input class="form-control" type="email" name="email" id="email" maxlength="191" value="{{ old('email', $user->email) }}" autocomplete="off"
                           readonly onfocus="this.removeAttribute('readonly');" {{  (Helper::checkIfRequired($user, 'email')) ? ' required' : '' }}{{ ((!Gate::allows('editableOnDemo') && ($user->id)) ? ' disabled' : '') }}>
-                        @if (config('app.lock_passwords') && ($user->id))
-                        <p class="help-block">{{ trans('admin/users/table.lock_passwords') }}</p>
-                        @endif
+
+                          @if (!Gate::allows('editableOnDemo') && ($user->id))
+                              <p class="text-warning">
+                                  <x-icon type="locked" />
+                                  {{ trans('admin/users/table.lock_passwords') }}
+                              </p>
+                          @endif
+
                         {!! $errors->first('email', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
                           @else
                           <p class="help-block">
