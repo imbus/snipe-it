@@ -229,10 +229,6 @@ class UsersController extends Controller
             }
         }
 
-        // Only save groups if the user is a superuser
-        if (auth()->user()->isSuperUser()) {
-            $user->groups()->sync($request->input('groups'));
-        }
 
         // Update the user fields
 
@@ -260,6 +256,9 @@ class UsersController extends Controller
         $user->end_date = $request->input('end_date', null);
         $user->autoassign_licenses = $request->input('autoassign_licenses', 0);
 
+        // Set this here so that we can overwrite it later if the user is an admin or superadmin
+        $user->activated = $request->input('activated', auth()->user()->is($user) ? 1 : $user->activated);
+
 
         // Update the location of any assets checked out to this user
         Asset::where('assigned_type', User::class)
@@ -272,18 +271,27 @@ class UsersController extends Controller
 
             $user->username = trim($request->input('username'));
             $user->email = trim($request->input('email'));
-            $user->activated = $request->input('activated', 0);
+            $user->activated = $request->input('activated', $request->user()->is($user) ? 1 : 0);
 
             // Do we want to update the user password?
             if ($request->filled('password')) {
                 $user->password = bcrypt($request->input('password'));
             }
-        }
 
+            $permissions_array = $request->input('permission');
 
-        // if a user is editing themselves we should always keep activated true
-        if (auth()->user()->id == $user->id) {
-            $user->activated = 1;
+            // Strip out the superuser permission if the user isn't a superadmin
+            if (! auth()->user()->isSuperUser()) {
+                unset($permissions_array['superuser']);
+                $permissions_array['superuser'] = $orig_superuser;
+            }
+
+            $user->permissions = json_encode($permissions_array);
+
+            // Only save groups if the user is a superuser
+            if (auth()->user()->isSuperUser()) {
+                $user->groups()->sync($request->input('groups'));
+            }
         }
 
 
@@ -292,15 +300,9 @@ class UsersController extends Controller
             ->where('assigned_to', $user->id)
             ->update(['location_id' => $user->location_id]);
 
-        $permissions_array = $request->input('permission');
 
-        // Strip out the superuser permission if the user isn't a superadmin
-        if (! auth()->user()->isSuperUser()) {
-            unset($permissions_array['superuser']);
-            $permissions_array['superuser'] = $orig_superuser;
-        }
 
-        $user->permissions = json_encode($permissions_array);
+        \Log::error(print_r($user->permissions, true));
 
         // Handle uploaded avatar
         app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
