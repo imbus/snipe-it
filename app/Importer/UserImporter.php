@@ -101,9 +101,12 @@ class UserImporter extends ItemImporter
             $this->log('Updating User');
 
             // Todo - check that this works
-//            if (!Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) {
-//                $user->except(['password', 'username', 'email', 'activated']);
-//            }
+            if (!Gate::allows('canEditAuthFields', $user)) {
+                unset($user->username);
+                unset($user->email);
+                unset($user->password);
+                unset($user->activated);
+            }
 
             $user->update($this->sanitizeItemForUpdating($user));
 
