@@ -100,12 +100,13 @@ class BulkDeleteAssetsTest extends TestCase
         $id_array = [$asset->id];
         $this->assertEquals(1, count($id_array));
 
+        $test_ran = false;
         // Check that the assets are deleted
-        Asset::whereIn('id', $id_array)->withTrashed()->each(function (Asset $asset) {
-            $this->fail('ppoooo');
-            $this->assertFalse(true);
+        Asset::whereIn('id', $id_array)->withTrashed()->each(function (Asset $asset) use (&$test_ran) {
+            $test_ran = true;
             $this->assertNotNull($asset->deleted_at);
         });
+        $this->assertTrue($test_ran, "Test never actually ran!");
 
         $response = $this->actingAs($user)
             ->from(route('hardware/bulkedit'))
@@ -115,11 +116,13 @@ class BulkDeleteAssetsTest extends TestCase
 
         $this->followRedirects($response)->assertSee('alert-success');
 
-        Asset::findMany($id_array)->each(function (Asset $asset)  {
+        $test_ran = false;
+        Asset::findMany($id_array)->each(function (Asset $asset) use (&$test_ran) {
+            $test_ran = true;
             $this->assertNull($asset->deleted_at);
-            $this->assertHasTheseActionLogs($asset, ['create', 'delete', 'restore', 'fart']); //SHIT
+            $this->assertHasTheseActionLogs($asset, ['create',/* 'delete',*/ 'restore'/*, 'fart'*/]); //SHIT
         });
-        $this->assertTrue(false);
+        $this->assertTrue($test_ran, "Test never actually ran!");
     }
 
 

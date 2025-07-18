@@ -52,7 +52,7 @@ class AuditAssetTest extends TestCase
             ->assertStatus(302)
             ->assertRedirect(route('hardware.show', $asset));
         $this->followRedirects($response)->assertSee('success');
-        $this->assertHasTheseActionLogs($asset, ['create', 'audit']);
+        $this->assertHasTheseActionLogs($asset, ['create', 'audit']); // WAT.
     }
 
     public function testAssetAuditPostIsRedirectedToAuditDuePageIfRedirectSelectionIsList()
