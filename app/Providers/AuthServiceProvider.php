@@ -126,29 +126,31 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('canEditAuthFields', function ($user, $item) {
 
             if ($item instanceof User) {
-                if ($item) {
 
-                    // if they can only edit users, deny them if the user is admin or superadmin
-                    if ($user->hasAccess('users.edit')) {
-                        if ($item->isAdmin() || $item->isSuperUser()) {
-                            \Log::debug('User cannot edit admins or superusers');
-                            return false;
-                        }
+                // if they can only edit users, deny them if the user is admin or superadmin
+                if ($user->hasAccess('users.edit')) {
 
-                        return true;
+                    if ($item->isAdmin() || $item->isSuperUser()) {
+                        return false;
                     }
 
-                    // if they are an admin, deny them only if the user is a superadmin
-                    if ($user->hasAccess('admin')) {
-                        if ($item->isSuperUser()) {
-                            return false;
-                        }
-
-                        return true;
-                    }
-
+                    return true;
                 }
+
+                // if they are an admin, deny them only if the user is a superadmin
+                if ($user->hasAccess('admin')) {
+
+                    if ($item->isSuperUser()) {
+                        return false;
+                    }
+
+                    return true;
+                }
+
+                return false;
             }
+
+            return false;
         });
 
 
