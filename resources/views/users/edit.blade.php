@@ -216,10 +216,10 @@
                           <div class="col-md-9 col-md-offset-3">
 
                               <!-- disallow changes to the user's login status -->
-                              @if ((!Gate::allows('editableOnDemo')) || (!Gate::allows('canEditAuthFields', $user)) || ($user->id == auth()->user()->id))
+                              @if ((!Gate::allows('canEditAuthFields', $user)) || ($user->id == auth()->user()->id) || ($user->id))
                                   <!-- demo mode - disallow changes -->
                                   <label class="form-control form-control--disabled">
-                                      <input type="checkbox" value="1" name="activated" class="disabled" {{ (old('activated', $user->activated)) == '1' ? ' checked="checked"' : '' }} disabled="disabled" aria-label="activated">
+                                      <input type="checkbox" value="1" name="activated" class="disabled" {{ (old('activated', $user->activated)) == '1' ? ' checked="checked"' : '' }} disabled aria-label="activated">
                                       {{ trans('admin/users/general.activated_help_text') }}
                                   </label>
 
@@ -231,13 +231,13 @@
                                   </p>
                                   @endcannot
 
-                                  @cannot('editableOnDemo')
+                                  @if ((auth()->user()->cannot('editableOnDemo')) && ($user->id))
                                       <!-- app is locked -->
                                       <p class="text-warning">
                                           <x-icon type="locked" />
                                           {{ trans('admin/users/table.lock_passwords') }}
                                       </p>
-                                  @endcannot
+                                  @endif
 
                                   @if ($user->id == auth()->user()->id)
                                       <!-- disallow editing activation on your own account -->
