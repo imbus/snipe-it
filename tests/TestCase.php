@@ -3,13 +3,11 @@
 namespace Tests;
 
 use App\Http\Middleware\SecurityHeaders;
-use App\Models\Actionlog;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use PHPUnit\Framework\Assert;
 use RuntimeException;
 use Tests\Support\AssertsAgainstSlackNotifications;
+use Tests\Support\AssertHasActionLogs;
 use Tests\Support\CanSkipTests;
 use Tests\Support\CustomTestMacros;
 use Tests\Support\InteractsWithAuthentication;
@@ -24,6 +22,7 @@ abstract class TestCase extends BaseTestCase
     use InteractsWithAuthentication;
     use InitializesSettings;
     use LazilyRefreshDatabase;
+    use AssertHasActionLogs;
 
     private array $globallyDisabledMiddleware = [
         SecurityHeaders::class,
@@ -51,16 +50,4 @@ abstract class TestCase extends BaseTestCase
         }
     }
 
-    public function assertHasTheseActionLogs(Model $item, array $statuses)
-    {
-        \Log::error("Okay, we're running the test macro now?");
-        $logs = Actionlog::where(['item_id' => $item->id, 'item_type' => get_class($item)])->orderBy('id')->get();
-        Assert::assertEquals(count($statuses), count($logs), "Wrong count of logs expected - expecting " . count($statuses) . ", got " . count($logs));
-        $i = 0;
-        foreach ($statuses as $status) {
-            Assert::assertEquals($status, $logs[$i]->action_type, "Unexpected action type - " . $logs[$i]->action_type . " - expecting $status");
-            $i++;
-        }
-
-    }
 }
