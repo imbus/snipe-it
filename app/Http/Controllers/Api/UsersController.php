@@ -476,7 +476,8 @@ class UsersController extends Controller
                 return response()->json(Helper::formatStandardApiResponse('error', null, 'You cannot be your own manager'));
             }
 
-            if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) {
+            // check for permissions related fields and pull them out if the current user cannot edit them
+            if (auth()->user()->can('editSensitiveUserFields') && auth()->user()->can('editableOnDemo')) {
 
                 if ($request->filled('password')) {
                     $user->password = bcrypt($request->input('password'));
@@ -487,7 +488,11 @@ class UsersController extends Controller
                 }
 
                 if ($request->filled('email')) {
-                    $user->username = $request->input('username');
+                    $user->email = $request->input('email');
+                }
+
+                if ($request->filled('activated')) {
+                    $user->activated = $request->input('activated');
                 }
 
             }

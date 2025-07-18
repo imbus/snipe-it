@@ -101,7 +101,13 @@ class AuthServiceProvider extends ServiceProvider
          * This is where we set the superadmin permission to allow superadmins to be able to do everything within the system.
          *
          */
-        Gate::before(function ($user) {
+        Gate::before(function ($user, $ability) {
+
+            // Disallow even superadmins to edit non-editable things when in demo mode.
+            // (We have to do this to prevent jerks from trying to break the demo by editing things they shouldn't.)
+            if (($ability == 'editableOnDemo') && (config('app.lock_passwords'))) {
+                return false;
+            }
             if ($user->isSuperUser()) {
                 return true;
             }
@@ -117,14 +123,13 @@ class AuthServiceProvider extends ServiceProvider
          * use in our controllers to determine if a user has access to a certain area.
          */
 
-        Gate::define('canEditSensitiveFieldsForCurrentUser', function ($user, $item) {
+        Gate::define('canEditAuthFields', function ($user, $item) {
 
             if ($item instanceof User) {
                 if ($item) {
 
                     // if they can only edit users, deny them if the user is admin or superadmin
                     if ($user->hasAccess('users.edit')) {
-                        \Log::debug('User can edit users');
                         if ($item->isAdmin() || $item->isSuperUser()) {
                             \Log::debug('User cannot edit admins or superusers');
                             return false;
@@ -135,9 +140,7 @@ class AuthServiceProvider extends ServiceProvider
 
                     // if they are an admin, deny them only if the user is a superadmin
                     if ($user->hasAccess('admin')) {
-                        \Log::debug('User is an admin');
                         if ($item->isSuperUser()) {
-                            \Log::debug('User cannot edit superuser');
                             return false;
                         }
 
@@ -154,7 +157,6 @@ class AuthServiceProvider extends ServiceProvider
          */
         Gate::define('editableOnDemo', function () {
             if (config('app.lock_passwords')) {
-                \Log::debug('We are in demo mode');
                 return false;
             }
             return true;

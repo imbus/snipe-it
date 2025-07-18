@@ -13,17 +13,10 @@ use App\Models\Company;
 use App\Models\Group;
 use App\Models\Setting;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Storage;
-use Redirect;
-use Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Notifications\CurrentInventory;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * This controller handles all actions related to Users for
@@ -130,7 +123,7 @@ class UsersController extends Controller
         }
         $user->permissions = json_encode($permissions_array);
 
-        // we have to invoke the
+        // we have to invoke the form request here to handle image uploads
         app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
 
         session()->put(['redirect_option' => $request->get('redirect_option')]);
@@ -275,9 +268,8 @@ class UsersController extends Controller
 
 
         // check for permissions related fields and pull them out if the current user cannot edit them
-        if (Gate::allows('canEditSensitiveFieldsForCurrentUser', $user)) {
+        if (auth()->user()->can('editSensitiveUserFields') && auth()->user()->can('editableOnDemo')) {
 
-            \Log::debug('Current user can edit these fields');
             $user->username = trim($request->input('username'));
             $user->email = trim($request->input('email'));
             $user->activated = $request->input('activated', 0);
@@ -291,7 +283,6 @@ class UsersController extends Controller
 
         // if a user is editing themselves we should always keep activated true
         if (auth()->user()->id == $user->id) {
-            \Log::debug('User is editing themselves');
             $user->activated = 1;
         }
 
