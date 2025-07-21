@@ -103,7 +103,7 @@ class AccessoryFilesTest extends TestCase
         // Upload a file
         $this->actingAsForApi($user)
             ->post(
-                route('api.files.store', ['object_type' => 'accessories', 'id' => $accessory->id, 'order' => 'asc']), [
+                route('api.files.store', ['object_type' => 'accessories', 'id' => $accessory->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
                 ]
             )
@@ -134,7 +134,7 @@ class AccessoryFilesTest extends TestCase
         // List the files to get the file ID
         $result = $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'accessories', 'id' => $accessory->id])
+                route('api.files.index', ['object_type' => 'accessories', 'id' => $accessory->id, 'order' => 'asc'])
             )
             ->assertOk()
             ->assertJsonStructure(

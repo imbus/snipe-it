@@ -103,7 +103,7 @@ class ConsumableFileTest extends TestCase
         // Upload a file
         $this->actingAsForApi($user)
             ->post(
-                route('api.files.store', ['object_type' => 'consumables', 'id' => $consumable->id, 'order' => 'asc']), [
+                route('api.files.store', ['object_type' => 'consumables', 'id' => $consumable->id]), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
                 ]
             )
@@ -134,7 +134,7 @@ class ConsumableFileTest extends TestCase
         // List the files to get the file ID
         $result = $this->actingAsForApi($user)
             ->getJson(
-                route('api.files.index', ['object_type' => 'consumables', 'id' => $consumable->id])
+                route('api.files.index', ['object_type' => 'consumables', 'id' => $consumable->id, 'order' => 'asc'])
             )
             ->assertOk()
             ->assertJsonStructure(
