@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\CustomField;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Crypt;
@@ -21,7 +22,7 @@ class MACEncrypted implements ValidationRule
         try {
             $attributeName = trim(preg_replace('/_+|snipeit|\d+/', ' ', $attribute));
             $decrypted = Crypt::decrypt($value);
-            if (!$this->validateMacAddress($attributeName, $decrypted, 'ascii') && !is_null($decrypted)) {
+            if (!$this->validateRegex($attributeName, $decrypted, ['/^[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}$/']) && !is_null($decrypted)) {
                 $fail(trans('validation.mac_address', ['attribute' => $attributeName]));
             }
         } catch (\Exception $e) {
