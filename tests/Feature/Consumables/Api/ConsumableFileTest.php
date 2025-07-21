@@ -103,7 +103,7 @@ class ConsumableFileTest extends TestCase
         // Upload a file
         $this->actingAsForApi($user)
             ->post(
-                route('api.files.store', ['object_type' => 'consumables', 'id' => $consumable->id]), [
+                route('api.files.store', ['object_type' => 'consumables', 'id' => $consumable->id, 'order' => 'asc']), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
                 ]
             )

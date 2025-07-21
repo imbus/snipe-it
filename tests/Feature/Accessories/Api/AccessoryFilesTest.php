@@ -103,7 +103,7 @@ class AccessoryFilesTest extends TestCase
         // Upload a file
         $this->actingAsForApi($user)
             ->post(
-                route('api.files.store', ['object_type' => 'accessories', 'id' => $accessory->id]), [
+                route('api.files.store', ['object_type' => 'accessories', 'id' => $accessory->id, 'order' => 'asc']), [
                 'file' => [UploadedFile::fake()->create("test.jpg", 100)],
                 ]
             )
