@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Rules\AlphaEncrypted;
+use App\Rules\BooleanEncrypted;
 use App\Rules\DateEncrypted;
 use App\Rules\EmailEncrypted;
 use App\Rules\IPEncrypted;
 use App\Rules\IPv4Encrypted;
 use App\Rules\IPv6Encrypted;
-use App\Rules\MACEncrypted;
+use App\Rules\MacEncrypted;
 use App\Rules\NumericEncrypted;
 use App\Rules\UrlEncrypted;
 use Gate;
@@ -138,7 +139,8 @@ class CustomFieldset extends Model
                 $ipKey = array_search('ip', $rules[$field->db_column_name()]);
                 $ipv4Key = array_search('ipv4', $rules[$field->db_column_name()]);
                 $ipv6Key = array_search('ipv6', $rules[$field->db_column_name()]);
-                $macKey = array_search('regex', $rules[$field->db_column_name()]);
+                $macKey = array_search('regex:/^[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}$/', $rules[$field->db_column_name()]);
+                $booleanKey = array_search('boolean', $rules[$field->db_column_name()]);
                 match ($field->format) {
                     'NUMERIC' => $rules[$field->db_column_name()][$numericKey] = new NumericEncrypted,
                     'ALPHA' => $rules[$field->db_column_name()][$alphaKey] = new AlphaEncrypted,
@@ -148,7 +150,8 @@ class CustomFieldset extends Model
                     'IP' => $rules[$field->db_column_name()][$ipKey] = new IPEncrypted,
                     'IPV4' => $rules[$field->db_column_name()][$ipv4Key] = new IPv4Encrypted,
                     'IPV6' => $rules[$field->db_column_name()][$ipv6Key] = new IPv6Encrypted,
-                    'MAC' => $rules[$field->db_column_name()][$macKey] = new MACEncrypted,
+                    'MAC' => $rules[$field->db_column_name()][$macKey] = new MacEncrypted,
+                    'BOOLEAN' => $rules[$field->db_column_name()][$booleanKey] = new BooleanEncrypted,
                     default => null,
                 };
             }

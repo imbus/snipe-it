@@ -2,28 +2,28 @@
 
 namespace App\Rules;
 
-use App\Models\CustomField;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Validation\Concerns\ValidatesAttributes;
 
-class MACEncrypted implements ValidationRule
+class BooleanEncrypted implements ValidationRule
 {
     use ValidatesAttributes;
 
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param  \Closure(string, ?string=): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         try {
             $attributeName = trim(preg_replace('/_+|snipeit|\d+/', ' ', $attribute));
             $decrypted = Crypt::decrypt($value);
-            if (!$this->validateRegex($attributeName, $decrypted, ['/^[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}:[a-fA-F0-9]{2}$/']) && !is_null($decrypted)) {
-                $fail(trans('validation.mac_address', ['attribute' => $attributeName]));
+
+            if (!$this->validateBoolean($attributeName, $decrypted) && !is_null($decrypted)) {
+                $fail(trans('validation.ipv6', ['attribute' => $attributeName]));
             }
         } catch (\Exception $e) {
             report($e);
