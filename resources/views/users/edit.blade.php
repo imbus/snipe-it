@@ -104,7 +104,7 @@
                       <input type="hidden" name="username" value="{{ old('username', $user->username) }}">
                     <!-- if the user is not managed by LDAP, or this is a clone operation, allow editing of the username -->
                           @if ($user->ldap_import!='1' || str_contains(Route::currentRouteName(), 'clone'))
-                              <input class="form-control" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" autocomplete="off" maxlength="191" {{ (Helper::checkIfRequired($user, 'username')) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {{ (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' disabled' : '' }}>
+                              <input class="form-control" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" autocomplete="off" maxlength="191" {{ (Helper::checkIfRequired($user, 'username')) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {!! (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' style="cursor: not-allowed" disabled ' : '' !!}>
                           @else
 
                               <!-- insert the old username so we don't break validation -->
@@ -151,7 +151,7 @@
 
                   <div class="col-md-6">
                         @if ($user->ldap_import!='1' || str_contains(Route::currentRouteName(), 'clone') )
-                          <input type="password" name="password" class="form-control" id="password" value="" maxlength="500" autocomplete="off" onfocus="this.removeAttribute('readonly');" readonly {{  ((Helper::checkIfRequired($user, 'password')) && (!$user->id)) ? ' required' : '' }}{{ (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo') && ($user->id))) ? ' disabled' : '' }}>
+                          <input type="password" name="password" class="form-control{{ (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo') && ($user->id))) ? ' form-control--disabled' : '' }}" id="password" value="" maxlength="500" autocomplete="off" onfocus="this.removeAttribute('readonly');" readonly {{  ((Helper::checkIfRequired($user, 'password')) && (!$user->id)) ? ' required' : '' }}{!! (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' style="cursor: not-allowed" disabled ' : '' !!}>
                               <span id="generated-password"></span>
                               {!! $errors->first('password', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
                         @else
@@ -191,7 +191,7 @@
                         {{ trans('admin/users/table.password_confirm') }}
                       </label>
                       <div class="col-md-6">
-                        <input type="password" name="password_confirmation" id="password_confirm" class="form-control" value="" maxlength="500" autocomplete="off" aria-label="password_confirmation" {{  (!$user->id) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {{ (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' disabled' : '' }}>
+                        <input type="password" name="password_confirmation" id="password_confirm" class="form-control" value="" maxlength="500" autocomplete="off" aria-label="password_confirmation" {{  (!$user->id) ? ' required' : '' }} onfocus="this.removeAttribute('readonly');" readonly {!! (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' style="cursor: not-allowed" disabled ' : '' !!}>
 
                       @cannot('canEditAuthFields', $user)
                           <p class="help-block">
@@ -216,7 +216,7 @@
                           <div class="col-md-9 col-md-offset-3">
 
                               <!-- disallow changes to the user's login status -->
-                              @if ((!Gate::allows('canEditAuthFields', $user)) || ($user->id == auth()->user()->id) || ($user->id))
+                              @if ((!Gate::allows('canEditAuthFields', $user)) || ($user->id == auth()->user()->id))
                                   <!-- demo mode - disallow changes -->
                                   <label class="form-control form-control--disabled">
                                       <input type="checkbox" value="1" name="activated" class="disabled" {{ (old('activated', $user->activated)) == '1' ? ' checked="checked"' : '' }} disabled aria-label="activated">
@@ -265,7 +265,7 @@
                   <label class="col-md-3 control-label" for="email">{{ trans('admin/users/table.email') }} </label>
                   <div class="col-md-6">
                         <input class="form-control" type="email" name="email" id="email" maxlength="191" value="{{ old('email', $user->email) }}" autocomplete="off"
-                          readonly onfocus="this.removeAttribute('readonly');" {{  (Helper::checkIfRequired($user, 'email')) ? ' required' : '' }}{{ (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo') && ($user->id))) ? ' disabled' : '' }}>
+                          readonly onfocus="this.removeAttribute('readonly');" {{  (Helper::checkIfRequired($user, 'email')) ? ' required' : '' }}{!! (!Gate::allows('canEditAuthFields', $user)) || ((!Gate::allows('editableOnDemo')) && ($user->id)) ? ' style="cursor: not-allowed" disabled ' : '' !!}>
 
                           @cannot('canEditAuthFields', $user)
                               <!-- authed user is an admin or regular user and is trying to edit someone higher -->
