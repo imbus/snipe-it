@@ -203,11 +203,19 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     {
         $user_groups = $this->groups;
         if (($this->permissions == '') && (count($user_groups) == 0)) {
-
             return false;
         }
 
-        $user_permissions = json_decode($this->permissions, true);
+        $user_permissions = $this->permissions;
+
+        if (is_object($this->permissions)) {
+            $user_permissions = json_decode(json_encode($this->permissions), true);
+        }
+
+        if (is_string($this->permissions)) {
+            $user_permissions = json_decode($this->permissions, true);
+        }
+
 
         $is_user_section_permissions_set = ($user_permissions != '') && array_key_exists($section, $user_permissions);
         //If the user is explicitly granted, return true
@@ -259,6 +267,18 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     public function isSuperUser()
     {
         return $this->checkPermissionSection('superuser');
+    }
+
+    /**
+     * Checks if the user is an admin
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since  [v8.1.18]
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->checkPermissionSection('admin');
     }
 
 
