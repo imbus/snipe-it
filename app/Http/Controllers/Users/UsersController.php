@@ -266,7 +266,7 @@ class UsersController extends Controller
             ->update(['location_id' => $request->input('location_id', null)]);
 
         // check for permissions related fields and only set them if the user has permission to edit them
-        if (auth()->user()->can('canEditAuthFields') && auth()->user()->can('editableOnDemo')) {
+        if (auth()->user()->can('canEditAuthFields', $user) && auth()->user()->can('editableOnDemo')) {
 
             $user->username = trim($request->input('username'));
             $user->email = trim($request->input('email'));

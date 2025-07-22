@@ -278,7 +278,7 @@ class UpdateUserTest extends TestCase
         $user->delete();
 
         $response = $this->actingAs(User::factory()->editUsers()->create())
-            ->put(route('users.update', $id), [
+            ->put(route('users.update', $user), [
                 'first_name' => 'test',
                 'username' => 'test',
                 'company_id' => $companyB->id,
@@ -293,7 +293,7 @@ class UpdateUserTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $id,
             'first_name' => 'test',
-            'username' => $user->username,
+            'username' => 'test',
             'company_id' => $companyB->id,
         ]);
     }
