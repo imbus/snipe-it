@@ -1,5 +1,5 @@
 @component('mail::message')
-# {{ trans('mail.hello') }} {{ $target->assignedto->present()->fullName() }},
+# {{ trans('mail.hello') }} {{ $target->assignedto?->present()->fullName() }},
 
 {{ $introduction_line }}
 
