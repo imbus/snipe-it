@@ -756,9 +756,6 @@
                                                                               id="text-{{ $field->id }}-to-show"
                                                                               style="font-size: 0px;">{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}</span>
                                                                     @endif
-                                                                <i class="fa-regular fa-clipboard js-copy-link hidden-print" data-clipboard-target=".js-copy-{{ $field->id }}" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}">
-                                                                    <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
-                                                                </i>
                                                             @endif
                                                         @else
                                                             {{ strtoupper(trans('admin/custom_fields/general.encrypted')) }}
@@ -780,6 +777,17 @@
                                                     @if ($asset->{$field->db_column_name()}=='')
                                                         &nbsp;
                                                     @endif
+                                                    @if (!in_array($field->element, ['checkbox', 'radio']) && !empty($asset->{$field->db_column_name()}))
+                                                        <i class="fa-regular fa-clipboard js-copy-link hidden-print"
+                                                           data-clipboard-target=".js-copy-{{ $field->id }}"
+                                                           aria-hidden="true"
+                                                           data-tooltip="true"
+                                                           data-placement="top"
+                                                           title="{{ trans('general.copy_to_clipboard') }}">
+                                                            <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
+                                                        </i>
+                                                    @endif
+
                                                 </div>
                                             </div>
                                         @endforeach
