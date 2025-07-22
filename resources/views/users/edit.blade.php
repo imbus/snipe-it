@@ -216,7 +216,7 @@
                           <div class="col-md-9 col-md-offset-3">
 
                               <!-- disallow changes to the user's login status -->
-                              @if ((!Gate::allows('canEditAuthFields', $user)) || ($user->id == auth()->user()->id))
+                              @if ((!Gate::allows('canEditAuthFields', $user)) || (!Gate::allows('editableOnDemo', $user)) || ($user->id == auth()->user()->id))
                                   <!-- demo mode - disallow changes -->
                                   <label class="form-control form-control--disabled">
                                       <input type="checkbox" value="1" name="activated" class="disabled" {{ (old('activated', $user->activated)) == '1' ? ' checked="checked"' : '' }} disabled aria-label="activated">
