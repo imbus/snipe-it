@@ -22601,7 +22601,6 @@ label.form-control {
 }
 label.form-control--disabled {
   color: #959495;
-  pointer-events: none;
   cursor: not-allowed;
 }
 /** --------------------------------------- **/
@@ -24177,7 +24176,6 @@ label.form-control {
 }
 label.form-control--disabled {
   color: #959495;
-  pointer-events: none;
   cursor: not-allowed;
 }
 /** --------------------------------------- **/
