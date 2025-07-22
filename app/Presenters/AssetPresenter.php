@@ -110,7 +110,7 @@ class AssetPresenter extends Presenter
                 'visible' => false,
                 'formatter' => 'employeeNumFormatter',
             ],[
-                'field' => 'jobtitle',
+                'field' => 'assigned_to.jobtitle',
                 'searchable' => true,
                 'sortable' => true,
                 'title' => trans('admin/users/table.title'),
