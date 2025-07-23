@@ -731,9 +731,8 @@
                                                 <div class="col-md-9{{ (($field->format=='URL') && ($asset->{$field->db_column_name()}!='')) ? ' ellipsis': '' }}">
                                                     @if (!empty($asset->{$field->db_column_name()}))
                                                         {{-- Hidden span used as copy target --}}
-                                                        <span class="js-copy-{{ $field->id }} hidden-print" style="font-size: 0px;">
-                                                                {{ $asset->{$field->db_column_name()} }}
-                                                            </span>
+                                                        {{-- It's tempting to break out the HTML into separate lines for this, but it results in extra spaces being added onto the end of the coipied value --}}
+                                                        <span class="js-copy-{{ $field->id }} hidden-print" style="font-size: 0px;">{{ ($field->isFieldDecryptable($asset->{$field->db_column_name()}) ? Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) : $asset->{$field->db_column_name()}) }}</span>
 
                                                         {{-- Clipboard icon --}}
                                                         <i class="fa-regular fa-clipboard js-copy-link hidden-print"
@@ -753,16 +752,17 @@
                                                     @if ($field->isFieldDecryptable($asset->{$field->db_column_name()} ))
                                                         @can('assets.view.encrypted_custom_fields')
                                                             @php
-                                                                $fieldSize=strlen(Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}))
+                                                                $fieldSize = strlen(Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}))
                                                             @endphp
-                                                            @if ($fieldSize>0)
+                                                            @if ($fieldSize > 0)
                                                                 <span id="text-{{ $field->id }}-to-hide">{{ str_repeat('*', $fieldSize) }}</span>
                                                                     @if (($field->format=='URL') && ($asset->{$field->db_column_name()}!=''))
                                                                         <span class="js-copy-{{ $field->id }} hidden-print"
                                                                               id="text-{{ $field->id }}-to-show"
-                                                                              style="font-size: 0px;"><a
-                                                                                    href="{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}"
-                                                                                    target="_new">{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}</a></span>
+                                                                              style="font-size: 0px;">
+                                                                            <a href="{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}"
+                                                                                    target="_new">{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}</a>
+                                                                        </span>
                                                                     @elseif (($field->format=='DATE') && ($asset->{$field->db_column_name()}!=''))
                                                                         <span class="js-copy-{{ $field->id }} hidden-print"
                                                                               id="text-{{ $field->id }}-to-show"
