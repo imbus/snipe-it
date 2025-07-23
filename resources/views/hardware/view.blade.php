@@ -729,6 +729,22 @@
                                                     </strong>
                                                 </div>
                                                 <div class="col-md-9{{ (($field->format=='URL') && ($asset->{$field->db_column_name()}!='')) ? ' ellipsis': '' }}">
+                                                    @if (!empty($asset->{$field->db_column_name()}))
+                                                        {{-- Hidden span used as copy target --}}
+                                                        <span class="js-copy-{{ $field->id }} hidden-print" style="font-size: 0px;">
+                                                                {{ $asset->{$field->db_column_name()} }}
+                                                            </span>
+
+                                                        {{-- Clipboard icon --}}
+                                                        <i class="fa-regular fa-clipboard js-copy-link hidden-print"
+                                                           data-clipboard-target=".js-copy-{{ $field->id }}"
+                                                           aria-hidden="true"
+                                                           data-tooltip="true"
+                                                           data-placement="top"
+                                                           title="{{ trans('general.copy_to_clipboard') }}">
+                                                            <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
+                                                        </i>
+                                                    @endif
                                                     @if (($field->field_encrypted=='1') && ($asset->{$field->db_column_name()}!=''))
 
                                                         <i class="fas fa-lock" data-tooltip="true" data-placement="top" title="{{ trans('admin/custom_fields/general.value_encrypted') }}" onclick="showHideEncValue(this)" id="text-{{ $field->id }}"></i>
@@ -756,9 +772,6 @@
                                                                               id="text-{{ $field->id }}-to-show"
                                                                               style="font-size: 0px;">{{ Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) }}</span>
                                                                     @endif
-                                                                <i class="fa-regular fa-clipboard js-copy-link hidden-print" data-clipboard-target=".js-copy-{{ $field->id }}" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}">
-                                                                    <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
-                                                                </i>
                                                             @endif
                                                         @else
                                                             {{ strtoupper(trans('admin/custom_fields/general.encrypted')) }}
