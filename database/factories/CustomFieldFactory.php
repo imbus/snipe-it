@@ -93,6 +93,54 @@ class CustomFieldFactory extends Factory
         });
     }
 
+    public function encrypt()
+    {
+        return $this->state(function () {
+            return [
+                'field_encrypted' => '1',
+            ];
+        });
+    }
+
+    public function alpha()
+    {
+        return $this->state(function () {
+            return [
+                'format' => 'alpha',
+            ];
+        });
+    }
+
+    public function numeric()
+    {
+        return $this->state(function () {
+            return [
+                'format' => 'numeric',
+            ];
+        });
+    }
+
+    public function email()
+    {
+        return $this->state(function () {
+            return [
+                'format' => 'email',
+            ];
+        });
+    }
+
+    //public function testEncryptedAlpha()
+    //{
+    //    return $this->state(function () {
+    //        return [
+    //            'name'            => 'Test Encrypted',
+    //            'field_encrypted' => '1',
+    //            'help_text'       => 'This is a sample encrypted field.',
+    //            'format'          => 'alpha'
+    //        ];
+    //    });
+    //}
+
     public function testCheckbox()
     {
         return $this->state(function () {
