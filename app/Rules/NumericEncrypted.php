@@ -13,7 +13,6 @@ class NumericEncrypted implements ValidationRule
 {
     use ValidatesAttributes;
 
-    //$this->validateEmail($attribute, $decrypted);
     /**
      * Run the validation rule.
      *
@@ -27,9 +26,6 @@ class NumericEncrypted implements ValidationRule
             if (!$this->validateNumeric($attributeName, $decrypted) && !is_null($decrypted)) {
                 $fail(trans('validation.numeric', ['attribute' => $attributeName]));
             }
-            //if (!is_numeric($decrypted) && !is_null($decrypted)) {
-            //    $fail(trans('validation.numeric', ['attribute' => $attributeName]));
-            //}
         } catch (\Exception $e) {
             report($e->getMessage());
             $fail(trans('general.something_went_wrong'));
