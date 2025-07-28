@@ -86,7 +86,6 @@ dir="{{ Helper::determineLanguageDirection() }}">
     <script src="{{ url(asset('js/respond.js')) }}" nonce="{{ csrf_token() }}"></script>
 
 
-
 </head>
 
 @if (($snipeSettings) && ($snipeSettings->allow_user_skin==1) && Auth::check() && Auth::user()->present()->skin != '')
@@ -1015,9 +1014,6 @@ dir="{{ Helper::determineLanguageDirection() }}">
         {{-- Javascript files --}}
         <script src="{{ url(mix('js/dist/all.js')) }}" nonce="{{ csrf_token() }}"></script>
         <script src="{{ url('js/select2/i18n/'.Helper::mapBackToLegacyLocale(app()->getLocale()).'.js') }}"></script>
-
-        <!-- v5-beta: This pGenerator call must remain here for v5 - until fixed - so that the JS password generator works for the user create modal. -->
-        <script src="{{ url('js/pGenerator.jquery.js') }}"></script>
 
         {{-- Page level javascript --}}
         @stack('js')
