@@ -105,8 +105,8 @@ class UploadedFilesController extends Controller
         $sort = in_array($request->input('sort'), $allowed_columns) ? $request->input('sort') : 'action_logs.created_at';
 
         // Text search on action_logs fields
-        // We could use the normal Actionlogs text scope, but it's a very heavy query since it's searcghing across all relations
-        // And we generally won't need that here
+        // We could use the normal Actionlogs text scope, but it's a very heavy query since it's searching across all relations
+        // and we generally won't need that here
         if ($request->filled('search')) {
 
             $uploads->where(
