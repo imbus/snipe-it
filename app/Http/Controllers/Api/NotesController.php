@@ -26,10 +26,10 @@ class NotesController extends Controller
      * Returns JSON responses indicating success or failure with appropriate HTTP status codes.
      *
      * @param  \Illuminate\Http\Request  $request  The incoming HTTP request containing the 'note'.
-     * @param  int|string  $asset_id  The ID of the asset to attach the note to.
+     * @param  int|string  $assetId  The ID of the asset to attach the note to.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request, $asset_id): JsonResponse
+    public function store(Request $request, $assetId): JsonResponse
     {
         $this->authorize('update', Asset::class);
 
@@ -38,7 +38,7 @@ class NotesController extends Controller
         }
 
         try {
-            $asset = Asset::findOrFail($asset_id);
+            $asset = Asset::findOrFail($assetId);
         } catch (ModelNotFoundException $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, 'Asset not found'), 404);
         } catch (\Exception $e) {
@@ -57,7 +57,7 @@ class NotesController extends Controller
         $logaction->item_id = $asset->id;
         $logaction->note = $request->input('note', '');
 
-        if($logaction->logaction('note added')) {
+        if ($logaction->logaction('note added')) {
             // Return a success response
             return response()->json(Helper::formatStandardApiResponse('success', ['note' => $logaction->note, 'item_id' => $asset->id], trans('general.note_added')));
         }
@@ -74,15 +74,15 @@ class NotesController extends Controller
      * user information for each note. Returns a JSON response with the notes or errors.
      *
      * @param  \Illuminate\Http\Request  $request  The incoming HTTP request.
-     * @param  int|string  $asset_id  The ID of the asset whose notes to retrieve.
+     * @param  int|string  $assetId  The ID of the asset whose notes to retrieve.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getList(Request $request, $asset_id): JsonResponse
+    public function getList(Request $request, $assetId): JsonResponse
     {
         $this->authorize('view', Asset::class);
 
         try {
-            $asset = Asset::findOrFail($asset_id);
+            $asset = Asset::findOrFail($assetId);
         } catch (ModelNotFoundException $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, $e->getMessage()), 404);
         } catch (\Exception $e) {

@@ -91,10 +91,10 @@ class ActionlogFactory extends Factory
      * @param User|null $user Optional user to associate as the creator of the note.
      * @return \Illuminate\Database\Eloquent\Factories\Factory<ActionLog>
      */
-    public function assetNote(?User $user = null)
+    public function assetNote(?User $user=null)
     {
         return $this
-            ->state(function (array $attributes) use ($user) {
+            ->state(function () use ($user) {
                 return [
                     'action_type' => 'note added',
                     'item_type' => Asset::class,
