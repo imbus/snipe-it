@@ -465,7 +465,7 @@ class Actionlog extends SnipeModel
         case AssetModel::class:
             return route('show/modelfile', [$this->item_id, $this->id]);
         case Consumable::class:
-            return route('show/locationsfile', [$this->item_id, $this->id]);
+            return route('show.consumablefile', [$this->item_id, $this->id]);
         case Component::class:
             return route('show.componentfile', [$this->item_id, $this->id]);
         case License::class:
