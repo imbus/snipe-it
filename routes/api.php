@@ -841,6 +841,28 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ); // end asset models API routes
 
 
+        /**
+         * Asset notes API routes
+         */
+        Route::group(['prefix' => 'notes'], function () {
+
+            Route::post(
+                '{asset_id}/store',
+                [
+                    Api\NotesController::class,
+                    'store'
+                ]
+            )->name('api.notes.store');
+
+            Route::get(
+                '{asset_id}/getList',
+                [
+                    Api\NotesController::class,
+                    'getList'
+                ]
+            )->name('api.notes.getList');
+        }
+        ); // end asset notes API routes
 
         /**
         * Settings API routes
