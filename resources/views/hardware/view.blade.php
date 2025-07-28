@@ -1439,11 +1439,7 @@
                     <div class="tab-pane fade" id="files">
                         <div class="row{{ ($asset->uploads->count() > 0 ) ? '' : ' hidden-print' }}">
                             <div class="col-md-12">
-                                <x-filestable
-                                        filepath="private_uploads/assets/"
-                                        showfile_routename="show/assetfile"
-                                        deletefile_routename="delete/assetfile"
-                                        :object="$asset" />
+                                <x-filestable object_type="assets" :object="$asset" />
                             </div> <!-- /.col-md-12 -->
                         </div> <!-- /.row -->
                     </div> <!-- /.tab-pane files -->
@@ -1453,13 +1449,7 @@
                             <div class="tab-pane fade" id="modelfiles">
                                 <div class="row{{ (($asset->model) && ($asset->model->uploads->count() > 0)) ? '' : ' hidden-print' }}">
                                     <div class="col-md-12">
-
-                                        <x-filestable
-                                                filepath="private_uploads/assetmodels/"
-                                                showfile_routename="show/modelfile"
-                                                deletefile_routename="delete/modelfile"
-                                                :object="$asset->model" />
-
+                                        <x-filestable object_type="models" :object="$asset->model" />
                                     </div> <!-- /.col-md-12 -->
                                 </div> <!-- /.row -->
                             </div> <!-- /.tab-pane files -->

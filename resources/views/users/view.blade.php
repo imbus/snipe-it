@@ -965,11 +965,7 @@
           <div class="row">
 
             <div class="col-md-12 col-sm-12">
-                <x-filestable
-                        filepath="private_uploads/users/"
-                        showfile_routename="show/userfile"
-                        deletefile_routename="userfile.destroy"
-                        :object="$user" />
+                <x-filestable object_type="users" :object="$user" />
             </div>
           </div> <!--/ROW-->
         </div><!--/FILES-->

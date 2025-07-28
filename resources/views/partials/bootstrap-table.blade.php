@@ -369,6 +369,33 @@
         return '<a href="{{ config('app.url') }}/hardware/' + row.id + '/audit" class="actions btn btn-sm btn-primary" data-tooltip="true" title="{{ trans('general.audit') }}"><x-icon type="audit" /><span class="sr-only">{{ trans('general.audit') }}</span></a>&nbsp;';
     }
 
+    // This handles the custom view for the filestable blade component
+    window.customViewFormatter = data => {
+        const template = $('#fileGalleryTemplate').html()
+        let view = ''
+
+        $.each(data, function (i, row) {
+
+            view += template.replace('%ID%', row.id)
+                .replace('%ICON%', row.icon)
+                .replace('%FILETYPE%', row.filetype)
+                .replace('%FILE_URL%', row.url)
+                .replace('%LINK_URL%', row.url)
+                .replace('%FILENAME%', (row.exists_on_disk === true) ? row.filename : '<x-icon type="x" /> <del>' + row.filename + '</del>')
+                .replace('%CREATED_AT%', row.created_at.formatted)
+                .replace('%CREATED_BY%', (row.created_by) ? row.created_by.name : '')
+                .replace('%NOTE%', row.note)
+                .replace('%PANEL_CLASS%', (row.exists_on_disk === true) ? 'default' : 'danger')
+                .replace('%INLINE_IMAGE%', (row.inline === true) ? '<a href="' + row.url + '" data-toggle="lightbox" data-type="image"><img src="' + row.url + '" alt="" class="img-thumbnail"></a>' : '')
+                .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
+                .replace('%NEW_WINDOW_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'?inline=true" class="btn btn-sm btn-default" target="_blank"><x-icon type="external-link" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="external-link"/></span>')
+                .replace('%DELETE_BUTTON%', ((row.exists_on_disk === true) && row.available_actions.delete === true) ? '<a href="./showfile/'+ row.id +'/delete" class="btn btn-sm btn-danger"><x-icon type="delete" /></a> ' : '<span class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="delete"/></span>');
+        })
+
+        return `<div class="row">${view}</div>`
+    }
+
+
 
     // Make the edit/delete buttons
     function genericActionsFormatter(owner_name, element_name) {
@@ -905,25 +932,84 @@
             return '<a href="' + value + '" data-toggle="lightbox" data-type="image"><img src="' + value + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt="' + altName + '"></a>';
         }
     }
+
+
     function downloadFormatter(value) {
         if (value) {
             return '<a href="' + value + '" class="btn btn-sm btn-default"><x-icon type="download" /></a>';
         }
     }
 
-    function fileUploadFormatter(value) {
+    function fileDownloadButtonsFormatter(row, value) {
+
+        if ((value) && (value.url)) {
+
+            var download_button = '<a href="' + value.url + '" class="btn btn-sm btn-default" data-tooltip="true" title="{{ trans('general.download') }}"><x-icon type="download" /></a>';
+            var download_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled"><x-icon type="download" /></a></span>';
+            var inline_button = '<a href="'+ value.url +'?inline=true" class="btn btn-sm btn-default" target="_blank" data-tooltip="true" title="{{ trans('general.open_new_window') }}"><x-icon type="external-link" /></a>';
+            var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
+
+            if (value.exists_on_disk) {
+                 return '<nowrap>' + download_button + ' ' + inline_button + '</nowrap>';
+            } else {
+                return '<nowrap>' + download_button_disabled + ' ' + inline_button_disabled + '</nowrap>';
+            }
+        }
+
+    }
+
+
+    function filePreviewFormatter(row, value) {
+
         if ((value) && (value.url) && (value.inlineable)) {
-            return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt=""></a>';
-        } else if ((value) && (value.url)) {
-            return '<a href="' + value.url + '" class="btn btn-default"><x-icon type="download" /></a>';
+
+            if (value.mediatype == 'image') {
+                return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt=""></a>';
+            } else if (value.mediatype == 'video') {
+                return '<a href="' + value.url + '?inline=true" data-toggle="lightbox" data-type="video"><video style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive"><source src="' + value.url + '?inline=true"></video></a>';
+            } else if (value.mediatype == 'audio') {
+                return '<audio controls><source src="' + value.url + '?inline=true" type="audio/mp3">Your browser does not support the audio element.</audio>';
+            }
+            return '{{ trans('general.preview_not_available') }}';
+        }
+        return '{{ trans('general.preview_not_available') }}';
+
+    }
+
+
+    // This is kinda gross, but for right now we're posting to the GUI delete routes
+    // All of these URLS and storage directories need to be updated to be more consistent :(
+    function deleteUploadFormatter(value, row) {
+
+        if ((row.available_actions) && (row.available_actions.delete === true)) {
+            var destination;
+
+            if (row.item.type == 'assetmodels') {
+                 destination = 'models';
+            } else {
+                 destination = row.item.type;
+            }
+
+            return '<a href="{{ config('app.url') }}/' + destination + '/' + row.item.id + '/showfile/' + row.id + '/delete" '
+                + ' class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
+                + ' data-toggle="modal" '
+                + ' data-content="{{ trans('general.file_upload_status.confirm_delete') }} ' + row.filename + '?" '
+                + ' data-title="{{  trans('general.delete') }}" onClick="return false;">'
+                + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
         }
     }
 
 
-    function fileUploadNameFormatter(value) {
+
+
+    function fileUploadNameFormatter(row, value) {
         if ((value) && (value.filename) && (value.url)) {
-            return '<a href="' + value.url + '">' + value.filename + '</a>';
+            if (value.exists_on_disk) {
+                return '<a href="' + value.url + '">' + value.filename + '</a>';
+            }
+            return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.filename + '</span>';
         }
+        return '--';
     }
 
     function linkToUserSectionBasedOnCount (count, id, section) {

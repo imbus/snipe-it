@@ -169,11 +169,7 @@
           <div class="tab-pane" id="files">
             <div class="row">
               <div class="col-md-12">
-                <x-filestable
-                        filepath="private_uploads/components/"
-                        showfile_routename="show.componentfile"
-                        deletefile_routename="delete/componentfile"
-                        :object="$component" />
+                <x-filestable object_type="components" :object="$component" />
               </div>
             </div>
           </div> <!-- /.tab-pane -->
