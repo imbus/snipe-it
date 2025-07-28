@@ -67,7 +67,7 @@ class AssetNotesTest extends TestCase
             ]);
 
         $this->actingAsForApi($user)
-            ->getJson(route('api.notes.getList', $asset))
+            ->getJson(route('api.notes.index', $asset))
             ->assertOk()
             ->assertJson([
                 'messages' => null,

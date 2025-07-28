@@ -855,12 +855,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             )->name('api.notes.store');
 
             Route::get(
-                '{asset}/getList',
+                '{asset}/index',
                 [
                     Api\NotesController::class,
-                    'getList'
+                    'index'
                 ]
-            )->name('api.notes.getList');
+            )->name('api.notes.index');
         }
         ); // end asset notes API routes
 
