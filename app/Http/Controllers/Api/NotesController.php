@@ -26,29 +26,16 @@ class NotesController extends Controller
      * Returns JSON responses indicating success or failure with appropriate HTTP status codes.
      *
      * @param  \Illuminate\Http\Request  $request  The incoming HTTP request containing the 'note'.
-     * @param  int|string  $assetId  The ID of the asset to attach the note to.
+     * @param  Asset  $asset  The ID of the asset to attach the note to.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request, $assetId): JsonResponse
+    public function store(Request $request, Asset $asset): JsonResponse
     {
-        $this->authorize('update', Asset::class);
+        $this->authorize('update', $asset);
 
         if ($request->input('note', '') == '') {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('validation.required', ['attribute' => 'note'])), 422);
         }
-
-        try {
-            $asset = Asset::findOrFail($assetId);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, 'Asset not found'), 404);
-        } catch (\Exception $e) {
-            Log::debug('Error fetching asset: ' . $e->getMessage());
-
-            // Return generic server error response since something unexpected happened
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/settings/message.webhook.500')), 500);
-        }
-
-        $this->authorize('update', $asset);
 
         // Create the note
         $logaction = new ActionLog();
@@ -74,22 +61,11 @@ class NotesController extends Controller
      * user information for each note. Returns a JSON response with the notes or errors.
      *
      * @param  \Illuminate\Http\Request  $request  The incoming HTTP request.
-     * @param  int|string  $assetId  The ID of the asset whose notes to retrieve.
+     * @param  Asset  $asset  The ID of the asset whose notes to retrieve.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getList(Request $request, $assetId): JsonResponse
+    public function getList(Asset $asset): JsonResponse
     {
-        $this->authorize('view', Asset::class);
-
-        try {
-            $asset = Asset::findOrFail($assetId);
-        } catch (ModelNotFoundException $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, $e->getMessage()), 404);
-        } catch (\Exception $e) {
-            // Return generic server error response since something unexpected happened
-            return response()->json(Helper::formatStandardApiResponse('error', null, $e->getMessage()), 500);
-        }
-
         $this->authorize('view', $asset);
 
         // Get the manual notes for the asset

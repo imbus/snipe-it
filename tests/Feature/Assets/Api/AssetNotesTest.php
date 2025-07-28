@@ -12,7 +12,7 @@ class AssetNotesTest extends TestCase
     public function testThatANonExistentAssetIdReturnsError()
     {   
         $this->actingAsForApi(User::factory()->editAssets()->create())
-            ->postJson(route('api.notes.store', 123456789))
+            ->postJson(route('api.notes.store', ['asset' => 123456789]))
             ->assertStatusMessageIs('error');
     }
 
@@ -21,7 +21,7 @@ class AssetNotesTest extends TestCase
         $asset = Asset::factory()->create();
 
         $this->actingAsForApi(User::factory()->create())
-            ->postJson(route('api.notes.store', $asset->id), [
+            ->postJson(route('api.notes.store', $asset), [
                 'note' => 'test'
             ])
             ->assertForbidden();
@@ -32,7 +32,7 @@ class AssetNotesTest extends TestCase
         $asset = Asset::factory()->create();
 
         $this->actingAsForApi(User::factory()->editAssets()->create())
-            ->postJson(route('api.notes.store', ['asset_id' => $asset->id]), [
+            ->postJson(route('api.notes.store', $asset), [
                 'note' => 'This is a test note.'
             ])
             ->assertStatusMessageIs('success')
@@ -67,7 +67,7 @@ class AssetNotesTest extends TestCase
             ]);
 
         $this->actingAsForApi($user)
-            ->getJson(route('api.notes.getList', ['asset_id' => $asset->id]))
+            ->getJson(route('api.notes.getList', $asset))
             ->assertOk()
             ->assertJson([
                 'messages' => null,

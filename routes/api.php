@@ -847,7 +847,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         Route::group(['prefix' => 'notes'], function () {
 
             Route::post(
-                '{asset_id}/store',
+                '{asset}/store',
                 [
                     Api\NotesController::class,
                     'store'
@@ -855,7 +855,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             )->name('api.notes.store');
 
             Route::get(
-                '{asset_id}/getList',
+                '{asset}/getList',
                 [
                     Api\NotesController::class,
                     'getList'
