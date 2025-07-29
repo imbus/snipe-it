@@ -101,7 +101,7 @@
                 paginationPreText: "{{ trans('general.previous') }}",
                 paginationNextText: "{{ trans('general.next') }}",
                 pageList: ['10', '20', '30', '50', '100', '150', '200'{!! ((config('app.max_results') > 200) ? ",'500'" : '') !!}{!! ((config('app.max_results') > 500) ? ",'".config('app.max_results')."'" : '') !!}],
-                pageSize: {{  (($snipeSettings->per_page!='') && ($snipeSettings->per_page > 0)) ? $snipeSettings->per_page : 20 }},
+                pageLimit: {{  (($snipeSettings->per_page!='') && ($snipeSettings->per_page > 0)) ? $snipeSettings->per_page : 20 }},
                 paginationVAlign: 'both',
                 queryParams: function (params) {
                     var newParams = {};
@@ -377,6 +377,15 @@
 
         $.each(data, function (i, row) {
 
+
+            if (row.mediatype === 'image') {
+                embed_code = '<a href="' + row.url + '" data-toggle="lightbox" data-type="image" data-title="' + row.filename + '" data-footer="' + row.note + '"><img src="' + row.url + '?inline=true" alt="" style="max-width: 100%"></a>';
+            } else if (row.mediatype === 'video') {
+                embed_code = '<a href="' + row.url + '" data-toggle="lightbox" data-type="video" data-title="' + row.filename + '" data-footer="' + row.note + '"><video controls><source src="' + row.url + '?inline=true" type="video/mp4">Your browser does not support the video tag.</video></a>';
+            } else if (row.mediatype === 'audio') {
+                embed_code = '<audio style="width: 100%" controls><source src="' + row.url + '?inline=true" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+            }
+
             view += template.replace('%ID%', row.id)
                 .replace('%ICON%', row.icon)
                 .replace('%FILETYPE%', row.filetype)
@@ -387,10 +396,10 @@
                 .replace('%CREATED_BY%', (row.created_by) ? row.created_by.name : '')
                 .replace('%NOTE%', row.note)
                 .replace('%PANEL_CLASS%', (row.exists_on_disk === true) ? 'default' : 'danger')
-                .replace('%INLINE_IMAGE%', (row.inline === true) ? '<a href="' + row.url + '" data-toggle="lightbox" data-type="image"><img src="' + row.url + '" alt="" class="img-thumbnail"></a>' : '')
+                .replace('%FILE_EMBED%', embed_code)
                 .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
                 .replace('%NEW_WINDOW_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'?inline=true" class="btn btn-sm btn-default" target="_blank"><x-icon type="external-link" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="external-link"/></span>')
-                .replace('%DELETE_BUTTON%', ((row.exists_on_disk === true) && row.available_actions.delete === true) ? '<a href="./showfile/'+ row.id +'/delete" class="btn btn-sm btn-danger"><x-icon type="delete" /></a> ' : '<span class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="delete"/></span>');
+                .replace('%DELETE_BUTTON%', ((row.exists_on_disk === true) && row.available_actions.delete === true) ? '<a href="{{ config('app.url') }}/' + row.item.type + '/' + row.item.id + '/showfile/' + row.id + '/delete" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true" data-toggle="modal"  data-content="{{ trans('general.sure_to_delete') }}?" data-title="{{  trans('general.delete') }}" onClick="return false;"><x-icon type="delete" /></a> ' : '<span class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="delete"/></span>');
         })
 
         return `<div class="row">${view}</div>`
