@@ -12,9 +12,8 @@
             data-id-table="{{ $object_type }}-FileUploadsTable"
             id="{{ $object_type }}-FileUploadsTable"
             data-side-pagination="server"
-            data-toggle="table"
             data-pagination="true"
-            data-sort-order="asc"
+            data-sort-order="desc"
             data-sort-name="created_at"
             data-show-custom-view="true"
             data-custom-view="customViewFormatter"
@@ -23,7 +22,7 @@
             class="table table-striped snipe-table"
             data-export-options='{
                     "fileName": "export-uploads-{{ str_slug($object->name) }}-{{ date('Y-m-d') }}",
-                    "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","delete","download","icon"]
+                    "ignoreColumn": ["image","delete","download","icon"]
                     }'>
     </table>
 
