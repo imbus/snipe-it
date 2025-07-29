@@ -387,7 +387,7 @@
                 } else if (row.mediatype === 'audio') {
                     embed_code = '<audio style="width: 100%" controls><source src="' + row.url + '?inline=true" type="audio/mpeg">Your browser does not support the audio element.</audio>';
                 } else if (row.mediatype === 'pdf') {
-                    embed_code = '<object style="width: 100%" type="application/pdf" data="' + row.url + '?inline=true">File cannot be displayed</object>';
+                    embed_code = '<object height="200" style="width: 100%" type="application/pdf" data="' + row.url + '?inline=true">File cannot be displayed</object>';
                 } else {
                     embed_code = '<div class="text-center"><a href="' + row.url + '?inline=true"><i class="' + row.icon + '" style="font-size: 50px" /></i></a></div>';
                 }
@@ -408,7 +408,7 @@
                 .replace('%FILE_EMBED%', embed_code)
                 .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
                 .replace('%NEW_WINDOW_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'?inline=true" class="btn btn-sm btn-default" target="_blank"><x-icon type="external-link" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="external-link"/></span>')
-                .replace('%DELETE_BUTTON%', ((row.exists_on_disk === true) && row.available_actions.delete === true) ? '<a href="{{ config('app.url') }}/' + row.item.type + '/' + row.item.id + '/showfile/' + row.id + '/delete" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true" data-toggle="modal"  data-content="{{ trans('general.sure_to_delete') }}?" data-title="{{  trans('general.delete') }}" onClick="return false;"><x-icon type="delete" /></a> ' : '<a class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="delete"/></a>');
+                .replace('%DELETE_BUTTON%', ((row.exists_on_disk === true) && row.available_actions.delete === true) ? '<a href="{{ config('app.url') }}/' + row.item.type + '/' + row.item.id + '/showfile/' + row.id + '/delete" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true" data-toggle="modal" data-content="{{ trans('general.sure_to_delete') }} '+ row.filename + '"?" data-title="{{  trans('general.delete') }}"  data-target="#dataConfirmModal" onClick="return false;"><x-icon type="delete" /></a> ' : '<a class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}" ><x-icon type="delete"/></a>');
         })
 
         return `<div class="row">${view}</div>`

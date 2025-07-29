@@ -1,7 +1,7 @@
 <!-- HTML for the file gallery template -->
 <template id="fileGalleryTemplate">
 
-    <div class="col-md-4 col-lg-3 col-xl-2" style="height: 400px;">
+    <div class="col-md-4 col-lg-3 col-xl-2">
 
         <div class="panel panel-%PANEL_CLASS%">
             <div class="panel-heading">
@@ -10,8 +10,8 @@
                     %ID% - %FILENAME%
                 </h3>
             </div>
-            <div class="panel-body">
-                <div class="col-md-12" style="height: 200px; overflow: scroll !important;">
+            <div class="panel-body" style="height: 300px; overflow: scroll !important;">
+                <div class="col-md-12">
                     %FILE_EMBED%
                     <br><br>
                     <p>
