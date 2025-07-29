@@ -8,11 +8,12 @@
 <div class="table-responsive">
     <table
             data-columns="{{ \App\Presenters\UploadedFilesPresenter::dataTableLayout() }}"
-            data-cookie-id-table="{{ str_slug($object->name ?? $object->id) }}-UploadsTable"
-            data-id-table="{{ str_slug($object->name ?? $object->id) }}-UploadsTable"
-            id="{{ str_slug($object->name ?? $object->id) }}-UploadsTable"
+            data-cookie-id-table="{{ $object_type }}-FileUploadsTable"
+            data-id-table="{{ $object_type }}-FileUploadsTable"
+            id="{{ $object_type }}-FileUploadsTable"
             data-side-pagination="server"
-            data-toolbar="#upload-toolbar"
+            data-toggle="table"
+            data-pagination="true"
             data-sort-order="asc"
             data-sort-name="created_at"
             data-show-custom-view="true"
