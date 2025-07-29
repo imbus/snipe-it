@@ -950,9 +950,9 @@
             var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
 
             if (value.exists_on_disk) {
-                 return '<nowrap>' + download_button + ' ' + inline_button + '</nowrap>';
+                 return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
             } else {
-                return '<nowrap>' + download_button_disabled + ' ' + inline_button_disabled + '</nowrap>';
+                return '<span style="white-space: nowrap;">' + download_button_disabled + ' ' + inline_button_disabled + '</span>';
             }
         }
 
