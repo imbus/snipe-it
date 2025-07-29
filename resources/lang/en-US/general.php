@@ -133,7 +133,7 @@ return [
     'example'				=> 'Example: ',
 
     'files'                 => 'Files',
-    'file_name'				=> 'File',
+    'file_name'				=> 'File Name',
     'file_type'             => 'File Type',
     'filesize'              => 'File Size',
     'file_uploads'			=> 'File Uploads',
