@@ -121,6 +121,7 @@
                     paginationSwitchUp: 'fa-caret-square-o-up',
                     fullscreen: 'fa-expand',
                     columns: 'fa-columns',
+                    print: 'fa-print',
                     refresh: 'fas fa-sync-alt',
                     export: 'fa-download',
                     clearSearch: 'fa-times'
