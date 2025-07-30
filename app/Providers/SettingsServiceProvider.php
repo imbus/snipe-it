@@ -31,29 +31,19 @@ class SettingsServiceProvider extends ServiceProvider
 
 
         // Make sure the limit is actually set, is an integer and does not exceed system limits
-        app()->singleton('api_limit_value', function () {
+        \App::singleton('api_limit_value', function () {
             $limit = config('app.max_results');
+            $int_limit = intval(request('limit'));
 
-//            \Log::error('request limit: '. request('limit'));
-//            \Log::error('app.max_results: '. config('app.max_results'));
-//
-//            $int_limit = intval(request('limit'));
-//            \Log::error('$int_limit: '. $int_limit);
-//
-//            if ((abs($int_limit) > 0) && ($int_limit <= config('app.max_results'))) {
-//                \Log::error($int_limit . ' ('.abs($int_limit).') is a valid limit over zero and does not exceed the maximum limit of ' . config('app.max_results'));
-//
-//                $limit = abs($int_limit);
-//            } else {
-//                \Log::error($int_limit . ' is either not greater than 0 or exceeds the maximum limit of ' . config('app.max_results'). ' - fall though to the config');
-//            }
-//
-//            \Log::error('$limit: '. $limit);
+            if ((abs($int_limit) > 0) && ($int_limit <= config('app.max_results'))) {
+                $limit = abs($int_limit);
+            }
+
             return $limit;
         });
 
         // Make sure the offset is actually set and is an integer
-        app()->singleton('api_offset_value', function () {
+        \App::singleton('api_offset_value', function () {
             $offset = intval(request('offset'));
             return $offset;
         });
