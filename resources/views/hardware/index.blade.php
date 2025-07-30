@@ -88,29 +88,82 @@
                                                     @if (!empty($tableField->searchable) && $tableField->searchable === true)
                                                         <div id="advancedSearch_{{ $tableField->field }}"
                                                             class="advancedSearchItemContainer">
-                                                            <b>{{ $tableField->title }}</b>
-
-                                                            @isset($tableField->formatter)
+                                                            <label for="advancedSearchSelect_{{ $tableField->field }}">
+                                                                <b>{{ $tableField->title }}</b>
+                                                            </label>
+                                                            @if (!isset($tableField->formatter))
+                                                                {{-- Default select if formatter is not set --}}
+                                                                <select class="form-control select2"
+                                                                    data-endpoint="{{ $tableField->field }}"
+                                                                    name="{{ $tableField->title }}" style="width: 100%"
+                                                                    id="advancedSearchSelect_{{ $tableField->field }}"></select>
+                                                            @else
                                                                 @switch($tableField->formatter)
-                                                                    @case('categoriesLinkObjFormatter')
-                                                                    @case('companiesLinkObjFormatter')
                                                                     @case('dateDisplayFormatter')
-                                                                    
+                                                                        <input type="date"
+                                                                            id="advancedSearchSelect_{{ $tableField->field }}"
+                                                                            name="{{ $tableField->title }}">
                                                                     @break
+
+                                                                    {{-- @case('trueFalseFormatter')
+                                                                        <p>True/false</p>
+                                                                    @break
+
+                                                                     @case('categoriesLinkObjFormatter')
+                                                                        <p>categoriesLinkObjFormatter</p>
+                                                                    @break
+
+                                                                    @case('companiesLinkObjFormatter')
+                                                                        <p>companiesLinkObjFormatter</p>
+                                                                    @break
+
                                                                     @case('deployedLocationFormatter')
-                                                                    @case('employeeNumFormatter')
-                                                                    @case('hardwareLinkFormatter')
-                                                                    @case('imageFormatter')
-                                                                    @case('jobtitleFormatter')
-                                                                    @case('manufacturersLinkObjFormatter')
-                                                                    @case('modelsLinkObjFormatter')
-                                                                    @case('orderNumberObjFilterFormatter')
-                                                                    @case('polymorphicItemFormatter')
-                                                                    @case('statuslabelsLinkObjFormatter')
-                                                                    @case('suppliersLinkObjFormatter')
-                                                                    @case('trueFalseFormatter')
-                                                                    @case('usersLinkObjFormatter')
+                                                                        <p>deployedLocationFormatter</p>
                                                                     @break
+
+                                                                    @case('employeeNumFormatter')
+                                                                        <p>employeeNumFormatter</p>
+                                                                    @break
+
+                                                                    @case('hardwareLinkFormatter')
+                                                                        <p>hardwareLinkFormatter</p>
+                                                                    @break
+
+                                                                    @case('imageFormatter')
+                                                                        <p>imageFormatter</p>
+                                                                    @break
+
+                                                                    @case('jobtitleFormatter')
+                                                                        <p>jobtitleFormatter</p>
+                                                                    @break
+
+                                                                    @case('manufacturersLinkObjFormatter')
+                                                                        <p>manufacturersLinkObjFormatter</p>
+                                                                    @break
+
+                                                                    @case('modelsLinkObjFormatter')
+                                                                        <p>modelsLinkObjFormatter</p>
+                                                                    @break
+
+                                                                    @case('orderNumberObjFilterFormatter')
+                                                                        <p>orderNumberObjFilterFormatter</p>
+                                                                    @break
+
+                                                                    @case('polymorphicItemFormatter')
+                                                                        <p>polymorphicItemFormatter</p>
+                                                                    @break
+
+                                                                    @case('statuslabelsLinkObjFormatter')
+                                                                        <p>statuslabelsLinkObjFormatter</p>
+                                                                    @break
+
+                                                                    @case('suppliersLinkObjFormatter')
+                                                                        <p>suppliersLinkObjFormatter</p>
+                                                                    @break
+
+                                                                    @case('usersLinkObjFormatter')
+                                                                        <p>usersLinkObjFormatter</p>
+                                                                    @break --}}
 
                                                                     @default
                                                                         <select class="form-control select2"
@@ -118,7 +171,8 @@
                                                                             name="{{ $tableField->title }}" style="width: 100%"
                                                                             id="advancedSearchSelect_{{ $tableField->field }}"></select>
                                                                 @endswitch
-                                                            @endisset
+                                                            @endif
+
                                                         </div>
                                                     @endif
                                                 @endforeach
@@ -126,11 +180,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!--<input type="text" id="externalSearchInput" placeholder="Search assets..."
-                                                    class="form-control" style="width: 300px; display: inline-block;">
-                                                <button id="searchButton" class="btn btn-primary">Search</button>-->
-
 
                             <table data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                                 data-cookie-id-table="{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable"
@@ -169,34 +218,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
+        // Insert the table ID using php
         const tableId =
             "{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable";
-        const table = document.getElementById(tableId);
-        const searchInput = document.getElementById('externalSearchInput');
-        const searchButton = document.getElementById('searchButton');
+        const $table = $('#' + tableId);
 
-        // Helper to refresh the table with a new search term
-        function refreshTableWithSearch(term) {
-            $('#{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable')
-                .bootstrapTable('refresh', {
-                    query: {
-                        search: term
-                    }
-                });
+        function collectAdvancedSearchFilters() {
+            // Collect all advanced search fields (selects, inputs, etc.)
+            const filters = {};
+            document.querySelectorAll('[id^="advancedSearchSelect_"]').forEach(function(el) {
+                // Use the field name from the id, you may need to adjust this if it changes
+                const field = el.id.replace('advancedSearchSelect_', '');
+                if (el.value && el.value.trim() !== '') {
+                    filters[field] = el.value.trim();
+                }
+            });
+            return filters;
         }
 
-        // Button click event
-        searchButton.addEventListener('click', function() {
-            const term = searchInput.value.trim();
-            refreshTableWithSearch(term);
-        });
+        function refreshTableWithAdvancedFilters() {
+            const filters = collectAdvancedSearchFilters();
+            $table.bootstrapTable('refresh', {
+                query: {
+                    filter: JSON.stringify(filters)
+                }
+            });
+        }
 
-        // Trigger on Enter key
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const term = searchInput.value.trim();
-                refreshTableWithSearch(term);
-            }
+        // Trigger search on change
+        document.querySelectorAll('[id^="advancedSearchSelect_"]').forEach(function(el) {
+            el.addEventListener('change', function() {
+                refreshTableWithAdvancedFilters();
+            });
         });
     });
 </script>
@@ -236,6 +290,4 @@
         width: 100%;
         box-sizing: border-box;
     }
-</style>
-
 </style>
