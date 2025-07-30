@@ -3,7 +3,7 @@
 @section('title0')
 
   @php
-      $requestStatusType = request()->input('status_type');
+      $requestStatusType = request()->input('status_type', request()->input('status'));
       $requestOrderNumber = request()->input('order_number');
       $requestCompanyId = request()->input('company_id');
       $requestStatusTypeId = request()->input('status_id');
