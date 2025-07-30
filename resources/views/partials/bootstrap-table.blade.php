@@ -427,7 +427,7 @@
                 
                 actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '" '
                     + ' class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
-                    + ' data-toggle="modal" '
+                    + ' data-toggle="modal" data-icon="fa-trash"'
                     + ' data-content="{{ trans('general.sure_to_delete') }}: ' + name_for_box + '?" '
                     + ' data-title="{{  trans('general.delete') }}" onClick="return false;">'
                     + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
@@ -953,13 +953,16 @@
     }
 
 
-    // This is kinda gross, but for right now we're posting to the GUI delete routes
-    // All of these URLS and storage directories need to be updated to be more consistent :(
+
+
+    // This is used in the table listings
     function deleteUploadFormatter(value, row) {
 
         if ((row.available_actions) && (row.available_actions.delete === true)) {
             var destination;
 
+            // This is kinda gross, but for right now we're posting to the GUI delete routes
+            // All of these URLS and storage directories need to be updated to be more consistent :(
             if (row.item.type == 'assetmodels') {
                  destination = 'models';
             } else {
@@ -967,15 +970,15 @@
             }
 
             return '<a href="{{ config('app.url') }}/' + destination + '/' + row.item.id + '/showfile/' + row.id + '/delete" '
-                + ' class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
-                + ' data-toggle="modal" '
+                + ' data-target="#dataConfirmModal" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
+                + ' data-toggle="modal" data-icon="fa-trash"'
                 + ' data-content="{{ trans('general.file_upload_status.confirm_delete') }}: ' + row.filename + '?" '
-                + ' data-title="{{  trans('general.delete') }}" onClick="return false;">'
+                + ' data-title="{{  trans('general.delete') }}" onClick="return false;" data-icon="fa-trash">'
                 + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
         }
     }
 
-    // This handles the custom view for the filestable blade component
+    // This handles the custom view for the filestable blade component gallery-card component
     window.customViewFormatter = data => {
         const template = $('#fileGalleryTemplate').html()
         let view = ''
@@ -1015,7 +1018,7 @@
                 .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
                 .replace('%NEW_WINDOW_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'?inline=true" class="btn btn-sm btn-default" target="_blank"><x-icon type="external-link" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="external-link"/></span>')
                 .replace('%DELETE_BUTTON%', (row.available_actions.delete === true) ?
-                    '<a href="'+delete_url+'" class="btn btn-danger btn-sm delete-asset" data-toggle="modal" data-content="{{ trans('general.file_upload_status.confirm_delete') }} '+ row.filename +'?" data-title="{{ trans('general.delete') }}" onClick="return false;" data-target="#deleteForm"><x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>' :
+                    '<a href="'+delete_url+'" class="delete-asset btn btn-danger btn-sm" data-data-icon="fa-heart" data-toggle="modal" data-content="{{ trans('general.file_upload_status.confirm_delete') }} '+ row.filename +'?" data-title="{{ trans('general.delete') }}" onClick="return false;" data-target="#dataConfirmModal"><x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>' :
                     '<a class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>'
                 );
         })
