@@ -23,10 +23,10 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="text-left col-md-1">
-                        %DELETE_BUTTON%
+                    <div class="text-left col-md-1 col-sm-2">
+                        <!-- %DELETE_BUTTON% should go here -->
                     </div>
-                    <div class="text-right col-md-11" style="white-space: nowrap">
+                    <div class="text-right col-md-11 col-sm-10" style="white-space: nowrap">
                         %DOWNLOAD_BUTTON% %NEW_WINDOW_BUTTON%
                     </div>
                 </div>
