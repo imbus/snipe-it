@@ -910,28 +910,42 @@
     }
 
 
+    // This is users in the user accounts section for EULAs
     function downloadFormatter(value) {
         if (value) {
             return '<a href="' + value + '" class="btn btn-sm btn-default"><x-icon type="download" /></a>';
         }
     }
 
+    // This is used by the UploadedFilesPresenter and the HistoryPresenter
+    // It handles the download and inline buttons for files that are uploaded to assets, users, etc
     function fileDownloadButtonsFormatter(row, value) {
 
-        if ((value) && (value.url)) {
+        if (value)  {
+            if (value.url) {
+                var inlinable = value.inlineable;
+                var exists_on_disk = value.exists_on_disk;
+                var download_url = value.url;
+            } else if (value.file) {
+                var inlinable = value.file.inlineable;
+                var exists_on_disk = value.file.exists_on_disk;
+                var download_url = value.file.url;
+            } else {
+                return '';
+            }
 
-            var download_button = '<a href="' + value.url + '" class="btn btn-sm btn-default" data-tooltip="true" title="{{ trans('general.download') }}"><x-icon type="download" /></a>';
+            var download_button = '<a href="' + download_url + '" class="btn btn-sm btn-default" data-tooltip="true" title="{{ trans('general.download') }}"><x-icon type="download" /></a>';
             var download_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled"><x-icon type="download" /></a></span>';
-            var inline_button = '<a href="'+ value.url +'?inline=true" class="btn btn-sm btn-default" target="_blank" data-tooltip="true" title="{{ trans('general.open_new_window') }}"><x-icon type="external-link" /></a>';
+            var inline_button = '<a href="'+ download_url +'?inline=true" class="btn btn-sm btn-default" target="_blank" data-tooltip="true" title="{{ trans('general.open_new_window') }}"><x-icon type="external-link" /></a>';
             var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
 
-            if (value.exists_on_disk) {
-                 return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
+            if (exists_on_disk === true) {
+                return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
             } else {
                 return '<span style="white-space: nowrap;">' + download_button_disabled + ' ' + inline_button_disabled + '</span>';
             }
-        }
 
+        }
     }
 
 
@@ -953,13 +967,6 @@
     }
 
 
-    function fileUploadFormatter(value) {
-        if ((value) && (value.url) && (value.inlineable)) {
-            return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt=""></a>';
-        } else if ((value) && (value.url)) {
-            return '<a href="' + value.url + '" class="btn btn-default"><x-icon type="download" /></a>';
-        }
-    }
 
 
     // This is used in the table listings
@@ -1019,7 +1026,7 @@
                 .replace('%FILENAME%', (row.exists_on_disk === true) ? row.filename : '<x-icon type="x" /> <del>' + row.filename + '</del>')
                 .replace('%CREATED_AT%', row.created_at.formatted)
                 .replace('%CREATED_BY%', (row.created_by) ? row.created_by.name : '')
-                .replace('%NOTE%', row.note)
+                .replace('%NOTE%', (row.note) ? row.note : '')
                 .replace('%PANEL_CLASS%', (row.exists_on_disk === true) ? 'default' : 'danger')
                 .replace('%FILE_EMBED%', embed_code)
                 .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
@@ -1035,17 +1042,27 @@
 
 
 
+    function fileNameFormatter(row, value) {
 
+        if (value) {
+            if ((value.file) && (value.file.filename) && (value.file.url)) {
 
-    function fileUploadNameFormatter(row, value) {
-        if ((value) && (value.filename) && (value.url)) {
-            if (value.exists_on_disk) {
-                return '<a href="' + value.url + '">' + value.filename + '</a>';
+                if (value.file.exists_on_disk === true) {
+                    return '<a href="' + value.file.url + '">' + value.file.filename + '</a>';
+                }
+
+                return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.file.filename + '</span>';
+
+            } else if ((value.filename) && (value.url)) {
+                if (value.exists_on_disk === true) {
+                    return '<a href="' + value.url + '">' + value.filename + '</a>';
+                }
+                return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.filename + '</span>';
             }
-            return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.filename + '</span>';
         }
-        return '--';
+
     }
+
 
     function linkToUserSectionBasedOnCount (count, id, section) {
         if (count) {
