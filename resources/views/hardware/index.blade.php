@@ -1,4 +1,4 @@
-﻿@extends('layouts/default')
+@extends('layouts/default')
 
 @section('title0')
 
@@ -70,5 +70,4 @@
 
 @section('moar_scripts')
 @include('partials.bootstrap-table')
-
 @stop

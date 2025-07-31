@@ -1,0 +1,1 @@
+@include ('partials.forms.edit.model-select', ['translated_name' => trans('admin/hardware/form.model'), 'fieldname' => 'model_id', 'required' => 'true', 'hideNewButton' => True, 'hideFieldName' => True])
