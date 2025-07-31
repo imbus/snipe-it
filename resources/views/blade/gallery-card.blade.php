@@ -11,9 +11,10 @@
                 </h3>
             </div>
             <div class="panel-body" style="height: 300px; overflow: scroll !important;">
-                <div class="col-md-12">
+                <div class="col-md-12 text-center">
                     %FILE_EMBED%
-                    <br><br>
+                </div>
+                <div class="col-md-12">
                     <p>
                         %NOTE%
                         <br>
@@ -23,10 +24,10 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="text-left col-md-1 col-sm-2">
+                    <div class="text-left col-lg-2 col-md-2 col-sm-2">
                         %DELETE_BUTTON%
                     </div>
-                    <div class="text-right col-md-11 col-sm-10" style="white-space: nowrap">
+                    <div class="text-right col-lg-10 col-md-10 col-sm-10" style="white-space: nowrap">
                         %DOWNLOAD_BUTTON% %NEW_WINDOW_BUTTON%
                     </div>
                 </div>
