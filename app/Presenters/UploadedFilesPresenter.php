@@ -49,7 +49,7 @@ class UploadedFilesPresenter extends Presenter
                 'switchable' => true,
                 'title' => trans('general.file_name'),
                 'visible' => true,
-                'formatter' => 'fileUploadNameFormatter',
+                'formatter' => 'fileNameFormatter',
             ],
             [
                 'field' => 'download',
