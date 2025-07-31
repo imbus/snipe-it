@@ -457,6 +457,11 @@ class Actionlog extends SnipeModel
     public function uploads_file_url()
     {
 
+
+        if (($this->action_type == 'accepted') || ($this->action_type == 'declined')) {
+            return route('log.storedeula.download', ['filename' => $this->filename]);
+        }
+
         switch ($this->item_type) {
         case Accessory::class:
             return route('show.accessoryfile', [$this->item_id, $this->id]);
@@ -481,6 +486,10 @@ class Actionlog extends SnipeModel
 
     public function uploads_file_path()
     {
+
+        if (($this->action_type == 'accepted') || ($this->action_type == 'declined')) {
+            return 'private_uploads/eula-pdfs/'.$this->filename;
+        }
 
         switch ($this->item_type) {
         case Accessory::class:
