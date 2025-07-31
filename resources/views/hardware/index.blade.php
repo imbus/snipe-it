@@ -65,7 +65,7 @@
                         <div class="col-md-12">
 
                             @include('partials.asset-bulk-actions', ['status' => Request::get('status')])
-                            @include('partials.advanced-search')
+                            @include('partials.advanced-search/advanced-search')
 
                             <table data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                                 data-cookie-id-table="{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable"
@@ -101,79 +101,3 @@
     @include('partials.bootstrap-table')
 
 @stop
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        // Insert the table ID using php
-        const tableId =
-            "{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable";
-        const $table = $('#' + tableId);
-
-        function collectAdvancedSearchFilters() {
-            // Collect all advanced search fields (selects, inputs, etc.)
-            const filters = {};
-            document.querySelectorAll('[id^="advancedSearchSelect_"]').forEach(function(el) {
-                // Use the field name from the id, you may need to adjust this if it changes
-                const field = el.id.replace('advancedSearchSelect_', '');
-                if (el.value && el.value.trim() !== '') {
-                    filters[field] = el.value.trim();
-                }
-            });
-            return filters;
-        }
-
-        function refreshTableWithAdvancedFilters() {
-            const filters = collectAdvancedSearchFilters();
-            $table.bootstrapTable('refresh', {
-                query: {
-                    filter: JSON.stringify(filters)
-                }
-            });
-        }
-
-        // Trigger search on change
-        document.querySelectorAll('[id^="advancedSearchSelect_"]').forEach(function(el) {
-            el.addEventListener('change', function() {
-                refreshTableWithAdvancedFilters();
-            });
-        });
-    });
-</script>
-
-<style>
-    <style>.container {
-        width: 100%;
-        margin: 0 auto;
-        padding: 10px;
-    }
-
-    .panel-heading {
-        cursor: pointer;
-    }
-
-    #advancedSearchFilters {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px 20px;
-        max-width: 1050px;
-        /* 3 columns of ~300px */
-        margin: 0 auto;
-        justify-content: center;
-    }
-
-    .advancedSearchItemContainer {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .advancedSearchItemContainer b {
-        margin-bottom: 5px;
-    }
-
-    .advancedSearchItemContainer select.form-control {
-        width: 100%;
-        box-sizing: border-box;
-    }
-</style>
