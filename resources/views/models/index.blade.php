@@ -12,18 +12,6 @@
 @parent
 @stop
 
-{{-- Page title --}}
-@section('header_right')
-
-  @if (Request::get('status')=='deleted')
-    <a class="btn btn-default pull-right" href="{{ route('models.index') }}" style="margin-right: 5px;">{{ trans('admin/models/general.view_models') }}</a>
-  @else
-    <a class="btn btn-default pull-right" href="{{ route('models.index', ['status' => 'deleted']) }}" style="margin-right: 5px;">{{ trans('admin/models/general.view_deleted') }}</a>
-  @endif
-
-@stop
-
-
 {{-- Page content --}}
 @section('content')
 

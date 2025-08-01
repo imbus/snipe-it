@@ -33,7 +33,8 @@
                 data-side-pagination="client"
                 data-sort-order="asc"
                 data-sort-name="name"
-                id="customFieldsTable"
+                id="customFieldsetTable"
+                data-buttons="customFieldetButtons"
                 class="table table-striped snipe-table"
                 data-export-options='{
                 "fileName": "export-fieldsets-{{ date('Y-m-d') }}",
@@ -130,6 +131,7 @@
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="customFieldsTable"
+                data-buttons="customFieldButtons"
                 class="table table-striped snipe-table"
                 data-export-options='{
                 "fileName": "export-fields-{{ date('Y-m-d') }}",

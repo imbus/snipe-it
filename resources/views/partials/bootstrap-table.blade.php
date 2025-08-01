@@ -1343,7 +1343,19 @@
             attributes: {
                 title: '{{ trans('admin/hardware/general.custom_export') }}'
             }
-        }
+        },
+
+        btnShowDeleted: {
+            text: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+            icon: 'fa-solid fa-trash {{ (request()->input('status') == "Deleted") ? ' text-danger' : '' }}',
+            event () {
+                window.location.href = '{{ (request()->input('status') == "Deleted") ? route('hardware.index') : route('hardware.index', ['status' => 'Deleted']) }}';
+            },
+            attributes: {
+                title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+
+            }
+        },
     });
 
     @can('create', \App\Models\Location::class)
@@ -1384,6 +1396,64 @@
     });
     @endcan
 
+    @can('create', \App\Models\Depreciation::class)
+    // Accessory table buttons
+    window.depreciationButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('depreciations.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\CustomField::class)
+    // Accessory table buttons
+    window.customFieldButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('fields.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
+
+    @can('create', \App\Models\CustomFieldset::class)
+    // Accessory table buttons
+    window.customFieldetButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('fieldsets.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
     @can('create', \App\Models\Component::class)
     // Compoment table buttons
     window.componentButtons = () => ({
@@ -1411,6 +1481,56 @@
             icon: 'fa fa-plus',
             event () {
                 window.location.href = '{{ route('consumables.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Manufacturer::class)
+    // Consumable table buttons
+    window.manufacturerButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('manufacturers.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            },
+
+            btnShowDeleted: {
+                text: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+                icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : '' }}',
+                event () {
+                    window.location.href = '{{ (request()->input('status') == "deleted") ? route('manufacturers.index') : route('manufacturers.index', ['status' => 'deleted']) }}';
+                },
+                attributes: {
+                    title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+
+                }
+            },
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Supplier::class)
+    // Consumable table buttons
+    window.supplierButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('suppliers.create') }}';
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
@@ -1531,6 +1651,17 @@
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
+            }
+        },
+        btnShowDeleted: {
+            text: '{{ (request()->input('status') == "deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : '' }}',
+            event () {
+                window.location.href = '{{ (request()->input('status') == "deleted") ? route('models.index') : route('models.index', ['status' => 'deleted']) }}';
+            },
+            attributes: {
+                title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
+
             }
         },
     });

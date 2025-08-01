@@ -24,9 +24,9 @@
   @elseif (Request::get('status')=='Archived')
     {{ trans('general.archived') }}
   @elseif (Request::get('status')=='Deleted')
-    {{ trans('general.deleted') }}
+    {{ ucfirst(trans('general.deleted')) }}
   @elseif (Request::get('status')=='byod')
-    {{ trans('general.byod') }}
+    {{ strtoupper(trans('general.byod')) }}
   @endif
 @else
 {{ trans('general.all') }}
