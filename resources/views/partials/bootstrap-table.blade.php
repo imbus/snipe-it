@@ -1206,6 +1206,289 @@
     });
 
 
+    // User table buttons
+    window.userButtons = () => ({
+        @can('create', \App\Models\User::class)
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa-solid fa-user-plus',
+            event () {
+                window.location.href = '{{ route('users.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+        @endcan
+
+        btnExport: {
+            text: '{{ trans('general.export') }}',
+            icon: 'fa-solid fa-file-csv',
+            event () {
+                window.location.href = '{{ route('users.export') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.export') }}'
+            }
+        },
+
+        @if (request('status')!='deleted')
+        btnshowDeleted: {
+            text: '{{ trans('admin/users/table.show_deleted') }}',
+            icon: 'fa-solid fa-user-slash',
+            event () {
+                window.location.href = '{{ route('users.index', ['status' => 'deleted']) }}';
+            },
+            attributes: {
+                title: '{{ trans('admin/users/table.show_deleted') }}'
+            }
+        },
+        @else
+        btnshowUnDeleted: {
+            text: '{{ trans('admin/users/table.show_current') }}',
+            icon: 'fa-solid fa-user',
+            event () {
+                window.location.href = '{{ route('users.index') }}';
+            },
+            attributes: {
+                title: '{{ trans('admin/users/table.show_current') }}'
+            }
+        },
+        @endif
+
+        btnShowAdmins: {
+            text: '{{ trans('general.show_admins') }}',
+            icon: 'fa fa-crown',
+            event () {
+                window.location.href = '{{ route('users.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    }); // end user table buttons
+
+
+    @can('create', \App\Models\User::class)
+    // Company table buttons
+    window.companyButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('companies.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+
+    }); // End company table buttons
+    @endcan
+
+
+    // Asset table buttons
+    window.assetButtons = () => ({
+        @can('create', \App\Models\Asset::class)
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('hardware.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+        @endcan
+
+        btnExport: {
+            text: '{{ trans('admin/hardware/general.custom_export') }}',
+            icon: 'fa-solid fa-file-csv',
+            event () {
+                window.location.href = '{{ route('reports/custom') }}';
+            },
+            attributes: {
+                title: '{{ trans('admin/hardware/general.custom_export') }}'
+            }
+        }
+    });
+
+    @can('create', \App\Models\Location::class)
+    // Location table buttons
+    window.locationButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('locations.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Accessory::class)
+    // Accessory table buttons
+    window.accessoryButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('accessories.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Component::class)
+    // Compoment table buttons
+    window.componentButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('components.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Comsumable::class)
+    // Consumable table buttons
+    window.consumableButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('consumables.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Component::class)
+    // License table buttons
+    window.licenseButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('licenses.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Department::class)
+    // Department table buttons
+    window.departmentButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('departments.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\CustomField::class)
+    // Custom Field table buttons
+    window.departmentButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('departments.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Category::class)
+    // Custom Field table buttons
+    window.categoryButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('categories.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\AssetModel::class)
+    // Custom Field table buttons
+    window.modelButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('models.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+    });
+    @endcan
+
+
+    // License table buttons
+    window.licenseButtons = () => ({
+        @can('create', \App\Models\License::class)
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('licenses.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}'
+            }
+        },
+        @endcan
+
+        btnExport: {
+            text: '{{ trans('general.export') }}',
+            icon: 'fa-solid fa-file-csv',
+            event () {
+                window.location.href = '{{ route('licenses.export', ['category_id' => (isset($category)) ? $category->id :'' ]) }}';
+            },
+            attributes: {
+                title: '{{ trans('general.export') }}'
+            }
+        }
+    });
+
+
+
+
 
     $(function() {
 
