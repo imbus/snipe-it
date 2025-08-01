@@ -1216,7 +1216,10 @@
                 window.location.href = '{{ route('users.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
         @endcan
@@ -1263,7 +1266,10 @@
                 window.location.href = '{{ route('users.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     }); // end user table buttons
@@ -1279,7 +1285,10 @@
                 window.location.href = '{{ route('companies.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
 
@@ -1297,7 +1306,10 @@
                 window.location.href = '{{ route('hardware.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
         @endcan
@@ -1324,7 +1336,10 @@
                 window.location.href = '{{ route('locations.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1340,7 +1355,10 @@
                 window.location.href = '{{ route('accessories.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                    accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1356,7 +1374,10 @@
                 window.location.href = '{{ route('components.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1372,7 +1393,10 @@
                 window.location.href = '{{ route('consumables.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1388,7 +1412,10 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1404,7 +1431,10 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1420,7 +1450,29 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
+    @can('update', \App\Models\Asset::class)
+    // Custom Field table buttons
+    window.maintenanceButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('maintenances.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1436,7 +1488,10 @@
                 window.location.href = '{{ route('categories.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1452,7 +1507,29 @@
                 window.location.href = '{{ route('models.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
+            }
+        },
+    });
+    @endcan
+
+    @can('create', \App\Models\Statuslabel::class)
+    // Status label table buttons
+    window.statuslabelButtons = () => ({
+        btnAdd: {
+            text: '{{ trans('general.create') }}',
+            icon: 'fa fa-plus',
+            event () {
+                window.location.href = '{{ route('statuslabels.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
     });
@@ -1469,7 +1546,10 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}'
+                title: '{{ trans('general.create') }}',
+                @if ($snipeSettings->shortcuts_enabled == 1)
+                accesskey: 'n'
+                @endif
             }
         },
         @endcan
