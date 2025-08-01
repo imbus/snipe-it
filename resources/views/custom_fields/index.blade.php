@@ -34,7 +34,7 @@
                 data-sort-order="asc"
                 data-sort-name="name"
                 id="customFieldsetTable"
-                data-buttons="customFieldetButtons"
+                data-buttons="customFieldsetButtons"
                 class="table table-striped snipe-table"
                 data-export-options='{
                 "fileName": "export-fieldsets-{{ date('Y-m-d') }}",

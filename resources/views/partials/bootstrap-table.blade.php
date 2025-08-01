@@ -1437,7 +1437,7 @@
 
     @can('create', \App\Models\CustomFieldset::class)
     // Accessory table buttons
-    window.customFieldetButtons = () => ({
+    window.customFieldsetButtons = () => ({
         btnAdd: {
             text: '{{ trans('general.create') }}',
             icon: 'fa fa-plus',
