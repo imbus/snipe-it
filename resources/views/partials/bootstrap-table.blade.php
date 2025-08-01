@@ -307,6 +307,25 @@
         };
     }
 
+
+
+    // This is a special formatter that will indicate whether a user is an admin or superadmin
+    function usernameRoleLinkFormatter(value, row) {
+
+            if ((value) && (row)) {
+
+                if (row.role === 'superadmin') {
+                    return '<span style="white-space: nowrap"><span class="label label-danger" data-tooltip="true" title="{{ trans('general.superuser_tooltip') }}"><x-icon type="superadmin" title="{{ trans('general.superuser') }}" /></span> <a href="{{ config('app.url') }}/users/' + row.id + '">' + value + '</a></span>';
+                } else if (row.role === 'admin') {
+                    return '<span style="white-space: nowrap"><span class="label label-warning" data-tooltip="true" title="{{ trans('general.admin_tooltip') }}"><x-icon type="superadmin" title="{{ trans('general.admin_user') }}" /></span> <a href="{{ config('app.url') }}/users/' + row.id + '">' + value + '</a></span>';
+                }
+
+                // Regular user
+                return '<a href="{{ config('app.url') }}/users/' + row.id + '">' + value + '</a>';
+            }
+
+    }
+
     // Use this when we're introspecting into a column object and need to link
     function genericColumnObjLinkFormatter(destination) {
         return function (value,row) {
@@ -1235,47 +1254,34 @@
             }
         },
 
-        @if (request('status')!='deleted')
-        btnshowDeleted: {
-            text: '{{ trans('admin/users/table.show_deleted') }}',
-            icon: 'fa-solid fa-user-slash',
-            event () {
-                window.location.href = '{{ route('users.index', ['status' => 'deleted']) }}';
-            },
-            attributes: {
-                title: '{{ trans('admin/users/table.show_deleted') }}'
-            }
-        },
-        @else
-        btnshowUnDeleted: {
-            text: '{{ trans('admin/users/table.show_current') }}',
-            icon: 'fa-solid fa-user',
-            event () {
-                window.location.href = '{{ route('users.index') }}';
-            },
-            attributes: {
-                title: '{{ trans('admin/users/table.show_current') }}'
-            }
-        },
-        @endif
-
         btnShowAdmins: {
             text: '{{ trans('general.show_admins') }}',
-            icon: 'fa fa-crown',
+            icon: 'fa-solid fa-crown{{ (request()->input('admins') == "true") ? ' text-danger' : '' }}',
             event () {
-                window.location.href = '{{ route('users.create') }}';
+                window.location.href = '{{ (request()->input('admins') == "true") ? route('users.index') : route('users.index', ['admins' => 'true']) }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}',
-                @if ($snipeSettings->shortcuts_enabled == 1)
-                accesskey: 'n'
-                @endif
+                title: 'Show only admins',
+
             }
         },
+
+        btnShowDeleted: {
+            text: '{{ (request()->input('status') == "deleted") ?trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
+            icon: 'fa-solid fa-user-slash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-slash' }}',
+            event () {
+                window.location.href = '{{ (request()->input('status') == "deleted") ? route('users.index') : route('users.index', ['status' => 'deleted']) }}';
+            },
+            attributes: {
+                title: 'Show only admins',
+
+            }
+        },
+
     }); // end user table buttons
 
 
-    @can('create', \App\Models\User::class)
+    @can('create', \App\Models\Company::class)
     // Company table buttons
     window.companyButtons = () => ({
         btnAdd: {
@@ -1313,6 +1319,20 @@
             }
         },
         @endcan
+
+        @can('update', \App\Models\Asset::class)
+        btnAddMaintenance: {
+            text: '{{ trans('button.add_maintenance') }}',
+            icon: 'fa-solid fa-screwdriver-wrench',
+            event () {
+                window.location.href = '{{ route('maintenances.create') }}';
+            },
+            attributes: {
+                title: '{{ trans('general.create') }}',
+            }
+        },
+        @endcan
+
 
         btnExport: {
             text: '{{ trans('admin/hardware/general.custom_export') }}',
@@ -1383,7 +1403,7 @@
     });
     @endcan
 
-    @can('create', \App\Models\Comsumable::class)
+    @can('create', \App\Models\Consumable::class)
     // Consumable table buttons
     window.consumableButtons = () => ({
         btnAdd: {
@@ -1466,7 +1486,7 @@
             text: '{{ trans('general.create') }}',
             icon: 'fa fa-plus',
             event () {
-                window.location.href = '{{ route('maintenances.create') }}';
+                window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
