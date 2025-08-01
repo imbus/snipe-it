@@ -392,12 +392,12 @@
                                     data-sort-order="desc"
                                     data-sort-name="created_at"
                                     data-export-options='{
-                        "fileName": "export-location-asset-{{  $location->id }}-history",
-                        "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
-                    }'
-                    data-url="{{ route('api.activity.index', ['target_id' => $location->id, 'target_type' => 'location']) }}"
-                    data-cookie-id-table="asselocationHistorytHistory"
-                    data-cookie="true">
+                                        "fileName": "export-location-asset-{{  $location->id }}-history",
+                                        "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                                    }'
+                                    data-url="{{ route('api.activity.index', ['target_id' => $location->id, 'target_type' => 'location']) }}"
+                                    data-cookie-id-table="locationHistory"
+                                    data-cookie="true">
                             </table>
                         </div>
                     </div> <!-- /.row -->
