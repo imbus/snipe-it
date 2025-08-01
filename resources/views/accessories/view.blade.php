@@ -48,7 +48,7 @@
                                 <x-icon type="files" class="fa-2x" />
                                 </span>
                                 <span class="hidden-xs hidden-sm">{{ trans('general.file_uploads') }}
-                                    {!! ($accessory->uploads->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($accessory->uploads->count()).'</badge>' : '' !!}
+                                    {!! ($accessory->uploads->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($accessory->uploads->count()).'</span>' : '' !!}
                                 </span>
                             </a>
                         </li>

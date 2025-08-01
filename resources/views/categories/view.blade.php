@@ -42,7 +42,7 @@
                         <a href="#models" data-toggle="tab" title="{{ trans('general.asset_models') }}">
                             {{ trans('general.asset_models') }}
                             @if ($category->models->count() > 0)
-                                <badge class="badge badge-secondary"> {{ $category->models->count()}}</badge>
+                                <span class="badge badge-secondary"> {{ $category->models->count()}}</span>
                             @endif
                         </a>
                     </li>

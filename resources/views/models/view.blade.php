@@ -54,7 +54,7 @@
                         </span>
                         <span class="hidden-xs hidden-sm">
                             {{ trans('general.assets') }}
-                            {!! ($model->assets()->AssetsForShow()->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($model->assets()->AssetsForShow()->count()).'</badge>' : '' !!}
+                            {!! ($model->assets()->AssetsForShow()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($model->assets()->AssetsForShow()->count()).'</span>' : '' !!}
                         </span>
                     </a>
                 </li>
@@ -67,7 +67,7 @@
                         </span>
                         <span class="hidden-xs hidden-sm">
                             {{ trans('general.files') }}
-                            {!! ($model->uploads->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($model->uploads->count()).'</badge>' : '' !!}
+                            {!! ($model->uploads->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($model->uploads->count()).'</span>' : '' !!}
                           </span>
                     </a>
                 </li>

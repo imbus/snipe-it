@@ -77,7 +77,7 @@
             </span>
             <span class="hidden-xs hidden-sm">
               {{ trans('general.consumables') }}
-              {!! ($manufacturer->consumables->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($manufacturer->consumables->count()).'</badge>' : '' !!}
+              {!! ($manufacturer->consumables->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($manufacturer->consumables->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>

@@ -41,7 +41,7 @@
                 <x-icon type="users" class="fa-2x" />
                 </span>
                     <span class="hidden-xs hidden-sm">{{ trans('general.assigned') }}
-                      {!! ($consumable->users_consumables > 0 ) ? '<badge class="badge badge-secondary">'.number_format($consumable->users_consumables).'</badge>' : '' !!}
+                      {!! ($consumable->users_consumables > 0 ) ? '<span class="badge badge-secondary">'.number_format($consumable->users_consumables).'</span>' : '' !!}
                     </span>
                   </a>
             </li>
@@ -54,7 +54,7 @@
                   <i class="far fa-file fa-2x" aria-hidden="true"></i>
                 </span>
                 <span class="hidden-xs hidden-sm">{{ trans('general.file_uploads') }}
-                    {!! ($consumable->uploads->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($consumable->uploads->count()).'</badge>' : '' !!}
+                    {!! ($consumable->uploads->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($consumable->uploads->count()).'</span>' : '' !!}
                   </span>
                 </a>
               </li>

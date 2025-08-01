@@ -154,7 +154,7 @@
                     </span>
                       <span class="hidden-xs hidden-sm">
                         {{ trans('general.files') }}
-                          {!! ($location->uploads->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($location->uploads->count()).'</badge>' : '' !!}
+                          {!! ($location->uploads->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($location->uploads->count()).'</span>' : '' !!}
                       </span>
                   </a>
               </li>
