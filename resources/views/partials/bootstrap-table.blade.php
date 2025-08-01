@@ -1230,7 +1230,7 @@
         @can('create', \App\Models\User::class)
         btnAdd: {
             text: '{{ trans('general.create') }}',
-            icon: 'fa-solid fa-user-plus',
+            icon: 'fa fa-plus',
             event () {
                 window.location.href = '{{ route('users.create') }}';
             },
