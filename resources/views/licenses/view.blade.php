@@ -567,7 +567,7 @@
         </a>
       @else
           <span data-tooltip="true" title=" {{ trans('admin/licenses/general.delete_disabled') }}">
-            <a href="#" class="btn btn-block btn-danger btn-sm btn-social delete-license disabled">
+            <a href="#" class="btn btn-block btn-danger btn-sm btn-social delete-asset disabled" onClick="return false;">
               <x-icon type="delete" />
               {{ trans('general.delete') }}
             </a>

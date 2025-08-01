@@ -500,7 +500,7 @@
             @if ($location->deleted_at=='')
 
                 @if ($location->isDeletable())
-                      <button class="btn btn-sm btn-block btn-danger btn-social delete-location" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $location->name]) }}" data-target="#dataConfirmModal">
+                      <button class="btn btn-sm btn-block btn-danger btn-social delete-asset" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $location->name]) }}" data-target="#dataConfirmModal">
                           <x-icon type="delete" />
                           {{ trans('general.delete') }}
                       </button>
