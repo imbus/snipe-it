@@ -139,7 +139,7 @@
                   @can('delete', $consumable)
                     <div class="col-md-12" style="padding-top: 10px; padding-bottom: 20px">
                       @if ($consumable->deleted_at=='')
-                        <button class="btn btn-sm btn-block btn-danger btn-social hidden-print delete-asset" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $consumable->name]) }}" data-target="#dataConfirmModal">
+                        <button class="btn btn-sm btn-block btn-danger btn-social hidden-print delete-asset" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $consumable->name]) }}" data-target="#dataConfirmModal" onClick="return false;">
                           <x-icon type="delete" />
                           {{ trans('general.delete') }}
                         </button>
@@ -481,18 +481,6 @@
 @stop
 
 @section('moar_scripts')
-
-        <script>
-
-          $('#dataConfirmModal').on('show.bs.modal', function (event) {
-            var content = $(event.relatedTarget).data('content');
-            var title = $(event.relatedTarget).data('title');
-            $(this).find(".modal-body").text(content);
-            $(this).find(".modal-header").text(title);
-          });
-
-        </script>
-
 
   @include ('partials.bootstrap-table', ['simple_view' => true])
 @endsection

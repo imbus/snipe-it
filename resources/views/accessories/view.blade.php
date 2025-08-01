@@ -334,7 +334,7 @@
         @can('delete', $accessory)
             @if ($accessory->checkouts_count == 0)
                 <div class="text-center" style="padding-top:5px;">
-                    <button class="btn btn-block btn-danger btn-sm btn-social delete-asset" style="padding-top:5px;" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.delete_confirm_no_undo', ['item' => $accessory->name]) }}" data-target="#dataConfirmModal">
+                    <button class="btn btn-block btn-danger btn-sm btn-social delete-asset" style="padding-top:5px;" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.delete_confirm_no_undo', ['item' => $accessory->name]) }}" data-target="#dataConfirmModal" onClick="return false;">
                         <x-icon type="delete" />
                     {{ trans('general.delete') }}
                     </button>
@@ -360,17 +360,6 @@
 @endcan
 @stop
 
-
-
-
 @section('moar_scripts')
-    <script>
-        $('#dataConfirmModal').on('show.bs.modal', function (event) {
-            var content = $(event.relatedTarget).data('content');
-            var title = $(event.relatedTarget).data('title');
-            $(this).find(".modal-body").text(content);
-            $(this).find(".modal-header").text(title);
-        });
-    </script>
 @include ('partials.bootstrap-table')
 @stop
