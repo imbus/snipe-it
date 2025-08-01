@@ -1,4 +1,4 @@
-        <select class="js-data-ajax select2"
+<select class="js-data-ajax select2"
                 data-endpoint="hardware"
                 data-placeholder="{{ trans('general.select_asset') }}"
                 aria-label="{{ $fieldname }}"
