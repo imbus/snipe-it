@@ -43,7 +43,13 @@
                     data-buttons="userButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.users.index',
-              array('deleted'=> (request('status')=='deleted') ? 'true' : 'false','company_id' => e(request('company_id')))) }}"
+                        [
+                            'status' => e(request('status')),
+                            'deleted'=> (request('status')=='deleted') ? 'true' : 'false',
+                            'company_id' => e(request('company_id')),
+                            'admins' => e(request('admins')),
+                            'superadmins' => e(request('superadmins'))
+                       ]) }}"
                     data-export-options='{
                 "fileName": "export-users-{{ date('Y-m-d') }}",
                 "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
