@@ -34,10 +34,6 @@
                                                 name="{{ $tableField->title }}">
                                         @break
 
-                                        @case('categoriesLinkObjFormatter')
-                                            <p>categoriesLinkObjFormatter</p>
-                                        @break
-
                                         @case('companiesLinkObjFormatter')
                                             <p>companiesLinkObjFormatter</p>
                                         @break
@@ -47,7 +43,12 @@
                                         @break
 
                                         @case('categoriesLinkObjFormatter')
-                                            <p>categoriesLinkObjFormatter</p>
+                                            @include ('partials.select.dropdowns.category-select', [
+                                                'translated_name' => trans('admin/hardware/category.model'),
+                                                'fieldname' => 'category_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('companiesLinkObjFormatter')
@@ -55,7 +56,12 @@
                                         @break
 
                                         @case('deployedLocationFormatter')
-                                            <p>deployedLocationFormatter</p>
+                                            @include ('partials.select.dropdowns.location-select', [
+                                                'translated_name' => trans('admin/hardware/location.model'),
+                                                'fieldname' => 'location_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('employeeNumFormatter')
@@ -75,11 +81,21 @@
                                         @break
 
                                         @case('manufacturersLinkObjFormatter')
-                                            <p>manufacturersLinkObjFormatter</p>
+                                            @include ('partials.select.dropdowns.manufacturer-select', [
+                                                'translated_name' => trans('admin/hardware/manufacturer.model'),
+                                                'fieldname' => 'manufacturer_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('modelsLinkObjFormatter')
-                                            @include('partials.advanced-search/advanced-search-select')
+                                            @include ('partials.select.dropdowns.model-select', [
+                                                'translated_name' => trans('admin/hardware/form.model'),
+                                                'fieldname' => 'model_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('orderNumberObjFilterFormatter')
@@ -91,18 +107,34 @@
                                         @break
 
                                         @case('statuslabelsLinkObjFormatter')
-                                            <p>statuslabelsLinkObjFormatter</p>
+                                            @include ('partials.select.dropdowns.status-select', [
+                                                'translated_name' => trans('admin/hardware/status.model'),
+                                                'fieldname' => 'status_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('suppliersLinkObjFormatter')
-                                        @case('trueFalseFormatter')
+                                            @include ('partials.select.dropdowns.supplier-select', [
+                                                'translated_name' => trans('admin/hardware/supplier.model'),
+                                                'fieldname' => 'supplier_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
+                                        @break
 
-                                        @case('usersLinkObjFormatter')
+                                        @case('trueFalseFormatter')
                                             <p>suppliersLinkObjFormatter</p>
                                         @break
 
                                         @case('usersLinkObjFormatter')
-                                            <p>usersLinkObjFormatter</p>
+                                            @include ('partials.select.dropdowns.user-select', [
+                                                'translated_name' => trans('admin/hardware/user.model'),
+                                                'fieldname' => 'user_id',
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @default
