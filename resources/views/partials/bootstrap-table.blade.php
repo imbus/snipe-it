@@ -1325,7 +1325,7 @@
             text: '{{ trans('button.add_maintenance') }}',
             icon: 'fa-solid fa-screwdriver-wrench',
             event () {
-                window.location.href = '{{ route('maintenances.create') }}';
+                window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
                 title: '{{ trans('general.create') }}',

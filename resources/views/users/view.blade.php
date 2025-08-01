@@ -809,6 +809,7 @@
                     data-bulk-button-id="#bulkAssetEditButton"
                     data-bulk-form-id="#assetsBulkForm"
                     id="userAssetsListingTable"
+                    data-buttons="assetButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.assets.index',['assigned_to' => e($user->id), 'assigned_type' => 'App\Models\User']) }}"
                     data-export-options='{
@@ -827,6 +828,7 @@
                     data-cookie-id-table="userLicenseTable"
                     data-id-table="userLicenseTable"
                     id="userLicenseTable"
+                    data-buttons="licenseButtons"
                     data-side-pagination="client"
                     data-show-footer="true"
                     data-sort-name="name"
@@ -886,6 +888,7 @@
                     data-cookie-id-table="userAccessoryTable"
                     data-id-table="userAccessoryTable"
                     id="userAccessoryTable"
+                    data-buttons="accessoryButtons"
                     data-side-pagination="client"
                     data-sort-name="name"
                     class="table table-striped snipe-table table-hover"
@@ -929,6 +932,7 @@
                     data-cookie-id-table="userConsumableTable"
                     data-id-table="userConsumableTable"
                     id="userConsumableTable"
+                    data-buttons="consumableButtons"
                     data-side-pagination="client"
                     data-show-footer="true"
                     data-sort-name="name"
@@ -1006,6 +1010,7 @@
                     data-bulk-form-id="#locationsBulkForm"
                     data-side-pagination="server"
                     id="locationTable"
+                    data-buttons="locationButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.locations.index', ['manager_id' => $user->id]) }}"
                     data-export-options='{
@@ -1030,6 +1035,7 @@
                       data-bulk-form-id="#usersBulkForm"
                       data-side-pagination="server"
                       id="managedUsersTable"
+                      data-buttons="userButtons"
                       class="table table-striped snipe-table"
                       data-url="{{ route('api.users.index', ['manager_id' => $user->id]) }}"
                       data-export-options='{

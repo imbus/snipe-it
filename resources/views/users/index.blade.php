@@ -47,6 +47,7 @@
                             'status' => e(request('status')),
                             'deleted'=> (request('status')=='deleted') ? 'true' : 'false',
                             'company_id' => e(request('company_id')),
+                            'manager_id' => e(request('manager_id')),
                             'admins' => e(request('admins')),
                             'superadmins' => e(request('superadmins'))
                        ]) }}"
