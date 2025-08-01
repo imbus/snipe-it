@@ -112,19 +112,19 @@
 
 
                     @if ($asset->audits->count() > 0)
-                        <li>
-                            <a href="#audits" data-toggle="tab" data-tooltip="true">
+                    <li>
+                        <a href="#audits" data-toggle="tab" data-tooltip="true">
 
-                                <span class="hidden-lg hidden-md">
-                                    <i class="fas fa-clipboard-check fa-2x"></i>
-                                </span>
-                                <span class="hidden-xs hidden-sm">
-                                    {{ trans('general.audits') }}
-                                    {!! ($asset->audits()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($asset->audits()->count()).'</span>' : '' !!}
+                            <span class="hidden-lg hidden-md">
+                                <i class="fas fa-clipboard-check fa-2x"></i>
+                            </span>
+                            <span class="hidden-xs hidden-sm">
+                                {{ trans('general.audits') }}
+                                {!! ($asset->audits()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($asset->audits()->count()).'</span>' : '' !!}
 
-                                </span>
-                            </a>
-                        </li>
+                            </span>
+                        </a>
+                    </li>
                     @endif
 
                     <li>
@@ -1329,32 +1329,20 @@
                     <div class="tab-pane fade" id="maintenances">
                         <div class="row{{($asset->assetmaintenances->count() > 0 ) ? '' : ' hidden-print'}}">
                             <div class="col-md-12">
-                                @can('update', \App\Models\Asset::class)
-                                    <div id="maintenance-toolbar">
-                                        <a href="{{ route('maintenances.create', ['asset_id' => $asset->id]) }}" class="btn btn-primary">{{ trans('button.add_maintenance') }}</a>
-                                    </div>
-                                @endcan
 
                                 <!-- Asset Maintenance table -->
                                 <table
                                         data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
                                         id="assetMaintenancesTable"
-
+                                        data-buttons="maintenanceButtons"
                                         data-id-table="assetMaintenancesTable"
-
-
-
                                         data-side-pagination="server"
                                         data-toolbar="#maintenance-toolbar"
-
-
-
-
                                         data-export-options='{
-                           "fileName": "export-{{ $asset->asset_tag }}-maintenances",
-                           "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
-                         }'
+                                           "fileName": "export-{{ $asset->asset_tag }}-maintenances",
+                                           "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                                         }'
                                         data-url="{{ route('api.maintenances.index', array('asset_id' => $asset->id)) }}"
                                         data-cookie-id-table="assetMaintenancesTable"
                                         data-cookie="true">
@@ -1376,10 +1364,9 @@
                                     data-sort-order="desc"
                                     data-sort-name="created_at"
                                     data-export-options='{
-                         "fileName": "export-asset-{{  $asset->id }}-audits",
-                         "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
-                       }'
-
+                                         "fileName": "export-asset-{{  $asset->id }}-audits",
+                                         "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                                       }'
                                     data-url="{{ route('api.activity.index', ['item_id' => $asset->id, 'item_type' => 'asset', 'action_type' => 'audit']) }}"
                                     data-cookie-id-table="assetHistory"
                                     data-cookie="true">
@@ -1411,23 +1398,14 @@
                                         data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
                                         id="assetHistory"
-
                                         data-id-table="assetHistory"
-
-
-
                                         data-side-pagination="server"
-
-
-
                                         data-sort-order="desc"
                                         data-sort-name="created_at"
-
                                         data-export-options='{
-                         "fileName": "export-asset-{{  $asset->id }}-history",
-                         "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
-                       }'
-
+                                             "fileName": "export-asset-{{  $asset->id }}-history",
+                                             "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                                           }'
                                         data-url="{{ route('api.activity.index', ['item_id' => $asset->id, 'item_type' => 'asset']) }}"
                                         data-cookie-id-table="assetHistory"
                                         data-cookie="true">
@@ -1464,16 +1442,6 @@
     @endcan
 @stop
             @section('moar_scripts')
-                <script>
-
-                    $('#dataConfirmModal').on('show.bs.modal', function (event) {
-                        var content = $(event.relatedTarget).data('content');
-                        var title = $(event.relatedTarget).data('title');
-                        $(this).find(".modal-body").text(content);
-                        $(this).find(".modal-header").text(title);
-                    });
-
-                </script>
     @include ('partials.bootstrap-table')
 
 @stop
