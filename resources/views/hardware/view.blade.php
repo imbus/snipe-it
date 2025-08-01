@@ -1379,7 +1379,6 @@
                          "fileName": "export-asset-{{  $asset->id }}-audits",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                        }'
-
                                     data-url="{{ route('api.activity.index', ['item_id' => $asset->id, 'item_type' => 'asset', 'action_type' => 'audit']) }}"
                                     data-cookie-id-table="assetHistory"
                                     data-cookie="true">
@@ -1411,23 +1410,14 @@
                                         data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
                                         id="assetHistory"
-
                                         data-id-table="assetHistory"
-
-
-
                                         data-side-pagination="server"
-
-
-
                                         data-sort-order="desc"
                                         data-sort-name="created_at"
-
                                         data-export-options='{
                          "fileName": "export-asset-{{  $asset->id }}-history",
                          "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                        }'
-
                                         data-url="{{ route('api.activity.index', ['item_id' => $asset->id, 'item_type' => 'asset']) }}"
                                         data-cookie-id-table="assetHistory"
                                         data-cookie="true">
