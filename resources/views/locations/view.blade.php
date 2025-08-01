@@ -364,13 +364,7 @@
 
                       <div class="row">
                           <div class="col-md-12">
-
-                              <x-filestable
-                                      filepath="private_uploads/locations/"
-                                      showfile_routename="show/locationsfile"
-                                      deletefile_routename="delete/locationsfile"
-                                      :object="$location" />
-
+                              <x-filestable object_type="locations" :object="$location" />
                           </div> <!-- /.col-md-12 -->
                       </div> <!-- /.row -->
 
@@ -406,7 +400,7 @@
                                         <th class="col-sm-2" data-visible="true" data-field="target" data-formatter="polymorphicItemFormatter">{{ trans('general.target') }}</th>
                                         <th class="col-sm-2" data-field="note">{{ trans('general.notes') }}</th>
                                         <th class="col-md-3" data-field="signature_file" data-visible="false"  data-formatter="imageFormatter">{{ trans('general.signature') }}</th>
-                                        <th class="col-md-3" data-visible="false" data-field="file" data-visible="false"  data-formatter="fileUploadFormatter">{{ trans('general.download') }}</th>
+                                        <th class="col-md-3" data-visible="false" data-field="file" data-visible="false"  data-formatter="fileDownloadButtonsFormatter">{{ trans('general.download') }}</th>
                                         <th class="col-sm-2" data-field="log_meta" data-visible="true" data-formatter="changeLogFormatter">{{ trans('admin/hardware/table.changed')}}</th>
                                     </tr>
                                 </thead>

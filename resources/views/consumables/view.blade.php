@@ -440,12 +440,7 @@
 
             <div class="row">
               <div class="col-md-12">
-                <x-filestable
-                        filepath="private_uploads/consumables/"
-                        showfile_routename="show.consumablefile"
-                        deletefile_routename="delete/consumablefile"
-                        :object="$consumable" />
-
+                <x-filestable object_type="consumables" :object="$consumable" />
               </div>
             </div>
 

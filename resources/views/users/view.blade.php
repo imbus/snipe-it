@@ -266,7 +266,7 @@
                   @if ($user->deleted_at=='')
                     <div class="col-md-12" style="padding-top: 30px;">
                         @if ($user->isDeletable())
-                            <a href="#" class="btn-block delete-asset btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->present()->fullName]) }}" data-target="#dataConfirmModal">
+                            <a href="" class="delete-asset btn-block btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->present()->fullName]) }}" data-icon="fa-trash" data-target="#dataConfirmModal" onClick="return false;" >
                                 <x-icon type="delete" />
                                 {{ trans('button.delete')}}
                             </a>
@@ -965,11 +965,7 @@
           <div class="row">
 
             <div class="col-md-12 col-sm-12">
-                <x-filestable
-                        filepath="private_uploads/users/"
-                        showfile_routename="show/userfile"
-                        deletefile_routename="userfile.destroy"
-                        :object="$user" />
+                <x-filestable object_type="users" :object="$user" />
             </div>
           </div> <!--/ROW-->
         </div><!--/FILES-->
@@ -1061,12 +1057,6 @@
 <script nonce="{{ csrf_token() }}">
 $(function () {
 
-$('#dataConfirmModal').on('show.bs.modal', function (event) {
-    var content = $(event.relatedTarget).data('content');
-    var title = $(event.relatedTarget).data('title');
-    $(this).find(".modal-body").text(content);
-    $(this).find(".modal-header").text(title);
- });
 
 
   $("#two_factor_reset").click(function(){

@@ -459,13 +459,7 @@
 
         @can('licenses.files', $license)
         <div class="tab-pane" id="files">
-
-          <x-filestable
-                  filepath="private_uploads/licenses/"
-                  showfile_routename="show.licensefile"
-                  deletefile_routename="delete/licensefile"
-                  :object="$license" />
-
+          <x-filestable object_type="licenses" :object="$license" />
         </div> <!-- /.tab-pane -->
         @endcan
 

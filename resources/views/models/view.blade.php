@@ -110,11 +110,7 @@
                     <div class="row">
                         <div class="col-md-12">
 
-                            <x-filestable
-                                    filepath="private_uploads/assetmodels/"
-                                    showfile_routename="show/modelfile"
-                                    deletefile_routename="delete/modelfile"
-                                    :object="$model" />
+                            <x-filestable object_type="models" :object="$model" />
 
                         </div> <!-- /.col-md-12 -->
                     </div> <!-- /.row -->

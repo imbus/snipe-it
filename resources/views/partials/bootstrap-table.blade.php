@@ -121,6 +121,7 @@
                     paginationSwitchUp: 'fa-caret-square-o-up',
                     fullscreen: 'fa-expand',
                     columns: 'fa-columns',
+                    print: 'fa-print',
                     refresh: 'fas fa-sync-alt',
                     export: 'fa-download',
                     clearSearch: 'fa-times'
@@ -370,6 +371,8 @@
     }
 
 
+
+
     // Make the edit/delete buttons
     function genericActionsFormatter(owner_name, element_name) {
         if (!element_name) {
@@ -424,7 +427,7 @@
                 
                 actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '" '
                     + ' class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
-                    + ' data-toggle="modal" '
+                    + ' data-toggle="modal" data-icon="fa-trash"'
                     + ' data-content="{{ trans('general.sure_to_delete') }}: ' + name_for_box + '?" '
                     + ' data-title="{{  trans('general.delete') }}" onClick="return false;">'
                     + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
@@ -905,26 +908,161 @@
             return '<a href="' + value + '" data-toggle="lightbox" data-type="image"><img src="' + value + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt="' + altName + '"></a>';
         }
     }
+
+
+    // This is users in the user accounts section for EULAs
     function downloadFormatter(value) {
         if (value) {
             return '<a href="' + value + '" class="btn btn-sm btn-default"><x-icon type="download" /></a>';
         }
     }
 
-    function fileUploadFormatter(value) {
+    // This is used by the UploadedFilesPresenter and the HistoryPresenter
+    // It handles the download and inline buttons for files that are uploaded to assets, users, etc
+    function fileDownloadButtonsFormatter(row, value) {
+
+        if (value)  {
+            if (value.url) {
+                var inlinable = value.inlineable;
+                var exists_on_disk = value.exists_on_disk;
+                var download_url = value.url;
+            } else if (value.file) {
+                var inlinable = value.file.inlineable;
+                var exists_on_disk = value.file.exists_on_disk;
+                var download_url = value.file.url;
+            } else {
+                return '';
+            }
+
+            var download_button = '<a href="' + download_url + '" class="btn btn-sm btn-default" data-tooltip="true" title="{{ trans('general.download') }}"><x-icon type="download" /></a>';
+            var download_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled"><x-icon type="download" /></a></span>';
+            var inline_button = '<a href="'+ download_url +'?inline=true" class="btn btn-sm btn-default" target="_blank" data-tooltip="true" title="{{ trans('general.open_new_window') }}"><x-icon type="external-link" /></a>';
+            var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
+
+            if (exists_on_disk === true) {
+                return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
+            } else {
+                return '<span style="white-space: nowrap;">' + download_button_disabled + ' ' + inline_button_disabled + '</span>';
+            }
+
+        }
+    }
+
+
+    function filePreviewFormatter(row, value) {
+
         if ((value) && (value.url) && (value.inlineable)) {
-            return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt=""></a>';
-        } else if ((value) && (value.url)) {
-            return '<a href="' + value.url + '" class="btn btn-default"><x-icon type="download" /></a>';
+
+            if (value.mediatype == 'image') {
+                return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive" alt=""></a>';
+            } else if (value.mediatype == 'video') {
+                return '<a href="' + value.url + '?inline=true" data-toggle="lightbox" data-type="video"><video style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive"><source src="' + value.url + '?inline=true"></video></a>';
+            } else if (value.mediatype == 'audio') {
+                return '<audio controls><source src="' + value.url + '?inline=true" type="audio/mp3">Your browser does not support the audio element.</audio>';
+            }
+            return '{{ trans('general.preview_not_available') }}';
         }
+        return '{{ trans('general.preview_not_available') }}';
+
     }
 
 
-    function fileUploadNameFormatter(value) {
-        if ((value) && (value.filename) && (value.url)) {
-            return '<a href="' + value.url + '">' + value.filename + '</a>';
+
+
+    // This is used in the table listings
+    function deleteUploadFormatter(value, row) {
+
+        if ((row.available_actions) && (row.available_actions.delete === true)) {
+            var destination;
+
+            // This is kinda gross, but for right now we're posting to the GUI delete routes
+            // All of these URLS and storage directories need to be updated to be more consistent :(
+            if (row.item.type == 'assetmodels') {
+                 destination = 'models';
+            } else {
+                 destination = row.item.type;
+            }
+
+            return '<a href="{{ config('app.url') }}/' + destination + '/' + row.item.id + '/showfile/' + row.id + '/delete" '
+                + ' data-target="#dataConfirmModal" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
+                + ' data-toggle="modal" data-icon="fa-trash"'
+                + ' data-content="{{ trans('general.file_upload_status.confirm_delete') }}: ' + row.filename + '?" '
+                + ' data-title="{{  trans('general.delete') }}" onClick="return false;" data-icon="fa-trash">'
+                + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
         }
     }
+
+    // This handles the custom view for the filestable blade component gallery-card component
+    window.customViewFormatter = data => {
+        const template = $('#fileGalleryTemplate').html()
+        let view = ''
+
+        $.each(data, function (i, row) {
+
+            delete_url = row.url +'/delete';
+
+            if (row.exists_on_disk === true)
+            {
+                if (row.mediatype === 'image') {
+                    embed_code = '<a href="' + row.url + '" data-toggle="lightbox" data-type="image" data-title="' + row.filename + row.filename + '" data-footer="' + row.note + '" class="embed-responsive-item"><img src="' + row.url + '?inline=true" alt="" style="max-width: 100%"></a>';
+                } else if (row.mediatype === 'video') {
+                    embed_code = '<a href="' + row.url + '" data-toggle="lightbox" data-type="video" data-title="' + row.filename + row.filename + '" data-footer="' + row.note + '" class="embed-responsive-item"><video controls><source src="' + row.url + '?inline=true" type="video/mp4">Your browser does not support the video tag.</video></a>';
+                } else if (row.mediatype === 'audio') {
+                    embed_code = '<audio style="width: 100%" controls><source src="' + row.url + '?inline=true" type="audio/mpeg">Your browser does not support the audio element.</audio>';
+                } else if (row.mediatype === 'pdf') {
+                    embed_code = '<object height="200" style="width: 100%" type="application/pdf" data="' + row.url + '?inline=true">File cannot be displayed</object>';
+                } else {
+                    embed_code = '<div class="text-center"><a href="' + row.url + '?inline=true"><i class="' + row.icon + '" style="font-size: 50px" /></i></a></div>';
+                }
+            } else {
+                embed_code = '<div class="text-center text-danger" style="padding-top: 20px;"><i class="fa-solid fa-heart-crack" style="font-size: 80px" /></i> <br><br>{{ trans('general.file_upload_status.file_not_found') }}</div>';
+            }
+
+            view += template.replace('%ID%', row.id)
+                .replace('%ICON%', row.icon)
+                .replace('%FILETYPE%', row.filetype)
+                .replace('%FILE_URL%', row.url)
+                .replace('%LINK_URL%', row.url)
+                .replace('%FILENAME%', (row.exists_on_disk === true) ? row.filename : '<x-icon type="x" /> <del>' + row.filename + '</del>')
+                .replace('%CREATED_AT%', row.created_at.formatted)
+                .replace('%CREATED_BY%', (row.created_by) ? row.created_by.name : '')
+                .replace('%NOTE%', (row.note) ? row.note : '')
+                .replace('%PANEL_CLASS%', (row.exists_on_disk === true) ? 'default' : 'danger')
+                .replace('%FILE_EMBED%', embed_code)
+                .replace('%DOWNLOAD_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'" class="btn btn-sm btn-default"><x-icon type="download" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="download" /></span>')
+                .replace('%NEW_WINDOW_BUTTON%', (row.exists_on_disk === true) ? '<a href="'+ row.url +'?inline=true" class="btn btn-sm btn-default" target="_blank"><x-icon type="external-link" /></a> ' : '<span class="btn btn-sm btn-default disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="external-link"/></span>')
+                .replace('%DELETE_BUTTON%', (row.available_actions.delete === true) ?
+                    '<a href="'+delete_url+'" class="delete-asset btn btn-danger btn-sm" data-data-icon="fa-heart" data-toggle="modal" data-content="{{ trans('general.file_upload_status.confirm_delete') }} '+ row.filename +'?" data-title="{{ trans('general.delete') }}" onClick="return false;" data-target="#dataConfirmModal"><x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>' :
+                    '<a class="btn btn-sm btn-danger disabled" data-tooltip="true" title="{{ trans('general.file_upload_status.file_not_found') }}"><x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>'
+                );
+        })
+
+        return `<div class="row">${view}</div>`
+    }
+
+
+
+    function fileNameFormatter(row, value) {
+
+        if (value) {
+            if ((value.file) && (value.file.filename) && (value.file.url)) {
+
+                if (value.file.exists_on_disk === true) {
+                    return '<a href="' + value.file.url + '">' + value.file.filename + '</a>';
+                }
+
+                return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.file.filename + '</span>';
+
+            } else if ((value.filename) && (value.url)) {
+                if (value.exists_on_disk === true) {
+                    return '<a href="' + value.url + '">' + value.filename + '</a>';
+                }
+                return '<span class="text-danger" style="text-decoration: line-through;" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="x" /> ' + value.filename + '</span>';
+            }
+        }
+
+    }
+
 
     function linkToUserSectionBasedOnCount (count, id, section) {
         if (count) {

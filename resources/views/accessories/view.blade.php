@@ -125,11 +125,7 @@
 
                             <div class="row">
                                 <div class="col-md-12">
-                                    <x-filestable
-                                        filepath="private_uploads/accessories/"
-                                        showfile_routename="show.accessoryfile"
-                                        deletefile_routename="delete/accessoryfile"
-                                        :object="$accessory" />
+                                    <x-filestable object_type="accessories" :object="$accessory" />
                                 </div>
                             </div>
                         </div> <!-- /.tab-pane -->
