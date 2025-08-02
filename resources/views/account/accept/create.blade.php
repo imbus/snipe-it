@@ -42,16 +42,19 @@
         <div class="row">
             <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
                 <div class="panel box box-default">
+                    <div class="box-header with-border">
+                        <h2 class="box-title">
+                            {{$acceptance->checkoutable->present()->name()}}
+                            {{ (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? ' - '.trans('general.serial_number').': '.$acceptance->checkoutable->serial : '' }}
+                        </h2>
+                    </div>
                     <div class="box-body">
-                        <div class="col-md-12" style="padding-top: 20px;">
+                        <div class="col-md-12" style="padding-top: 20px; padding-bottom: 15px;">
                         @if ($acceptance->checkoutable->getEula())
-                            <div id="eula_div" style="padding-bottom: 20px">
+                            <div id="eula_div" style="padding-bottom: 20px; background-color: rgba(211,211,211,0.25); padding: 10px; border: lightgrey 1px solid;">
                                 {!!  $acceptance->checkoutable->getEula() !!}
                             </div>
                         @endif
-                        </div>
-                        <div class="col-md-12">
-                        <h3>{{$acceptance->checkoutable->present()->name()}}</h3>
                         </div>
                         <div class="col-md-12">
                             <label class="form-control">
