@@ -42,16 +42,19 @@
         <div class="row">
             <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1">
                 <div class="panel box box-default">
+                    <div class="box-header with-border">
+                        <h2 class="box-title">
+                            {{$acceptance->checkoutable->present()->name()}}
+                            {{ (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? ' - '.trans('general.serial_number').': '.$acceptance->checkoutable->serial : '' }}
+                        </h2>
+                    </div>
                     <div class="box-body">
-                        <div class="col-md-12" style="padding-top: 20px;">
+                        <div class="col-md-12" style="padding-top: 20px; padding-bottom: 15px;">
                         @if ($acceptance->checkoutable->getEula())
-                            <div id="eula_div" style="padding-bottom: 20px">
+                            <div id="eula_div" style="background-color: rgba(211,211,211,0.25); padding: 10px; border: lightgrey 1px solid;">
                                 {!!  $acceptance->checkoutable->getEula() !!}
                             </div>
                         @endif
-                        </div>
-                        <div class="col-md-12">
-                        <h3>{{$acceptance->checkoutable->present()->name()}}</h3>
                         </div>
                         <div class="col-md-12">
                             <label class="form-control">
@@ -66,12 +69,11 @@
                         </div>
                         <div class="col-md-12">
                             <br>
-                            <div class="col-md-12" style="display:block;">
+
                                 <label id="note_label" for="note" style="text-align:center;" >{{trans('admin/settings/general.acceptance_note')}}</label>
-                            </div>
-                            <div class="col-md-12">
-                                <textarea id="note" name="note" rows="4" value="note" class="form-control" style="width:100%"></textarea>
-                            </div>
+                                <br>
+                                <textarea id="note" name="note" rows="4" class="form-control" style="width:100%">{{ old('note') }}</textarea>
+
                         </div>
 
                         @if ($snipeSettings->require_accept_signature=='1')
