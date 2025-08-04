@@ -35,7 +35,12 @@
                                         @break
 
                                         @case('companiesLinkObjFormatter')
-                                            <p>companiesLinkObjFormatter</p>
+                                            @include ('partials.select.dropdowns.company-select', [
+                                                'translated_name' => trans('admin/hardware/company.model'),
+                                                'fieldname' => $tableField->field,
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('trueFalseFormatter')
@@ -127,7 +132,11 @@
                                         @break
 
                                         @case('trueFalseFormatter')
-                                            <p>suppliersLinkObjFormatter</p>
+                                            <p>trueFalseFormatter</p>
+                                        @break
+
+                                        @case('customFieldsFormatter')
+                                            <input type="text" autocomplete="on">
                                         @break
 
                                         @case('usersLinkObjFormatter')
