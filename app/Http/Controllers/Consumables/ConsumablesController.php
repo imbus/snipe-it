@@ -89,7 +89,6 @@ class ConsumablesController extends Controller
             $cloned_model_img = Consumable::select('image')->find($request->input('clone_image_from_id'));
             if ($cloned_model_img) {
                 $new_image_name = 'clone-'.date('U').'-'.$cloned_model_img->image;
-                \Log::error($new_image_name);
                 $new_image = 'consumables/'.$new_image_name;
                 Storage::disk('public')->copy('consumables/'.$cloned_model_img->image, $new_image);
                 $consumable->image = $new_image_name;
