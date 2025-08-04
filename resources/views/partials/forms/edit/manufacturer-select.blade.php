@@ -4,7 +4,7 @@
     <label for="{{ $fieldname }}" class="col-md-3 control-label">{{ $translated_name }}</label>
 
     <div class="col-md-7">
-        @include('partials.select/dropdowns/manfacturer-select')
+        @include('partials.select/dropdowns/manufacturer-select')
     </div>
 
     <div class="col-md-1 col-sm-1 text-left">

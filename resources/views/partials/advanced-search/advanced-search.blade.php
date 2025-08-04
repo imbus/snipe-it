@@ -45,7 +45,8 @@
                                         @case('categoriesLinkObjFormatter')
                                             @include ('partials.select.dropdowns.category-select', [
                                                 'translated_name' => trans('admin/hardware/category.model'),
-                                                'fieldname' => 'category_id',
+                                                'fieldname' => $tableField->field,
+                                                'category_type' => 'asset',
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -58,7 +59,8 @@
                                         @case('deployedLocationFormatter')
                                             @include ('partials.select.dropdowns.location-select', [
                                                 'translated_name' => trans('admin/hardware/location.model'),
-                                                'fieldname' => 'location_id',
+                                                'category_type' => 'asset',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -83,7 +85,7 @@
                                         @case('manufacturersLinkObjFormatter')
                                             @include ('partials.select.dropdowns.manufacturer-select', [
                                                 'translated_name' => trans('admin/hardware/manufacturer.model'),
-                                                'fieldname' => 'manufacturer_id',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -92,7 +94,7 @@
                                         @case('modelsLinkObjFormatter')
                                             @include ('partials.select.dropdowns.model-select', [
                                                 'translated_name' => trans('admin/hardware/form.model'),
-                                                'fieldname' => 'model_id',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -109,7 +111,7 @@
                                         @case('statuslabelsLinkObjFormatter')
                                             @include ('partials.select.dropdowns.status-select', [
                                                 'translated_name' => trans('admin/hardware/status.model'),
-                                                'fieldname' => 'status_id',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -118,7 +120,7 @@
                                         @case('suppliersLinkObjFormatter')
                                             @include ('partials.select.dropdowns.supplier-select', [
                                                 'translated_name' => trans('admin/hardware/supplier.model'),
-                                                'fieldname' => 'supplier_id',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
@@ -131,7 +133,7 @@
                                         @case('usersLinkObjFormatter')
                                             @include ('partials.select.dropdowns.user-select', [
                                                 'translated_name' => trans('admin/hardware/user.model'),
-                                                'fieldname' => 'user_id',
+                                                'fieldname' => $tableField->field,
                                                 'required' => 'false',
                                                 'multiple' => 'true',
                                             ])
