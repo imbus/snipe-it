@@ -6,7 +6,7 @@
     @isset($exclude_id) data-exclude-id="{{ $exclude_id }}" @endisset
     name="{{ $fieldname }}{{ (isset($multiple) && ($multiple=='true')) ? '[]' : '' }}" 
     style="width: 100%" 
-    id="company_select"
+    id="{{ isset($select_id) ? $select_id : $fieldname . '_company_select' }}"
     aria-label="{{ $fieldname }}"
     {{ (isset($multiple) && ($multiple=='true')) ? " multiple='multiple'" : '' }}
     {{ isset($disabled) && $disabled ? 'disabled' : '' }}
