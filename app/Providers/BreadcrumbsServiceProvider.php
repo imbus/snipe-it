@@ -539,6 +539,16 @@ class BreadcrumbsServiceProvider extends ServiceProvider
                 ->push(trans('general.users'), route('users.index'))
                 ->push(trans('general.deleted_users'), route('users.index'))
             );
+        } elseif ((request()->is('users*')) && (request()->admins=='true')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.show_admins'), route('users.index'))
+            );
+        } elseif ((request()->is('users*')) && (request()->superadmins=='true')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.show_superadmins'), route('users.index'))
+            );
         } else {
             Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
                 ->push(trans('general.users'), route('users.index'))

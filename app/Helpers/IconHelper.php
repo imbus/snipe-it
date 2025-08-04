@@ -151,6 +151,7 @@ class IconHelper
             case 'location':
                 return 'fas fa-map-marker-alt';
             case 'superadmin':
+            case 'admin':
                 return 'fas fa-crown';
             case 'print':
                 return 'fa-solid fa-print';
