@@ -1,0 +1,29 @@
+<select 
+    class="js-data-ajax" 
+    data-endpoint="companies" 
+    data-placeholder="{{ trans('general.select_company') }}" 
+    @isset($only_top_level) data-only-top-level="{{ $only_top_level ? 'true' : '' }}" @endisset
+    @isset($exclude_id) data-exclude-id="{{ $exclude_id }}" @endisset
+    name="{{ $fieldname }}{{ (isset($multiple) && ($multiple=='true')) ? '[]' : '' }}" 
+    style="width: 100%" 
+    id="company_select"
+    aria-label="{{ $fieldname }}"
+    {{ (isset($multiple) && ($multiple=='true')) ? " multiple='multiple'" : '' }}
+    {{ isset($disabled) && $disabled ? 'disabled' : '' }}
+>
+    @isset($selected)
+        @foreach ($selected as $company_id)
+            <option value="{{ $company_id }}" selected="selected" role="option" aria-selected="true">
+                {{ \App\Models\Company::find($company_id)->name }}
+            </option>
+        @endforeach
+    @endisset
+
+    @if ($company_id = old($fieldname, (isset($item)) ? $item->{$fieldname} : ''))
+        <option value="{{ $company_id }}" selected="selected" role="option" aria-selected="true">
+            {{ (\App\Models\Company::find($company_id)) ? \App\Models\Company::find($company_id)->name : '' }}
+        </option>
+    @else
+        {!! (!isset($multiple) || ($multiple=='false')) ? '<option value="" role="option">'.trans('general.select_company').'</option>' : '' !!}
+    @endif
+</select>
