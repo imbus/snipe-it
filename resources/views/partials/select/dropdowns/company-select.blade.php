@@ -4,7 +4,7 @@
     data-placeholder="{{ trans('general.select_company') }}" 
     name="{{ $fieldname }}" 
     style="width: 100%" 
-    id="company_select"
+    id="{{ isset($select_id) ? $select_id : $fieldname . '_company_select' }}"
     aria-label="{{ $fieldname }}"
     {{ (isset($multiple) && ($multiple=='true')) ? " multiple='multiple'" : '' }}
     {{ isset($disabled) && $disabled ? 'disabled' : '' }}
