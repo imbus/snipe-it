@@ -1154,6 +1154,19 @@ dir="{{ Helper::determineLanguageDirection() }}">
 
             $(function () {
 
+                // This handles the show/hide for cloned items
+                $('#use_cloned_image').click(function() {
+                    if ($('#use_cloned_image').is(':checked')) {
+                        $('#image_delete').prop('checked', false);
+                        $('#image-upload').hide();
+                        $('#existing-image').show();
+                    } else {
+                        $('#image-upload').show();
+                        $('#existing-image').hide();
+                    }
+                    //$('#image-upload').hide();
+                });
+
                 // Invoke Bootstrap 3's tooltip
                 $('[data-tooltip="true"]').tooltip({
                     container: 'body',

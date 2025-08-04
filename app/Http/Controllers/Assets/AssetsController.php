@@ -157,8 +157,16 @@ class AssetsController extends Controller
                 $asset->location_id = $request->input('rtd_location_id', null);
             }
 
-            // Create the image (if one was chosen.)
-            if ($request->has('image')) {
+            if ($request->has('use_cloned_image')) {
+                $cloned_model_img = Asset::select('image')->find($request->input('clone_image_from_id'));
+                if ($cloned_model_img) {
+                    $new_image_name = 'clone-'.date('U').'-'.$cloned_model_img->image;
+                    $new_image = 'assets/'.$new_image_name;
+                    Storage::disk('public')->copy('assets/'.$cloned_model_img->image, $new_image);
+                    $asset->image = $new_image_name;
+                }
+
+            } else {
                 $asset = $request->handleImages($asset);
             }
 
