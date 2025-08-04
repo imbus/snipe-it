@@ -45,7 +45,7 @@
             <x-icon type="assets" class="fa-2x" />
             </span>
             <span class="hidden-xs hidden-sm">{{ trans('general.assets') }}
-              {!! ($user->assets()->AssetsForShow()->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->assets()->AssetsForShow()->withoutTrashed()->count()).'</badge>' : '' !!}
+              {!! ($user->assets()->AssetsForShow()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->assets()->AssetsForShow()->withoutTrashed()->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>
@@ -56,7 +56,7 @@
             <x-icon type="licenses" class="fa-2x" />
             </span>
             <span class="hidden-xs hidden-sm">{{ trans('general.licenses') }}
-              {!! ($user->licenses->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->licenses->count()).'</badge>' : '' !!}
+              {!! ($user->licenses->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->licenses->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>
@@ -67,7 +67,7 @@
             <x-icon type="accessories" class="fa-2x" />
             </span> 
             <span class="hidden-xs hidden-sm">{{ trans('general.accessories') }}
-              {!! ($user->accessories->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->accessories->count()).'</badge>' : '' !!}
+              {!! ($user->accessories->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->accessories->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>
@@ -78,7 +78,7 @@
                 <x-icon type="consumables" class="fa-2x" />
             </span>
             <span class="hidden-xs hidden-sm">{{ trans('general.consumables') }}
-              {!! ($user->consumables->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->consumables->count()).'</badge>' : '' !!}
+              {!! ($user->consumables->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->consumables->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>
@@ -89,7 +89,7 @@
                 <x-icon type="files" class="fa-2x" />
             </span>
             <span class="hidden-xs hidden-sm">{{ trans('general.file_uploads') }}
-              {!! ($user->uploads->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->uploads->count()).'</badge>' : '' !!}
+              {!! ($user->uploads->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->uploads->count()).'</span>' : '' !!}
             </span>
           </a>
         </li>
@@ -110,7 +110,7 @@
                 <x-icon type="locations" class="fa-2x" />
             </span>
             <span class="hidden-xs hidden-sm">{{ trans('admin/users/table.managed_locations') }}
-              {!! ($user->managedLocations->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->managedLocations->count()).'</badge>' : '' !!}
+              {!! ($user->managedLocations->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->managedLocations->count()).'</span>' : '' !!}
           </a>
         </li>
         @endif
@@ -122,7 +122,7 @@
                       <x-icon type="users" class="fa-2x" />
                     </span>
                       <span class="hidden-xs hidden-sm">{{ trans('admin/users/table.managed_users') }}
-                      {!! ($user->managesUsers->count() > 0 ) ? '<badge class="badge badge-secondary">'.number_format($user->managesUsers->count()).'</badge>' : '' !!}
+                      {!! ($user->managesUsers->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->managesUsers->count()).'</span>' : '' !!}
                   </a>
               </li>
           @endif
@@ -163,15 +163,6 @@
       <div class="tab-content">
         <div class="tab-pane active" id="details">
           <div class="row">
-
-            @if ($user->deleted_at!='')
-              <div class="col-md-12">
-                <div class="callout callout-warning">
-                  <i class="icon fas fa-exclamation-triangle"></i>
-                  {{ trans('admin/users/message.user_deleted_warning') }}
-                </div>
-              </div>
-            @endif
 
         <div class="info-stack-container">
             <!-- Start button column -->
@@ -241,7 +232,7 @@
                 @endcan
 
                 @can('update', $user)
-                  @if (($user->activated == '1') && ($user->ldap_import == '0'))
+                  @if ((($user->deleted_at=='')) && ($user->activated == '1') && ($user->ldap_import == '0'))
                   <div class="col-md-12" style="padding-top: 5px;">
                     @if (($user->email != '') && ($user->activated=='1'))
                       <form action="{{ route('users.password',['userId'=> $user->id]) }}" method="POST">
@@ -271,11 +262,11 @@
                 @endcan
 
 
-            @can('delete', $user)
+            @can('update', $user)
                   @if ($user->deleted_at=='')
                     <div class="col-md-12" style="padding-top: 30px;">
                         @if ($user->isDeletable())
-                            <a href="#" class="btn-block delete-asset btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->present()->fullName]) }}" data-target="#dataConfirmModal">
+                            <a href="" class="delete-asset btn-block btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->present()->fullName]) }}" data-icon="fa-trash" data-target="#dataConfirmModal" onClick="return false;" >
                                 <x-icon type="delete" />
                                 {{ trans('button.delete')}}
                             </a>
@@ -818,6 +809,7 @@
                     data-bulk-button-id="#bulkAssetEditButton"
                     data-bulk-form-id="#assetsBulkForm"
                     id="userAssetsListingTable"
+                    data-buttons="assetButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.assets.index',['assigned_to' => e($user->id), 'assigned_type' => 'App\Models\User']) }}"
                     data-export-options='{
@@ -836,6 +828,7 @@
                     data-cookie-id-table="userLicenseTable"
                     data-id-table="userLicenseTable"
                     id="userLicenseTable"
+                    data-buttons="licenseButtons"
                     data-side-pagination="client"
                     data-show-footer="true"
                     data-sort-name="name"
@@ -895,6 +888,7 @@
                     data-cookie-id-table="userAccessoryTable"
                     data-id-table="userAccessoryTable"
                     id="userAccessoryTable"
+                    data-buttons="accessoryButtons"
                     data-side-pagination="client"
                     data-sort-name="name"
                     class="table table-striped snipe-table table-hover"
@@ -938,6 +932,7 @@
                     data-cookie-id-table="userConsumableTable"
                     data-id-table="userConsumableTable"
                     id="userConsumableTable"
+                    data-buttons="consumableButtons"
                     data-side-pagination="client"
                     data-show-footer="true"
                     data-sort-name="name"
@@ -974,11 +969,7 @@
           <div class="row">
 
             <div class="col-md-12 col-sm-12">
-                <x-filestable
-                        filepath="private_uploads/users/"
-                        showfile_routename="show/userfile"
-                        deletefile_routename="userfile.destroy"
-                        :object="$user" />
+                <x-filestable object_type="users" :object="$user" />
             </div>
           </div> <!--/ROW-->
         </div><!--/FILES-->
@@ -987,38 +978,20 @@
           <div class="table-responsive">
 
 
-            <table
-                    data-cookie-id-table="usersHistoryTable"
-                    data-id-table="usersHistoryTable"
-                    data-side-pagination="server"
-                    data-sort-order="desc"
-                    id="usersHistoryTable"
-                    class="table table-striped snipe-table"
-                    data-url="{{ route('api.activity.index', ['target_id' => $user->id, 'target_type' => 'user']) }}"
-                    data-export-options='{
-                "fileName": "export-{{ str_slug($user->present()->fullName ) }}-history-{{ date('Y-m-d') }}",
-                "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
-                }'>
-              <thead>
-              <tr>
-                <th data-field="icon" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter">Icon</th>
-                <th data-field="created_at" data-formatter="dateDisplayFormatter" data-sortable="true">{{ trans('general.date') }}</th>
-                  <th data-field="item" data-formatter="polymorphicItemFormatter">{{ trans('general.item') }}</th>
-                  <th data-field="action_type">{{ trans('general.action') }}</th>
-                  <th data-field="target" data-formatter="polymorphicItemFormatter">{{ trans('general.target') }}</th>
-                  <th data-field="note">{{ trans('general.notes') }}</th>
-                  @if  ($snipeSettings->require_accept_signature=='1')
-                      <th data-field="signature_file" data-visible="false"  data-formatter="imageFormatter">{{ trans('general.signature') }}</th>
-                  @endif
-                  <th data-field="item.serial" data-visible="false">{{ trans('admin/hardware/table.serial') }}</th>
-                  <th data-field="admin" data-formatter="usersLinkObjFormatter">{{ trans('general.created_by') }}</th>
-                  <th data-field="remote_ip" data-visible="false" data-sortable="true">{{ trans('admin/settings/general.login_ip') }}</th>
-                  <th data-field="user_agent" data-visible="false" data-sortable="true">{{ trans('admin/settings/general.login_user_agent') }}</th>
-                  <th data-field="action_source" data-visible="false" data-sortable="true">{{ trans('general.action_source') }}</th>
-
-              </tr>
-              </thead>
-            </table>
+              <table
+                      data-columns="{{ \App\Presenters\HistoryPresenter::dataTableLayout() }}"
+                      class="table table-striped snipe-table"
+                      data-cookie-id-table="UserHistoryTable"
+                      data-id-table="UserHistoryTable"
+                      id="UserHistoryTable"
+                      data-side-pagination="server"
+                      data-sort-order="desc"
+                      data-export-options='{
+                       "fileName": "export-{{ str_slug($user->name) }}-history-{{ date('Y-m-d') }}",
+                       "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                     }'
+                      data-url="{{ route('api.activity.index', ['item_id' => $user->id, 'item_type' => User::class]) }}">
+              </table>
 
           </div>
         </div><!-- /.tab-pane -->
@@ -1037,6 +1010,7 @@
                     data-bulk-form-id="#locationsBulkForm"
                     data-side-pagination="server"
                     id="locationTable"
+                    data-buttons="locationButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.locations.index', ['manager_id' => $user->id]) }}"
                     data-export-options='{
@@ -1061,6 +1035,7 @@
                       data-bulk-form-id="#usersBulkForm"
                       data-side-pagination="server"
                       id="managedUsersTable"
+                      data-buttons="userButtons"
                       class="table table-striped snipe-table"
                       data-url="{{ route('api.users.index', ['manager_id' => $user->id]) }}"
                       data-export-options='{
@@ -1088,12 +1063,6 @@
 <script nonce="{{ csrf_token() }}">
 $(function () {
 
-$('#dataConfirmModal').on('show.bs.modal', function (event) {
-    var content = $(event.relatedTarget).data('content');
-    var title = $(event.relatedTarget).data('title');
-    $(this).find(".modal-body").text(content);
-    $(this).find(".modal-header").text(title);
- });
 
 
   $("#two_factor_reset").click(function(){

@@ -1266,7 +1266,6 @@ label.form-control {
 }
 label.form-control--disabled {
   color: #959495;
-  pointer-events: none;
   cursor: not-allowed;
 }
 /** --------------------------------------- **/
@@ -1429,6 +1428,9 @@ input[type="radio"]:checked::before {
 .bootstrap-table .fixed-table-container .table tbody tr .card-view {
   display: table-row !important;
 }
+.form-control-static {
+  padding-top: 0px;
+}
 td.text-right.text-padding-number-cell {
   padding-right: 30px !important;
   white-space: nowrap;
@@ -1467,3 +1469,5 @@ caption.tableCaption {
   padding-left: 8px;
 }
 
+
+/*# sourceMappingURL=app.css.map*/

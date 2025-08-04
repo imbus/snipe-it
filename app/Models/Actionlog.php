@@ -74,6 +74,8 @@ class Actionlog extends SnipeModel
         'assets'      => ['asset_tag','name', 'serial', 'order_number', 'notes', 'purchase_date'],
         'assets.model'              => ['name', 'model_number', 'eol', 'notes'],
         'assets.model.category'     => ['name', 'notes'],
+        'assets.location'           => ['name'],
+        'assets.defaultLoc'         => ['name'],
         'assets.model.manufacturer' => ['name', 'notes'],
         'licenses'    => ['name', 'serial', 'notes', 'order_number', 'license_email', 'license_name', 'purchase_order', 'purchase_date'],
         'licenses.category'     => ['name', 'notes'],
@@ -455,6 +457,11 @@ class Actionlog extends SnipeModel
     public function uploads_file_url()
     {
 
+
+        if (($this->action_type == 'accepted') || ($this->action_type == 'declined')) {
+            return route('log.storedeula.download', ['filename' => $this->filename]);
+        }
+
         switch ($this->item_type) {
         case Accessory::class:
             return route('show.accessoryfile', [$this->item_id, $this->id]);
@@ -463,7 +470,7 @@ class Actionlog extends SnipeModel
         case AssetModel::class:
             return route('show/modelfile', [$this->item_id, $this->id]);
         case Consumable::class:
-            return route('show/locationsfile', [$this->item_id, $this->id]);
+            return route('show.consumablefile', [$this->item_id, $this->id]);
         case Component::class:
             return route('show.componentfile', [$this->item_id, $this->id]);
         case License::class:
@@ -479,6 +486,10 @@ class Actionlog extends SnipeModel
 
     public function uploads_file_path()
     {
+
+        if (($this->action_type == 'accepted') || ($this->action_type == 'declined')) {
+            return 'private_uploads/eula-pdfs/'.$this->filename;
+        }
 
         switch ($this->item_type) {
         case Accessory::class:
