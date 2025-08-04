@@ -4,6 +4,10 @@
 
     @if (request('status')=='deleted')
         {{ trans('general.deleted') }}
+    @elseif (request('admins')=='true')
+        {{ trans('general.show_admins') }}
+    @elseif (request('superadmins')=='true')
+        {{ trans('general.show_superadmins') }}
     @else
         {{ trans('general.current') }}
     @endif
