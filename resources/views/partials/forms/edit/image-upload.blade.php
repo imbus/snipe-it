@@ -35,6 +35,14 @@
             {!! $errors->first('image_delete', '<span class="alert-msg">:message</span>') !!}
         </div>
     </div>
+   @elseif (isset($item) && (isset($item->model)) && ($item->model->image != ''))
+        <div class="form-group">
+            <div class="col-md-8 col-md-offset-3">
+                <p class="text-info">
+                    <x-icon type="info-circle" /> {{ trans('general.use_cloned_no_image_help') }}
+                </p>
+            </div>
+        </div>
    @endif
 @endif
 <!-- Image Upload and preview -->

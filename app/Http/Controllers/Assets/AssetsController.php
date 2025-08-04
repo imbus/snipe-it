@@ -652,8 +652,9 @@ class AssetsController extends Controller
      */
     public function getClone(Asset $asset)
     {
-        $this->authorize('create', $asset);
+        $this->authorize('create', Asset::class);
         $cloned = clone $asset;
+        $cloned_model = $asset;
         $cloned->id = null;
         $cloned->asset_tag = '';
         $cloned->serial = '';
@@ -663,6 +664,7 @@ class AssetsController extends Controller
         return view('hardware/edit')
             ->with('statuslabel_list', Helper::statusLabelList())
             ->with('statuslabel_types', Helper::statusTypeList())
+            ->with('cloned_model', $cloned_model)
             ->with('item', $cloned);
     }
 
