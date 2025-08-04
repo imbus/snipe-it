@@ -552,6 +552,8 @@ return [
     'phone'                   => 'Phone',
     'fax'                   => 'Fax',
     'contact'                   => 'Contact',
+    'show_admins' => 'Admin Users',
+    'show_superadmins' => 'Superusers',
     'edit_fieldset' => 'Edit fieldset fields and options',
     'permission_denied_superuser_demo' => 'Permission denied. You cannot update user information for superadmins on the demo.',
     'pwd_reset_not_sent' => 'User is not activated, is LDAP synced, or does not have an email address',
