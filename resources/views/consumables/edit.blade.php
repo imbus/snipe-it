@@ -1,3 +1,13 @@
+@php
+    $options = [
+        'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'consumables']),
+        'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.consumable')]),
+    ];
+    if (Route::currentRouteName() !== 'consumables.create') {
+        $options['back'] = trans('admin/hardware/form.redirect_to_type',['type' => trans('general.previous_page')]);
+    }
+@endphp
+
 @extends('layouts/edit-form', [
     'createText' => trans('admin/consumables/general.create') ,
     'updateText' => trans('admin/consumables/general.update'),
@@ -5,11 +15,7 @@
     'helpText' => trans('help.consumables'),
     'formAction' => (isset($item->id)) ? route('consumables.update', ['consumable' => $item->id]) : route('consumables.store'),
     'index_route' => 'consumables.index',
-    'options' => [
-                'back' => trans('admin/hardware/form.redirect_to_type',['type' => trans('general.previous_page')]),
-                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'consumables']),
-                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.consumable')]),
-               ]
+    'options' => $options,
 ])
 {{-- Page content --}}
 @section('inputFields')
