@@ -1,16 +1,17 @@
 <div class="container">
-<div class="panel panel-default">
-    <!-- The button for controlling the collapse -->
-    <div class="panel-heading" data-toggle="collapse" data-target="#collapsePanel" aria-expanded="false" aria-controls="collapsePanel">
-        <span class="panel-title" style="margin: 0;">
-            <i class="fas fa-search"></i>
-            Advanced search
-        </span>
-    </div>
-    
-    <!-- The collapsible content section -->
-    <div id="collapsePanel" class="panel-collapse collapse" role="region" aria-labelledby="panelHeading">
-        <div class="panel-body">
+    <div class="panel panel-default">
+        <!-- The button for controlling the collapse -->
+        <div class="panel-heading" data-toggle="collapse" data-target="#collapsePanel" aria-expanded="false"
+            aria-controls="collapsePanel">
+            <span class="panel-title" style="margin: 0;">
+                <i class="fas fa-search"></i>
+                Advanced search
+            </span>
+        </div>
+
+        <!-- The collapsible content section -->
+        <div id="collapsePanel" class="panel-collapse collapse" role="region" aria-labelledby="panelHeading">
+            <div class="panel-body">
                 <span id="advancedSearchFilters">
                     @php
                         $layoutJson = \App\Presenters\AssetPresenter::dataTableLayout();
@@ -184,18 +185,24 @@
         function collectAdvancedSearchFilters() {
             // Collect all advanced search fields (selects, inputs, etc.)
             const filters = {};
-            document.querySelectorAll('[class="advancedSearch_"]').forEach(function(el) {
-                // Use the field name from the id, you may need to adjust this if it changes
-                const field = el.id.replace('advancedSearch_', '');
-                if (el.value && el.value.trim() !== '') {
-                    filters[field] = el.value.trim();
-                }
+
+            // Handle all selects
+            document.querySelectorAll('select[id^="advancedSearch_"]').forEach(function(el) {
+                // Use the field name from the id
+                const id = "#" + el.id;
+
+                console.log(id);
+                console.log($(id));
+                console.log($(id).select2('data'));
+
             });
+
             return filters;
         }
 
         function refreshTableWithAdvancedFilters() {
             console.log("refreshTableWithAdvancedFilters");
+
             const filters = collectAdvancedSearchFilters();
             console.log(filters);
             $table.bootstrapTable('refresh', {
@@ -222,46 +229,46 @@
 </script>
 
 <style>
-/* Ensure the container is properly constrained */
-.container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 10px;
-    box-sizing: border-box; 
-}
+    /* Ensure the container is properly constrained */
+    .container {
+        width: 100%;
+        margin: 0 auto;
+        padding: 10px;
+        box-sizing: border-box;
+    }
 
-/* Make the panel-heading fit within the container */
-.panel-heading {
-    cursor: pointer;
-    width: 100%; 
-    box-sizing: border-box; 
-    padding: 10px 15px; 
-    margin: 0; 
-}
+    /* Make the panel-heading fit within the container */
+    .panel-heading {
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px 15px;
+        margin: 0;
+    }
 
-/* Ensure the grid stays centered */
-#advancedSearchFilters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px 20px;
-    max-width: 1050px;
-    margin: 0 auto;
-    justify-content: center;
-}
+    /* Ensure the grid stays centered */
+    #advancedSearchFilters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px 20px;
+        max-width: 1050px;
+        margin: 0 auto;
+        justify-content: center;
+    }
 
-/* Flexbox styling remains the same */
-.advancedSearchItemContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-}
+    /* Flexbox styling remains the same */
+    .advancedSearchItemContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
 
-.advancedSearchItemContainer b {
-    margin-bottom: 5px;
-}
+    .advancedSearchItemContainer b {
+        margin-bottom: 5px;
+    }
 
-.advancedSearchItemContainer select.form-control {
-    width: 100%;
-    box-sizing: border-box;
-}
+    .advancedSearchItemContainer select.form-control {
+        width: 100%;
+        box-sizing: border-box;
+    }
 </style>
