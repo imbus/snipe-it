@@ -1,13 +1,3 @@
-@php
-    $options = [
-        'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'assets']),
-        'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset')]),
-        'other_redirect' => trans('admin/hardware/form.redirect_to_type', [ 'type' => trans('general.asset') . ' ' . trans('general.asset_model')]),
-    ];
-    if (Route::currentRouteName() !== 'hardware.create') {
-        $options['back'] = trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.previous_page')]);
-    }
-@endphp
 
 @extends('layouts/edit-form', [
     'createText' => trans('admin/hardware/form.create'),
@@ -17,7 +7,12 @@
     'helpPosition' => 'right',
     'formAction' => ($item->id) ? route('hardware.update', $item) : route('hardware.store'),
     'index_route' => 'hardware.index',
-    'options' => $options,
+    'options' => [
+                'back' => trans('admin/hardware/form.redirect_to_type',['type' => trans('general.previous_page')]),
+                'index' => trans('admin/hardware/form.redirect_to_all', ['type' => 'assets']),
+                'item' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset')]),
+                'other_redirect' => trans('admin/hardware/form.redirect_to_type', [ 'type' => trans('general.asset').' '.trans('general.asset_model')]),
+               ]
 ])
 
 
