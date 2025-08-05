@@ -45,6 +45,12 @@
             margin-top: 20px;
             margin-bottom: 10px;
         }
+
+        @media print {
+            .signature-boxes {
+                page-break-after: always;
+            }
+        }
     </style>
 
 
@@ -399,7 +405,7 @@
         </div>
     @endif
 
-    <table style="margin-top: 80px;">
+    <table style="margin-top: 80px;" class="signature-boxes">
         @if (!empty($eulas))
         <tr class="collapse eula-row">
             <td style="padding-right: 10px; vertical-align: top; font-weight: bold;">EULA</td>
