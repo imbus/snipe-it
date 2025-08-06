@@ -234,10 +234,8 @@
             });
         });
 
-        const btn = document.getElementById("filterButton");
-        console.log(btn);
-        btn.addEventListener("click", (event) => {
-            console.log(event);
+        const filterButton = document.getElementById("filterButton");
+        filterButton.addEventListener("click", (event) => {
             refreshTableWithAdvancedFilters();
         })
     });
