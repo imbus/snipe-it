@@ -47,16 +47,35 @@
 {{-- Page content --}}
 @section('content')
 
+<div class="form-group">
+<label for="templates">{{ trans('admin/reports/general.open_saved_template') }}</label>
+<select
+    id="templates"
+    class="form-control select"
+    data-placeholder="{{ trans('admin/reports/general.select_a_template') }}"
+>
+    <option></option>
+    @foreach($report_templates as $template)
+        <option
+            value="{{ $template->id }}"
+            @selected($template->is(request()->route()->parameter('reportTemplate')))
+        >
+            {{ $template->name }}
+        </option>
+    @endforeach
+</select>
+</div>
+
 <div class="row">
   <div class="col-md-12">
     <div class="box">
       <div class="box-body">
-       
+
           <div class="row">
             <div class="col-md-12">
 
                 @include('partials.asset-bulk-actions', ['status' => Request::get('status')])
-                   
+
               <table
                 data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                 data-cookie-id-table="{{ request()->has('status') ? e(request()->input('status')) : ''  }}assetsListingTable"
@@ -85,7 +104,7 @@
 
             </div><!-- /.col -->
           </div><!-- /.row -->
-        
+
       </div><!-- ./box-body -->
     </div><!-- /.box -->
   </div>
@@ -94,5 +113,38 @@
 
 @section('moar_scripts')
 @include('partials.bootstrap-table')
+
+<script>
+  $('#templates').on('change', function () {
+    const selectedId = $(this).val();
+    const $table = $('#assetsListingTable');
+
+    let baseUrl = $table.data('url');
+
+    const newParams = new URLSearchParams({
+        reportTemplate: selectedId || ''
+    });
+
+    const status = '{{ Request::get('status') }}';
+    if (status) newParams.append('status', status);
+
+    const companyId = '{{ Request::get('company_id') }}';
+    if (companyId) newParams.append('company_id', companyId);
+
+    const orderNumber = '{{ Request::get('order_number') }}';
+    if (orderNumber) newParams.append('order_number', orderNumber);
+
+    const statusId = '{{ Request::get('status_id') }}';
+    if (statusId) newParams.append('status_id', statusId);
+
+    const connector = baseUrl.includes('?') ? '&' : '?';
+    const finalUrl = baseUrl + connector + newParams.toString();
+
+    $table.bootstrapTable('refreshOptions', {
+        url: finalUrl,
+        pageNumber: 1
+    });
+  });
+</script>
 
 @stop

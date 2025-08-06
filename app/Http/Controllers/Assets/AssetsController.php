@@ -32,6 +32,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use TypeError;
+use App\Models\ReportTemplate;
 
 /**
  * This class controls all actions related to assets for
@@ -64,8 +65,9 @@ class AssetsController extends Controller
     {
         $this->authorize('index', Asset::class);
         $company = Company::find($request->input('company_id'));
+        $report_templates = ReportTemplate::orderBy('name')->get();
 
-        return view('hardware/index')->with('company', $company);
+        return view('hardware/index')->with('company', $company)->with('report_templates', $report_templates);
     }
 
     /**
@@ -343,7 +345,7 @@ class AssetsController extends Controller
         $asset->purchase_date = $request->input('purchase_date', null);
         $asset->next_audit_date = $request->input('next_audit_date', null);
         if ($request->filled('purchase_date') && !$request->filled('asset_eol_date') && ($asset->model->eol > 0)) {
-            $asset->purchase_date = $request->input('purchase_date', null); 
+            $asset->purchase_date = $request->input('purchase_date', null);
             $asset->asset_eol_date = Carbon::parse($request->input('purchase_date'))->addMonths($asset->model->eol)->format('Y-m-d');
             $asset->eol_explicit = false;
         } elseif ($request->filled('asset_eol_date')) {
@@ -714,7 +716,7 @@ class AssetsController extends Controller
             $results = $csv->getRecords();
         } catch (\Exception $e) {
             return back()->with('error', trans('general.error_in_import_file', ['error' => $e->getMessage()]));
-        } 
+        }
         $item = [];
         $status = [];
         $status['error'] = [];

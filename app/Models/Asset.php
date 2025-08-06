@@ -2127,12 +2127,24 @@ class Asset extends Depreciable
             function ($query) use ($search) {
                 $query->whereHas(
                     'location', function ($query) use ($search) {
-                        $query->where('locations.id', '=', $search);
+                        $query->whereIn('locations.id', (array) $search);
                     }
                 );
             }
         );
+    }
 
+    public function scopeByCompanyId($query, $search)
+    {
+        return $query->where(
+            function($query) use ($search) {
+                $query->whereHas(
+                    'company', function($query) use ($search) {
+                        $query->whereIn('companies.name', (array) $search);
+                    }
+                );
+            }
+        );
     }
 
 

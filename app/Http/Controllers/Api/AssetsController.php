@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Route;
 use App\View\Label;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
+use App\Models\ReportTemplate;
 
 /**
  * This class controls all actions related to assets for
@@ -66,14 +66,14 @@ class AssetsController extends Controller
         $filter_non_deprecable_assets = false;
 
         /**
-         * This looks MAD janky (and it is), but the AssetsController@index does a LOT of heavy lifting throughout the 
-         * app. This bit here just makes sure that someone without permission to view assets doesn't 
-         * end up with priv escalations because they asked for a different endpoint. 
-         * 
-         * Since we never gave the specification for which transformer to use before, it should default 
-         * gracefully to just use the AssetTransformer by default, which shouldn't break anything. 
-         * 
-         * It was either this mess, or repeating ALL of the searching and sorting and filtering code, 
+         * This looks MAD janky (and it is), but the AssetsController@index does a LOT of heavy lifting throughout the
+         * app. This bit here just makes sure that someone without permission to view assets doesn't
+         * end up with priv escalations because they asked for a different endpoint.
+         *
+         * Since we never gave the specification for which transformer to use before, it should default
+         * gracefully to just use the AssetTransformer by default, which shouldn't break anything.
+         *
+         * It was either this mess, or repeating ALL of the searching and sorting and filtering code,
          * which would have been far worse of a mess. *sad face*  - snipe (Sept 1, 2021)
          */
         if (Route::currentRouteName()=='api.depreciation-report.index') {
@@ -299,7 +299,7 @@ class AssetsController extends Controller
         if ($request->input('requestable') == 'true') {
             $assets->where('assets.requestable', '=', '1');
         }
-        
+
         if ($request->filled('model_id')) {
             // If model_id is already an array, just use it as-is
             if (is_array($request->input('model_id'))) {
@@ -428,6 +428,136 @@ class AssetsController extends Controller
                 break;
         }
 
+        if (isset($request->reportTemplate)) {
+            $id = $request->reportTemplate;
+            $templates = ReportTemplate::where('id', $id)->get();
+
+            if ($templates->count() == 1) {
+                $template = $templates[0];
+                // ---------------------- BY COMPANY ----------------------
+                if (isset($template['options']['by_company_id'])) {
+                    $assets->whereIn('assets.company_id', $template['options']['by_company_id']);
+                }
+                // ---------------------- BY LOCATION ----------------------
+                if (isset($template['options']['by_location_id'])) {
+                    $assets->byLocationId($template['options']['by_location_id']);
+                }
+                // ---------------------- BY DEFAULT LOCATION ----------------------
+                if (isset($template['options']['by_rtd_location_id'])) {
+                    $assets->whereIn('assets.rtd_location_id', $template['options']['by_rtd_location_id'] );
+                }
+                // DEPARTMENT ?
+                // ---------------------- BY SUPPLIER ----------------------
+                if (isset($template['options']['by_supplier_id'])) {
+                    $assets->whereIn('assets.supplier_id', $template['options']['by_supplier_id']);
+                }
+                // ---------------------- BY MODEL ----------------------
+                // Model No. already included
+                if (isset($template['options']['by_model_id'])) {
+                    $assets->whereIn('assets.model_id', $template['options']['by_model_id']);
+                }
+                // ---------------------- BY MANUFACTURER ----------------------
+                if (isset($template['options']['by_manufacturer_id'])) {
+                    $assets->byManufacturer($template['options']['by_manufacturer_id']);
+                }
+                // ---------------------- BY CATEGORY ----------------------
+                if (isset($template['options']['by_category_id'])) {
+                    $assets->inCategory($template['options']['by_category_id']);
+                }
+                // ---------------------- BY STATUS ----------------------
+                if (isset($template['options']['by_status_id'])) {
+                    $assets->whereIn('assets.status_id', $template['options']['by_status_id']);
+                }
+                // return $query->whereDate('assets.created_at', '>=', $start_date)->whereDate('assets.created_at', '<=', $end_date);
+                // ---------------------- BY CREATED START DATE ----------------------
+                if (isset($template['options']['created_start'])) {
+                    $assets->whereDate("assets.created_at", '>=', $template['options']['created_start']);
+                }
+                // ---------------------- BY CREATED END DATE ----------------------
+                if (isset($template['options']['created_end'])) {
+                    $assets->whereDate("assets.created_at", '<=', $template['options']['created_end']);
+                }
+                // ---------------------- BY PURCHASE DATE START ----------------------
+                if (isset($template['options']['purchase_start'])) {
+                    $assets->whereDate("assets.purchase_date", '>=', $template['options']['purchase_start']);
+                }
+                // ---------------------- BY PURCHASE DATE END ----------------------
+                if (isset($template['options']['purchase_end'])) {
+                    $assets->whereDate("assets.purchase_date", '<=', $template['options']['purchase_end']);
+                }
+                // ---------------------- BY LAST CHECKOUT START ----------------------
+                if (isset($template['options']['checkout_date_start'])) {
+                    $assets->whereDate("assets.last_checkout", '>=', $template['options']['checkout_date_start']);
+                }
+                // ---------------------- BY LAST CHECKOUT END ----------------------
+                if (isset($template['options']['checkout_date_end'])) {
+                    $assets->whereDate("assets.last_checkout", '<=', $template['options']['checkout_date_end']);
+                }
+                // ---------------------- BY LAST CHECKING START ----------------------
+                if (isset($template['options']['checkin_date_start'])) {
+                    $assets->whereDate("assets.last_checkin", '>=', $template['options']['checkin_date_start']);
+                }
+                // ---------------------- BY LAST CHECKING END ----------------------
+                if (isset($template['options']['checkin_date_end'])) {
+                    $assets->whereDate("assets.last_checkin", '<=', $template['options']['checkin_date_end']);
+                }
+                // ---------------------- BY EXPECTED CHECKING START ----------------------
+                if (isset($template['options']['expected_checkin_start'])) {
+                    $assets->whereDate("assets.expected_checkin", '>=', $template['options']['expected_checkin_start']);
+                }
+                // ---------------------- BY EXPECTED CHECKING END ----------------------
+                if (isset($template['options']['expected_checkin_end'])) {
+                    $assets->whereDate("assets.expected_checkin", '<=', $template['options']['expected_checkin_end']);
+                }
+                // ---------------------- BY ASSET EOL DATE START ----------------------
+                if (isset($template['options']['asset_eol_date_start'])) {
+                    $assets->whereDate("assets.asset_eol_date", '>=', $template['options']['asset_eol_date_start']);
+                }
+                // ---------------------- BY ASSET EOL DATE END ----------------------
+                if (isset($template['options']['asset_eol_date_end'])) {
+                    $assets->whereDate("assets.asset_eol_date", '<=', $template['options']['asset_eol_date_end']);
+                }
+                // ---------------------- BY LAST AUDIT START ----------------------
+                if (isset($template['options']['last_audit_start'])) {
+                    $assets->whereDate("assets.last_audit_date", '>=', $template['options']['last_audit_start']);
+                }
+                // ---------------------- BY LAST AUDIT END ----------------------
+                if (isset($template['options']['last_audit_end'])) {
+                    $assets->whereDate("assets.last_audit_date", '<=', $template['options']['last_audit_end']);
+                }
+                // ---------------------- BY NEXT AUDIT START ----------------------
+                if (isset($template['options']['next_audit_start'])) {
+                    $assets->whereDate("assets.next_audit_date", '>=', $template['options']['next_audit_start']);
+                }
+                // ---------------------- BY NEXT AUDIT END ----------------------
+                if (isset($template['options']['next_audit_end'])) {
+                    $assets->whereDate("assets.next_audit_date", '<=', $template['options']['next_audit_end']);
+                }
+                // ---------------------- BY LAST UPDATE START ----------------------
+                if (isset($template['options']['last_updated_start'])) {
+                    $assets->whereDate("assets.updated_at", '>=', $template['options']['last_updated_start']);
+                }
+                // ---------------------- BY LAST UPDATE END ----------------------
+                if (isset($template['options']['last_updated_end'])) {
+                    $assets->whereDate("assets.updated_at", '<=', $template['options']['last_updated_end']);
+                }
+
+                // ---------------------- BY ASSET NAME ----------------------
+                if (isset($template['options']['by_asset_name'])) {
+                    $assets->whereLike('assets.name', '%' . $template['options']['by_asset_name'] . '%', caseSensitive: false);
+                }
+
+                // ---------- not yet implemented to save into a template -----------
+                // ---------------------- BY ASSET TAG ----------------------
+                if (isset($template['options']['by_asset_tag'])) {
+                    $assets->whereLike('assets.asset_tag', '%' . $template['options']['by_asset_tag'] . '%', caseSensitive: false);
+                }
+                // ---------------------- BY SERIAL ----------------------
+                if (isset($template['options']['by_serial'])) {
+                    $assets->whereLike('assets.serial', '%' . $template['options']['by_serial'] . '%', caseSensitive: false);
+                }
+            }
+        }
 
         // Make sure the offset and limit are actually integers and do not exceed system limits
         $offset = ($request->input('offset') > $assets->count()) ? $assets->count() : app('api_offset_value');
@@ -944,7 +1074,7 @@ class AssetsController extends Controller
 
         // Set the location ID to the RTD location id if there is one
         // Wait, why are we doing this? This overrides the stuff we set further up, which makes no sense.
-        // TODO: Follow up here. WTF. Commented out for now. 
+        // TODO: Follow up here. WTF. Commented out for now.
 
 
         //        if ((isset($target->rtd_location_id)) && ($asset->rtd_location_id!='')) {
@@ -1309,9 +1439,9 @@ class AssetsController extends Controller
 
     /**
      * Generate asset labels by tag
-     * 
+     *
      * @author [Nebelkreis] [https://github.com/NebelKreis]
-     * 
+     *
      * @param Request $request Contains asset_tags array of asset tags to generate labels for
      * @return JsonResponse Returns base64 encoded PDF on success, error message on failure
      */
@@ -1322,7 +1452,7 @@ class AssetsController extends Controller
 
              // Validate that asset tags were provided in the request
             if (!$request->filled('asset_tags')) {
-                return response()->json(Helper::formatStandardApiResponse('error', null, 
+                return response()->json(Helper::formatStandardApiResponse('error', null,
                     trans('admin/hardware/message.no_assets_selected')), 400);
             }
 
@@ -1345,7 +1475,7 @@ class AssetsController extends Controller
 
 
                 $label = new Label();
-                
+
                 if (!$label) {
                     throw new \Exception('Label object could not be created');
                 }
