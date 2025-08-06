@@ -190,10 +190,25 @@
             document.querySelectorAll('select[id^="advancedSearch_"]').forEach(function(el) {
                 // Use the field name from the id
                 const id = "#" + el.id;
+                const field = id.replace("#advancedSearch_", "");
 
-                console.log(id);
-                console.log($(id));
-                console.log($(id).select2('data'));
+                const selections = $(id).select2('data');
+                let selectedOptionValue = [];
+
+                console.log(selections);
+                selections.forEach(item => {
+                        if (item.itemKey) {
+                            selectedOptionValue.push(item.itemKey);
+                        } else {
+                            selectedOptionValue.push(item.text);
+                        }
+                        console.log(selectedOptionValue);
+                });
+
+
+                if (selectedOptionValue.length > 0) {
+                    filters[field] = selectedOptionValue;
+                }
 
             });
 

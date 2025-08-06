@@ -1831,11 +1831,19 @@ class Asset extends Depreciable
                     if ($fieldname == 'model') {
                         $query->where(
                             function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'model', function ($query) use ($search_val) {
-                                        $query->where('models.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
+                                if(is_array($search_val)) {
+                                    $query->whereHas(
+                                        'model', function ($query) use ($search_val) {
+                                            $query->whereIn('models.name', $search_val);
+                                        }
+                                    );
+                                } else {
+                                    $query->whereHas(
+                                        'model', function ($query) use ($search_val) {
+                                            $query->where('models.name', 'LIKE', '%'.$search_val.'%');
+                                        }
+                                    );
+                                }
                             }
                         );
                     }
