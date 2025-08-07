@@ -30,10 +30,18 @@ class CheckoutAssetMail extends Mailable
         $this->item = $asset;
         $this->admin = $checkedOutBy;
         $this->note = $note;
-        $this->target = $checkedOutTo;
         $this->acceptance = $acceptance;
 
         $this->settings = Setting::getSettings();
+        $this->target = $checkedOutTo;
+
+        // Location is a target option, but there are no emails currently associated with locations.
+        if($this->target instanceof User){
+            $this->target = $this->target->present()->fullName();
+        }
+        else if($this->target instanceof Asset){
+            $this->target = $this->target->assignedto->present()->fullName();
+        }
 
         $this->last_checkout = '';
         $this->expected_checkin = '';
