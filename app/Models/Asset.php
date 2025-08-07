@@ -2235,11 +2235,21 @@ class Asset extends Depreciable
                     if ($fieldname == 'supplier') {
                         $query->where(
                             function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'supplier', function ($query) use ($search_val) {
-                                        $query->where('suppliers.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
+                                if (is_array($search_val)) {
+                                    $query->whereHas(
+                                        'supplier',
+                                        function ($query) use ($search_val) {
+                                            $query->whereIn('suppliers.name', $search_val);
+                                        }
+                                    );
+                                } else {
+                                    $query->whereHas(
+                                        'supplier',
+                                        function ($query) use ($search_val) {
+                                            $query->where('suppliers.name', 'LIKE', '%' . $search_val . '%');
+                                        }
+                                    );
+                                }
                             }
                         );
                     }
