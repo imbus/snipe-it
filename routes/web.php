@@ -13,7 +13,7 @@ use App\Http\Controllers\DepreciationsController;
 use App\Http\Controllers\GroupsController;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\LabelsController;
-use App\Http\Controllers\LocationsController;
+use App\Http\Controllers\UploadedFilesController;
 use App\Http\Controllers\ManufacturersController;
 use App\Http\Controllers\ModalController;
 use App\Http\Controllers\NotesController;
@@ -693,6 +693,39 @@ Route::group(['middleware' => 'web'], function () {
         'logout',
         [LoginController::class, 'logout']
     )->name('logout.post');
+
+
+
+    /**
+     * Uploaded files API routes
+     */
+
+    // Get a file
+    Route::get('{object_type}/{id}/files/{file_id}',
+        [
+            UploadedFilesController::class,
+            'show'
+        ]
+    )->name('ui.files.show')
+        ->where(['object_type' => 'assets|asset_maintenance|hardware|models|users|locations|accessories|consumables|licenses|components']);
+
+    // Upload files(s)
+    Route::post('{object_type}/{id}/files',
+        [
+            UploadedFilesController::class,
+            'store'
+        ]
+    )->name('ui.files.store')
+        ->where(['object_type' => 'assets|asset_maintenance|hardware|models|users|locations|accessories|consumables|licenses|components']);
+
+    // Delete files(s)
+    Route::delete('{object_type}/{id}/files/{file_id}/delete',
+        [
+            UploadedFilesController::class,
+            'destroy'
+        ]
+    )->name('ui.files.destroy')
+        ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
 });
 
 
