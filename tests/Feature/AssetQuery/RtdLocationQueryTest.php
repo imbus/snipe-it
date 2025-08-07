@@ -6,7 +6,7 @@ use App\Models\Location;
 use Tests\TestCase;
 
 
-class LocationQueryTest extends TestCase
+class RtdLocationQueryTest extends TestCase
 {
     public function testFilterAssetLocationEmptyString()
     {
@@ -15,10 +15,10 @@ class LocationQueryTest extends TestCase
         $locationA = Location::factory()->create();
         $locationB = Location::factory()->create();
 
-        $assetA = Asset::factory()->create(['location_id' => $locationA->id]);
-        $assetB = Asset::factory()->create(['location_id' => $locationB->id]);
+        $assetA = Asset::factory()->create(['rtd_location_id' => $locationA->id]);
+        $assetB = Asset::factory()->create(['rtd_location_id' => $locationB->id]);
 
-        $filter = ['location' => ''];
+        $filter = ['rtd_location' => ''];
         $results = Asset::query()->byFilter($filter)->get();
 
         // Then: Should include only assetA and assetB
@@ -36,10 +36,10 @@ class LocationQueryTest extends TestCase
         $locationA = Location::factory()->create();
         $locationB = Location::factory()->create();
 
-        $assetA = Asset::factory()->create(['location_id' => $locationA->id]);
-        $assetB = Asset::factory()->create(['location_id' => $locationB->id]);
+        $assetA = Asset::factory()->create(['rtd_location_id' => $locationA->id]);
+        $assetB = Asset::factory()->create(['rtd_location_id' => $locationB->id]);
 
-        $filter = ['location' => $locationA->name];
+        $filter = ['rtd_location' => $locationA->name];
         $results = Asset::query()->byFilter($filter)->get();
 
 
@@ -57,11 +57,11 @@ class LocationQueryTest extends TestCase
         $locationA = Location::factory()->create();
         $locationB = Location::factory()->create();
 
-        $assetA = Asset::factory()->create(['location_id' => $locationA->id]);
-        $assetB = Asset::factory()->create(['location_id' => $locationB->id]);
+        $assetA = Asset::factory()->create(['rtd_location_id' => $locationA->id]);
+        $assetB = Asset::factory()->create(['rtd_location_id' => $locationB->id]);
 
         $queryString = substr($locationA->name, 0, floor(strlen($locationA->name) / 2));
-        $filter = ['location' => $queryString];
+        $filter = ['rtd_location' => $queryString];
         $results = Asset::query()->byFilter($filter)->get();
 
         // Then: Should include only assetA and assetB
@@ -78,10 +78,10 @@ class LocationQueryTest extends TestCase
         $locationA = Location::factory()->create();
         $locationB = Location::factory()->create();
 
-        $assetA = Asset::factory()->create(['location_id' => $locationA->id]);
-        $assetB = Asset::factory()->create(['location_id' => $locationB->id]);
+        $assetA = Asset::factory()->create(['rtd_location_id' => $locationA->id]);
+        $assetB = Asset::factory()->create(['rtd_location_id' => $locationB->id]);
 
-        $filter = ['location' => [$locationA->name]];
+        $filter = ['rtd_location' => [$locationA->name]];
         $results = Asset::query()->byFilter($filter)->get();
 
         // Then: Should include only assetA and assetB
@@ -101,14 +101,14 @@ class LocationQueryTest extends TestCase
         $locationD = Location::factory()->create();
         $locationE = Location::factory()->create();
 
-        $assetA = Asset::factory()->create(['location_id' => $locationA->id]);
-        $assetB = Asset::factory()->create(['location_id' => $locationB->id]);
-        $assetC = Asset::factory()->create(['location_id' => $locationC->id]);
-        $assetD = Asset::factory()->create(['location_id' => $locationD->id]);
-        $assetE = Asset::factory()->create(['location_id' => $locationE->id]);
+        $assetA = Asset::factory()->create(['rtd_location_id' => $locationA->id]);
+        $assetB = Asset::factory()->create(['rtd_location_id' => $locationB->id]);
+        $assetC = Asset::factory()->create(['rtd_location_id' => $locationC->id]);
+        $assetD = Asset::factory()->create(['rtd_location_id' => $locationD->id]);
+        $assetE = Asset::factory()->create(['rtd_location_id' => $locationE->id]);
 
         // When: Query with an array of names
-        $filter = ['location' => [$locationB->name, $locationE->name]];
+        $filter = ['rtd_location' => [$locationB->name, $locationE->name]];
         $results = Asset::query()->byFilter($filter)->get();
 
         // Then: Should include only assetA to assetD
