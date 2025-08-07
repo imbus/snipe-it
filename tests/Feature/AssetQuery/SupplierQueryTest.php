@@ -1,27 +1,26 @@
 <?php
 namespace Tests\Unit;
 
-use App\Models\Company;
 use App\Models\Asset;
+use App\Models\Supplier;
 use Tests\TestCase;
 
 
-class CompanyQueryTest extends TestCase
+class SupplierQueryTest extends TestCase
 {
-    public function testFilterAssetCompanyEmptyString()
+    public function testFilterAssetSupplierEmptyString()
     {
-        $companyA = Company::factory()->create();
-        $companyB = Company::factory()->create();
+        $supplierA = Supplier::factory()->create();
+        $supplierB = Supplier::factory()->create();
 
-        // Assets mit direkter company_id
         $assetA = Asset::factory()->create([
-            'company_id' => $companyA->id,
+            'supplier_id' => $supplierA->id,
         ]);
         $assetB = Asset::factory()->create([
-            'company_id' => $companyB->id,
+            'supplier_id' => $supplierB->id,
         ]);
 
-        $filter = ['company' => ''];
+        $filter = ['supplier' => ''];
         $results = Asset::query()->byFilter($filter)->get();
 
         $this->assertCount(2, $results);
@@ -30,20 +29,19 @@ class CompanyQueryTest extends TestCase
     }
 
 
-    public function testFilterAssetCompanyStringComplete()
+    public function testFilterAssetSupplierStringComplete()
     {
-        $companyA = Company::factory()->create();
-        $companyB = Company::factory()->create();
+        $supplierA = Supplier::factory()->create();
+        $supplierB = Supplier::factory()->create();
 
-        // Assets mit direkter company_id
         $assetA = Asset::factory()->create([
-            'company_id' => $companyA->id,
+            'supplier_id' => $supplierA->id,
         ]);
         $assetB = Asset::factory()->create([
-            'company_id' => $companyB->id,
+            'supplier_id' => $supplierB->id,
         ]);
 
-        $filter = ['company' => $companyA->name];
+        $filter = ['supplier' => $supplierA->name];
         $results = Asset::query()->byFilter($filter)->get();
 
         $this->assertCount(1, $results);
@@ -51,21 +49,20 @@ class CompanyQueryTest extends TestCase
         $this->assertFalse($results->contains($assetB));
     }
 
-    public function testFilterAssetCompanyStringPartial()
+    public function testFilterAssetSupplierStringPartial()
     {
-        $companyA = Company::factory()->create();
-        $companyB = Company::factory()->create();
+        $supplierA = Supplier::factory()->create();
+        $supplierB = Supplier::factory()->create();
 
-        // Assets mit direkter company_id
         $assetA = Asset::factory()->create([
-            'company_id' => $companyA->id,
+            'supplier_id' => $supplierA->id,
         ]);
         $assetB = Asset::factory()->create([
-            'company_id' => $companyB->id,
+            'supplier_id' => $supplierB->id,
         ]);
 
-        $queryString = substr($companyA->name, 0, floor(strlen($companyA->name) / 2));
-        $filter = ['company' => $queryString];
+        $queryString = substr($supplierA->name, 0, floor(strlen($supplierA->name) / 2));
+        $filter = ['supplier' => $queryString];
         $results = Asset::query()->byFilter($filter)->get();
 
         $this->assertCount(1, $results);
@@ -73,22 +70,21 @@ class CompanyQueryTest extends TestCase
         $this->assertFalse($results->contains($assetB));
     }
 
-    public function testFilterAssetCompanyArraySingle()
+    public function testFilterAssetSupplierArraySingle()
     {
 
-        $companyA = Company::factory()->create();
-        $companyB = Company::factory()->create();
+        $supplierA = Supplier::factory()->create();
+        $supplierB = Supplier::factory()->create();
 
 
-        // Assets mit direkter company_id
         $assetA = Asset::factory()->create([
-            'company_id' => $companyA->id,
+            'supplier_id' => $supplierA->id,
         ]);
         $assetB = Asset::factory()->create([
-            'company_id' => $companyB->id,
+            'supplier_id' => $supplierB->id,
         ]);
 
-        $filter = ['company' => [$companyA->name]];
+        $filter = ['supplier' => [$supplierA->name]];
         $results = Asset::query()->byFilter($filter)->get();
 
         $this->assertCount(1, $results);
@@ -97,32 +93,31 @@ class CompanyQueryTest extends TestCase
 
     }
 
-    public function testFilterAssetCompanyArrayMultiple()
+    public function testFilterAssetSupplierArrayMultiple()
     {
-        $companyA = Company::factory()->create();
-        $companyB = Company::factory()->create();
-        $companyC = Company::factory()->create();
-        $companyD = Company::factory()->create();
-        $companyE = Company::factory()->create();
+        $supplierA = Supplier::factory()->create();
+        $supplierB = Supplier::factory()->create();
+        $supplierC = Supplier::factory()->create();
+        $supplierD = Supplier::factory()->create();
+        $supplierE = Supplier::factory()->create();
 
-        // Assets mit direkter company_id
         $assetA = Asset::factory()->create([
-            'company_id' => $companyA->id,
+            'supplier_id' => $supplierA->id,
         ]);
         $assetB = Asset::factory()->create([
-            'company_id' => $companyB->id,
+            'supplier_id' => $supplierB->id,
         ]);
         $assetC = Asset::factory()->create([
-            'company_id' => $companyC->id,
+            'supplier_id' => $supplierC->id,
         ]);
         $assetD = Asset::factory()->create([
-            'company_id' => $companyD->id,
+            'supplier_id' => $supplierD->id,
         ]);
         $assetE = Asset::factory()->create([
-            'company_id' => $companyE->id,
+            'supplier_id' => $supplierE->id,
         ]);
 
-        $filter = ['company' => [$companyB->name, $companyE->name]];
+        $filter = ['supplier' => [$supplierB->name, $supplierE->name]];
         $results = Asset::query()->byFilter($filter)->get();
 
         $this->assertCount(2, $results);
