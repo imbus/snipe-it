@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Ui;
+namespace Tests\Feature\AssetMaintenances\Api;
 
 use App\Models\Asset;
 use App\Models\AssetMaintenance;
@@ -10,12 +10,12 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class CreateAssetMaintenanceTest extends TestCase
+class EditAssetMaintenanceTest extends TestCase
 {
     public function testPageRenders()
     {
         $this->actingAs(User::factory()->superuser()->create())
-            ->get(route('maintenances.create'))
+            ->get(route('maintenances.update', AssetMaintenance::factory()->create()->id))
             ->assertOk();
     }
 
@@ -28,9 +28,11 @@ class CreateAssetMaintenanceTest extends TestCase
         $asset = Asset::factory()->create();
         $supplier = Supplier::factory()->create();
 
+        $maintenance = AssetMaintenance::factory()->create();
+
         $this->actingAs($actor)
             ->followingRedirects()
-            ->post(route('maintenances.store'), [
+            ->post(route('maintenances.update',  $maintenance), [
                 'title' => 'Test Maintenance',
                 'selected_assets' => [$asset->id],
                 'supplier_id' => $supplier->id,

@@ -51,6 +51,9 @@ class BrandingSettingsTest extends TestCase
             ->assertRedirect(route('settings.index'))
             ->assertSessionHasNoErrors();
 
+        // Assert files was stored...
+        Storage::disk('public')->assertExists('test_logo.jpg');
+
         $this->followRedirects($response)->assertSee('alert-success');
 
         $setting->refresh();
