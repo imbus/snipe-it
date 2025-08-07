@@ -1914,14 +1914,14 @@ class Asset extends Depreciable
                             function ($query) use ($search_val) {
                                 if (is_array($search_val)) {
                                     $query->whereHas(
-                                        'model',
+                                        'model_number',
                                         function ($query) use ($search_val) {
                                             $query->whereIn('models.model_number', $search_val);
                                         }
                                     );
                                 } else {
                                     $query->whereHas(
-                                        'model',
+                                        'model_number',
                                         function ($query) use ($search_val) {
                                             $query->where('models.model_number', 'LIKE', '%' . $search_val . '%');
                                         }
@@ -1937,14 +1937,14 @@ class Asset extends Depreciable
                             function ($query) use ($search_val) {
                                 if (is_array($search_val)) {
                                     $query->whereHas(
-                                        'model',
+                                        'company',
                                         function ($query) use ($search_val) {
                                             $query->whereIn('companies.name', $search_val);
                                         }
                                     );
                                 } else {
                                     $query->whereHas(
-                                        'model',
+                                        'company',
                                         function ($query) use ($search_val) {
                                             $query->where('companies.name', 'LIKE', '%' . $search_val . '%');
                                         }
