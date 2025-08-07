@@ -166,9 +166,9 @@ class BrandingSettingsTest extends TestCase
 
         Storage::fake('public');
 
+        UploadedFile::fake()->image('new_test_label_logo.png')->storeAs('uploads', 'new_test_label_logo.png', 'public');
         $setting = Setting::factory()->create(['label_logo' => 'new_test_label_logo.png']);
-        $original_file = UploadedFile::fake()->image('new_test_label_logo.png')->storeAs('', 'new_test_label_logo.png', 'public');
-        Storage::disk('public')->assertExists($original_file);
+        Storage::disk('public')->assertExists('uploads/'.$setting->label_logo);
 
         $this->assertNotNull($setting->label_logo);
 
@@ -183,8 +183,7 @@ class BrandingSettingsTest extends TestCase
 
         $setting->refresh();
         $this->followRedirects($response)->assertSee(trans('alert-success'));
-        // $this->assertNull($setting->refresh()->logo);
-        // Storage::disk('public')->assertMissing($original_file);
+        Storage::disk('public')->assertMissing('new_test_label_logo.png');
 
     }
 
