@@ -2193,28 +2193,45 @@ class Asset extends Depreciable
                     if ($fieldname == 'model_number') {
                         $query->where(
                             function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'model', function ($query) use ($search_val) {
-                                        $query->where('models.model_number', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
+                                if (is_array($search_val)) {
+                                    $query->whereHas(
+                                        'model',
+                                        function ($query) use ($search_val) {
+                                            $query->whereIn('models.model_number', $search_val);
+                                        }
+                                    );
+                                } else {
+                                    $query->whereHas(
+                                        'model',
+                                        function ($query) use ($search_val) {
+                                            $query->where('models.model_number', 'LIKE', '%'.$search_val.'%');
+                                        }
+                                    );
+                                }
                             }
                         );
                     }
-
-
                     if ($fieldname == 'company') {
                         $query->where(
                             function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'company', function ($query) use ($search_val) {
-                                        $query->where('companies.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
+                                if (is_array($search_val)) {
+                                    $query->whereHas(
+                                        'company',
+                                        function ($query) use ($search_val) {
+                                            $query->whereIn('companies.name', $search_val);
+                                        }
+                                    );
+                                } else {
+                                    $query->whereHas(
+                                        'company',
+                                        function ($query) use ($search_val) {
+                                            $query->where('companies.name', 'LIKE', '%'.$search_val.'%');
+                                        }
+                                    );
+                                }
                             }
                         );
                     }
-
                     if ($fieldname == 'supplier') {
                         $query->where(
                             function ($query) use ($search_val) {
@@ -2489,4 +2506,6 @@ class Asset extends Depreciable
             || ($this->assigned_to && $this->assigned_type && ! $this->assignedTo);
     }
 }
+
+
 
