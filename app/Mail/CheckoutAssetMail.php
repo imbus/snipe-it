@@ -24,6 +24,7 @@ class CheckoutAssetMail extends Mailable
 
     /**
      * Create a new message instance.
+     * @throws \Exception
      */
     public function __construct(Asset $asset, $checkedOutTo, User $checkedOutBy, $acceptance, $note, bool $firstTimeSending = true)
     {
@@ -37,10 +38,10 @@ class CheckoutAssetMail extends Mailable
 
         // Location is a target option, but there are no emails currently associated with locations.
         if($this->target instanceof User){
-            $this->target = $this->target->present()->fullName();
+            $this->target = $this->target->present()?->fullName();
         }
         else if($this->target instanceof Asset){
-            $this->target = $this->target->assignedto->present()->fullName();
+            $this->target = $this->target->assignedto?->present()?->fullName();
         }
 
         $this->last_checkout = '';
