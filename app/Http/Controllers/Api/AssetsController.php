@@ -117,15 +117,19 @@ class AssetsController extends Controller
             'jobtitle',
         ];
 
+        $all_custom_fields = CustomField::all(); //used as a 'cache' of custom fields throughout this page load
+        foreach ($all_custom_fields as $field) {
+            $allowed_columns[] = $field->db_column_name();
+        }
+
         $filter = [];
 
         if ($request->filled('filter')) {
             $filter = json_decode($request->input('filter'), true);
-        }
 
-        $all_custom_fields = CustomField::all(); //used as a 'cache' of custom fields throughout this page load
-        foreach ($all_custom_fields as $field) {
-            $allowed_columns[] = $field->db_column_name();
+            $filter = array_filter($filter, function ($key) use ($allowed_columns) {
+                return in_array($key, $allowed_columns);
+            }, ARRAY_FILTER_USE_KEY);
         }
 
         $assets = Asset::select('assets.*')
