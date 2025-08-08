@@ -468,6 +468,10 @@ class Actionlog extends SnipeModel
         if ($object == 'asset_models') {
             $object = 'models';
         }
+
+        if ($object == 'asset_maintenances') {
+            $object = 'maintenances';
+        }
         return route('ui.files.show', [
             'object_type' => $object,
             'id' => $this->item_id,
@@ -486,6 +490,8 @@ class Actionlog extends SnipeModel
         switch ($this->item_type) {
         case Accessory::class:
             return 'private_uploads/accessories/'.$this->filename;
+       case AssetMaintenance::class:
+            return 'private_uploads/asset_maintenances/'.$this->filename;
         case Asset::class:
             return 'private_uploads/assets/'.$this->filename;
         case AssetModel::class:
