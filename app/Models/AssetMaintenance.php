@@ -190,6 +190,11 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
             ->withTrashed();
     }
 
+    public function getDisplayNameAttribute()
+    {
+        return $this->title;
+    }
+
     /**
      * -----------------------------------------------
      * BEGIN QUERY SCOPES
