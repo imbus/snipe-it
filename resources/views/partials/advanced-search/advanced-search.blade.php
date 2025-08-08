@@ -34,7 +34,7 @@
                                     @switch($tableField->formatter)
                                         @case('dateDisplayFormatter')
                                             <input type="date" id="advancedSearch_{{ $tableField->field }}"
-                                                name="{{ $tableField->title }}">
+                                                name="{{ $tableField->title }}" class="datePicker">
                                         @break
 
                                         @case('companiesLinkObjFormatter')
@@ -169,6 +169,7 @@
                         @endif
                     @endforeach
                     <button class="button" id="filterButton">Search</button>
+                </span>
             </div>
         </div>
     </div>
@@ -210,6 +211,18 @@
                     filters[field] = selectedOptionValue;
                 }
 
+            });
+
+            // Handle all date inputs
+            document.querySelectorAll('input[id^="advancedSearch_"][class="datePicker"]').forEach(function(el) {
+                // Use the field name from the id
+                const id = "#" + el.id;
+                const field = id.replace("#advancedSearch_", "");
+                if(el.value) {
+
+                    console.log("datepicker: " + el.value);
+                    filters[field] = el.value;
+                }
             });
 
             return filters;
