@@ -30,7 +30,7 @@ class UploadedFilesController extends Controller
 
     static $map_object_type = [
         'accessories' => Accessory::class,
-        'asset_maintenances' => AssetMaintenance::class,
+        'maintenances' => AssetMaintenance::class,
         'assets' => Asset::class,
         'components' => Component::class,
         'consumables' => Consumable::class,
@@ -43,7 +43,7 @@ class UploadedFilesController extends Controller
 
     static $map_storage_path = [
         'accessories' => 'private_uploads/accessories/',
-        'asset_maintenances' => 'private_uploads/asset_maintenances/',
+        'maintenances' => 'private_uploads/asset_maintenances/',
         'assets' => 'private_uploads/assets/',
         'components' => 'private_uploads/components/',
         'consumables' => 'private_uploads/consumables/',
@@ -56,7 +56,7 @@ class UploadedFilesController extends Controller
 
     static $map_file_prefix= [
         'accessories' => 'accessory',
-        'asset_maintenance' => 'asset',
+        'maintenances' => 'maintenance',
         'assets' => 'asset',
         'components' => 'component',
         'consumables' => 'consumable',
