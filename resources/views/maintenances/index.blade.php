@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-  {{ trans('admin/asset_maintenances/general.asset_maintenances') }}
+  {{ trans('admin/maintenances/general.asset_maintenances') }}
   @parent
 @stop
 
@@ -16,7 +16,7 @@
       <div class="box-body">
 
           <table
-              data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
+              data-columns="{{ \App\Presenters\MaintenancesPresenter::dataTableLayout() }}"
               data-cookie-id-table="maintenancesTable"
               data-side-pagination="server"
               data-show-footer="true"
