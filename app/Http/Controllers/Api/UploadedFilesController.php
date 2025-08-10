@@ -10,6 +10,7 @@ use App\Http\Transformers\UploadedFilesTransformer;
 use App\Models\Accessory;
 use App\Models\Actionlog;
 use App\Models\Asset;
+use App\Models\Maintenance;
 use App\Models\AssetModel;
 use App\Models\Component;
 use App\Models\Consumable;
@@ -27,9 +28,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class UploadedFilesController extends Controller
 {
 
-
     static $map_object_type = [
         'accessories' => Accessory::class,
+        'maintenances' => Maintenance::class,
         'assets' => Asset::class,
         'components' => Component::class,
         'consumables' => Consumable::class,
@@ -42,18 +43,20 @@ class UploadedFilesController extends Controller
 
     static $map_storage_path = [
         'accessories' => 'private_uploads/accessories/',
+        'maintenances' => 'private_uploads/maintenances/',
         'assets' => 'private_uploads/assets/',
         'components' => 'private_uploads/components/',
         'consumables' => 'private_uploads/consumables/',
         'hardware' => 'private_uploads/assets/',
         'licenses' => 'private_uploads/licenses/',
         'locations' => 'private_uploads/locations/',
-        'models' => 'private_uploads/assetmodels/',
+        'models' => 'private_uploads/models/',
         'users' => 'private_uploads/users/',
     ];
 
     static $map_file_prefix= [
         'accessories' => 'accessory',
+        'maintenances' => 'maintenance',
         'assets' => 'asset',
         'components' => 'component',
         'consumables' => 'consumable',

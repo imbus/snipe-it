@@ -409,9 +409,9 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * @since  [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function assetmaintenances()
+    public function maintenances()
     {
-        return $this->hasMany(\App\Models\AssetMaintenance::class, 'user_id')->withTrashed();
+        return $this->hasMany(\App\Models\Maintenance::class, 'user_id')->withTrashed();
     }
 
     /**

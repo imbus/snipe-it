@@ -1,35 +1,34 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Ui;
+namespace Tests\Feature\Maintenances\Ui;
 
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class EditAssetMaintenanceTest extends TestCase
+class EditMaintenanceTest extends TestCase
 {
     public function testPageRenders()
     {
         $this->actingAs(User::factory()->superuser()->create())
-            ->get(route('maintenances.edit', AssetMaintenance::factory()->create()->id))
+            ->get(route('maintenances.edit', Maintenance::factory()->create()->id))
             ->assertOk();
     }
 
-    public function testCanUpdateAssetMaintenance()
+    public function testCanUpdateMaintenance()
     {
         $actor = User::factory()->superuser()->create();
         $asset = Asset::factory()->create();
-        $assetMaintenance = AssetMaintenance::factory()->create(['asset_id' => $asset]);
+        $maintenance = Maintenance::factory()->create(['asset_id' => $asset]);
         $supplier = Supplier::factory()->create();
 
         $this->actingAs($actor)
-            ->followingRedirects()
-            ->put(route('maintenances.update', $assetMaintenance), [
-                'title' => 'Test Maintenance',
+            ->put(route('maintenances.update', $maintenance), [
+                'name' => 'Test Maintenance',
                 'asset_id' => $asset->id,
                 'supplier_id' => $supplier->id,
                 'asset_maintenance_type' => 'Maintenance',
@@ -40,19 +39,20 @@ class EditAssetMaintenanceTest extends TestCase
                 'cost' => '100.99',
                 'notes' => 'A note',
             ])
-            ->assertOk();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('maintenances.index'));
 
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
-        $assetMaintenance = AssetMaintenance::where('title', 'Test Maintenance')->first();
+        $maintenance = Maintenance::where('name', 'Test Maintenance')->first();
 
         // Assert file was stored...
-        Storage::disk('public')->assertExists(app('asset_maintenances_path').$assetMaintenance->image);
+        Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
-        $this->assertDatabaseHas('asset_maintenances', [
+        $this->assertDatabaseHas('maintenances', [
             'asset_id' => $asset->id,
             'supplier_id' => $supplier->id,
             'asset_maintenance_type' => 'Maintenance',
-            'title' => 'Test Maintenance',
+            'name' => 'Test Maintenance',
             'is_warranty' => 1,
             'start_date' => '2021-01-01',
             'completion_date' => '2021-01-10',
@@ -60,6 +60,8 @@ class EditAssetMaintenanceTest extends TestCase
             'notes' => 'A note',
             'cost' => '100.99',
         ]);
+
+        $this->assertHasTheseActionLogs($maintenance, ['create', 'update']);
     }
 
 }

@@ -651,7 +651,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                         @endcan
 
                         @can('view', \App\Models\User::class)
-                                <li id="users-sidenav-option"{!! (request()->is('users*') ? ' class="active"' : '') !!}>
+                                <li class="treeview{{ (request()->is('users*') ? ' active' : '') }}" id="users-sidenav-option">
                                     <a href="#" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}}>
                                         <x-icon type="users" class="fa-fw" />
                                         <span>{{ trans('general.people') }}</span>
@@ -820,7 +820,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             {{ trans('general.license_report') }}
                                         </a>
                                     </li>
-                                    <li {{!! (request()->is('reports/asset_maintenances') ? ' class="active"' : '') !!}}>
+                                    <li {{!! (request()->is('reports/maintenances') ? ' class="active"' : '') !!}}>
                                         <a href="{{ url('reports/asset_maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
                                         </a>
@@ -1157,6 +1157,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                     $(inputElement).closest('.help-block').remove();
                 },
                 onfocusout: function(element) {
+                    $(element).parent().removeClass('has-error');
                     return $(element).valid();
                 },
 

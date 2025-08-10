@@ -771,9 +771,9 @@ class Asset extends Depreciable
      * @since  1.0
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function assetmaintenances()
+    public function maintenances()
     {
-        return $this->hasMany(\App\Models\AssetMaintenance::class, 'asset_id')
+        return $this->hasMany(\App\Models\Maintenance::class, 'asset_id')
             ->orderBy('created_at', 'desc');
     }
 

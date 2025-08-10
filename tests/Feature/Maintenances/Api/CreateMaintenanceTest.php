@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Api;
+namespace Tests\Feature\Maintenances\Api;
 
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\Category;
 use App\Models\Supplier;
 use App\Models\User;
@@ -12,17 +12,17 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class CreateAssetMaintenanceTest extends TestCase
+class CreateMaintenanceTest extends TestCase
 {
 
 
-    public function testRequiresPermissionToCreateAssetMaintenance()
+    public function testRequiresPermissionToCreateMaintenance()
     {
         $this->actingAsForApi(User::factory()->create())
             ->postJson(route('api.maintenances.store'))
             ->assertForbidden();
     }
-    public function testCanCreateAssetMaintenance()
+    public function testCanCreateMaintenance()
     {
 
         Storage::fake('public');
@@ -33,7 +33,7 @@ class CreateAssetMaintenanceTest extends TestCase
 
         $response = $this->actingAsForApi($actor)
             ->postJson(route('api.maintenances.store'), [
-                'title' => 'Test Maintenance',
+                'name' => 'Test Maintenance',
                 'asset_id' => $asset->id,
                 'supplier_id' => $supplier->id,
                 'asset_maintenance_type' => 'Maintenance',
@@ -47,25 +47,26 @@ class CreateAssetMaintenanceTest extends TestCase
             ->assertOk()
             ->assertStatus(200);
 
-        \Log::error($response->json());
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
-        $assetMaintenance = AssetMaintenance::where('title', 'Test Maintenance')->first();
+        $maintenance = Maintenance::where('name', 'Test Maintenance')->first();
 
         // Assert file was stored...
-        Storage::disk('public')->assertExists(app('asset_maintenances_path').$assetMaintenance->image);
+        Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
-        $this->assertDatabaseHas('asset_maintenances', [
+        $this->assertDatabaseHas('maintenances', [
             'asset_id' => $asset->id,
             'supplier_id' => $supplier->id,
             'asset_maintenance_type' => 'Maintenance',
-            'title' => 'Test Maintenance',
+            'name' => 'Test Maintenance',
             'is_warranty' => 1,
             'start_date' => '2021-01-01',
             'completion_date' => '2021-01-10',
             'notes' => 'A note',
-            'image' => $assetMaintenance->image,
+            'image' => $maintenance->image,
             'created_by' => $actor->id,
         ]);
+
+        $this->assertHasTheseActionLogs($maintenance, ['create']);
     }
 
 

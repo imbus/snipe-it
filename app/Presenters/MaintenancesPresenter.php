@@ -5,7 +5,7 @@ namespace App\Presenters;
 /**
  * Class AssetModelPresenter
  */
-class AssetMaintenancesPresenter extends Presenter
+class MaintenancesPresenter extends Presenter
 {
     /**
      * Json Column Layout for bootstrap table
@@ -22,7 +22,7 @@ class AssetMaintenancesPresenter extends Presenter
                 'title' => trans('general.id'),
                 'visible' => false,
             ], [
-                'field' => 'title',
+                'field' => 'name',
                 'searchable' => true,
                 'sortable' => true,
                 'switchable' => true,
@@ -51,7 +51,7 @@ class AssetMaintenancesPresenter extends Presenter
                 'field' => 'asset_name',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/table.asset_name'),
+                'title' => trans('admin/maintenances/table.asset_name'),
                 'formatter' => 'assetNameLinkFormatter',
             ], [
                 'field' => 'asset_tag',
@@ -98,35 +98,35 @@ class AssetMaintenancesPresenter extends Presenter
                 'field' => 'asset_maintenance_type',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/form.asset_maintenance_type'),
+                'title' => trans('admin/maintenances/form.asset_maintenance_type'),
             ], [
                 'field' => 'start_date',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/form.start_date'),
+                'title' => trans('admin/maintenances/form.start_date'),
                 'formatter' => 'dateDisplayFormatter',
             ], [
                 'field' => 'completion_date',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/form.completion_date'),
+                'title' => trans('admin/maintenances/form.completion_date'),
                 'formatter' => 'dateDisplayFormatter',
             ], [
                 'field' => 'notes',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/form.notes'),
+                'title' => trans('admin/maintenances/form.notes'),
             ], [
                 'field' => 'is_warranty',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/table.is_warranty'),
+                'title' => trans('admin/maintenances/table.is_warranty'),
                 'formatter' => 'trueFalseFormatter'
             ], [
                 'field' => 'cost',
                 'searchable' => true,
                 'sortable' => true,
-                'title' => trans('admin/asset_maintenances/form.cost'),
+                'title' => trans('admin/maintenances/form.cost'),
                 'class' => 'text-right',
             ], [
                 'field' => 'created_by',

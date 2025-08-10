@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Ui;
+namespace Tests\Feature\Maintenances\Ui;
 
 use App\Models\User;
 use Tests\TestCase;
 
-class AssetMaintenanceIndexTest extends TestCase
+class MaintenanceIndexTest extends TestCase
 {
     public function testPageRenders()
     {

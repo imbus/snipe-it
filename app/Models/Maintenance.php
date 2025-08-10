@@ -4,31 +4,34 @@ namespace App\Models;
 
 use App\Helpers\Helper;
 use App\Models\Traits\Searchable;
+use App\Presenters\Presentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
+use App\Models\Traits\HasUploads;
 
 /**
  * Model for Asset Maintenances.
  *
  * @version v1.0
  */
-class AssetMaintenance extends Model implements ICompanyableChild
+class Maintenance extends SnipeModel implements ICompanyableChild
 {
     use HasFactory;
+    use HasUploads;
     use SoftDeletes;
     use CompanyableChildTrait;
     use ValidatingTrait;
+    use Loggable, Presentable;
 
 
 
-    protected $table = 'asset_maintenances';
+    protected $table = 'maintenances';
     protected $rules = [
         'asset_id'               => 'required|integer',
         'supplier_id'            => 'nullable|integer',
         'asset_maintenance_type' => 'required',
-        'title'                  => 'required|max:100',
+        'name'                  => 'required|max:100',
         'is_warranty'            => 'boolean',
         'start_date'             => 'required|date_format:Y-m-d',
         'completion_date'        => 'date_format:Y-m-d|nullable|after_or_equal:start_date',
@@ -43,7 +46,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      * @var array
      */
     protected $fillable = [
-        'title',
+        'name',
         'asset_id',
         'supplier_id',
         'asset_maintenance_type',
@@ -64,7 +67,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     protected $searchableAttributes =
         [
-            'title',
+            'name',
             'notes',
             'asset_maintenance_type',
             'cost',
@@ -100,14 +103,14 @@ class AssetMaintenance extends Model implements ICompanyableChild
     public static function getImprovementOptions()
     {
         return [
-            trans('admin/asset_maintenances/general.maintenance') => trans('admin/asset_maintenances/general.maintenance'),
-            trans('admin/asset_maintenances/general.repair')      => trans('admin/asset_maintenances/general.repair'),
-            trans('admin/asset_maintenances/general.upgrade')     => trans('admin/asset_maintenances/general.upgrade'),
-            trans('admin/asset_maintenances/general.pat_test')     => trans('admin/asset_maintenances/general.pat_test'),
-            trans('admin/asset_maintenances/general.calibration')     => trans('admin/asset_maintenances/general.calibration'),
-            trans('admin/asset_maintenances/general.software_support')      => trans('admin/asset_maintenances/general.software_support'),
-            trans('admin/asset_maintenances/general.hardware_support')      => trans('admin/asset_maintenances/general.hardware_support'),
-            trans('admin/asset_maintenances/general.configuration_change')     => trans('admin/asset_maintenances/general.configuration_change'),
+            trans('admin/maintenances/general.maintenance') => trans('admin/maintenances/general.maintenance'),
+            trans('admin/maintenances/general.repair')      => trans('admin/maintenances/general.repair'),
+            trans('admin/maintenances/general.upgrade')     => trans('admin/maintenances/general.upgrade'),
+            trans('admin/maintenances/general.pat_test')     => trans('admin/maintenances/general.pat_test'),
+            trans('admin/maintenances/general.calibration')     => trans('admin/maintenances/general.calibration'),
+            trans('admin/maintenances/general.software_support')      => trans('admin/maintenances/general.software_support'),
+            trans('admin/maintenances/general.hardware_support')      => trans('admin/maintenances/general.hardware_support'),
+            trans('admin/maintenances/general.configuration_change')     => trans('admin/maintenances/general.configuration_change'),
         ];
     }
 
@@ -166,6 +169,21 @@ class AssetMaintenance extends Model implements ICompanyableChild
         return $this->belongsTo(\App\Models\Asset::class, 'asset_id')
             ->withTrashed();
     }
+
+    /**
+     * Get the maintenance logs
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since  [v8.2.2]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assetlog()
+    {
+        return $this->hasMany(\App\Models\Actionlog::class, 'item_id')
+            ->where('item_type', '=', self::class)
+            ->orderBy('created_at', 'desc')
+            ->withTrashed();
+    }
     
 
     /**
@@ -187,6 +205,11 @@ class AssetMaintenance extends Model implements ICompanyableChild
             ->withTrashed();
     }
 
+    public function getDisplayNameAttribute()
+    {
+        return $this->name;
+    }
+
     /**
      * -----------------------------------------------
      * BEGIN QUERY SCOPES
@@ -203,7 +226,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderBySupplier($query, $order)
     {
-        return $query->leftJoin('suppliers as suppliers_maintenances', 'asset_maintenances.supplier_id', '=', 'suppliers_maintenances.id')
+        return $query->leftJoin('suppliers as suppliers_maintenances', 'maintenances.supplier_id', '=', 'suppliers_maintenances.id')
             ->orderBy('suppliers_maintenances.name', $order);
     }
 
@@ -219,7 +242,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderByTag($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', 'maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.asset_tag', $order);
     }
 
@@ -233,7 +256,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderByAssetName($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', 'maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.name', $order);
     }
 
@@ -247,7 +270,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderByAssetSerial($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', 'maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.serial', $order);
     }
 
@@ -261,7 +284,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderStatusName($query, $order)
     {
-        return $query->join('assets as maintained_asset', 'asset_maintenances.asset_id', '=', 'maintained_asset.id')
+        return $query->join('assets as maintained_asset', 'maintenances.asset_id', '=', 'maintained_asset.id')
             ->leftjoin('status_labels as maintained_asset_status', 'maintained_asset_status.id', '=', 'maintained_asset.status_id')
             ->orderBy('maintained_asset_status.name', $order);
     }
@@ -276,7 +299,7 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderLocationName($query, $order)
     {
-        return $query->join('assets as maintained_asset', 'asset_maintenances.asset_id', '=', 'maintained_asset.id')
+        return $query->join('assets as maintained_asset', 'maintenances.asset_id', '=', 'maintained_asset.id')
             ->leftjoin('locations as maintained_asset_location', 'maintained_asset_location.id', '=', 'maintained_asset.location_id')
             ->orderBy('maintained_asset_location.name', $order);
     }
@@ -286,6 +309,6 @@ class AssetMaintenance extends Model implements ICompanyableChild
      */
     public function scopeOrderByCreatedBy($query, $order)
     {
-        return $query->leftJoin('users as admin_sort', 'asset_maintenances.created_by', '=', 'admin_sort.id')->select('asset_maintenances.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
+        return $query->leftJoin('users as admin_sort', 'maintenances.created_by', '=', 'admin_sort.id')->select('maintenances.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 }
