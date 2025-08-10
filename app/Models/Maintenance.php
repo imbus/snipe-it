@@ -169,6 +169,21 @@ class Maintenance extends SnipeModel implements ICompanyableChild
         return $this->belongsTo(\App\Models\Asset::class, 'asset_id')
             ->withTrashed();
     }
+
+    /**
+     * Get the maintenance logs
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since  [v8.2.2]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assetlog()
+    {
+        return $this->hasMany(\App\Models\Actionlog::class, 'item_id')
+            ->where('item_type', '=', self::class)
+            ->orderBy('created_at', 'desc')
+            ->withTrashed();
+    }
     
 
     /**

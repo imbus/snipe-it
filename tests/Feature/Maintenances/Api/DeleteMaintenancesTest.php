@@ -55,6 +55,7 @@ class DeleteMaintenancesTest extends TestCase implements TestsFullMultipleCompan
         $this->assertNotSoftDeleted($maintenanceA);
         $this->assertNotSoftDeleted($maintenanceB);
         $this->assertSoftDeleted($maintenanceC);
+        $this->assertHasTheseActionLogs($maintenanceC, ['create', 'delete']);
     }
 
     public function testCanDeleteMaintenance()
@@ -66,5 +67,7 @@ class DeleteMaintenancesTest extends TestCase implements TestsFullMultipleCompan
             ->assertStatusMessageIs('success');
 
         $this->assertSoftDeleted($maintenance);
+
+        $this->assertHasTheseActionLogs($maintenance, ['create', 'delete']);
     }
 }

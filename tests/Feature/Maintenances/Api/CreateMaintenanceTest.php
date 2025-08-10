@@ -65,6 +65,8 @@ class CreateMaintenanceTest extends TestCase
             'image' => $maintenance->image,
             'created_by' => $actor->id,
         ]);
+
+        $this->assertHasTheseActionLogs($maintenance, ['create']);
     }
 
 
