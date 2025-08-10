@@ -243,7 +243,7 @@ class RestoreFromBackup extends Command
         $private_dirs = [
             'storage/private_uploads/accessories',
             'storage/private_uploads/maintenances',
-            'storage/private_uploads/assetmodels',
+            'storage/private_uploads/models',
             'storage/private_uploads/assets', // these are asset _files_, not the pictures.
             'storage/private_uploads/audits',
             'storage/private_uploads/components',
