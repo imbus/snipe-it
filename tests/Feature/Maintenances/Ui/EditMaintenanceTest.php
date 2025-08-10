@@ -27,7 +27,6 @@ class EditMaintenanceTest extends TestCase
         $supplier = Supplier::factory()->create();
 
         $this->actingAs($actor)
-            ->followingRedirects()
             ->put(route('maintenances.update', $maintenance), [
                 'name' => 'Test Maintenance',
                 'asset_id' => $asset->id,
