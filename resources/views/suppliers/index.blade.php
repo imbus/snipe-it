@@ -23,8 +23,7 @@
 
         <div class="row">
           <div class="col-md-12">
-            {{--            <x-tables.bulk-actions/>--}}
-            @include('partials.asset-bulk-actions', ['delete_only' => true])
+            @include('partials.supplier-bulk-actions', ['delete_only' => true])
 
             <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
