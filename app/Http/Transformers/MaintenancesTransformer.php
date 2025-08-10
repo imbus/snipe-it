@@ -4,24 +4,24 @@ namespace App\Http\Transformers;
 
 use App\Helpers\Helper;
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class AssetMaintenancesTransformer
+class MaintenancesTransformer
 {
-    public function transformAssetMaintenances(Collection $assetmaintenances, $total)
+    public function transformMaintenances(Collection $maintenances, $total)
     {
         $array = [];
-        foreach ($assetmaintenances as $assetmaintenance) {
-            $array[] = self::transformAssetMaintenance($assetmaintenance);
+        foreach ($maintenances as $assetmaintenance) {
+            $array[] = self::transformMaintenance($assetmaintenance);
         }
 
         return (new DatatablesTransformer)->transformDatatables($array, $total);
     }
 
-    public function transformAssetMaintenance(AssetMaintenance $assetmaintenance)
+    public function transformMaintenance(Maintenance $assetmaintenance)
     {
         $array = [
             'id'            => (int) $assetmaintenance->id,
@@ -34,7 +34,7 @@ class AssetMaintenancesTransformer
                 'created_at' => Helper::getFormattedDateObject($assetmaintenance->asset->created_at, 'datetime'),
                 'updated_at' => Helper::getFormattedDateObject($assetmaintenance->asset->updated_at, 'datetime'),
             ] : null,
-            'image' => ($assetmaintenance->image != '') ? Storage::disk('public')->url('asset_maintenances/'.e($assetmaintenance->image)) : null,
+            'image' => ($assetmaintenance->image != '') ? Storage::disk('public')->url('maintenances/'.e($assetmaintenance->image)) : null,
             'model' => (($assetmaintenance->asset) && ($assetmaintenance->asset->model)) ? [
                 'id' => (int) $assetmaintenance->asset->model->id,
                 'name'=> ($assetmaintenance->asset->model->name) ? e($assetmaintenance->asset->model->name).' '.e($assetmaintenance->asset->model->model_number) : null,
@@ -50,7 +50,8 @@ class AssetMaintenancesTransformer
                 'name'=> ($assetmaintenance->asset->company->name) ? e($assetmaintenance->asset->company->name) : null,
 
             ] : null,
-            'title'         => ($assetmaintenance->title) ? e($assetmaintenance->title) : null,
+            'name'         => ($assetmaintenance->name) ? e($assetmaintenance->name) : null,
+            'title'         => ($assetmaintenance->name) ? e($assetmaintenance->name) : null, // legacy to not change the shape of the API
             'location' => (($assetmaintenance->asset) && ($assetmaintenance->asset->location)) ? [
                 'id' => (int) $assetmaintenance->asset->location->id,
                 'name'=> e($assetmaintenance->asset->location->name),

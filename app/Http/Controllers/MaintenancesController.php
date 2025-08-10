@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\Company;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -18,29 +18,23 @@ use \Illuminate\Http\RedirectResponse;
  *
  * @version    v2.0
  */
-class AssetMaintenancesController extends Controller
+class MaintenancesController extends Controller
 {
 
     /**
     *  Returns a view that invokes the ajax tables which actually contains
-    * the content for the asset maintenances listing, which is generated in getDatatable.
-    *
-    * @todo This should be replaced with middleware and/or policies
-    * @see AssetMaintenancesController::getDatatable() method that generates the JSON response
-    * @author  Vincent Sposato <vincent.sposato@gmail.com>
-    * @version v1.0
-    * @since [v1.8]
+    * the content for the asset maintenances listing.
     */
     public function index() : View
     {
         $this->authorize('view', Asset::class);
-        return view('asset_maintenances/index');
+        return view('maintenances.index');
     }
 
     /**
      *  Returns a form view to create a new asset maintenance.
      *
-     * @see AssetMaintenancesController::postCreate() method that stores the data
+     * @see MaintenancesController::postCreate() method that stores the data
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @version v1.0
      * @since [v1.8]
@@ -56,16 +50,16 @@ class AssetMaintenancesController extends Controller
             $asset->asset_id = $asset->id;
         }
         
-        return view('asset_maintenances/edit')
-                   ->with('assetMaintenanceType', AssetMaintenance::getImprovementOptions())
+        return view('maintenances/edit')
+                   ->with('maintenanceType', Maintenance::getImprovementOptions())
                    ->with('asset', $asset)
-                   ->with('item', new AssetMaintenance);
+                   ->with('item', new Maintenance);
     }
 
     /**
     *  Validates and stores the new asset maintenance
     *
-    * @see AssetMaintenancesController::getCreate() method for the form
+    * @see MaintenancesController::getCreate() method for the form
     * @author  Vincent Sposato <vincent.sposato@gmail.com>
     * @version v1.0
     * @since [v1.8]
@@ -79,73 +73,73 @@ class AssetMaintenancesController extends Controller
         // Loop through the selected assets
         foreach ($assets as $asset) {
 
-            $assetMaintenance = new AssetMaintenance();
-            $assetMaintenance->supplier_id = $request->input('supplier_id');
-            $assetMaintenance->is_warranty = $request->input('is_warranty');
-            $assetMaintenance->cost = $request->input('cost');
-            $assetMaintenance->notes = $request->input('notes');
+            $maintenance = new Maintenance();
+            $maintenance->supplier_id = $request->input('supplier_id');
+            $maintenance->is_warranty = $request->input('is_warranty');
+            $maintenance->cost = $request->input('cost');
+            $maintenance->notes = $request->input('notes');
 
             // Save the asset maintenance data
-            $assetMaintenance->asset_id = $asset->id;
-            $assetMaintenance->asset_maintenance_type = $request->input('asset_maintenance_type');
-            $assetMaintenance->title = $request->input('title');
-            $assetMaintenance->start_date = $request->input('start_date');
-            $assetMaintenance->completion_date = $request->input('completion_date');
-            $assetMaintenance->created_by = auth()->id();
+            $maintenance->asset_id = $asset->id;
+            $maintenance->asset_maintenance_type = $request->input('asset_maintenance_type');
+            $maintenance->name = $request->input('name');
+            $maintenance->start_date = $request->input('start_date');
+            $maintenance->completion_date = $request->input('completion_date');
+            $maintenance->created_by = auth()->id();
 
-            if (($assetMaintenance->completion_date !== null)
-                && ($assetMaintenance->start_date !== '')
-                && ($assetMaintenance->start_date !== '0000-00-00')
+            if (($maintenance->completion_date !== null)
+                && ($maintenance->start_date !== '')
+                && ($maintenance->start_date !== '0000-00-00')
             ) {
-                $startDate = Carbon::parse($assetMaintenance->start_date);
-                $completionDate = Carbon::parse($assetMaintenance->completion_date);
-                $assetMaintenance->asset_maintenance_time = (int) $completionDate->diffInDays($startDate, true);
+                $startDate = Carbon::parse($maintenance->start_date);
+                $completionDate = Carbon::parse($maintenance->completion_date);
+                $maintenance->asset_maintenance_time = (int) $completionDate->diffInDays($startDate, true);
             }
 
-            $assetMaintenance = $request->handleImages($assetMaintenance);
+            $maintenance = $request->handleImages($maintenance);
 
             // Was the asset maintenance created?
-            if (!$assetMaintenance->save()) {
-                return redirect()->back()->withInput()->withErrors($assetMaintenance->getErrors());
+            if (!$maintenance->save()) {
+                return redirect()->back()->withInput()->withErrors($maintenance->getErrors());
             }
         }
 
         return redirect()->route('maintenances.index')
-            ->with('success', trans('admin/asset_maintenances/message.create.success'));
+            ->with('success', trans('admin/maintenances/message.create.success'));
 
     }
 
     /**
     *  Returns a form view to edit a selected asset maintenance.
     *
-    * @see AssetMaintenancesController::postEdit() method that stores the data
+    * @see MaintenancesController::postEdit() method that stores the data
     * @author  Vincent Sposato <vincent.sposato@gmail.com>
     * @version v1.0
     * @since [v1.8]
     */
-    public function edit(AssetMaintenance $maintenance) : View | RedirectResponse
+    public function edit(Maintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
         $this->authorize('update', $maintenance->asset);
 
-        return view('asset_maintenances/edit')
+        return view('maintenances/edit')
             ->with('selected_assets', $maintenance->asset->pluck('id')->toArray())
             ->with('asset_ids', request()->input('asset_ids', []))
-            ->with('assetMaintenanceType', AssetMaintenance::getImprovementOptions())
+            ->with('maintenanceType', Maintenance::getImprovementOptions())
             ->with('item', $maintenance);
     }
 
     /**
      *  Validates and stores an update to an asset maintenance
      *
-     * @see AssetMaintenancesController::postEdit() method that stores the data
+     * @see MaintenancesController::postEdit() method that stores the data
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @param Request $request
-     * @param int $assetMaintenanceId
+     * @param int $maintenanceId
      * @version v1.0
      * @since [v1.8]
      */
-    public function update(ImageUploadRequest $request, AssetMaintenance $maintenance) : View | RedirectResponse
+    public function update(ImageUploadRequest $request, Maintenance $maintenance) : View | RedirectResponse
     {
         $this->authorize('update', Asset::class);
         $this->authorize('update', $maintenance->asset);
@@ -155,7 +149,7 @@ class AssetMaintenancesController extends Controller
         $maintenance->cost =  $request->input('cost');
         $maintenance->notes = $request->input('notes');
         $maintenance->asset_maintenance_type = $request->input('asset_maintenance_type');
-        $maintenance->title = $request->input('title');
+        $maintenance->name = $request->input('name');
         $maintenance->start_date = $request->input('start_date');
         $maintenance->completion_date = $request->input('completion_date');
 
@@ -182,7 +176,7 @@ class AssetMaintenancesController extends Controller
 
         if ($maintenance->save()) {
             return redirect()->route('maintenances.index')
-                            ->with('success', trans('admin/asset_maintenances/message.edit.success'));
+                            ->with('success', trans('admin/maintenances/message.edit.success'));
         }
 
         return redirect()->back()->withInput()->withErrors($maintenance->getErrors());
@@ -192,11 +186,11 @@ class AssetMaintenancesController extends Controller
     *  Delete an asset maintenance
     *
     * @author  Vincent Sposato <vincent.sposato@gmail.com>
-    * @param int $assetMaintenanceId
+    * @param int $maintenanceId
     * @version v1.0
     * @since [v1.8]
     */
-    public function destroy(AssetMaintenance $maintenance) : RedirectResponse
+    public function destroy(Maintenance $maintenance) : RedirectResponse
     {
         $this->authorize('update', Asset::class);
         $this->authorize('update', $maintenance->asset);
@@ -204,19 +198,19 @@ class AssetMaintenancesController extends Controller
         $maintenance->delete();
         // Redirect to the asset_maintenance management page
         return redirect()->route('maintenances.index')
-                       ->with('success', trans('admin/asset_maintenances/message.delete.success'));
+                       ->with('success', trans('admin/maintenances/message.delete.success'));
     }
 
     /**
     *  View an asset maintenance
     *
     * @author  Vincent Sposato <vincent.sposato@gmail.com>
-    * @param int $assetMaintenanceId
+    * @param int $maintenanceId
     * @version v1.0
     * @since [v1.8]
     */
-    public function show(AssetMaintenance $maintenance) : View | RedirectResponse
+    public function show(Maintenance $maintenance) : View | RedirectResponse
     {
-        return view('asset_maintenances/view')->with('assetMaintenance', $maintenance);
+        return view('maintenances.view')->with('maintenance', $maintenance);
     }
 }
