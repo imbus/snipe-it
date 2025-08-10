@@ -603,7 +603,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
          * Asset maintenances API routes
          */
         Route::resource('maintenances', 
-        Api\AssetMaintenancesController::class,
+        Api\MaintenancesController::class,
         ['names' => [
                 'index' => 'api.maintenances.index',
                 'show' => 'api.maintenances.show',
