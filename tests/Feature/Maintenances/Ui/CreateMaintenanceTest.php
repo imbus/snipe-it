@@ -45,10 +45,10 @@ class CreateMaintenanceTest extends TestCase
             ->assertOk();
 
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
-        $assetMaintenance = Maintenance::where('title', 'Test Maintenance')->first();
+        $maintenance = Maintenance::where('name', 'Test Maintenance')->first();
 
         // Assert file was stored...
-        Storage::disk('public')->assertExists(app('maintenances_path').$assetMaintenance->image);
+        Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
 
         $this->assertDatabaseHas('asset_maintenances', [
@@ -62,7 +62,7 @@ class CreateMaintenanceTest extends TestCase
             'asset_maintenance_time' => '9',
             'notes' => 'A note',
             'cost' => '100.00',
-            'image' => $assetMaintenance->image,
+            'image' => $maintenance->image,
             'created_by' => $actor->id,
         ]);
     }

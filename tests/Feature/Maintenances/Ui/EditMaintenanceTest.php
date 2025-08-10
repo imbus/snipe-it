@@ -23,12 +23,12 @@ class EditMaintenanceTest extends TestCase
     {
         $actor = User::factory()->superuser()->create();
         $asset = Asset::factory()->create();
-        $assetMaintenance = Maintenance::factory()->create(['asset_id' => $asset]);
+        $maintenance = Maintenance::factory()->create(['asset_id' => $asset]);
         $supplier = Supplier::factory()->create();
 
         $this->actingAs($actor)
             ->followingRedirects()
-            ->put(route('maintenances.update', $assetMaintenance), [
+            ->put(route('maintenances.update', $maintenance), [
                 'name' => 'Test Maintenance',
                 'asset_id' => $asset->id,
                 'supplier_id' => $supplier->id,
@@ -43,10 +43,10 @@ class EditMaintenanceTest extends TestCase
             ->assertOk();
 
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
-        $assetMaintenance = Maintenance::where('title', 'Test Maintenance')->first();
+        $maintenance = Maintenance::where('name', 'Test Maintenance')->first();
 
         // Assert file was stored...
-        Storage::disk('public')->assertExists(app('maintenances_path').$assetMaintenance->image);
+        Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
         $this->assertDatabaseHas('asset_maintenances', [
             'asset_id' => $asset->id,

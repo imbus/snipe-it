@@ -24,7 +24,6 @@ class EditMaintenanceTest extends TestCase
     {
         Storage::fake('public');
         $actor = User::factory()->superuser()->create();
-        $asset = Asset::factory()->create();
         $supplier = Supplier::factory()->create();
         $maintenance = Maintenance::factory()->create();
 
