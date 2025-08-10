@@ -1,19 +1,19 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Api;
+namespace Tests\Feature\Maintenances\Api;
 
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\Company;
 use App\Models\User;
 use Tests\Concerns\TestsFullMultipleCompaniesSupport;
 use Tests\Concerns\TestsPermissionsRequirement;
 use Tests\TestCase;
 
-class DeleteAssetMaintenancesTest extends TestCase implements TestsFullMultipleCompaniesSupport, TestsPermissionsRequirement
+class DeleteMaintenancesTest extends TestCase implements TestsFullMultipleCompaniesSupport, TestsPermissionsRequirement
 {
     public function testRequiresPermission()
     {
-        $assetMaintenance = AssetMaintenance::factory()->create();
+        $assetMaintenance = Maintenance::factory()->create();
 
         $this->actingAsForApi(User::factory()->create())
             ->deleteJson(route('api.maintenances.destroy', $assetMaintenance))
@@ -26,9 +26,9 @@ class DeleteAssetMaintenancesTest extends TestCase implements TestsFullMultipleC
     {
         [$companyA, $companyB] = Company::factory()->count(2)->create();
 
-        $assetMaintenanceA = AssetMaintenance::factory()->create();
-        $assetMaintenanceB = AssetMaintenance::factory()->create();
-        $assetMaintenanceC = AssetMaintenance::factory()->create();
+        $assetMaintenanceA = Maintenance::factory()->create();
+        $assetMaintenanceB = Maintenance::factory()->create();
+        $assetMaintenanceC = Maintenance::factory()->create();
 
         $assetMaintenanceA->asset->update(['company_id' => $companyA->id]);
         $assetMaintenanceB->asset->update(['company_id' => $companyB->id]);
@@ -57,9 +57,9 @@ class DeleteAssetMaintenancesTest extends TestCase implements TestsFullMultipleC
         $this->assertSoftDeleted($assetMaintenanceC);
     }
 
-    public function testCanDeleteAssetMaintenance()
+    public function testCanDeleteMaintenance()
     {
-        $assetMaintenance = AssetMaintenance::factory()->create();
+        $assetMaintenance = Maintenance::factory()->create();
 
         $this->actingAsForApi(User::factory()->editAssets()->create())
             ->deleteJson(route('api.maintenances.destroy', $assetMaintenance))
