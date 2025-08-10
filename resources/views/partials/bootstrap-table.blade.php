@@ -368,12 +368,12 @@
 
                 // Add some overrides for any funny urls we have
                 var dest = destination;
-                var dpolymorphicItemFormatterest = '';
+                var polymorphicItemFormatterDest;
                 if (destination=='fieldsets') {
-                    var dpolymorphicItemFormatterest = 'fields/';
+                    var polymorphicItemFormatterDest = 'fields/';
                 }
 
-                return '<nobr><a href="{{ config('app.url') }}/' + dpolymorphicItemFormatterest + dest + '/' + value.id + '">' + value.name + '</a></span>';
+                return '<nobr><a href="{{ config('app.url') }}/' + polymorphicItemFormatterDest + dest + '/' + value.id + '">' + value.name + '</a></span>';
             }
         };
     }
@@ -438,8 +438,6 @@
 
                 if (row.name) {
                     var name_for_box = row.name
-                } else if (row.title) {
-                    var name_for_box = row.title
                 } else if (row.asset_tag) {
                     var name_for_box = row.asset_tag
                 }
@@ -503,6 +501,9 @@
             } else if (value.type == 'location') {
                 item_destination = 'locations'
                 item_icon = 'fas fa-map-marker-alt';
+            } else if (value.type == 'maintenance') {
+                item_destination = 'maintenances'
+                item_icon = 'fa-solid fa-screwdriver-wrench';
             } else if (value.type == 'model') {
                 item_destination = 'models'
                 item_icon = '';
@@ -618,25 +619,26 @@
 
 
     var formatters = [
-        'hardware',
         'accessories',
-        'consumables',
-        'components',
-        'locations',
-        'users',
-        'manufacturers',
-        'maintenances',
-        'statuslabels',
-        'models',
-        'licenses',
         'categories',
-        'suppliers',
-        'departments',
         'companies',
+        'components',
+        'consumables',
+        'departments',
         'depreciations',
         'fieldsets',
         'groups',
-        'kits'
+        'hardware',
+        'kits',
+        'licenses',
+        'locations',
+        'maintenances',
+        'maintenances',
+        'manufacturers',
+        'models',
+        'statuslabels',
+        'suppliers',
+        'users',
     ];
 
     for (var i in formatters) {

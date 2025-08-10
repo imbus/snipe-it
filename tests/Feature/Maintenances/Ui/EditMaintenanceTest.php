@@ -60,6 +60,8 @@ class EditMaintenanceTest extends TestCase
             'notes' => 'A note',
             'cost' => '100.99',
         ]);
+
+        $this->assertHasTheseActionLogs($maintenance, ['create', 'update']);
     }
 
 }
