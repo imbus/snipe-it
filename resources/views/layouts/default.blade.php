@@ -1157,6 +1157,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                     $(inputElement).closest('.help-block').remove();
                 },
                 onfocusout: function(element) {
+                    $(element).parent().removeClass('has-error');
                     return $(element).valid();
                 },
 
