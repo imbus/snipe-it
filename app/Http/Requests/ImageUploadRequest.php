@@ -71,20 +71,20 @@ class ImageUploadRequest extends Request
     public function handleImages($item, $w = 600, $form_fieldname = 'image', $path = null, $db_fieldname = 'image')
     {
 
-        $type = Str::snake(class_basename(get_class($item)));
+        $type = class_basename(get_class($item));
 
         if (is_null($path)) {
+            
+            $path = Str::of(str_plural($type));
 
-            \Log::debug('path is null');
-            $path = Str::of(str_plural($type))->snake();
-
-            if ($type == 'assetmodel') {
+            if ($type == 'AssetModel') {
                 $path = 'models';
             }
 
             if ($type == 'user') {
                 $path = 'avatars';
             }
+
         }
 
 
