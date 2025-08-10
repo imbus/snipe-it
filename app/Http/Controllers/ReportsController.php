@@ -9,7 +9,7 @@ use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\Category;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\CheckoutAcceptance;
 use App\Models\Company;
 use App\Models\CustomField;
@@ -1036,11 +1036,11 @@ class ReportsController extends Controller
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @version v1.0
      */
-    public function getAssetMaintenancesReport() : View
+    public function getMaintenancesReport() : View
     {
         $this->authorize('reports.view');
 
-        return view('reports.asset_maintenances');
+        return view('reports.maintenances');
     }
 
     /**
@@ -1049,11 +1049,11 @@ class ReportsController extends Controller
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @version v1.0
      */
-    public function exportAssetMaintenancesReport() : Response
+    public function exportMaintenancesReport() : Response
     {
         $this->authorize('reports.view');
         // Grab all the improvements
-        $assetMaintenances = AssetMaintenance::with('asset', 'supplier')
+        $Maintenances = Maintenance::with('asset', 'supplier')
                                              ->orderBy('created_at', 'DESC')
                                              ->get();
 
@@ -1061,36 +1061,36 @@ class ReportsController extends Controller
 
         $header = [
             trans('admin/hardware/table.asset_tag'),
-            trans('admin/asset_maintenances/table.asset_name'),
+            trans('admin/maintenances/table.asset_name'),
             trans('general.supplier'),
-            trans('admin/asset_maintenances/form.asset_maintenance_type'),
-            trans('admin/asset_maintenances/form.title'),
-            trans('admin/asset_maintenances/form.start_date'),
-            trans('admin/asset_maintenances/form.completion_date'),
-            trans('admin/asset_maintenances/form.asset_maintenance_time'),
-            trans('admin/asset_maintenances/form.cost'),
+            trans('admin/maintenances/form.asset_maintenance_type'),
+            trans('admin/maintenances/form.title'),
+            trans('admin/maintenances/form.start_date'),
+            trans('admin/maintenances/form.completion_date'),
+            trans('admin/maintenances/form.asset_maintenance_time'),
+            trans('admin/maintenances/form.cost'),
         ];
 
         $header = array_map('trim', $header);
         $rows[] = implode(',', $header);
 
-        foreach ($assetMaintenances as $assetMaintenance) {
+        foreach ($Maintenances as $maintenance) {
             $row = [];
-            $row[] = str_replace(',', '', e($assetMaintenance->asset->asset_tag));
-            $row[] = str_replace(',', '', e($assetMaintenance->asset->name));
-            $row[] = str_replace(',', '', e($assetMaintenance->supplier->name));
-            $row[] = e($assetMaintenance->improvement_type);
-            $row[] = e($assetMaintenance->title);
-            $row[] = e($assetMaintenance->start_date);
-            $row[] = e($assetMaintenance->completion_date);
-            if (is_null($assetMaintenance->asset_maintenance_time)) {
+            $row[] = str_replace(',', '', e($maintenance->asset->asset_tag));
+            $row[] = str_replace(',', '', e($maintenance->asset->name));
+            $row[] = str_replace(',', '', e($maintenance->supplier->name));
+            $row[] = e($maintenance->improvement_type);
+            $row[] = e($maintenance->name);
+            $row[] = e($maintenance->start_date);
+            $row[] = e($maintenance->completion_date);
+            if (is_null($maintenance->asset_maintenance_time)) {
                 $improvementTime = (int) Carbon::now()
-                    ->diffInDays(Carbon::parse($assetMaintenance->start_date), true);
+                    ->diffInDays(Carbon::parse($maintenance->start_date), true);
             } else {
-                $improvementTime = (int) $assetMaintenance->asset_maintenance_time;
+                $improvementTime = (int) $maintenance->asset_maintenance_time;
             }
             $row[]  = $improvementTime;
-            $row[]  = trans('general.currency') . Helper::formatCurrencyOutput($assetMaintenance->cost);
+            $row[]  = trans('general.currency') . Helper::formatCurrencyOutput($maintenance->cost);
             $rows[] = implode(',', $row);
         }
 

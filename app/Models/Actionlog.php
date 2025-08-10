@@ -459,6 +459,7 @@ class Actionlog extends SnipeModel
     {
 
 
+
         if (($this->action_type == 'accepted') || ($this->action_type == 'declined')) {
             return route('log.storedeula.download', ['filename' => $this->filename]);
         }
@@ -469,9 +470,6 @@ class Actionlog extends SnipeModel
             $object = 'models';
         }
 
-        if ($object == 'asset_maintenances') {
-            $object = 'maintenances';
-        }
         return route('ui.files.show', [
             'object_type' => $object,
             'id' => $this->item_id,
@@ -490,8 +488,6 @@ class Actionlog extends SnipeModel
         switch ($this->item_type) {
         case Accessory::class:
             return 'private_uploads/accessories/'.$this->filename;
-       case AssetMaintenance::class:
-            return 'private_uploads/asset_maintenances/'.$this->filename;
         case Asset::class:
             return 'private_uploads/assets/'.$this->filename;
         case AssetModel::class:
@@ -504,6 +500,8 @@ class Actionlog extends SnipeModel
             return 'private_uploads/licenses/'.$this->filename;
         case Location::class:
             return 'private_uploads/locations/'.$this->filename;
+        case Maintenance::class:
+             return 'private_uploads/maintenances/'.$this->filename;
         case User::class:
             return 'private_uploads/users/'.$this->filename;
         default:
