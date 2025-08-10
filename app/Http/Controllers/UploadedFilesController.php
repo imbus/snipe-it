@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
 use App\Helpers\StorageHelper;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\UploadFileRequest;
-use App\Http\Transformers\UploadedFilesTransformer;
 use App\Models\Accessory;
 use App\Models\Actionlog;
 use App\Models\Asset;
@@ -17,14 +14,20 @@ use App\Models\Consumable;
 use App\Models\License;
 use App\Models\Location;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/**
+ * This controller provide the health route  for
+ * the Snipe-IT Asset Management application.
+ *
+ * @version   v1.0
+ *
+ * @return \Illuminate\Http\JsonResponse
 
+ */
 class UploadedFilesController extends Controller
 {
 
@@ -67,91 +70,24 @@ class UploadedFilesController extends Controller
         'users' => 'user',
     ];
 
-
-
-
-    /**
-     * List files for an object
-     *
-     * @param  \App\Http\Requests\UploadFileRequest $request
-     * @param  string                               $object_type the type of object to upload the file to
-     * @param  int                                  $id          the ID of the object to list files for
-     * @since  [v8.1.17]
-     * @author [A. Gianotto <snipe@snipe.net>]
-     */
-    public function index(Request $request, $object_type, $id) : JsonResponse | array
-    {
-
-        // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
-        $this->authorize('view', $object);
-
-        if (!$object) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_object')));
-        }
-
-        // Columns allowed for sorting
-        $allowed_columns =
-            [
-                'id',
-                'filename',
-                'action_type',
-                'action_date',
-                'note',
-                'created_at',
-            ];
-
-
-        $uploads = Actionlog::select('action_logs.*')
-            ->whereNotNull('filename')
-            ->where('item_type', self::$map_object_type[$object_type])
-            ->where('item_id', $object->id)
-            ->where('action_type', '=', 'uploaded')
-            ->with('adminuser');
-
-        $offset = ($request->input('offset') > $uploads->count()) ? $uploads->count() : abs($request->input('offset'));
-        $limit = app('api_limit_value');
-        $order = $request->input('order') === 'asc' ? 'asc' : 'desc';
-        $sort = in_array($request->input('sort'), $allowed_columns) ? $request->input('sort') : 'created_at';
-
-        // Text search on action_logs fields
-        // We could use the normal Actionlogs text scope, but it's a very heavy query since it's searching across all relations
-        // and we generally won't need that here
-        if ($request->filled('search')) {
-
-            $uploads->where(
-                function ($query) use ($request) {
-                    $query->where('filename', 'LIKE', '%' . $request->input('search') . '%')
-                        ->orWhere('note', 'LIKE', '%' . $request->input('search') . '%');
-                }
-            );
-        }
-
-        $total = $uploads->count();
-        $uploads = $uploads->skip($offset)->take($limit)->orderBy($sort, $order)->get();
-
-        return (new UploadedFilesTransformer())->transformFiles($uploads, $total);
-    }
-
-
     /**
      * Accepts a POST to upload a file to the server.
      *
      * @param  \App\Http\Requests\UploadFileRequest $request
      * @param  string                               $object_type the type of object to upload the file to
      * @param  int                                  $id          the ID of the object to store so we can check permisisons
-     * @since  [v8.1.17]
+     * @since  [v8.2.2]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
-    public function store(UploadFileRequest $request, $object_type, $id) : JsonResponse
+    public function store(UploadFileRequest $request, $object_type, $id) : RedirectResponse
     {
 
         // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
-        $this->authorize('view', $object);
+        $this->authorize('update', $object);
 
         if (!$object) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_object')));
+            return redirect()->back()->withFragment('files')->with('error',trans('general.file_upload_status.invalid_object'));
         }
 
         // If the file storage directory doesn't exist, create it
@@ -173,45 +109,47 @@ class UploadedFilesController extends Controller
                 ->where('item_id', '=', $id)->whereIn('filename', $files)
                 ->get();
 
-            return response()->json(Helper::formatStandardApiResponse('success', (new UploadedFilesTransformer())->transformFiles($files, count($files)), trans_choice('general.file_upload_status.upload.success',  count($files))));
+            return redirect()->back()->withFragment('files')->with('success', trans_choice('general.file_upload_status.upload.success',  count($files)));
         }
 
         // No files were submitted
-        return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.nofiles')));
+        return redirect()->back()->withFragment('files')->with('error', trans('general.file_upload_status.nofiles'));
     }
 
 
 
     /**
      * Check for permissions and display the file.
+     * This isn't currently used, but is here for future use.
      *
      * @param  \App\Http\Requests\UploadFileRequest $request
      * @param  string                               $object_type the type of object to upload the file to
      * @param  int                                  $id          the ID of the object to delete from so we can check permisisons
-     * @param  $file_id     the ID of the file to delete from the action_logs table
-     * @since  [v8.1.17]
+     * @param  $file_id     the ID of the file to show from the action_logs table
+     * @since  [v8.2.2]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
-    public function show($object_type, $id, $file_id) : JsonResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
+    public function show($object_type, $id, $file_id) : RedirectResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
         // Check the permissions to make sure the user can view the object
         $object = self::$map_object_type[$object_type]::find($id);
         $this->authorize('view', $object);
 
         if (!$object) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_object')));
+            return redirect()->back()->withFragment('files')->with('error',trans('general.file_upload_status.invalid_object'));
         }
 
 
         // Check that the file being requested exists for the object
-        if (! $log = Actionlog::whereNotNull('filename')->where('item_type', self::$map_object_type[$object_type])->where('item_id', $object->id)->find($file_id)
-        ) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_id')), 200);
+        if (! $log = Actionlog::whereNotNull('filename')->where('item_type', self::$map_object_type[$object_type])->where('item_id', $object->id)->find($file_id))
+        {
+            return redirect()->back()->withFragment('files')->with('error', trans('general.file_upload_status.invalid_id'));
         }
 
 
-        if (! Storage::exists(self::$map_storage_path[$object_type].'/'.$log->filename)) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.file_not_found'), 200));
+        if (! Storage::exists(self::$map_storage_path[$object_type].'/'.$log->filename))
+        {
+            return redirect()->back()->withFragment('files')->with('error', trans('general.file_upload_status.file_not_found'));
         }
 
         if (request('inline') == 'true') {
@@ -232,10 +170,10 @@ class UploadedFilesController extends Controller
      * @param  string                               $object_type the type of object to upload the file to
      * @param  int                                  $id          the ID of the object to delete from so we can check permisisons
      * @param  $file_id     the ID of the file to delete from the action_logs table
-     * @since  [v8.1.17]
+     * @since  [v8.2.2]
      * @author [A. Gianotto <snipe@snipe.net>]
      */
-    public function destroy($object_type, $id, $file_id) : JsonResponse
+    public function destroy($object_type, $id, $file_id) : RedirectResponse
     {
 
         // Check the permissions to make sure the user can view the object
@@ -243,7 +181,7 @@ class UploadedFilesController extends Controller
         $this->authorize('update', self::$map_object_type[$object_type]);
 
         if (!$object) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.file_upload_status.invalid_object')));
+            return redirect()->back()->withFragment('files')->with('error',trans('general.file_upload_status.invalid_object'));
         }
 
 
@@ -258,14 +196,14 @@ class UploadedFilesController extends Controller
             }
             // Delete the record of the file
             if ($log->delete()) {
-                return response()->json(Helper::formatStandardApiResponse('success', null, trans_choice('general.file_upload_status.delete.success', 1)), 200);
+                return redirect()->back()->withFragment('files')->with('success', trans_choice('general.file_upload_status.delete.success', 1));
             }
-
 
         }
 
         // The file doesn't seem to really exist, so report an error
-        return response()->json(Helper::formatStandardApiResponse('error', null, trans_choice('general.file_upload_status.delete.error', 1)), 500);
+        return redirect()->back()->withFragment('files')->with('success', trans_choice('general.file_upload_status.delete.error', 1));
 
     }
+
 }

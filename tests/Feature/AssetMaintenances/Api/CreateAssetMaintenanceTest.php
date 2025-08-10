@@ -47,7 +47,6 @@ class CreateAssetMaintenanceTest extends TestCase
             ->assertOk()
             ->assertStatus(200);
 
-        \Log::error($response->json());
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
         $assetMaintenance = AssetMaintenance::where('title', 'Test Maintenance')->first();
 

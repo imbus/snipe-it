@@ -4,22 +4,25 @@ namespace App\Models;
 
 use App\Helpers\Helper;
 use App\Models\Traits\Searchable;
+use App\Presenters\Presentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
+use App\Models\Traits\HasUploads;
 
 /**
  * Model for Asset Maintenances.
  *
  * @version v1.0
  */
-class AssetMaintenance extends Model implements ICompanyableChild
+class AssetMaintenance extends SnipeModel implements ICompanyableChild
 {
     use HasFactory;
+    use HasUploads;
     use SoftDeletes;
     use CompanyableChildTrait;
     use ValidatingTrait;
+    use Loggable, Presentable;
 
 
 
@@ -185,6 +188,11 @@ class AssetMaintenance extends Model implements ICompanyableChild
     {
         return $this->belongsTo(\App\Models\Supplier::class, 'supplier_id')
             ->withTrashed();
+    }
+
+    public function getDisplayNameAttribute()
+    {
+        return $this->title;
     }
 
     /**

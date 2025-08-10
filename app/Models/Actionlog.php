@@ -7,6 +7,7 @@ use App\Presenters\Presentable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 /**
  * Model for the Actionlog (the table that keeps a historical log of
@@ -462,26 +463,21 @@ class Actionlog extends SnipeModel
             return route('log.storedeula.download', ['filename' => $this->filename]);
         }
 
-        switch ($this->item_type) {
-        case Accessory::class:
-            return route('show.accessoryfile', [$this->item_id, $this->id]);
-        case Asset::class:
-            return route('show/assetfile', [$this->item_id, $this->id]);
-        case AssetModel::class:
-            return route('show/modelfile', [$this->item_id, $this->id]);
-        case Consumable::class:
-            return route('show.consumablefile', [$this->item_id, $this->id]);
-        case Component::class:
-            return route('show.componentfile', [$this->item_id, $this->id]);
-        case License::class:
-            return route('show.licensefile', [$this->item_id, $this->id]);
-        case Location::class:
-            return route('show/locationsfile', [$this->item_id, $this->id]);
-        case User::class:
-            return route('show/userfile', [$this->item_id, $this->id]);
-        default:
-            return null;
+        $object = Str::snake(str_plural(str_replace("App\Models\\", '', $this->item_type)));
+
+        if ($object == 'asset_models') {
+            $object = 'models';
         }
+
+        if ($object == 'asset_maintenances') {
+            $object = 'maintenances';
+        }
+        return route('ui.files.show', [
+            'object_type' => $object,
+            'id' => $this->item_id,
+            'file_id' => $this->id,
+        ]);
+
     }
 
     public function uploads_file_path()
@@ -494,6 +490,8 @@ class Actionlog extends SnipeModel
         switch ($this->item_type) {
         case Accessory::class:
             return 'private_uploads/accessories/'.$this->filename;
+       case AssetMaintenance::class:
+            return 'private_uploads/asset_maintenances/'.$this->filename;
         case Asset::class:
             return 'private_uploads/assets/'.$this->filename;
         case AssetModel::class:
@@ -512,11 +510,6 @@ class Actionlog extends SnipeModel
             return null;
         }
     }
-
-
-
-
-
 
 
     // Manually sets $this->source for determineActionSource()

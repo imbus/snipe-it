@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Supplier;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Contracts\View\View;
 
