@@ -651,7 +651,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                         @endcan
 
                         @can('view', \App\Models\User::class)
-                                <li id="users-sidenav-option"{!! (request()->is('users*') ? ' class="active"' : '') !!}>
+                                <li class="treeview{{ (request()->is('users*') ? ' active' : '') }}" id="users-sidenav-option">
                                     <a href="#" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}}>
                                         <x-icon type="users" class="fa-fw" />
                                         <span>{{ trans('general.people') }}</span>

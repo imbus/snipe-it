@@ -71,25 +71,25 @@ class ImageUploadRequest extends Request
     public function handleImages($item, $w = 600, $form_fieldname = 'image', $path = null, $db_fieldname = 'image')
     {
 
-        $type = Str::snake(class_basename(get_class($item)));
+        $type = class_basename(get_class($item));
 
         if (is_null($path)) {
 
-            \Log::debug('path is null');
-            $path = Str::of(str_plural($type))->snake();
+            $path = strtolower(str_plural($type));
 
-            if ($type == 'assetmodel') {
+            if ($type == 'AssetModel') {
                 $path = 'models';
             }
 
             if ($type == 'user') {
                 $path = 'avatars';
             }
+
         }
 
 
-        if (!Storage::exists($path)) {
-            Storage::makeDirectory($path);
+        if (!Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->makeDirectory($path);
         }
 
         if ($this->offsetGet($form_fieldname) instanceof UploadedFile) {
@@ -100,7 +100,6 @@ class ImageUploadRequest extends Request
 
         if (isset($image)) {
 
-            if (!config('app.lock_passwords')) {
 
                 $ext = $image->guessExtension();
                 $file_name = $type.'-'.$form_fieldname.($item->id ?? '-'.$item->id).'-'.str_random(10).'.'.$ext;
@@ -145,7 +144,7 @@ class ImageUploadRequest extends Request
                  // Remove Current image if exists
                 $item = $this->deleteExistingImage($item, $path, $db_fieldname);
                 $item->{$db_fieldname} = $file_name;
-            }
+
 
 
         // If the user isn't uploading anything new but wants to delete their old image, do so
