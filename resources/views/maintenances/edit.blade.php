@@ -43,16 +43,7 @@
 
       <div class="box-body">
 
-        <!-- Title -->
-        <div class="form-group {{ $errors->has('title') ? ' has-error' : '' }}">
-          <label for="title" class="col-md-3 control-label">
-            {{ trans('admin/maintenances/form.title') }}
-          </label>
-          <div class="col-md-7">
-            <input class="form-control" type="text" name="title" id="title" value="{{ old('title', $item->title) }}"{{  (Helper::checkIfRequired($item, 'title')) ? ' required' : '' }} />
-            {!! $errors->first('title', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
-          </div>
-        </div>
+        @include ('partials.forms.edit.name', ['translated_name' => trans('general.name'), 'required' => 'true'])
 
         <!-- This is a new maintenance -->
         @if (!$item->id)

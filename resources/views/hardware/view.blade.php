@@ -143,7 +143,7 @@
                               <x-icon type="maintenances" class="fa-2x" />
                           </span>
                             <span class="hidden-xs hidden-sm">{{ trans('general.maintenances') }}
-                                {!! ($asset->assetmaintenances()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($asset->assetmaintenances()->count()).'</span>' : '' !!}
+                                {!! ($asset->maintenances()->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($asset->maintenances()->count()).'</span>' : '' !!}
                           </span>
                         </a>
                     </li>
@@ -1327,16 +1327,16 @@
 
 
                     <div class="tab-pane fade" id="maintenances">
-                        <div class="row{{($asset->assetmaintenances->count() > 0 ) ? '' : ' hidden-print'}}">
+                        <div class="row{{($asset->maintenances->count() > 0 ) ? '' : ' hidden-print'}}">
                             <div class="col-md-12">
 
                                 <!-- Asset Maintenance table -->
                                 <table
-                                        data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
+                                        data-columns="{{ \App\Presenters\MaintenancesPresenter::dataTableLayout() }}"
                                         class="table table-striped snipe-table"
-                                        id="assetMaintenancesTable"
+                                        id="MaintenancesTable"
                                         data-buttons="maintenanceButtons"
-                                        data-id-table="assetMaintenancesTable"
+                                        data-id-table="MaintenancesTable"
                                         data-side-pagination="server"
                                         data-toolbar="#maintenance-toolbar"
                                         data-export-options='{
@@ -1344,7 +1344,7 @@
                                            "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                                          }'
                                         data-url="{{ route('api.maintenances.index', array('asset_id' => $asset->id)) }}"
-                                        data-cookie-id-table="assetMaintenancesTable"
+                                        data-cookie-id-table="MaintenancesTable"
                                         data-cookie="true">
                                 </table>
                             </div> <!-- /.col-md-12 -->

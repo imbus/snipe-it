@@ -48,7 +48,7 @@ class EditMaintenanceTest extends TestCase
         Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
 
-        $this->assertDatabaseHas('asset_maintenances', [
+        $this->assertDatabaseHas('maintenances', [
             'supplier_id' => $supplier->id,
             'asset_maintenance_type' => 'Maintenance',
             'name' => 'Test Maintenance',

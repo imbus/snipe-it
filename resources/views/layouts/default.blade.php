@@ -820,7 +820,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             {{ trans('general.license_report') }}
                                         </a>
                                     </li>
-                                    <li {{!! (request()->is('reports/asset_maintenances') ? ' class="active"' : '') !!}}>
+                                    <li {{!! (request()->is('reports/maintenances') ? ' class="active"' : '') !!}}>
                                         <a href="{{ url('reports/asset_maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
                                         </a>

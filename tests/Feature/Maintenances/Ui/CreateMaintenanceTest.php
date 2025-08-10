@@ -12,6 +12,13 @@ use Tests\TestCase;
 
 class CreateMaintenanceTest extends TestCase
 {
+    public function testPageRequiresPermission()
+    {
+        $this->actingAs(User::factory()->create())
+            ->get(route('maintenances.create'))
+            ->assertForbidden();
+    }
+
     public function testPageRenders()
     {
         $this->actingAs(User::factory()->superuser()->create())
@@ -24,12 +31,10 @@ class CreateMaintenanceTest extends TestCase
     {
         Storage::fake('public');
         $actor = User::factory()->superuser()->create();
-
         $asset = Asset::factory()->create();
         $supplier = Supplier::factory()->create();
 
         $this->actingAs($actor)
-            ->followingRedirects()
             ->post(route('maintenances.store'), [
                 'name' => 'Test Maintenance',
                 'selected_assets' => [$asset->id],
@@ -42,7 +47,8 @@ class CreateMaintenanceTest extends TestCase
                 'image' => UploadedFile::fake()->image('test_image.png'),
                 'notes' => 'A note',
             ])
-            ->assertOk();
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('maintenances.index'));
 
         // Since we rename the file in the ImageUploadRequest, we have to fetch the record from the database
         $maintenance = Maintenance::where('name', 'Test Maintenance')->first();
@@ -51,7 +57,7 @@ class CreateMaintenanceTest extends TestCase
         Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
 
-        $this->assertDatabaseHas('asset_maintenances', [
+        $this->assertDatabaseHas('maintenances', [
             'asset_id' => $asset->id,
             'supplier_id' => $supplier->id,
             'asset_maintenance_type' => 'Maintenance',
