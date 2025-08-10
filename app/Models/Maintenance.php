@@ -171,10 +171,10 @@ class Maintenance extends SnipeModel implements ICompanyableChild
     }
 
     /**
-     * Get the asset's logs
+     * Get the maintenance logs
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @since  [v2.0]
+     * @since  [v8.2.2]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function assetlog()
