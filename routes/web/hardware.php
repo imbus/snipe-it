@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AssetMaintenancesController;
+use App\Http\Controllers\MaintenancesController;
 use App\Http\Controllers\Assets\AssetsController;
 use App\Http\Controllers\Assets\BulkAssetsController;
 use App\Http\Controllers\Assets\AssetCheckoutController;
@@ -182,7 +182,7 @@ Route::resource('hardware',
 
 // Asset Maintenances
 Route::resource('maintenances',
-    AssetMaintenancesController::class, [
+    MaintenancesController::class, [
         'parameters' => ['maintenance' => 'maintenance', 'asset' => 'asset_id'],
     ]);
 
