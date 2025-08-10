@@ -74,7 +74,7 @@ class ImageUploadRequest extends Request
         $type = class_basename(get_class($item));
 
         if (is_null($path)) {
-            
+
             $path = Str::of(str_plural($type));
 
             if ($type == 'AssetModel') {
@@ -88,8 +88,8 @@ class ImageUploadRequest extends Request
         }
 
 
-        if (!Storage::exists($path)) {
-            Storage::makeDirectory($path);
+        if (!Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->makeDirectory($path);
         }
 
         if ($this->offsetGet($form_fieldname) instanceof UploadedFile) {
