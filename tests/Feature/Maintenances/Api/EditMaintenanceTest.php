@@ -1,37 +1,36 @@
 <?php
 
-namespace Tests\Feature\AssetMaintenances\Api;
+namespace Tests\Feature\Maintenances\Api;
 
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
-class EditAssetMaintenanceTest extends TestCase
+class EditMaintenanceTest extends TestCase
 {
     public function testPageRenders()
     {
         $this->actingAs(User::factory()->superuser()->create())
-            ->get(route('maintenances.update', AssetMaintenance::factory()->create()->id))
+            ->get(route('maintenances.update', Maintenance::factory()->create()->id))
             ->assertOk();
     }
 
 
-    public function testCanEditAssetMaintenance()
+    public function testCanEditMaintenance()
     {
         Storage::fake('public');
         $actor = User::factory()->superuser()->create();
-        $asset = Asset::factory()->create();
         $supplier = Supplier::factory()->create();
-        $maintenance = AssetMaintenance::factory()->create();
+        $maintenance = Maintenance::factory()->create();
 
         $response = $this->actingAs($actor)
             ->followingRedirects()
             ->patch(route('maintenances.update',  $maintenance), [
-                'title' => 'Test Maintenance',
+                'name' => 'Test Maintenance',
                 'supplier_id' => $supplier->id,
                 'asset_maintenance_type' => 'Maintenance',
                 'start_date' => '2021-01-01',
@@ -46,13 +45,13 @@ class EditAssetMaintenanceTest extends TestCase
 
         $maintenance->refresh();
         // Assert file was stored...
-        Storage::disk('public')->assertExists(app('asset_maintenances_path').$maintenance->image);
+        Storage::disk('public')->assertExists(app('maintenances_path').$maintenance->image);
 
 
-        $this->assertDatabaseHas('asset_maintenances', [
+        $this->assertDatabaseHas('maintenances', [
             'supplier_id' => $supplier->id,
             'asset_maintenance_type' => 'Maintenance',
-            'title' => 'Test Maintenance',
+            'name' => 'Test Maintenance',
             'is_warranty' => 1,
             'start_date' => '2021-01-01',
             'completion_date' => '2021-01-10',

@@ -95,8 +95,8 @@
                         <x-icon type="maintenances" class="fa-2x" />
                     </span>
               <span class="hidden-xs hidden-sm">
-                        {{ trans('admin/asset_maintenances/general.asset_maintenances') }}
-                        {!! ($supplier->asset_maintenances->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($supplier->asset_maintenances->count()).'</span>' : '' !!}
+                        {{ trans('admin/maintenances/general.maintenances') }}
+                        {!! ($supplier->maintenances->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($supplier->maintenances->count()).'</span>' : '' !!}
                     </span>
             </a>
           </li>
@@ -220,11 +220,11 @@
 
 
           <div class="tab-pane" id="maintenances">
-            <h2 class="box-title">{{ trans('admin/asset_maintenances/general.asset_maintenances') }}</h2>
+            <h2 class="box-title">{{ trans('admin/maintenances/general.maintenances') }}</h2>
             <div class="table table-responsive">
 
               <table
-                      data-columns="{{ \App\Presenters\AssetMaintenancesPresenter::dataTableLayout() }}"
+                      data-columns="{{ \App\Presenters\MaintenancesPresenter::dataTableLayout() }}"
                       data-cookie-id-table="maintenancesTable"
                       data-id-table="maintenancesTable"
                       data-side-pagination="server"

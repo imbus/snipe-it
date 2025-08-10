@@ -7,7 +7,7 @@ use App\Http\Requests\UploadFileRequest;
 use App\Models\Accessory;
 use App\Models\Actionlog;
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\AssetModel;
 use App\Models\Component;
 use App\Models\Consumable;
@@ -33,7 +33,7 @@ class UploadedFilesController extends Controller
 
     static $map_object_type = [
         'accessories' => Accessory::class,
-        'maintenances' => AssetMaintenance::class,
+        'maintenances' => Maintenance::class,
         'assets' => Asset::class,
         'components' => Component::class,
         'consumables' => Consumable::class,
@@ -46,7 +46,7 @@ class UploadedFilesController extends Controller
 
     static $map_storage_path = [
         'accessories' => 'private_uploads/accessories/',
-        'maintenances' => 'private_uploads/asset_maintenances/',
+        'maintenances' => 'private_uploads/maintenances/',
         'assets' => 'private_uploads/assets/',
         'components' => 'private_uploads/components/',
         'consumables' => 'private_uploads/consumables/',

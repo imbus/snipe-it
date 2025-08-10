@@ -3,9 +3,9 @@
 {{-- Page title --}}
 @section('title')
   @if ($item->id)
-    {{ trans('admin/asset_maintenances/form.update') }}
+    {{ trans('admin/maintenances/form.update') }}
   @else
-    {{ trans('admin/asset_maintenances/form.create') }}
+    {{ trans('admin/maintenances/form.create') }}
   @endif
   @parent
 @stop
@@ -43,16 +43,7 @@
 
       <div class="box-body">
 
-        <!-- Title -->
-        <div class="form-group {{ $errors->has('title') ? ' has-error' : '' }}">
-          <label for="title" class="col-md-3 control-label">
-            {{ trans('admin/asset_maintenances/form.title') }}
-          </label>
-          <div class="col-md-7">
-            <input class="form-control" type="text" name="title" id="title" value="{{ old('title', $item->title) }}"{{  (Helper::checkIfRequired($item, 'title')) ? ' required' : '' }} />
-            {!! $errors->first('title', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
-          </div>
-        </div>
+        @include ('partials.forms.edit.name', ['translated_name' => trans('general.name'), 'required' => 'true'])
 
         <!-- This is a new maintenance -->
         @if (!$item->id)
@@ -120,7 +111,7 @@
         <!-- Start Date -->
         <div class="form-group {{ $errors->has('start_date') ? ' has-error' : '' }}">
           <label for="start_date" class="col-md-3 control-label">
-            {{ trans('admin/asset_maintenances/form.start_date') }}
+            {{ trans('admin/maintenances/form.start_date') }}
           </label>
 
           <div class="col-md-4">
@@ -138,7 +129,7 @@
 
         <!-- Completion Date -->
         <div class="form-group {{ $errors->has('completion_date') ? ' has-error' : '' }}">
-          <label for="start_date" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.completion_date') }}</label>
+          <label for="start_date" class="col-md-3 control-label">{{ trans('admin/maintenances/form.completion_date') }}</label>
 
           <div class="input-group col-md-4">
             <x-input.datepicker
@@ -156,14 +147,14 @@
           <div class="col-sm-offset-3 col-sm-9">
               <label class="form-control">
                 <input type="checkbox" value="1" name="is_warranty" id="is_warranty" {{ old('is_warranty', $item->is_warranty) == '1' ? ' checked="checked"' : '' }}>
-                {{ trans('admin/asset_maintenances/form.is_warranty') }}
+                {{ trans('admin/maintenances/form.is_warranty') }}
               </label>
           </div>
         </div>
 
         <!-- Asset Maintenance Cost -->
         <div class="form-group {{ $errors->has('cost') ? ' has-error' : '' }}">
-          <label for="cost" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.cost') }}</label>
+          <label for="cost" class="col-md-3 control-label">{{ trans('admin/maintenances/form.cost') }}</label>
           <div class="col-md-2">
             <div class="input-group">
               <span class="input-group-addon">
@@ -179,12 +170,12 @@
           </div>
         </div>
 
-        @include ('partials.forms.edit.image-upload', ['image_path' => app('asset_maintenances_path')])
+        @include ('partials.forms.edit.image-upload', ['image_path' => app('maintenances_path')])
 
 
         <!-- Notes -->
         <div class="form-group {{ $errors->has('notes') ? ' has-error' : '' }}">
-          <label for="notes" class="col-md-3 control-label">{{ trans('admin/asset_maintenances/form.notes') }}</label>
+          <label for="notes" class="col-md-3 control-label">{{ trans('admin/maintenances/form.notes') }}</label>
           <div class="col-md-7">
             <textarea class="col-md-6 form-control" id="notes" name="notes">{{ old('notes', $item->notes) }}</textarea>
             {!! $errors->first('notes', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
