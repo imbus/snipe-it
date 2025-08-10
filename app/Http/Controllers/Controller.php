@@ -63,7 +63,7 @@ abstract class Controller extends BaseController
         'hardware' => 'private_uploads/assets/',
         'licenses' => 'private_uploads/licenses/',
         'locations' => 'private_uploads/locations/',
-        'models' => 'private_uploads/assetmodels/',
+        'models' => 'private_uploads/models/',
         'users' => 'private_uploads/users/',
     ];
 
