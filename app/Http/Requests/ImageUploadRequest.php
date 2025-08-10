@@ -75,7 +75,7 @@ class ImageUploadRequest extends Request
 
         if (is_null($path)) {
 
-            $path = Str::of(str_plural($type));
+            $path = strtolower(str_plural($type));
 
             if ($type == 'AssetModel') {
                 $path = 'models';
