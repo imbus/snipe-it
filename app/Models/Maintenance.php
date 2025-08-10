@@ -15,7 +15,7 @@ use App\Models\Traits\HasUploads;
  *
  * @version v1.0
  */
-class AssetMaintenance extends SnipeModel implements ICompanyableChild
+class Maintenance extends SnipeModel implements ICompanyableChild
 {
     use HasFactory;
     use HasUploads;
@@ -26,7 +26,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
 
 
 
-    protected $table = 'asset_maintenances';
+    protected $table = 'maintenances';
     protected $rules = [
         'asset_id'               => 'required|integer',
         'supplier_id'            => 'nullable|integer',
@@ -103,14 +103,14 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
     public static function getImprovementOptions()
     {
         return [
-            trans('admin/asset_maintenances/general.maintenance') => trans('admin/asset_maintenances/general.maintenance'),
-            trans('admin/asset_maintenances/general.repair')      => trans('admin/asset_maintenances/general.repair'),
-            trans('admin/asset_maintenances/general.upgrade')     => trans('admin/asset_maintenances/general.upgrade'),
-            trans('admin/asset_maintenances/general.pat_test')     => trans('admin/asset_maintenances/general.pat_test'),
-            trans('admin/asset_maintenances/general.calibration')     => trans('admin/asset_maintenances/general.calibration'),
-            trans('admin/asset_maintenances/general.software_support')      => trans('admin/asset_maintenances/general.software_support'),
-            trans('admin/asset_maintenances/general.hardware_support')      => trans('admin/asset_maintenances/general.hardware_support'),
-            trans('admin/asset_maintenances/general.configuration_change')     => trans('admin/asset_maintenances/general.configuration_change'),
+            trans('admin/$maintenances/general.maintenance') => trans('admin/$maintenances/general.maintenance'),
+            trans('admin/$maintenances/general.repair')      => trans('admin/$maintenances/general.repair'),
+            trans('admin/$maintenances/general.upgrade')     => trans('admin/$maintenances/general.upgrade'),
+            trans('admin/$maintenances/general.pat_test')     => trans('admin/$maintenances/general.pat_test'),
+            trans('admin/$maintenances/general.calibration')     => trans('admin/$maintenances/general.calibration'),
+            trans('admin/$maintenances/general.software_support')      => trans('admin/$maintenances/general.software_support'),
+            trans('admin/$maintenances/general.hardware_support')      => trans('admin/$maintenances/general.hardware_support'),
+            trans('admin/$maintenances/general.configuration_change')     => trans('admin/$maintenances/general.configuration_change'),
         ];
     }
 
@@ -211,7 +211,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderBySupplier($query, $order)
     {
-        return $query->leftJoin('suppliers as suppliers_maintenances', 'asset_maintenances.supplier_id', '=', 'suppliers_maintenances.id')
+        return $query->leftJoin('suppliers as suppliers_maintenances', '$maintenances.supplier_id', '=', 'suppliers_maintenances.id')
             ->orderBy('suppliers_maintenances.name', $order);
     }
 
@@ -227,7 +227,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderByTag($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', '$maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.asset_tag', $order);
     }
 
@@ -241,7 +241,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderByAssetName($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', '$maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.name', $order);
     }
 
@@ -255,7 +255,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderByAssetSerial($query, $order)
     {
-        return $query->leftJoin('assets', 'asset_maintenances.asset_id', '=', 'assets.id')
+        return $query->leftJoin('assets', '$maintenances.asset_id', '=', 'assets.id')
             ->orderBy('assets.serial', $order);
     }
 
@@ -269,7 +269,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderStatusName($query, $order)
     {
-        return $query->join('assets as maintained_asset', 'asset_maintenances.asset_id', '=', 'maintained_asset.id')
+        return $query->join('assets as maintained_asset', '$maintenances.asset_id', '=', 'maintained_asset.id')
             ->leftjoin('status_labels as maintained_asset_status', 'maintained_asset_status.id', '=', 'maintained_asset.status_id')
             ->orderBy('maintained_asset_status.name', $order);
     }
@@ -284,7 +284,7 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderLocationName($query, $order)
     {
-        return $query->join('assets as maintained_asset', 'asset_maintenances.asset_id', '=', 'maintained_asset.id')
+        return $query->join('assets as maintained_asset', '$maintenances.asset_id', '=', 'maintained_asset.id')
             ->leftjoin('locations as maintained_asset_location', 'maintained_asset_location.id', '=', 'maintained_asset.location_id')
             ->orderBy('maintained_asset_location.name', $order);
     }
@@ -294,6 +294,6 @@ class AssetMaintenance extends SnipeModel implements ICompanyableChild
      */
     public function scopeOrderByCreatedBy($query, $order)
     {
-        return $query->leftJoin('users as admin_sort', 'asset_maintenances.created_by', '=', 'admin_sort.id')->select('asset_maintenances.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
+        return $query->leftJoin('users as admin_sort', '$maintenances.created_by', '=', 'admin_sort.id')->select('$maintenances.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 }
