@@ -100,7 +100,6 @@ class ImageUploadRequest extends Request
 
         if (isset($image)) {
 
-            if (!config('app.lock_passwords')) {
 
                 $ext = $image->guessExtension();
                 $file_name = $type.'-'.$form_fieldname.($item->id ?? '-'.$item->id).'-'.str_random(10).'.'.$ext;
@@ -145,7 +144,7 @@ class ImageUploadRequest extends Request
                  // Remove Current image if exists
                 $item = $this->deleteExistingImage($item, $path, $db_fieldname);
                 $item->{$db_fieldname} = $file_name;
-            }
+
 
 
         // If the user isn't uploading anything new but wants to delete their old image, do so
