@@ -4,16 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\StorageHelper;
 use App\Http\Requests\UploadFileRequest;
-use App\Models\Accessory;
 use App\Models\Actionlog;
-use App\Models\Asset;
-use App\Models\Maintenance;
-use App\Models\AssetModel;
-use App\Models\Component;
-use App\Models\Consumable;
-use App\Models\License;
-use App\Models\Location;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -31,44 +22,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class UploadedFilesController extends Controller
 {
 
-    static $map_object_type = [
-        'accessories' => Accessory::class,
-        'maintenances' => Maintenance::class,
-        'assets' => Asset::class,
-        'components' => Component::class,
-        'consumables' => Consumable::class,
-        'hardware' => Asset::class,
-        'licenses' => License::class,
-        'locations' => Location::class,
-        'models' => AssetModel::class,
-        'users' => User::class,
-    ];
-
-    static $map_storage_path = [
-        'accessories' => 'private_uploads/accessories/',
-        'maintenances' => 'private_uploads/maintenances/',
-        'assets' => 'private_uploads/assets/',
-        'components' => 'private_uploads/components/',
-        'consumables' => 'private_uploads/consumables/',
-        'hardware' => 'private_uploads/assets/',
-        'licenses' => 'private_uploads/licenses/',
-        'locations' => 'private_uploads/locations/',
-        'models' => 'private_uploads/assetmodels/',
-        'users' => 'private_uploads/users/',
-    ];
-
-    static $map_file_prefix= [
-        'accessories' => 'accessory',
-        'maintenances' => 'maintenance',
-        'assets' => 'asset',
-        'components' => 'component',
-        'consumables' => 'consumable',
-        'hardware' => 'asset',
-        'licenses' => 'license',
-        'locations' => 'location',
-        'models' => 'model',
-        'users' => 'user',
-    ];
 
     /**
      * Accepts a POST to upload a file to the server.
