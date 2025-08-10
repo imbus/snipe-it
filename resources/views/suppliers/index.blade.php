@@ -18,9 +18,15 @@
 
 <div class="row">
   <div class="col-md-12">
-    <div class="box box-default">
+    <div class="box">
       <div class="box-body">
-        <table
+
+        <div class="row">
+          <div class="col-md-12">
+            {{--            <x-tables.bulk-actions/>--}}
+            @include('partials.asset-bulk-actions', ['delete_only' => true])
+
+            <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
             data-cookie-id-table="suppliersTable"
             data-pagination="true"
@@ -40,7 +46,9 @@
             "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
             }'>
       </table>
-    </div>
+          </div>
+        </div>
+      </div>
   </div>
   </div>
 </div>

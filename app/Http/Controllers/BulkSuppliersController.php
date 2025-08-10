@@ -6,22 +6,31 @@ use App\Actions\Suppliers\DestroySupplierAction;
 use App\Exceptions\ModelStillHasAssetMaintenances;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasLicenses;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class BulkSuppliersController extends Controller
 {
-    public function destroy($ids)
+    public function destroy(Request $request)
     {
+        // Authorize the user to delete suppliers
+        $this->authorize('delete', Supplier::class);
+
         $errors = [];
-        foreach ($ids as $id) {
+        foreach ($request->ids as $id) {
+            $supplier = Supplier::find($id);
+            if (is_null($supplier)) {
+                $errors[] = 'Supplier not found';
+                continue;
+            }
             try {
-                DestroySupplierAction::run(supplier: $id);
+                DestroySupplierAction::run(supplier: $supplier);
             } catch (ModelStillHasAssets $e) {
-                $errors[] = `{$id} still has assets`;
+                $errors[] = "{$supplier->name} still has assets";
             } catch (ModelStillHasAssetMaintenances $e) {
-                $errors[] = `{$id} still has asset maintenances`;
+                $errors[] = "{$supplier->name} still has asset maintenances";
             } catch (ModelStillHasLicenses $e) {
-                $errors[] = `{$id} still has licenses`;
+                $errors[] = "{$supplier->name} still has licenses";
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = 'Something went wrong';
