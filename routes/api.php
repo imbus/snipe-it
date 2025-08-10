@@ -1031,6 +1031,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                 ]
             )->name('api.users.selectlist');
 
+            Route::post('ldapsync',
+                [
+                    Api\UsersController::class,
+                    'syncLdapUsers'
+                ]
+            )->name('api.users.ldapsync');
+
             Route::post('two_factor_reset',
                 [
                     Api\UsersController::class, 
