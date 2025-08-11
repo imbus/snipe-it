@@ -25,6 +25,7 @@ use App\Models\Company;
 use App\Models\CustomField;
 use App\Models\License;
 use App\Models\Location;
+use App\Models\PredefinedFilter;
 use App\Models\Setting;
 use App\Models\User;
 use Carbon\Carbon;
@@ -426,6 +427,20 @@ class AssetsController extends Controller
                     $assets->orderBy($column_sort, $order);
                 }
                 break;
+        }
+
+        if (isset($request->predefinedFilter)) {
+            $id = $request->predefinedFilter;
+            $predefinedFilters = PredefinedFilter::where('id', $id)->get();
+
+            if ($predefinedFilters->count() == 1) {
+                $predefinedFilter = $predefinedFilters[0];
+
+                // ---------------------- BY CATEGORY ----------------------
+                if (isset($predefinedFilter['category_id'])) {
+                    $assets->inCategory($predefinedFilter['category_id']);
+                }
+            }
         }
 
 
