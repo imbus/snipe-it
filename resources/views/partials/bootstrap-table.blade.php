@@ -368,10 +368,10 @@
 
                 // Add some overrides for any funny urls we have
                 var dest = destination;
-                var polymorphicItemFormatterDest;
-                if (destination=='fieldsets') {
+                var polymorphicItemFormatterDest = '';
+                if (destination == 'fieldsets') {
                     var polymorphicItemFormatterDest = 'fields/';
-                }
+                } 
 
                 return '<nobr><a href="{{ config('app.url') }}/' + polymorphicItemFormatterDest + dest + '/' + value.id + '">' + value.name + '</a></span>';
             }
@@ -632,7 +632,6 @@
         'kits',
         'licenses',
         'locations',
-        'maintenances',
         'maintenances',
         'manufacturers',
         'models',
