@@ -821,7 +821,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         </a>
                                     </li>
                                     <li {{!! (request()->is('ui.reports.maintenances') ? ' class="active"' : '') !!}}>
-                                        <a href="{{ url('ui.reports.maintenances') }}">
+                                        <a href="{{ route('ui.reports.maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
                                         </a>
                                     </li>
