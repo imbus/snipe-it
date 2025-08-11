@@ -150,8 +150,11 @@ class SettingsController extends Controller
         if (!config('app.lock_passwords')) {
             try {
                 Notification::send(Setting::first(), new MailTest());
+                Log::debug('Attempting to sending to '.config('mail.reply_to.address'));
                 return response()->json(['message' => 'Mail sent to '.config('mail.reply_to.address')], 200);
             } catch (\Exception $e) {
+                Log::error('Mail sent error using '.config('mail.reply_to.address') .': '. $e->getMessage());
+                Log::debug($e);
                 return response()->json(['message' => $e->getMessage()], 500);
             }
         }
