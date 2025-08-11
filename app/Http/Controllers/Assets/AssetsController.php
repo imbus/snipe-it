@@ -14,6 +14,7 @@ use App\Models\AssetModel;
 use App\Models\CheckoutRequest;
 use App\Models\Company;
 use App\Models\Location;
+use App\Models\PredefinedFilter;
 use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\User;
@@ -68,7 +69,9 @@ class AssetsController extends Controller
         $companyId = $request->input('company_id');
         $company = is_scalar($companyId) ? Company::find($companyId) : null;
 
-        return view('hardware/index')->with('company', $company);
+        $predefined_filters = PredefinedFilter::orderBy('name')->get();
+
+        return view('hardware/index')->with('company', $company)->with('predefined_filters', $predefined_filters);
     }
 
     /**
@@ -989,3 +992,6 @@ class AssetsController extends Controller
         return view('hardware/requested', compact('requestedItems'));
     }
 }
+
+
+

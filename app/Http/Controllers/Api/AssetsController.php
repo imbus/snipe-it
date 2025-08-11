@@ -27,6 +27,7 @@ use App\Models\CustomField;
 use App\Models\License;
 use App\Models\LicenseSeat;
 use App\Models\Location;
+use App\Models\PredefinedFilter;
 use App\Models\Setting;
 use App\Models\User;
 use App\View\Label;
@@ -381,6 +382,14 @@ class AssetsController extends Controller
         foreach ($all_custom_fields as $field) {
             if ($field->db_column_name() && $request->filled($field->db_column_name())) {
                 $assets->where($field->db_column_name(), '=', $request->input($field->db_column_name()));
+            }
+        }
+
+        if ($request->filled('predefinedFilter') && is_scalar($request->input('predefinedFilter'))) {
+            $predefinedFilter = PredefinedFilter::query()->find($request->input('predefinedFilter'));
+
+            if ($predefinedFilter && $predefinedFilter->category_id) {
+                $assets->InCategory($predefinedFilter->category_id);
             }
         }
 
@@ -2108,3 +2117,6 @@ class AssetsController extends Controller
         return response()->json((new ActionlogsTransformer)->transformActionlogs($history, $total), 200, ['Content-Type' => 'application/json;charset=utf8'], JSON_UNESCAPED_UNICODE);
     }
 }
+
+
+
