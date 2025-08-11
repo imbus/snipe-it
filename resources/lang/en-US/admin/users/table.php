@@ -27,6 +27,7 @@ return array(
     'password_confirm' 		=> 'Confirm Password',
     'password' 				=> 'Password',
     'phone'  				=> 'Phone',
+    'mobile'  				=> 'Mobile',
     'show_current'          => 'Show Current Users',
     'show_deleted'          => 'Show Deleted Users',
     'title' 				=> 'Title',
