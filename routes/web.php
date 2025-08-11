@@ -475,10 +475,10 @@ Route::group(['prefix' => 'reports', 'middleware' => ['auth']], function () {
 
     Route::get(
         'maintenances', [ReportsController::class, 'getMaintenancesReport'])
-        ->name('reports/maintenances')
+        ->name('ui.reports.maintenances')
         ->breadcrumbs(fn (Trail $trail) =>
         $trail->parent('home')
-            ->push(trans('general.asset_maintenance_report'), route('reports/maintenances')));
+            ->push(trans('general.asset_maintenance_report'), route('ui.reports.maintenances')));
 
     // Is this still used?
     Route::get('export/maintenances', [ReportsController::class, 'exportMaintenancesReport'])
