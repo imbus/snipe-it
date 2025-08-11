@@ -22804,6 +22804,18 @@ caption.tableCaption {
   font-size: 18px;
   padding-left: 8px;
 }
+.sidebar-toggle.btn {
+  border-radius: 3px;
+  box-shadow: none;
+  border-top: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-left: -47px;
+  margin-top: 2px;
+}
 
 
 /*# sourceMappingURL=app.css.map*/
@@ -24379,6 +24391,18 @@ fieldset.bottom-padded {
 caption.tableCaption {
   font-size: 18px;
   padding-left: 8px;
+}
+.sidebar-toggle.btn {
+  border-radius: 3px;
+  box-shadow: none;
+  border-top: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-left: -47px;
+  margin-top: 2px;
 }
 
 
