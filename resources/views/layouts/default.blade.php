@@ -588,7 +588,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         </li>
                                         <li {!! (request()->is('maintenances') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('maintenances.index') }}">
-                                                {{ trans('general.asset_maintenances') }}
+                                                {{ trans('general.maintenances') }}
                                             </a>
                                         </li>
                                     @endcan
@@ -820,8 +820,8 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             {{ trans('general.license_report') }}
                                         </a>
                                     </li>
-                                    <li {{!! (request()->is('reports/maintenances') ? ' class="active"' : '') !!}}>
-                                        <a href="{{ url('reports/asset_maintenances') }}">
+                                    <li {{!! (request()->is('ui.reports.maintenances') ? ' class="active"' : '') !!}}>
+                                        <a href="{{ url('ui.reports.maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
                                         </a>
                                     </li>
