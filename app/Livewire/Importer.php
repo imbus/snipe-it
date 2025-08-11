@@ -334,6 +334,7 @@ class Importer extends Component
             'manager_username' => trans('general.importer.manager_username'),
             'notes' => trans('general.notes'),
             'phone_number' => trans('admin/users/table.phone'),
+            'mobile_number' => trans('admin/users/table.mobile'),
             'remote' => trans('admin/users/general.remote'),
             'start_date' => trans('general.start_date'),
             'state' => trans('general.state'),
@@ -509,6 +510,13 @@ class Importer extends Component
                     'telephone number',
                     'telephone',
                     'tel.',
+                ],
+            'mobile_number' =>
+                [
+                    'mobile',
+                    'mobile number',
+                    'cell',
+                    'cellphone',
                 ],
 
             'serial' =>
