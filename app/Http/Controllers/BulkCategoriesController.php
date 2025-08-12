@@ -17,7 +17,6 @@ class BulkCategoriesController extends Controller
 {
     public function destroy(Request $request)
     {
-        // Authorize the user to delete categories
         $this->authorize('delete', Category::class);
 
         $errors = [];

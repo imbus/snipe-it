@@ -13,7 +13,6 @@ class BulkSuppliersController extends Controller
 {
     public function destroy(Request $request)
     {
-        // Authorize the user to delete suppliers
         $this->authorize('delete', Supplier::class);
 
         $errors = [];

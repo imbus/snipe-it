@@ -223,7 +223,7 @@ class CategoriesController extends Controller
         } catch (\Throwable $e) {
             report($e);
             return response()->json(
-                Helper::formatStandardApiResponse('error', null, 'something went wrong, call support')
+                Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong'))
             );
         }
 

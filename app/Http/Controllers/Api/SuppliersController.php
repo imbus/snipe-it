@@ -207,7 +207,7 @@ class SuppliersController extends Controller
         } catch (ModelStillHasLicenses $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
         } catch (\Throwable $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, 'something went wrong'));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));
         }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/suppliers/message.delete.success')));
