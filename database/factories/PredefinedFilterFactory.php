@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Company;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\PredefinedFilter;
@@ -19,8 +20,27 @@ class PredefinedFilterFactory extends Factory
      */
     public function definition(): array
     {
-       return [
-
+        return [
+            'name' => $this->faker->name,
+            'created_by' => User::factory(),
         ];
+    }
+
+    public function company(Company $company, User $user) {
+        return $this->state(fn () => [
+            'name'       => $company->name,
+            'created_by' => $user->id,
+            'company_id' => $company->id,
+            'notes'      => 'Created by DB seeder',
+        ]);
+    }
+
+    public function category(Category $category, User $user) {
+        return $this->state(fn () => [
+            'name'       => $category->name,
+            'created_by' => $user->id,
+            'company_id' => $category->id,
+            'notes'      => 'Created by DB seeder',
+        ]);
     }
 }
