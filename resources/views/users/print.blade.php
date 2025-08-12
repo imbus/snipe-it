@@ -412,7 +412,7 @@
         </div>
     @endif
 
-    <table style="margin-top: 80px;" class="{{ $users->count() > $count ? 'signature-boxes' : ''  }}">
+    <table style="margin-top: 80px;" class="{{ count($users) > $count ? 'signature-boxes' : ''  }}">
         @if (!empty($eulas))
         <tr class="collapse eula-row">
             <td style="padding-right: 10px; vertical-align: top; font-weight: bold;">EULA</td>

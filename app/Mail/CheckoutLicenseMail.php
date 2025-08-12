@@ -31,7 +31,7 @@ class CheckoutLicenseMail extends Mailable
         $this->target = $checkedOutTo;
 
         if($this->target instanceof User){
-            $this->target = $this->target?->present()?->fullName();
+            $this->target = $this->target->present()?->fullName();
         }
         elseif($this->target instanceof Asset){
             $this->target = $this->target->assignedto?->present()?->fullName();

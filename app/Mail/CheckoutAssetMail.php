@@ -24,6 +24,7 @@ class CheckoutAssetMail extends Mailable
 
     /**
      * Create a new message instance.
+     * @throws \Exception
      */
     public function __construct(Asset $asset, $checkedOutTo, User $checkedOutBy, $acceptance, $note, bool $firstTimeSending = true)
     {

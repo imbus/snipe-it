@@ -279,48 +279,62 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         @endif
                                     </a>
                                     <ul class="dropdown-menu">
-                                        @can('superadmin')
-                                            @if($deprecations)
-                                                @foreach ($deprecations as $key => $deprecation)
-                                                    @if ($deprecation['check'])
-                                                        <li class="header alert-warning">{!! $deprecation['message'] !!}</li>
-                                                    @endif
-                                                @endforeach
-                                            @endif
-                                        @endcan
-                                        @if($alert_items)
-                                        <li class="header">{{ trans_choice('general.quantity_minimum', count($alert_items)) }}</li>
-                                            <li>
-                                            <!-- inner menu: contains the actual data -->
-                                                <ul class="menu">
-                                                    @for($i = 0; count($alert_items) > $i; $i++)
 
-                                                        <li><!-- Task item -->
-                                                            <a href="{{ route($alert_items[$i]['type'].'.show', $alert_items[$i]['id'])}}">
-                                                                <h2 class="task_menu">{{ $alert_items[$i]['name'] }}
-                                                                    <small class="pull-right">
-                                                                        {{ $alert_items[$i]['remaining'] }} {{ trans('general.remaining') }}
-                                                                    </small>
-                                                                </h2>
-                                                                <div class="progress xs">
-                                                                    <div class="progress-bar progress-bar-yellow"
-                                                                         style="width: {{ $alert_items[$i]['percent'] }}%"
-                                                                         role="progressbar"
-                                                                         aria-valuenow="{{ $alert_items[$i]['percent'] }}"
-                                                                         aria-valuemin="0" aria-valuemax="100">
-                                                                        <span class="sr-only">{{ $alert_items[$i]['percent'] }}% Complete</span>
+                                        @if ((count($alert_items) + count($deprecations)) > 0)
+
+                                            @can('superadmin')
+                                                @if($deprecations)
+                                                    @foreach ($deprecations as $key => $deprecation)
+                                                        @if ($deprecation['check'])
+                                                            <li class="header alert-warning">{!! $deprecation['message'] !!}</li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            @endcan
+
+                                            @if($alert_items)
+                                                <li class="header">
+                                                    {{ trans_choice('general.quantity_minimum', count($alert_items)) }}
+                                                </li>
+                                                <li>
+                                                <!-- inner menu: contains the actual data -->
+                                                    <ul class="menu">
+                                                        @for($i = 0; count($alert_items) > $i; $i++)
+                                                            <!-- Task item -->
+                                                            <li>
+                                                                <a href="{{ route($alert_items[$i]['type'].'.show', $alert_items[$i]['id'])}}">
+                                                                    <h2 class="task_menu">{{ $alert_items[$i]['name'] }}
+                                                                        <small class="pull-right">
+                                                                            {{ $alert_items[$i]['remaining'] }} {{ trans('general.remaining') }}
+                                                                        </small>
+                                                                    </h2>
+                                                                    <div class="progress xs">
+                                                                        <div class="progress-bar progress-bar-yellow"
+                                                                             style="width: {{ $alert_items[$i]['percent'] }}%"
+                                                                             role="progressbar"
+                                                                             aria-valuenow="{{ $alert_items[$i]['percent'] }}"
+                                                                             aria-valuemin="0" aria-valuemax="100">
+                                                                            <span class="sr-only">
+                                                                                {{ $alert_items[$i]['percent'] }}%
+                                                                            </span>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </a>
-                                                        </li>
-                                                        <!-- end task item -->
-                                                    @endfor
-                                                </ul>
+                                                                </a>
+                                                            </li>
+                                                            <!-- end task item -->
+                                                        @endfor
+                                                    </ul>
+                                                </li>
+                                            @endif
+                                        @else
+                                            <li class="header">
+                                                {{ trans_choice('general.quantity_minimum', 0) }}
                                             </li>
+
                                         @endif
-                                        {{-- <li class="footer">
-                                          <a href="#">{{ trans('general.tasks_view_all') }}</a>
-                                        </li> --}}
+{{--                                        <li class="footer">--}}
+{{--                                          <a href="#">{{ trans('general.tasks_view_all') }}</a>--}}
+{{--                                        </li>--}}
                                     </ul>
                                 </li>
                             @endcan
@@ -574,7 +588,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         </li>
                                         <li {!! (request()->is('maintenances') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('maintenances.index') }}">
-                                                {{ trans('general.asset_maintenances') }}
+                                                {{ trans('general.maintenances') }}
                                             </a>
                                         </li>
                                     @endcan
@@ -637,7 +651,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                         @endcan
 
                         @can('view', \App\Models\User::class)
-                                <li id="users-sidenav-option"{!! (request()->is('users*') ? ' class="active"' : '') !!}>
+                                <li class="treeview{{ (request()->is('users*') ? ' active' : '') }}" id="users-sidenav-option">
                                     <a href="#" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}}>
                                         <x-icon type="users" class="fa-fw" />
                                         <span>{{ trans('general.people') }}</span>
@@ -806,8 +820,8 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                             {{ trans('general.license_report') }}
                                         </a>
                                     </li>
-                                    <li {{!! (request()->is('reports/asset_maintenances') ? ' class="active"' : '') !!}}>
-                                        <a href="{{ url('reports/asset_maintenances') }}">
+                                    <li {{!! (request()->is('ui.reports.maintenances') ? ' class="active"' : '') !!}}>
+                                        <a href="{{ route('ui.reports.maintenances') }}">
                                             {{ trans('general.asset_maintenance_report') }}
                                         </a>
                                     </li>
@@ -1143,6 +1157,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                     $(inputElement).closest('.help-block').remove();
                 },
                 onfocusout: function(element) {
+                    $(element).parent().removeClass('has-error');
                     return $(element).valid();
                 },
 

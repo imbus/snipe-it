@@ -183,6 +183,17 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         );
     }
 
+    protected static function booted(): void
+    {
+        static::forceDeleted(function (User $user) {
+            CheckoutRequest::where(['user_id' => $user->id])->forceDelete();
+        });
+
+        static::softDeleted(function (User $user) {
+            CheckoutRequest::where(['user_id' => $user->id])->delete();
+        });
+    }
+
 
     public function isAvatarExternal()
     {
@@ -398,9 +409,9 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
      * @since  [v4.0]
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function assetmaintenances()
+    public function maintenances()
     {
-        return $this->hasMany(\App\Models\AssetMaintenance::class, 'user_id')->withTrashed();
+        return $this->hasMany(\App\Models\Maintenance::class, 'user_id')->withTrashed();
     }
 
     /**

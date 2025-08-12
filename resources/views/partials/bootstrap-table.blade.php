@@ -368,19 +368,21 @@
 
                 // Add some overrides for any funny urls we have
                 var dest = destination;
-                var dpolymorphicItemFormatterest = '';
-                if (destination=='fieldsets') {
-                    var dpolymorphicItemFormatterest = 'fields/';
-                }
+                var polymorphicItemFormatterDest = '';
+                if (destination == 'fieldsets') {
+                    var polymorphicItemFormatterDest = 'fields/';
+                } 
 
-                return '<nobr><a href="{{ config('app.url') }}/' + dpolymorphicItemFormatterest + dest + '/' + value.id + '">' + value.name + '</a></span>';
+                return '<nobr><a href="{{ config('app.url') }}/' + polymorphicItemFormatterDest + dest + '/' + value.id + '">' + value.name + '</a></span>';
             }
         };
     }
 
 
     function licenseKeyFormatter(value, row) {
-        return '<code class="single-line"><span class="js-copy-link" data-clipboard-target=".js-copy-key-' + row.id + '" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}"><span class="js-copy-key-' + row.id + '">' + value + '</span></span></code>';
+        if (value) {
+            return '<code class="single-line"><span class="js-copy-link" data-clipboard-target=".js-copy-key-' + row.id + '" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}"><span class="js-copy-key-' + row.id + '">' + value + '</span></span></code>';
+        }
     }
 
 
@@ -436,8 +438,6 @@
 
                 if (row.name) {
                     var name_for_box = row.name
-                } else if (row.title) {
-                    var name_for_box = row.title
                 } else if (row.asset_tag) {
                     var name_for_box = row.asset_tag
                 }
@@ -501,6 +501,9 @@
             } else if (value.type == 'location') {
                 item_destination = 'locations'
                 item_icon = 'fas fa-map-marker-alt';
+            } else if (value.type == 'maintenance') {
+                item_destination = 'maintenances'
+                item_icon = 'fa-solid fa-screwdriver-wrench';
             } else if (value.type == 'model') {
                 item_destination = 'models'
                 item_icon = '';
@@ -616,25 +619,25 @@
 
 
     var formatters = [
-        'hardware',
         'accessories',
-        'consumables',
-        'components',
-        'locations',
-        'users',
-        'manufacturers',
-        'maintenances',
-        'statuslabels',
-        'models',
-        'licenses',
         'categories',
-        'suppliers',
-        'departments',
         'companies',
+        'components',
+        'consumables',
+        'departments',
         'depreciations',
         'fieldsets',
         'groups',
-        'kits'
+        'hardware',
+        'kits',
+        'licenses',
+        'locations',
+        'maintenances',
+        'manufacturers',
+        'models',
+        'statuslabels',
+        'suppliers',
+        'users',
     ];
 
     for (var i in formatters) {
@@ -996,13 +999,15 @@
 
             // This is kinda gross, but for right now we're posting to the GUI delete routes
             // All of these URLS and storage directories need to be updated to be more consistent :(
-            if (row.item.type == 'assetmodels') {
-                 destination = 'models';
+            if (row.item.type === 'assetmodels') {
+                destination = 'models';
+            } else if (row.item.type === 'assets') {
+                destination = 'hardware';
             } else {
-                 destination = row.item.type;
+                destination = row.item.type;
             }
 
-            return '<a href="{{ config('app.url') }}/' + destination + '/' + row.item.id + '/showfile/' + row.id + '/delete" '
+            return '<a href="{{ config('app.url') }}/' + destination + '/' + row.item.id + '/files/' + row.id + '/delete" '
                 + ' data-target="#dataConfirmModal" class="actions btn btn-danger btn-sm delete-asset" data-tooltip="true"  '
                 + ' data-toggle="modal" data-icon="fa-trash"'
                 + ' data-content="{{ trans('general.file_upload_status.confirm_delete') }}: ' + row.filename + '?" '

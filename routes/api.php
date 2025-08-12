@@ -603,7 +603,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
          * Asset maintenances API routes
          */
         Route::resource('maintenances', 
-        Api\AssetMaintenancesController::class,
+        Api\MaintenancesController::class,
         ['names' => [
                 'index' => 'api.maintenances.index',
                 'show' => 'api.maintenances.show',
@@ -1031,6 +1031,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                 ]
             )->name('api.users.selectlist');
 
+            Route::post('ldapsync',
+                [
+                    Api\UsersController::class,
+                    'syncLdapUsers'
+                ]
+            )->name('api.users.ldapsync');
+
             Route::post('two_factor_reset',
                 [
                     Api\UsersController::class, 
@@ -1314,7 +1321,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'index'
         ]
     )->name('api.files.index')
-        ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
+        ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|users']);
 
     // Get a file
     Route::get('{object_type}/{id}/files/{file_id}',
@@ -1323,7 +1330,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'show'
         ]
     )->name('api.files.show')
-        ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
+        ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|users']);
 
     // Upload files(s)
     Route::post('{object_type}/{id}/files',
@@ -1332,7 +1339,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'store'
         ]
     )->name('api.files.store')
-        ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
+        ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|users']);
 
     // Delete files(s)
     Route::delete('{object_type}/{id}/files/{file_id}/delete',
@@ -1341,6 +1348,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'destroy'
         ]
     )->name('api.files.destroy')
-        ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
+        ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|users']);
 
 }); // end API routes

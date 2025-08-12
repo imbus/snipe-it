@@ -112,7 +112,7 @@ class Asset extends Depreciable
         'location_id'       => ['nullable', 'exists:locations,id', 'fmcs_location'],
         'rtd_location_id'   => ['nullable', 'exists:locations,id', 'fmcs_location'],
         'purchase_date'     => ['nullable', 'date', 'date_format:Y-m-d'],
-        'serial'            => ['nullable', 'unique_undeleted:assets,serial'],
+        'serial'            => ['nullable', 'string', 'unique_undeleted:assets,serial'],
         'purchase_cost'     => ['nullable', 'numeric', 'gte:0', 'max:9999999999999'],
         'supplier_id'       => ['nullable', 'exists:suppliers,id'],
         'asset_eol_date'    => ['nullable', 'date'],
@@ -205,6 +205,17 @@ class Asset extends Depreciable
         'model.category'     => ['name'],
         'model.manufacturer' => ['name'],
     ];
+
+    protected static function booted(): void
+    {
+        static::forceDeleted(function (Asset $asset) {
+            $asset->requests()->forceDelete();
+        });
+
+        static::softDeleted(function (Asset $asset) {
+            $asset->requests()->delete();
+        });
+    }
 
     // To properly set the expected checkin as Y-m-d
     public function setExpectedCheckinAttribute($value)
@@ -760,9 +771,9 @@ class Asset extends Depreciable
      * @since  1.0
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function assetmaintenances()
+    public function maintenances()
     {
-        return $this->hasMany(\App\Models\AssetMaintenance::class, 'asset_id')
+        return $this->hasMany(\App\Models\Maintenance::class, 'asset_id')
             ->orderBy('created_at', 'desc');
     }
 

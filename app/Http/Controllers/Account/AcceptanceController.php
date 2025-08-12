@@ -347,6 +347,7 @@ class AcceptanceController extends Controller
 
             $acceptance->decline($sig_filename, $request->input('note'));
             $acceptance->notify(new AcceptanceAssetDeclinedNotification($data));
+            Log::debug('New event acceptance.');
             event(new CheckoutDeclined($acceptance));
             $return_msg = trans('admin/users/message.declined');
         }
@@ -356,13 +357,16 @@ class AcceptanceController extends Controller
                 $recipient = User::find($acceptance->alert_on_response_id);
 
                 if ($recipient) {
+                    Log::debug('Attempting to send email acceptance.');
                     Mail::to($recipient)->send(new CheckoutAcceptanceResponseMail(
                         $acceptance,
                         $recipient,
                         $request->input('asset_acceptance') === 'accepted',
                     ));
+                    Log::debug('Send email notification sucess on checkout acceptance response.');
                 }
             } catch (Exception $e) {
+                Log::error($e->getMessage());
                 Log::warning($e);
             }
         }
