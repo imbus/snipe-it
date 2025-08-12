@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\Categories\DestroyCategoryAction;
 use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetMaintenances;
 use App\Exceptions\ModelStillHasAssetModels;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasComponents;

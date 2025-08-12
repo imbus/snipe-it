@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Suppliers\DestroySupplierAction;
-use App\Exceptions\ModelStillHasAssetMaintenances;
+use App\Exceptions\ModelStillHasMaintenances;
 use App\Exceptions\ModelStillHasAssets;
 use App\Exceptions\ModelStillHasLicenses;
 use App\Models\Supplier;
@@ -26,7 +26,7 @@ class BulkSuppliersController extends Controller
                 DestroySupplierAction::run(supplier: $supplier);
             } catch (ModelStillHasAssets $e) {
                 $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_assets', ['supplier_name' => $supplier->name]);
-            } catch (ModelStillHasAssetMaintenances $e) {
+            } catch (ModelStillHasMaintenances $e) {
                 $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_maintenances', ['supplier_name' => $supplier->name]);;
             } catch (ModelStillHasLicenses $e) {
                 $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_licenses', ['supplier_name' => $supplier->name]);
