@@ -23,7 +23,7 @@
 
         <div class="row">
           <div class="col-md-12">
-            @include('partials.supplier-bulk-actions', ['delete_only' => true])
+            @include('partials.supplier-bulk-actions', [])
 
             <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
@@ -38,6 +38,11 @@
             data-show-refresh="true"
             data-sort-order="asc"
             id="suppliersTable"
+            {{-- begin stuff for bulk dropdown --}}
+            data-toolbar="#suppliersBulkEditToolbar"
+            data-bulk-button-id="#bulkSupplierEditButton"
+            data-bulk-form-id="#suppliersBulkForm"
+            {{-- end stuff for bulk dropdown --}}
             class="table table-striped snipe-table"
             data-url="{{ route('api.suppliers.index') }}"
             data-export-options='{

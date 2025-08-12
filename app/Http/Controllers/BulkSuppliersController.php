@@ -20,26 +20,26 @@ class BulkSuppliersController extends Controller
         foreach ($request->ids as $id) {
             $supplier = Supplier::find($id);
             if (is_null($supplier)) {
-                $errors[] = 'Supplier not found';
+                $errors[] = trans('admin/suppliers/message.delete.not_found');
                 continue;
             }
             try {
                 DestroySupplierAction::run(supplier: $supplier);
             } catch (ModelStillHasAssets $e) {
-                $errors[] = "{$supplier->name} still has assets";
+                $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_assets', ['supplier_name' => $supplier->name]);
             } catch (ModelStillHasAssetMaintenances $e) {
-                $errors[] = "{$supplier->name} still has asset maintenances";
+                $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_maintenances', ['supplier_name' => $supplier->name]);;
             } catch (ModelStillHasLicenses $e) {
-                $errors[] = "{$supplier->name} still has licenses";
+                $errors[] = trans('admin/suppliers/message.delete.bulk_assoc_licenses', ['supplier_name' => $supplier->name]);
             } catch (\Exception $e) {
                 report($e);
-                $errors[] = 'Something went wrong';
+                $errors[] = trans('general.something_went_wrong');
             }
         }
         if (count($errors) > 0) {
-            return redirect()->route('suppliers.index')->with('error', implode(', ', $errors));
+            return redirect()->route('suppliers.index')->with('multi_error_messages', $errors);
         } else {
-            return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));
+            return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.bulk_success'));
         }
     }
 }

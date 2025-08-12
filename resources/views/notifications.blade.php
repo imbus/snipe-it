@@ -147,6 +147,21 @@
 </div>
 @endif
 
+@if ($messages = session()->get('multi_error_messages'))
+    <div class="col-md-12">
+        <div class="alert alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <i class="fas fa-exclamation-triangle faa-pulse animated"></i>
+            <strong>{{ trans('general.notification_error') }}: </strong>
+            @foreach($messages as $key => $message)
+                <ul>
+                    <li>{{ $message }}</li>
+                </ul>
+            @endforeach
+        </div>
+    </div>
+@endif
+
 
 @if ($message = session()->get('warning'))
 <div class="col-md-12">

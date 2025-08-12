@@ -1,4 +1,4 @@
-<div id="{{ (isset($id_divname)) ? $id_divname : 'supplierBulkEditToolbar' }}" style="min-width:400px">
+<div id="{{ (isset($id_divname)) ? $id_divname : 'suppliersBulkEditToolbar' }}" style="min-width:400px">
     <form
             method="POST"
             action="{{ route('suppliers.bulk.delete') }}"
