@@ -1,10 +1,10 @@
-<div id="{{ (isset($id_divname)) ? $id_divname : 'assetsBulkEditToolbar' }}" style="min-width:400px">
+<div id="{{ (isset($id_divname)) ? $id_divname : 'categoriesBulkEditToolbar' }}" style="min-width:400px">
     <form
             method="POST"
-            action="{{ route('hardware/bulkedit') }}"
+            action="{{ route('categories.bulk.delete') }}"
             accept-charset="UTF-8"
             class="form-inline"
-            id="{{ (isset($id_formname)) ? $id_formname : 'assetsBulkForm' }}"
+            id="{{ (isset($id_formname)) ? $id_formname : 'categoriesBulkForm' }}"
     >
         @csrf
 
@@ -20,10 +20,9 @@
             @can('delete', \App\Models\Category::class)
                 <option value="delete">{{ trans('button.delete') }}</option>
             @endcan
-            <option value="labels" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=l" : ''}}>{{ trans_choice('button.generate_labels', 2) }}</option>
         </select>
 
-        <button class="btn btn-primary" id="{{ (isset($id_button)) ? $id_button : 'bulkAssetEditButton' }}"
+        <button class="btn btn-primary" id="{{ (isset($id_button)) ? $id_button : 'bulkCategoryEditButton' }}"
                 disabled>{{ trans('button.go') }}</button>
     </form>
 </div>

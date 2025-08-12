@@ -23,7 +23,7 @@
 
         <div class="row">
           <div class="col-md-12">
-            @include('partials.supplier-bulk-actions', [])
+            @include('partials.supplier-bulk-actions')
 
             <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"

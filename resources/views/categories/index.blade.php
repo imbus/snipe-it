@@ -19,6 +19,7 @@
   <div class="col-md-12">
     <div class="box box-default">
       <div class="box-body">
+        @include('partials.category-bulk-actions')
         <table
             data-columns="{{ \App\Presenters\CategoryPresenter::dataTableLayout() }}"
             data-cookie-id-table="categoryTable"
@@ -32,6 +33,11 @@
             data-show-refresh="true"
             data-sort-order="asc"
             id="categoryTable"
+            {{-- begin stuff for bulk dropdown --}}
+            data-toolbar="#categoriesBulkEditToolbar"
+            data-bulk-button-id="#bulkCategoryEditButton"
+            data-bulk-form-id="#categoriesBulkForm"
+            {{-- end stuff for bulk dropdown --}}
             class="table table-striped snipe-table"
             data-url="{{ route('api.categories.index') }}"
             data-export-options='{

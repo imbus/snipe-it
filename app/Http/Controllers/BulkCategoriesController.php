@@ -24,32 +24,32 @@ class BulkCategoriesController extends Controller
         foreach ($request->ids as $id) {
             $category = Category::find($id);
             if (is_null($category)) {
-                $errors[] = 'Category not found';
+                $errors[] = trans('admin/categories/message.delete.not_found');
                 continue;
             }
             try {
                 DestroyCategoryAction::run(category: $category);
             } catch (ModelStillHasAccessories $e) {
-                $errors[] = "{$category->name} still has associated items";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_accessories', ['category_name' => $category->name]);
             } catch (ModelStillHasAssetModels) {
-                $errors[] = "{$category->name} still has asset models";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_models', ['category_name' => $category->name]);
             } catch (ModelStillHasAssets) {
-                $errors[] = "{$category->name} still has assets";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_assets', ['category_name' => $category->name]);
             } catch (ModelStillHasComponents) {
-                $errors[] = "{$category->name} still has components";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_components', ['category_name' => $category->name]);
             } catch (ModelStillHasConsumables) {
-                $errors[] = "{$category->name} still has consumables";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_consumables', ['category_name' => $category->name]);
             } catch (ModelStillHasLicenses) {
-                $errors[] = "{$category->name} still has licenses";
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_licenses', ['category_name' => $category->name]);
             } catch (\Exception $e) {
                 report($e);
-                $errors[] = 'Something went wrong';
+                $errors[] = trans('general.something_went_wrong');
             }
         }
         if (count($errors) > 0) {
-            return redirect()->route('categories.index')->with('error', implode(', ', $errors));
+            return redirect()->route('categories.index')->with('multi_error_messages', $errors);
         } else {
-            return redirect()->route('categories.index')->with('success', trans('admin/categories/message.delete.success'));
+            return redirect()->route('categories.index')->with('success', trans('admin/categories/message.delete.bulk_success'));
         }
     }
 }
