@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
+use Illuminate\Database\Eloquent\Builder;
 
 class PredefinedFilter extends Model
 {
@@ -86,16 +87,97 @@ class PredefinedFilter extends Model
         'serial'                  => ['nullable', 'unique_undeleted:assets,serial'],
     ];
 
+    public function filterAssets(Builder $assets) {
+        if (isset($this['company_id'])) {
+            $assets->whereIn('assets.company_id', $this['company_id']);
+        }
+        if (isset($this['location_id'])) {
+            $assets->byLocationId($this['location_id']);
+        }
+        if (isset($this['rtd_location_id'])) {
+            $assets->whereIn('assets.rtd_location_id', $this['rtd_location_id'] );
+        }
+        // TODO: DEPARTMENT ?
+        if (isset($this['supplier_id'])) {
+            $assets->whereIn('assets.supplier_id', $this['supplier_id']);
+        }
+        // Model No. already included
+        if (isset($this['model_id'])) {
+            $assets->whereIn('assets.model_id', $this['model_id']);
+        }
+        if (isset($this['manufacturer_id'])) {
+            $assets->byManufacturer($this['manufacturer_id']);
+        }
+        if (isset($this['category_id'])) {
+            $assets->inCategory($this['category_id']);
+        }
+        if (isset($this['status_id'])) {
+            $assets->whereIn('assets.status_id', $this['status_id']);
+        }
+        if (isset($this['created_start'])) {
+            $assets->whereDate("assets.created_at", '>=', $this['created_start']);
+        }
+        if (isset($this['created_end'])) {
+            $assets->whereDate("assets.created_at", '<=', $this['created_end']);
+        }
+        if (isset($this['purchase_start'])) {
+            $assets->whereDate("assets.purchase_date", '>=', $this['purchase_start']);
+        }
+        if (isset($this['purchase_end'])) {
+            $assets->whereDate("assets.purchase_date", '<=', $this['purchase_end']);
+        }
+        if (isset($this['checkout_date_start'])) {
+            $assets->whereDate("assets.last_checkout", '>=', $this['checkout_date_start']);
+        }
+        if (isset($this['checkout_date_end'])) {
+            $assets->whereDate("assets.last_checkout", '<=', $this['checkout_date_end']);
+        }
+        if (isset($this['checkin_date_start'])) {
+            $assets->whereDate("assets.last_checkin", '>=', $this['checkin_date_start']);
+        }
+        if (isset($this['checkin_date_end'])) {
+            $assets->whereDate("assets.last_checkin", '<=', $this['checkin_date_end']);
+        }
+        if (isset($this['expected_checkin_start'])) {
+            $assets->whereDate("assets.expected_checkin", '>=', $this['expected_checkin_start']);
+        }
+        if (isset($this['expected_checkin_end'])) {
+            $assets->whereDate("assets.expected_checkin", '<=', $this['expected_checkin_end']);
+        }
+        if (isset($this['asset_eol_date_start'])) {
+            $assets->whereDate("assets.asset_eol_date", '>=', $this['asset_eol_date_start']);
+        }
+        if (isset($this['asset_eol_date_end'])) {
+            $assets->whereDate("assets.asset_eol_date", '<=', $this['asset_eol_date_end']);
+        }
+        if (isset($this['last_audit_start'])) {
+            $assets->whereDate("assets.last_audit_date", '>=', $this['last_audit_start']);
+        }
+        if (isset($this['last_audit_end'])) {
+            $assets->whereDate("assets.last_audit_date", '<=', $this['last_audit_end']);
+        }
+        if (isset($this['next_audit_start'])) {
+            $assets->whereDate("assets.next_audit_date", '>=', $this['next_audit_start']);
+        }
+        if (isset($this['next_audit_end'])) {
+            $assets->whereDate("assets.next_audit_date", '<=', $this['next_audit_end']);
+        }
+        if (isset($this['last_updated_start'])) {
+            $assets->whereDate("assets.updated_at", '>=', $this['last_updated_start']);
+        }
+        if (isset($this['last_updated_end'])) {
+            $assets->whereDate("assets.updated_at", '<=', $this['last_updated_end']);
+        }
+        if (isset($this['asset_name'])) {
+            $assets->whereLike('assets.name', '%' . $this['asset_name'] . '%', caseSensitive: false);
+        }
+        if (isset($this['asset_tag'])) {
+            $assets->whereLike('assets.asset_tag', '%' . $this['asset_tag'] . '%', caseSensitive: false);
+        }
+        if (isset($this['serial'])) {
+            $assets->whereLike('assets.serial', '%' . $this['serial'] . '%', caseSensitive: false);
+        }
 
-    /**
-     * -----------------------------------------------
-     * BEGIN QUERY SCOPES
-     * -----------------------------------------------
-     **/
-
-    // public function scopeAuth($query) {
-    //     $userId = auth()->id();
-
-    //     return $query->where('created_by', $userId);
-    // }
+        return $assets;
+    }
 }

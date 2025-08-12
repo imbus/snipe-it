@@ -429,130 +429,14 @@ class AssetsController extends Controller
                 break;
         }
 
+        // Filter with predefinedFilter if one is given
         if (isset($request->predefinedFilter)) {
             $id = $request->predefinedFilter;
             $predefinedFilters = PredefinedFilter::where('id', $id)->get();
 
             if ($predefinedFilters->count() == 1) {
                 $predefinedFilter = $predefinedFilters[0];
-                 // ---------------------- BY COMPANY ----------------------
-                if (isset($predefinedFilter['company_id'])) {
-                    $assets->whereIn('assets.company_id', $predefinedFilter['company_id']);
-                }
-                // ---------------------- BY LOCATION ----------------------
-                if (isset($predefinedFilter['location_id'])) {
-                    $assets->byLocationId($predefinedFilter['location_id']);
-                }
-                // ---------------------- BY DEFAULT LOCATION ----------------------
-                if (isset($predefinedFilter['rtd_location_id'])) {
-                    $assets->whereIn('assets.rtd_location_id', $predefinedFilter['rtd_location_id'] );
-                }
-                // DEPARTMENT ?
-                // ---------------------- BY SUPPLIER ----------------------
-                if (isset($predefinedFilter['supplier_id'])) {
-                    $assets->whereIn('assets.supplier_id', $predefinedFilter['supplier_id']);
-                }
-                // ---------------------- BY MODEL ----------------------
-                // Model No. already included
-                if (isset($predefinedFilter['model_id'])) {
-                    $assets->whereIn('assets.model_id', $predefinedFilter['model_id']);
-                }
-                // ---------------------- BY MANUFACTURER ----------------------
-                if (isset($predefinedFilter['manufacturer_id'])) {
-                    $assets->byManufacturer($predefinedFilter['manufacturer_id']);
-                }
-                // ---------------------- BY CATEGORY ----------------------
-                if (isset($predefinedFilter['category_id'])) {
-                    $assets->inCategory($predefinedFilter['category_id']);
-                }
-                // ---------------------- BY STATUS ----------------------
-                if (isset($predefinedFilter['status_id'])) {
-                    $assets->whereIn('assets.status_id', $predefinedFilter['status_id']);
-                }
-                // ---------------------- BY CREATED START DATE ----------------------
-                if (isset($predefinedFilter['created_start'])) {
-                    $assets->whereDate("assets.created_at", '>=', $predefinedFilter['created_start']);
-                }
-                // ---------------------- BY CREATED END DATE ----------------------
-                if (isset($predefinedFilter['created_end'])) {
-                    $assets->whereDate("assets.created_at", '<=', $predefinedFilter['created_end']);
-                }
-                // ---------------------- BY PURCHASE DATE START ----------------------
-                if (isset($predefinedFilter['purchase_start'])) {
-                    $assets->whereDate("assets.purchase_date", '>=', $predefinedFilter['purchase_start']);
-                }
-                // ---------------------- BY PURCHASE DATE END ----------------------
-                if (isset($predefinedFilter['purchase_end'])) {
-                    $assets->whereDate("assets.purchase_date", '<=', $predefinedFilter['purchase_end']);
-                }
-                // ---------------------- BY LAST CHECKOUT START ----------------------
-                if (isset($predefinedFilter['checkout_date_start'])) {
-                    $assets->whereDate("assets.last_checkout", '>=', $predefinedFilter['checkout_date_start']);
-                }
-                // ---------------------- BY LAST CHECKOUT END ----------------------
-                if (isset($predefinedFilter['checkout_date_end'])) {
-                    $assets->whereDate("assets.last_checkout", '<=', $predefinedFilter['checkout_date_end']);
-                }
-                // ---------------------- BY LAST CHECKING START ----------------------
-                if (isset($predefinedFilter['checkin_date_start'])) {
-                    $assets->whereDate("assets.last_checkin", '>=', $predefinedFilter['checkin_date_start']);
-                }
-                // ---------------------- BY LAST CHECKING END ----------------------
-                if (isset($predefinedFilter['checkin_date_end'])) {
-                    $assets->whereDate("assets.last_checkin", '<=', $predefinedFilter['checkin_date_end']);
-                }
-                // ---------------------- BY EXPECTED CHECKING START ----------------------
-                if (isset($predefinedFilter['expected_checkin_start'])) {
-                    $assets->whereDate("assets.expected_checkin", '>=', $predefinedFilter['expected_checkin_start']);
-                }
-                // ---------------------- BY EXPECTED CHECKING END ----------------------
-                if (isset($predefinedFilter['expected_checkin_end'])) {
-                    $assets->whereDate("assets.expected_checkin", '<=', $predefinedFilter['expected_checkin_end']);
-                }
-                // ---------------------- BY ASSET EOL DATE START ----------------------
-                if (isset($predefinedFilter['asset_eol_date_start'])) {
-                    $assets->whereDate("assets.asset_eol_date", '>=', $predefinedFilter['asset_eol_date_start']);
-                }
-                // ---------------------- BY ASSET EOL DATE END ----------------------
-                if (isset($predefinedFilter['asset_eol_date_end'])) {
-                    $assets->whereDate("assets.asset_eol_date", '<=', $predefinedFilter['asset_eol_date_end']);
-                }
-                // ---------------------- BY LAST AUDIT START ----------------------
-                if (isset($predefinedFilter['last_audit_start'])) {
-                    $assets->whereDate("assets.last_audit_date", '>=', $predefinedFilter['last_audit_start']);
-                }
-                // ---------------------- BY LAST AUDIT END ----------------------
-                if (isset($predefinedFilter['last_audit_end'])) {
-                    $assets->whereDate("assets.last_audit_date", '<=', $predefinedFilter['last_audit_end']);
-                }
-                // ---------------------- BY NEXT AUDIT START ----------------------
-                if (isset($predefinedFilter['next_audit_start'])) {
-                    $assets->whereDate("assets.next_audit_date", '>=', $predefinedFilter['next_audit_start']);
-                }
-                // ---------------------- BY NEXT AUDIT END ----------------------
-                if (isset($predefinedFilter['next_audit_end'])) {
-                    $assets->whereDate("assets.next_audit_date", '<=', $predefinedFilter['next_audit_end']);
-                }
-                // ---------------------- BY LAST UPDATE START ----------------------
-                if (isset($predefinedFilter['last_updated_start'])) {
-                    $assets->whereDate("assets.updated_at", '>=', $predefinedFilter['last_updated_start']);
-                }
-                // ---------------------- BY LAST UPDATE END ----------------------
-                if (isset($predefinedFilter['last_updated_end'])) {
-                    $assets->whereDate("assets.updated_at", '<=', $predefinedFilter['last_updated_end']);
-                }
-                // ---------------------- BY ASSET NAME ----------------------
-                if (isset($predefinedFilter['asset_name'])) {
-                    $assets->whereLike('assets.name', '%' . $predefinedFilter['asset_name'] . '%', caseSensitive: false);
-                }
-                // ---------------------- BY ASSET TAG ----------------------
-                if (isset($predefinedFilter['asset_tag'])) {
-                    $assets->whereLike('assets.asset_tag', '%' . $predefinedFilter['asset_tag'] . '%', caseSensitive: false);
-                }
-                // ---------------------- BY SERIAL ----------------------
-                if (isset($predefinedFilter['serial'])) {
-                    $assets->whereLike('assets.serial', '%' . $predefinedFilter['serial'] . '%', caseSensitive: false);
-                }
+                $assets = $predefinedFilter->filterAssets($assets);
             }
         }
 

@@ -12,12 +12,14 @@ use App\Models\Company;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Illuminate\Database\Eloquent\Builder;
 
 class PredefinedFilterTest extends TestCase {
 
   use RefreshDatabase;
 
-  protected \Illuminate\Support\Collection $assets;
+  // protected \Illuminate\Support\Collection $assets;
+    protected Builder $assets;
   protected User $user;
 
   protected function setUp(): void {
@@ -60,61 +62,55 @@ class PredefinedFilterTest extends TestCase {
       "model_id"=> $assetModel->id,
       "status_id" => $statuslabel->id,
       'asset_tag' => 12312312301,
-      "created_at" => "2025-08-10",
+      "created_at" => "2024-08-10",
     ]);
     Asset::create([
       "name"=> "asset_for_test02",
       "model_id"=> $assetModel->id,
       "status_id" => $statuslabel->id,
       'asset_tag' => 12312312302,
-      "created_at" => "2025-08-12",
+      "created_at" => "2026-08-12",
     ]);
     Asset::create([
       "name"=> "asset_for_test03",
       "model_id"=> $assetModel->id,
       "status_id" => $statuslabel->id,
       'asset_tag' => 12312312303,
-      "created_at" => "2025-08-12",
+      "created_at" => "2026-08-12",
     ]);
 
     $this->user = $user;
-    $this->assets = Asset::all();
+    $this->assets = Asset::query();
   }
 
   public function testSetUp() {
-    $this->assertCount(3, $this->assets);
+    $this->assertCount(3, $this->assets->get());
   }
 
   public function testCreatedStart() {
+    $assets = $this->assets;
+    $this->assertCount(3, $assets->get());
+
     $predefinedFilter = PredefinedFilter::create([
       'name' => 'test_created_start',
       'created_by' => $this->user->id,
       'created_start' => '2025-08-11',
     ]);
 
-
-    // $this->asserCount(2, TODO);
+    $assets = $predefinedFilter->filterAssets($assets);
+    $this->assertCount(2, $assets->get());
   }
 
+  public function testCreatedEnd() {
+    $assets = $this->assets;
+    $this->assertCount(3, $assets->get());
+    $predefinedFilter = PredefinedFilter::create([
+      'name' => 'test_created_end',
+      'created_by' => $this->user->id,
+      'created_end' => '2025-08-11',
+    ]);
 
-
-  public function testFilterCompany() {
-    Company::factory()->count(1)->create();
-    $companies = Company::all();
-    $this->assertCount(1, $companies);
+    $assets = $predefinedFilter->filterAssets($assets);
+    $this->assertCount(1, $assets->get());
   }
-
-  public function testFilterCategory() {
-    Category::factory()->count(1)->create();
-    $categories = Category::all();
-    $this->assertCount(1, $categories);
-
-    PredefinedFilter::factory()->category()->create();
-    $predefinedFilterCategory = PredefinedFilter::all();
-    $this->assertCount(1, $predefinedFilterCategory);
-
-
-  }
-
-
 }
