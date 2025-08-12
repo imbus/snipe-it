@@ -18,6 +18,8 @@ class LocationPresenter extends Presenter
                 'field' => 'bulk_selectable',
                 'checkbox' => true,
                 'formatter' => 'checkboxEnabledFormatter',
+                'titleTooltip' => trans('general.select_all_none'),
+                'printIgnore' => true,
             ], [
                 'field' => 'id',
                 'searchable' => false,
@@ -65,7 +67,9 @@ class LocationPresenter extends Presenter
                 'sortable' => true,
                 'switchable' => true,
                 'title' =>  trans('admin/locations/message.current_location'),
+                'titleTooltip' => trans('admin/locations/message.current_location'),
                 'visible' => true,
+                'class' => 'css-house-laptop',
             ], [
                 'field' => 'rtd_assets_count',
                 'searchable' => false,

@@ -6,6 +6,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Transformers\AccessoriesTransformer;
+use App\Http\Transformers\ActionlogsTransformer;
 use App\Http\Transformers\AssetsTransformer;
 use App\Http\Transformers\ConsumablesTransformer;
 use App\Http\Transformers\LicensesTransformer;
@@ -19,9 +20,11 @@ use App\Models\Consumable;
 use App\Models\License;
 use App\Models\User;
 use App\Notifications\CurrentInventory;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -67,6 +70,7 @@ class UsersController extends Controller
             'users.notes',
             'users.permissions',
             'users.phone',
+            'users.mobile',
             'users.state',
             'users.two_factor_enrolled',
             'users.two_factor_optin',
@@ -80,7 +84,12 @@ class UsersController extends Controller
             'users.autoassign_licenses',
             'users.website',
 
-        ])->with('manager', 'groups', 'userloc', 'company', 'department', 'assets', 'licenses', 'accessories', 'consumables', 'createdBy', 'managesUsers', 'managedLocations')
+        ])->with('manager')
+            ->with('groups')
+            ->with('userloc')
+            ->with('company')
+            ->with('department')
+            ->with('createdBy')
             ->withCount([
                 'assets as assets_count' => function(Builder $query) {
                     $query->withoutTrashed();
@@ -101,8 +110,24 @@ class UsersController extends Controller
             $users = $users->where('users.activated', '=', $request->input('activated'));
         }
 
+        if ($request->input('admins') == 'true') {
+            $users = $users->OnlyAdminsAndSuperAdmins();
+        }
+
+        if ($request->input('superadmins') == 'true') {
+            $users = $users->OnlySuperAdmins();
+        }
+
         if ($request->filled('company_id')) {
             $users = $users->where('users.company_id', '=', $request->input('company_id'));
+        }
+
+        if ($request->filled('phone')) {
+            $users = $users->where('users.phone', '=', $request->input('phone'));
+        }
+
+        if ($request->filled('mobile')) {
+            $users = $users->where('users.mobile', '=', $request->input('mobile'));
         }
 
         if ($request->filled('location_id')) {
@@ -206,11 +231,11 @@ class UsersController extends Controller
         }
 
         if ($request->filled('manages_users_count')) {
-            $users->has('manages_users_count', '=', $request->input('manages_users_count'));
+            $users->has('managesUsers', '=', $request->input('manages_users_count'));
         }
 
         if ($request->filled('manages_locations_count')) {
-            $users->has('manages_locations_count', '=', $request->input('manages_locations_count'));
+            $users->has('managedLocations', '=', $request->input('manages_locations_count'));
         }
 
         if ($request->filled('autoassign_licenses')) {
@@ -277,6 +302,7 @@ class UsersController extends Controller
                         'manages_users_count',
                         'manages_locations_count',
                         'phone',
+                        'mobile',
                         'address',
                         'city',
                         'state',
@@ -474,8 +500,25 @@ class UsersController extends Controller
                 return response()->json(Helper::formatStandardApiResponse('error', null, 'You cannot be your own manager'));
             }
 
-            if ($request->filled('password')) {
-                $user->password = bcrypt($request->input('password'));
+            // check for permissions related fields and pull them out if the current user cannot edit them
+            if (auth()->user()->can('canEditAuthFields', $user) && auth()->user()->can('editableOnDemo')) {
+
+                if ($request->filled('password')) {
+                    $user->password = bcrypt($request->input('password'));
+                }
+
+                if ($request->filled('username')) {
+                    $user->username = $request->input('username');
+                }
+
+                if ($request->filled('email')) {
+                    $user->email = $request->input('email');
+                }
+
+                if ($request->filled('activated')) {
+                    $user->activated = $request->input('activated');
+                }
+
             }
 
             // We need to use has()  instead of filled()
@@ -676,7 +719,6 @@ class UsersController extends Controller
         $this->authorize('view', License::class);
         
         if ($user = User::where('id', $id)->withTrashed()->first()) {
-            $this->authorize('update', $user);
             $licenses = $user->licenses()->get();
             return (new LicensesTransformer())->transformLicenses($licenses, $licenses->count());
         }
@@ -737,6 +779,25 @@ class UsersController extends Controller
     }
 
     /**
+     * Display the EULAs accepted by the user.
+     *
+     *  @param \App\Models\User $user
+     *  @param \App\Http\Transformers\ActionlogsTransformer $transformer
+     *  @return \Illuminate\Http\JsonResponse
+     *@since [v8.1.16]
+     * @author [Godfrey Martinez] [<gmartinez@grokability.com>]
+     */
+    public function eulas(User $user, ActionlogsTransformer $transformer)
+    {
+        $this->authorize('view', User::class);
+
+        $eulas = $user->eulas;
+        return response()->json(
+            $transformer->transformActionlogs($eulas, $eulas->count())
+        );
+    }
+
+    /**
      * Restore a soft-deleted user.
      *
      * @author [E. Taylor] [<dev@evantaylor.name>]
@@ -770,6 +831,39 @@ class UsersController extends Controller
         }
 
         return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/users/message.user_not_found')), 200);
+
+    }
+
+
+    /**
+     * Run the LDAP sync command to import users from LDAP via API.
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since 8.2.2
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function syncLdapUsers(Request $request)
+    {
+        $this->authorize('update', User::class);
+        // Call Artisan LDAP import command.
+
+        Artisan::call('snipeit:ldap-sync', ['--location_id' => $request->input('location_id'), '--json_summary' => true]);
+
+        // Collect and parse JSON summary.
+        $ldap_results_json = Artisan::output();
+        $ldap_results = json_decode($ldap_results_json, true);
+
+        if (!$ldap_results) {
+            return response()->json(Helper::formatStandardApiResponse('error', null,trans('general.no_results')), 200);
+        }
+
+        // Direct user to appropriate status page.
+        if ($ldap_results['error']) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, $ldap_results['error_message']), 200);
+        }
+
+        return response()->json(Helper::formatStandardApiResponse('success', null, $ldap_results['summary']), 200);
 
     }
 }

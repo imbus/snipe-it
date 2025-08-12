@@ -6,12 +6,6 @@
 @parent
 @stop
 
-
-@section('header_right')
-<a href="{{ route('categories.create') }}" class="btn btn-primary pull-right">
-  {{ trans('general.create') }}</a>
-@stop
-
 {{-- Page content --}}
 @section('content')
 
@@ -23,14 +17,8 @@
         <table
             data-columns="{{ \App\Presenters\CategoryPresenter::dataTableLayout() }}"
             data-cookie-id-table="categoryTable"
-            data-pagination="true"
             data-id-table="categoryTable"
-            data-search="true"
             data-side-pagination="server"
-            data-show-columns="true"
-            data-show-fullscreen="true"
-            data-show-export="true"
-            data-show-refresh="true"
             data-sort-order="asc"
             id="categoryTable"
             {{-- begin stuff for bulk dropdown --}}
@@ -38,6 +26,7 @@
             data-bulk-button-id="#bulkCategoryEditButton"
             data-bulk-form-id="#categoriesBulkForm"
             {{-- end stuff for bulk dropdown --}}
+            data-buttons="categoryButtons"
             class="table table-striped snipe-table"
             data-url="{{ route('api.categories.index') }}"
             data-export-options='{

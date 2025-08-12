@@ -185,6 +185,7 @@ class SupplierPresenter extends Presenter
                 'title' => trans('table.actions'),
                 'visible' => true,
                 'formatter' => 'suppliersActionsFormatter',
+                'printIgnore' => true,
             ],
         ];
 

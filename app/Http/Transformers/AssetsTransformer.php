@@ -101,7 +101,7 @@ class AssetsTransformer
             'checkout_counter' => (int) $asset->checkout_counter,
             'requests_counter' => (int) $asset->requests_counter,
             'user_can_checkout' => (bool) $asset->availableForCheckout(),
-            'book_value' => Helper::formatCurrencyOutput($asset->getLinearDepreciatedValue()),
+            'book_value' => Helper::formatCurrencyOutput($asset->getDepreciatedValue()),
         ];
 
 
@@ -203,6 +203,7 @@ class AssetsTransformer
                     'last_name'=> ($asset->assigned->last_name) ? e($asset->assigned->last_name) : null,
                     'email'=> ($asset->assigned->email) ? e($asset->assigned->email) : null,
                     'employee_number' =>  ($asset->assigned->employee_num) ? e($asset->assigned->employee_num) : null,
+                    'jobtitle' => $asset->assigned->jobtitle ? e($asset->assigned->jobtitle) : null,
                     'type' => 'user',
                 ] : null;
         }

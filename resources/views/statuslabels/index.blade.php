@@ -6,12 +6,6 @@
 @parent
 @stop
 
-@section('header_right')
-    @can('create', \App\Models\Statuslabel::class)
-        <a href="{{ route('statuslabels.create') }}" class="btn btn-primary pull-right">
-{{ trans('general.create') }}</a>
-    @endcan
-@stop
 {{-- Page content --}}
 @section('content')
 
@@ -22,18 +16,13 @@
             <table
                     data-columns="{{ \App\Presenters\StatusLabelPresenter::dataTableLayout() }}"
                     data-cookie-id-table="statuslabelsTable"
-                    data-pagination="true"
                     data-id-table="statuslabelsTable"
-                    data-search="true"
                     data-show-footer="false"
                     data-side-pagination="server"
-                    data-show-columns="true"
-                    data-show-export="true"
-                    data-show-fullscreen="true"
-                    data-show-refresh="true"
                     data-sort-order="asc"
                     data-sort-name="name"
                     id="statuslabelsTable"
+                    data-buttons="statuslabelButtons"
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.statuslabels.index') }}"
                     data-export-options='{

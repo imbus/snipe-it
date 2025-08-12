@@ -10,12 +10,6 @@
 @section('content')
 
 
-@section('header_right')
-  @can('create', \App\Models\Supplier::class)
-    <a href="{{ route('suppliers.create') }}" class="btn btn-primary pull-right"> {{ trans('general.create') }}</a>
-  @endcan
-@stop
-
 <div class="row">
   <div class="col-md-12">
     <div class="box">
@@ -28,14 +22,8 @@
             <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
             data-cookie-id-table="suppliersTable"
-            data-pagination="true"
             data-id-table="suppliersTable"
-            data-search="true"
             data-side-pagination="server"
-            data-show-columns="true"
-            data-show-fullscreen="true"
-            data-show-export="true"
-            data-show-refresh="true"
             data-sort-order="asc"
             id="suppliersTable"
             {{-- begin stuff for bulk dropdown --}}
@@ -43,6 +31,7 @@
             data-bulk-button-id="#bulkSupplierEditButton"
             data-bulk-form-id="#suppliersBulkForm"
             {{-- end stuff for bulk dropdown --}}
+            data-buttons="supplierButtons"
             class="table table-striped snipe-table"
             data-url="{{ route('api.suppliers.index') }}"
             data-export-options='{

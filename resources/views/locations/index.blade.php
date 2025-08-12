@@ -6,12 +6,6 @@
 @parent
 @stop
 
-@section('header_right')
-  @can('create', \App\Models\Location::class)
-      <a href="{{ route('locations.create') }}" class="btn btn-primary pull-right">
-  {{ trans('general.create') }}</a>
-  @endcan
-@stop
 {{-- Page content --}}
 @section('content')
 <div class="row">
@@ -23,19 +17,13 @@
           <table
                   data-columns="{{ \App\Presenters\LocationPresenter::dataTableLayout() }}"
                   data-cookie-id-table="locationTable"
-                  data-click-to-select="true"
-                  data-pagination="true"
                   data-id-table="locationTable"
                   data-toolbar="#locationsBulkEditToolbar"
                   data-bulk-button-id="#bulkLocationsEditButton"
                   data-bulk-form-id="#locationsBulkForm"
-                  data-search="true"
                   data-side-pagination="server"
-                  data-show-columns="true"
-                  data-show-fullscreen="true"
-                  data-show-export="true"
-                  data-show-refresh="true"
                   data-sort-order="asc"
+                  data-buttons="locationButtons"
                   id="locationTable"
                   class="table table-striped snipe-table"
                   data-url="{{ route('api.locations.index', array('company_id'=>e(Request::get('company_id')))) }}"

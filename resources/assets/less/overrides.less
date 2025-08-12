@@ -973,9 +973,9 @@ label.form-control {
 
 label.form-control--disabled {
   color: #959495;
-  pointer-events:none;
   cursor: not-allowed;
 }
+
 
 /** --------------------------------------- **/
 /** Start checkbox styles to replace iCheck **/
@@ -1165,6 +1165,11 @@ input[type="radio"]:checked::before {
   display: table-row !important;
 }
 
+.form-control-static {
+  padding-top: 0px;
+}
+
+
 td.text-right.text-padding-number-cell {
   padding-right: 30px !important;
   white-space: nowrap;
@@ -1216,3 +1221,16 @@ caption.tableCaption {
   padding-left: 8px;
 }
 
+// via https://github.com/grokability/snipe-it/issues/11754
+.sidebar-toggle.btn {
+  border-radius: 3px;
+  box-shadow: none;
+  border-top: 0px solid transparent;
+  border-bottom: 0px solid transparent;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-left: -47px;
+  margin-top: 2px;
+}

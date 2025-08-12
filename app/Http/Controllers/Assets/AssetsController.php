@@ -157,8 +157,16 @@ class AssetsController extends Controller
                 $asset->location_id = $request->input('rtd_location_id', null);
             }
 
-            // Create the image (if one was chosen.)
-            if ($request->has('image')) {
+            if ($request->has('use_cloned_image')) {
+                $cloned_model_img = Asset::select('image')->find($request->input('clone_image_from_id'));
+                if ($cloned_model_img) {
+                    $new_image_name = 'clone-'.date('U').'-'.$cloned_model_img->image;
+                    $new_image = 'assets/'.$new_image_name;
+                    Storage::disk('public')->copy('assets/'.$cloned_model_img->image, $new_image);
+                    $asset->image = $new_image_name;
+                }
+
+            } else {
                 $asset = $request->handleImages($asset);
             }
 
@@ -188,14 +196,31 @@ class AssetsController extends Controller
 
             // Validate the asset before saving
             if ($asset->isValid() && $asset->save()) {
-                if (request('assigned_user')) {
-                    $target = User::find(request('assigned_user'));
+                $target = null;
+                $location = null;
+
+                if ($userId = request('assigned_user')) {
+                    $target = User::find($userId);
+
+                    if (!$target) {
+                        return redirect()->back()->withInput()->with('error', trans('admin/hardware/message.create.target_not_found.user'));
+                    }
                     $location = $target->location_id;
-                } elseif (request('assigned_asset')) {
-                    $target = Asset::find(request('assigned_asset'));
+
+                } elseif ($assetId = request('assigned_asset')) {
+                    $target = Asset::find($assetId);
+
+                    if (!$target) {
+                        return redirect()->back()->withInput()->with('error', trans('admin/hardware/message.create.target_not_found.asset'));
+                    }
                     $location = $target->location_id;
-                } elseif (request('assigned_location')) {
-                    $target = Location::find(request('assigned_location'));
+
+                } elseif ($locationId = request('assigned_location')) {
+                    $target = Location::find($locationId);
+
+                    if (!$target) {
+                        return redirect()->back()->withInput()->with('error', trans('admin/hardware/message.create.target_not_found.location'));
+                    }
                     $location = $target->id;
                 }
 
@@ -209,25 +234,32 @@ class AssetsController extends Controller
                 $failures[] = join(",", $asset->getErrors()->all());
             }
         }
+        if($request->get('redirect_option') === 'back'){
+            session()->put(['redirect_option' => 'index']);
+        } else {
+            session()->put(['redirect_option' => $request->get('redirect_option')]);
+        }
 
-        session()->put(['redirect_option' => $request->get('redirect_option'), 'checkout_to_type' => $request->get('checkout_to_type')]);
+        session()->put(['checkout_to_type' => $request->get('checkout_to_type'),
+                       'other_redirect' =>  'model' ]);
+
 
 
         if ($successes) {
             if ($failures) {
                 //some succeeded, some failed
-                return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets')) //FIXME - not tested
+                return Helper::getRedirectOption($request, $asset->id, 'Assets') //FIXME - not tested
                 ->with('success-unescaped', trans_choice('admin/hardware/message.create.multi_success_linked', $successes, ['links' => join(", ", $successes)]))
                     ->with('warning', trans_choice('admin/hardware/message.create.partial_failure', $failures, ['failures' => join("; ", $failures)]));
             } else {
                 if (count($successes) == 1) {
                     //the most common case, keeping it so we don't have to make every use of that translation string be trans_choice'ed
                     //and re-translated
-                    return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))
+                    return Helper::getRedirectOption($request, $asset->id, 'Assets')
                         ->with('success-unescaped', trans('admin/hardware/message.create.success_linked', ['link' => route('hardware.show', $asset), 'id', 'tag' => e($asset->asset_tag)]));
                 } else {
                     //multi-success
-                    return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))
+                    return Helper::getRedirectOption($request, $asset->id, 'Assets')
                         ->with('success-unescaped', trans_choice('admin/hardware/message.create.multi_success_linked', $successes, ['links' => join(", ", $successes)]));
                 }
             }
@@ -248,6 +280,7 @@ class AssetsController extends Controller
     public function edit(Asset $asset) : View | RedirectResponse
     {
         $this->authorize($asset);
+        session()->put('back_url', url()->previous());
         return view('hardware/edit')
             ->with('item', $asset)
             ->with('statuslabel_list', Helper::statusLabelList())
@@ -410,11 +443,15 @@ class AssetsController extends Controller
                 }
             }
         }
+        session()->put([
+            'redirect_option' => $request->get('redirect_option'),
+            'checkout_to_type' => $request->get('checkout_to_type'),
+            'other_redirect' => $request->get('redirect_option') === 'other_redirect' ? 'model' : null,
+        ]);
 
-        session()->put(['redirect_option' => $request->get('redirect_option'), 'checkout_to_type' => $request->get('checkout_to_type')]);
 
         if ($asset->save()) {
-            return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))
+            return Helper::getRedirectOption($request, $asset->id, 'Assets')
                 ->with('success', trans('admin/hardware/message.update.success'));
         }
 
@@ -619,8 +656,9 @@ class AssetsController extends Controller
      */
     public function getClone(Asset $asset)
     {
-        $this->authorize('create', $asset);
+        $this->authorize('create', Asset::class);
         $cloned = clone $asset;
+        $cloned_model = $asset;
         $cloned->id = null;
         $cloned->asset_tag = '';
         $cloned->serial = '';
@@ -630,6 +668,7 @@ class AssetsController extends Controller
         return view('hardware/edit')
             ->with('statuslabel_list', Helper::statusLabelList())
             ->with('statuslabel_types', Helper::statusTypeList())
+            ->with('cloned_model', $cloned_model)
             ->with('item', $cloned);
     }
 
@@ -979,7 +1018,7 @@ class AssetsController extends Controller
             }
 
             $asset->logAudit($request->input('note'), $request->input('location_id'), $file_name, $originalValues);
-            return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))->with('success', trans('admin/hardware/message.audit.success'));
+            return Helper::getRedirectOption($request, $asset->id, 'Assets')->with('success', trans('admin/hardware/message.audit.success'));
         }
 
         return redirect()->back()->withInput()->withErrors($asset->getErrors());

@@ -270,30 +270,6 @@
 
                            </div>
 
-                           <!-- Privacy Policy Footer-->
-                           <div class="form-group {{ $errors->has('privacy_policy_link') ? 'error' : '' }}">
-                               <div class="col-md-3">
-                                   <label for="privacy_policy_link">{{ trans('admin/settings/general.privacy_policy_link') }}</label>
-                               </div>
-                               <div class="col-md-8">
-
-                                   @if (config('app.lock_passwords'))
-                                       <input class="form-control disabled" disabled="disabled" name="privacy_policy_link" type="text" id="privacy_policy_link" value="{{ old('privacy_policy_link', $setting->privacy_policy_link) }}">
-                                   @else
-                                       <input class="form-control" name="privacy_policy_link" type="text" id="privacy_policy_link" value="{{ old('privacy_policy_link', $setting->privacy_policy_link) }}">
-
-                                   @endif
-
-                                   <span class="help-block">{{ trans('admin/settings/general.privacy_policy_link_help')  }}</span>
-                                   {!! $errors->first('privacy_policy_link', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-
-                                   @if (config('app.lock_passwords')===true)
-                                       <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
-                                   @endif
-
-                               </div>
-                           </div>
-
 
                            <!-- Load images in emails -->
                            <div class="form-group {{ $errors->has('show_images_in_email') ? 'error' : '' }}">
@@ -325,7 +301,8 @@
                                            <p class="help-block">{{ trans('admin/settings/general.require_checkinout_notes_help_text') }}</p>
                                    </div>
                                </div>
-                               <!-- /.form-group -->
+
+
                        </fieldset>
 
 
@@ -397,6 +374,30 @@
                                {{ trans('admin/settings/general.legends.misc') }}
                            </legend>
 
+                           <!-- Privacy Policy Footer-->
+                           <div class="form-group {{ $errors->has('privacy_policy_link') ? 'error' : '' }}">
+                               <div class="col-md-3">
+                                   <label for="privacy_policy_link">{{ trans('admin/settings/general.privacy_policy_link') }}</label>
+                               </div>
+                               <div class="col-md-8">
+
+                                   @if (config('app.lock_passwords'))
+                                       <input class="form-control disabled" disabled="disabled" name="privacy_policy_link" type="text" id="privacy_policy_link" value="{{ old('privacy_policy_link', $setting->privacy_policy_link) }}">
+                                   @else
+                                       <input class="form-control" name="privacy_policy_link" type="text" id="privacy_policy_link" value="{{ old('privacy_policy_link', $setting->privacy_policy_link) }}">
+
+                                   @endif
+
+                                   <span class="help-block">{{ trans('admin/settings/general.privacy_policy_link_help')  }}</span>
+                                   {!! $errors->first('privacy_policy_link', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
+
+                                   @if (config('app.lock_passwords')===true)
+                                       <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                   @endif
+
+                               </div>
+                           </div>
+                           
                                <!-- Depreciation method -->
                                <div class="form-group {{ $errors->has('depreciation_method') ? 'error' : '' }}">
                                    <div class="col-md-3">
@@ -428,6 +429,24 @@
                                        </p>
                                    </div>
                                </div>
+
+                           <!-- Manager View -->
+                           <div class="form-group {{ $errors->has('manager_view_enabled') ? 'error' : '' }}">
+                               <div class="col-md-3">
+                                   <strong>{{ trans('admin/settings/general.manager_view') }}</strong>
+                               </div>
+                               <div class="col-md-8">
+                                   <label class="form-control">
+                                       <input type="checkbox" value="1" name="manager_view_enabled" {{ (old('manager_view_enabled', $setting->manager_view_enabled)) == '1' ? ' checked="checked"' : '' }} aria-label="manager_view_enabled">
+                                       {{ trans('admin/settings/general.manager_view_enabled_text') }}
+                                   </label>
+                                   <p class="help-block">
+                                       {{ trans('admin/settings/general.manager_view_enabled_help') }}
+                                   </p>
+                                   {!! $errors->first('manager_view_enabled', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
+                               </div>
+                           </div>
+                           <!-- /.form-group -->
 
                        </fieldset>
 

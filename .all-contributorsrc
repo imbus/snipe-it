@@ -4180,6 +4180,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lukaskraic",
+      "name": "Lukas Kraic",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58696401?v=4",
+      "profile": "https://github.com/lukaskraic",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mckaygerhard",
+      "name": "Герхард PICCORO Lenz McKAY ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1571724?v=4",
+      "profile": "https://github-readme-stats.vercel.app/api?username=mckaygerhard",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

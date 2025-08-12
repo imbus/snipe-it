@@ -25,6 +25,7 @@ class UserPresenter extends Presenter
                 'field' => 'checkbox',
                 'checkbox' => true,
                 'titleTooltip' => trans('general.select_all_none'),
+                'printIgnore' => true,
             ],
             [
                 'field' => 'id',
@@ -124,6 +125,15 @@ class UserPresenter extends Presenter
                 'formatter'    => 'phoneFormatter',
             ],
             [
+                'field' => 'mobile',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('admin/users/table.mobile'),
+                'visible' => false,
+                'formatter'    => 'mobileFormatter',
+            ],
+            [
                 'field' => 'website',
                 'searchable' => true,
                 'sortable' => true,
@@ -179,7 +189,7 @@ class UserPresenter extends Presenter
                 'switchable' => false,
                 'title' => trans('admin/users/table.username'),
                 'visible' => true,
-                'formatter' => 'usersLinkFormatter',
+                'formatter' => 'usernameRoleLinkFormatter',
             ],
             [
                 'field' => 'employee_num',
@@ -205,6 +215,15 @@ class UserPresenter extends Presenter
                 'title' => trans('general.department'),
                 'visible' => true,
                 'formatter' => 'departmentsLinkObjFormatter',
+            ],
+            [
+                'field' => 'department_manager',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('admin/users/general.department_manager'),
+                'visible' => true,
+                'formatter' => 'usersLinkObjFormatter',
             ],
             [
                 'field' => 'location',
@@ -406,6 +425,7 @@ class UserPresenter extends Presenter
                 'title' => trans('table.actions'),
                 'visible' => true,
                 'formatter' => 'usersActionsFormatter',
+                'printIgnore' => true,
             ],
         ];
 
@@ -442,6 +462,8 @@ class UserPresenter extends Presenter
         return $this->fullName();
     }
 
+
+
     /**
      * Returns the user Gravatar image url.
      *
@@ -454,7 +476,7 @@ class UserPresenter extends Presenter
         if ($this->avatar) {
 
             // Check if it's a google avatar or some external avatar
-            if (Str::startsWith($this->avatar, ['http://', 'https://'])) {
+            if ($this->isAvatarExternal()) {
                 return $this->avatar;
             }
 

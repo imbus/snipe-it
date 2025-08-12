@@ -59,6 +59,12 @@ return [
     'encrypted_options' => 'Šis laukas yra užšifruotas, todėl kai kurios rodymo parinktys nebus pasiekiamos.',
     'display_checkin' => 'Rodyti paėmimo formose',
     'display_checkout' => 'Rodyti išdavimo formose',
-    'display_audit' => 'Display in audit forms',
-
+    'display_audit' => 'Rodyti audito formose',
+    'types' => [
+        'text' => 'Teksto laukas',
+        'listbox' => 'Sąrašo laukas',
+        'textarea' => 'Teksto sritis (kelių eilučių)',
+        'checkbox' => 'Žymimasis langelis',
+        'radio' => 'Akutės',
+    ],
 ];
