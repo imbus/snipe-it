@@ -37,6 +37,7 @@
 @if (isset($item_serial))
 | **{{ trans('mail.serial') }}** | {{ $item_serial }} |
 @endif
+| **{{ trans('general.checked_out').' '.trans('general.by')}}** | {{ $admin }} |
 @endcomponent
 
 {{ trans('mail.best_regards') }}
