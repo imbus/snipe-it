@@ -13,7 +13,7 @@ class BulkDeleteCategoriesTest extends TestCase implements TestsPermissionsRequi
     public function testRequiresPermission()
     {
         $this->actingAs(User::factory()->create())
-            ->delete(route('categories.bulk.delete'), [
+            ->post(route('categories.bulk.delete'), [
                 'ids' => [1, 2, 3]
             ])
             ->assertForbidden();
@@ -25,7 +25,7 @@ class BulkDeleteCategoriesTest extends TestCase implements TestsPermissionsRequi
         AssetModel::factory()->create(['category_id' => $category->id]);
         
         $this->actingAs(User::factory()->deleteCategories()->create())
-            ->delete(route('categories.bulk.delete'), [
+            ->post(route('categories.bulk.delete'), [
                 'ids' => [$category->id]
             ]);
             
@@ -40,7 +40,7 @@ class BulkDeleteCategoriesTest extends TestCase implements TestsPermissionsRequi
         $category3 = Category::factory()->create();
 
         $this->actingAs(User::factory()->deleteCategories()->create())
-            ->delete(route('categories.bulk.delete'), [
+            ->post(route('categories.bulk.delete'), [
                 'ids' => [$category1->id, $category2->id, $category3->id]
             ])
             ->assertRedirect(route('categories.index'));

@@ -13,7 +13,7 @@ class BulkDeleteManufacturersTest extends TestCase implements TestsPermissionsRe
     public function testRequiresPermission()
     {
         $this->actingAs(User::factory()->create())
-            ->delete(route('manufacturers.bulk.delete'), [
+            ->post(route('manufacturers.bulk.delete'), [
                 'ids' => [1, 2, 3]
             ])
             ->assertForbidden();
@@ -25,7 +25,7 @@ class BulkDeleteManufacturersTest extends TestCase implements TestsPermissionsRe
         $manufacturer = Manufacturer::factory()->create();
         Accessory::factory()->for($manufacturer)->create();
         $this->actingAs(User::factory()->deleteManufacturers()->create())
-            ->delete(route('manufacturers.bulk.delete'), [
+            ->post(route('manufacturers.bulk.delete'), [
                 'ids' => [$manufacturer->id]
             ]);
         $this->assertModelExists($manufacturer);
@@ -39,7 +39,7 @@ class BulkDeleteManufacturersTest extends TestCase implements TestsPermissionsRe
         $manufacturer3 = Manufacturer::factory()->create();
 
         $this->actingAs(User::factory()->deleteManufacturers()->create())
-            ->delete(route('manufacturers.bulk.delete'), [
+            ->post(route('manufacturers.bulk.delete'), [
                 'ids' => [$manufacturer1->id, $manufacturer2->id, $manufacturer3->id]
             ])
             ->assertRedirect(route('manufacturers.index'));
