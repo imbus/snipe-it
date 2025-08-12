@@ -54,6 +54,7 @@ class PredefinedFilter extends Model
 
     protected $rules = [
         'name'                    => ['required', 'string', 'max:255'],
+        'created_by'              => ['required', 'string'],
         'company_id'              => ['nullable', 'integer', 'exists:companies,id'],
         'location_id'             => ['nullable', 'integer', 'exists:locations,id', 'fmcs_location'],
         'rtd_location_id'         => ['nullable', 'integer', 'exists:locations,id', 'fmcs_location'],
@@ -92,9 +93,9 @@ class PredefinedFilter extends Model
      * -----------------------------------------------
      **/
 
-    public function scopeAuth($query) {
-        $userId = auth()->id();
+    // public function scopeAuth($query) {
+    //     $userId = auth()->id();
 
-        return $query->where('user_id', $userId);
-    }
+    //     return $query->where('created_by', $userId);
+    // }
 }
