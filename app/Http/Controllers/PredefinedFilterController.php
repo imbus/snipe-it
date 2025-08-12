@@ -12,7 +12,7 @@ class PredefinedFilterController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
-        $this->authorize('create', PredefinedFilter::class);  // needed? or should everyone be able to create
+        $this->authorize('create', PredefinedFilter::class);  // TODO: needed? or should everyone be able to create
 
         $rules = (new PredefinedFilter)->getRules();
         $validated = $request->validate($rules);
