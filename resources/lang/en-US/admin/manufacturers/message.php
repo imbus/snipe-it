@@ -22,9 +22,16 @@ return array(
     ),
 
     'delete' => array(
+        'not_found'              => 'Manufacturer not found.',
         'confirm'   => 'Are you sure you wish to delete this manufacturer?',
         'error'   => 'There was an issue deleting the manufacturer. Please try again.',
-        'success' => 'The Manufacturer was deleted successfully.'
+        'success'                => 'The Manufacturer was deleted successfully.',
+        'bulk_success'           => 'The Manufacturers were deleted successfully.',
+        'bulk_assoc_assets'      => ':manufacturer_name still has associated assets and cannot be deleted. Please update your assets to no longer reference this supplier and try again.',
+        'bulk_assoc_accessories' => ':manufacturer_name still has associated accessories and cannot be deleted. Please update your accessories to no longer reference this supplier and try again.',
+        'bulk_assoc_consumables' => ':manufacturer_name still has associated consumables and cannot be deleted. Please update your consumables to no longer reference this supplier and try again.',
+        'bulk_assoc_components'  => ':manufacturer_name still has associated components and cannot be deleted. Please update your components to no longer reference this supplier and try again.',
+        'bulk_assoc_licenses'    => ':manufacturer_name still has associated licenses and cannot be deleted. Please update your licenses to no longer reference this supplier and try again.',
     )
 
 );

@@ -46,6 +46,7 @@
             </form>
 
       @else
+                @include ('partials.manufacturer-bulk-actions')
 
 
             <table
@@ -61,6 +62,11 @@
               data-show-refresh="true"
               data-sort-order="asc"
               id="manufacturersTable"
+              {{-- begin stuff for bulk dropdown --}}
+              data-toolbar="#manufacturersBulkEditToolbar"
+              data-bulk-button-id="#bulkManufacturerEditButton"
+              data-bulk-form-id="#manufacturersBulkForm"
+              {{-- end stuff for bulk dropdown --}}
               class="table table-striped snipe-table"
               data-url="{{route('api.manufacturers.index', ['deleted' => (request('deleted')=='true') ? 'true' : 'false' ]) }}"
               data-export-options='{

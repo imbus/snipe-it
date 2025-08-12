@@ -22,10 +22,9 @@
             @can('delete', \App\Models\Manufacturer::class)
                 <option value="delete">{{ trans('button.delete') }}</option>
             @endcan
-            <option value="labels" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=l" : ''}}>{{ trans_choice('button.generate_labels', 2) }}</option>
         </select>
 
-        <button class="btn btn-primary" id="{{ (isset($id_button)) ? $id_button : 'bulkAssetEditButton' }}"
+        <button class="btn btn-primary" id="{{ (isset($id_button)) ? $id_button : 'bulkManufacturerEditButton' }}"
                 disabled>{{ trans('button.go') }}</button>
     </form>
 </div>
