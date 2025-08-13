@@ -240,6 +240,12 @@ class CheckoutableListener
         $acceptance->checkoutable()->associate($event->checkoutable);
         $acceptance->assignedTo()->associate($event->checkedOutTo);
 
+        $acceptance->qty = 1;
+
+        if (isset($event->checkoutable->checkout_qty)) {
+            $acceptance->qty = $event->checkoutable->checkout_qty;
+        }
+
         $category = $this->getCategoryFromCheckoutable($event->checkoutable);
 
         if ($category?->alert_on_response) {
