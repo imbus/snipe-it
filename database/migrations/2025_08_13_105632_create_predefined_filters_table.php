@@ -50,6 +50,8 @@ return new class extends Migration
             $table->string('asset_name')->nullable();
             $table->integer('asset_tag')->nullable();
             $table->integer('serial')->nullable();
+
+            $table->text('custom_fields')->nullable();
         });
     }
 
