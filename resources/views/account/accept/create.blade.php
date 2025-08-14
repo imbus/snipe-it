@@ -38,8 +38,13 @@
                 <div class="panel box box-default">
                     <div class="box-header with-border">
                         <h2 class="box-title">
-                            {{$acceptance->checkoutable->present()->name()}}
-                            {{ (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? ' - '.trans('general.serial_number').': '.$acceptance->checkoutable->serial : '' }}
+                            <div>
+                                {{$acceptance->checkoutable->present()->name()}}
+                                @if ($acceptance->qty > 1)
+                                    <strong>×{{ $acceptance->qty }}</strong>
+                                @endif
+                            </div>
+                            <div>{{ (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? trans('general.serial_number').': '.$acceptance->checkoutable->serial : '' }}</div>
                         </h2>
                     </div>
                     <div class="box-body">
@@ -53,11 +58,19 @@
                         <div class="col-md-12">
                             <label class="form-control">
                                 <input type="radio" name="asset_acceptance" id="accepted" value="accepted">
-                                {{trans('general.i_accept')}}
+                                @if ($acceptance->qty)
+                                    {{trans_choice('general.i_accept_with_count', $acceptance->qty)}}
+                                @else
+                                    {{trans('general.i_accept')}}
+                                @endif
                             </label>
                             <label class="form-control">
                                 <input type="radio" name="asset_acceptance" id="declined" value="declined">
-                                {{trans('general.i_decline')}}
+                                @if ($acceptance->qty)
+                                    {{trans_choice('general.i_decline_with_count', $acceptance->qty)}}
+                                @else
+                                    {{trans('general.i_decline')}}
+                                @endif
                             </label>
 
                         </div>
