@@ -15,7 +15,7 @@ class PredefinedFilter extends Model
     use ValidatingTrait;
 
     protected $casts = [
-
+        "custom_fields"=> "array",
     ];
 
     protected $fillable = [
@@ -51,6 +51,7 @@ class PredefinedFilter extends Model
         'asset_name',
         'asset_tag',
         'serial',
+        'custom_fields',
     ];
 
     protected $rules = [
@@ -85,6 +86,7 @@ class PredefinedFilter extends Model
         'asset_name'              => ['nullable', 'string'],
         'asset_tag'               => ['nullable', 'integer'],
         'serial'                  => ['nullable', 'unique_undeleted:assets,serial'],
+        'custom_fields'           => ['nullable', 'array'],
     ];
 
     public function filterAssets(Builder $assets) {
@@ -178,6 +180,12 @@ class PredefinedFilter extends Model
             $assets->whereLike('assets.serial', '%' . $this['serial'] . '%', caseSensitive: false);
         }
 
+        if (isset($this['custom_fields'])) {
+            foreach ($this['custom_fields'] as $key => $value) {
+                // if in custom_fiels the key is set to the customfields db_column then:
+                $assets->where($key , '=' , $value);
+            }
+        }
         return $assets;
     }
 }
