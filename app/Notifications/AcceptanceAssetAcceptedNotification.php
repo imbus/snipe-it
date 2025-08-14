@@ -29,7 +29,7 @@ class AcceptanceAssetAcceptedNotification extends Notification
         $this->assigned_to = $params['assigned_to'];
         $this->note = $params['note'];
         $this->company_name = $params['company_name'];
-        $this->admin = $params['admin'];
+        $this->admin = $params['admin'] ?? null;
         $this->settings = Setting::getSettings();
 
     }
