@@ -96,4 +96,27 @@ class AccessoryAcceptanceTest extends TestCase
 
         $this->assertNull($acceptance->fresh()->accepted_at);
     }
+
+    /**
+     * @link https://github.com/grokability/snipe-it/issues/17589
+     */
+    public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance()
+    {
+        $this->markTestIncomplete();
+
+        // create accessory that requires acceptance
+
+        // check out the accessory to a user with qty of 2 using the legacy behavior: `checkout_acceptances.qty` is null
+
+        // check out the accessory to a user with qty of 2 using the new behavior: `checkout_acceptances.qty` is 2
+
+        // decline the first checkout
+        // ❓
+
+        // decline the second checkout
+        // both rows from `accessories_checkout` should be removed
+
+        // ensure existing checkouts for the user are not affected.
+        // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
+    }
 }
