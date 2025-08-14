@@ -111,7 +111,7 @@
                         <button type="submit" class="btn btn-success" id="submit-button">
                             <i class="fa fa-check icon-white" aria-hidden="true" id="submitIcon"></i>
                             <span id="buttonText">
-                                {{ trans('general.i_accept_item') }}
+                                {{ trans_choice('general.i_accept_item', $acceptance->qty ?? null) }}
                             </span>
                         </button>
                     </div><!-- /.box-footer -->
@@ -174,7 +174,7 @@
                 $("#showSubmit").show();
                 $("#submit-button").removeClass("btn-success").addClass("btn-danger").show();
                 $("#submitIcon").removeClass("fa-check").addClass("fa-times");
-                $("#buttonText").text('{{ trans('general.i_decline_item') }}');
+                $("#buttonText").text('{{ trans_choice('general.i_decline_item', $acceptance->qty ?? 1) }}');
                 $("#note").prop('required', true);
 
             } else if ($(this).is(':checked') && $(this).attr('id') === 'accepted') {
@@ -182,16 +182,9 @@
                 $("#showSubmit").show();
                 $("#submit-button").removeClass("btn-danger").addClass("btn-success").show();
                 $("#submitIcon").removeClass("fa-check").addClass("fa-check");
-                $("#buttonText").text('{{ trans('general.i_accept_item') }}');
+                $("#buttonText").text('{{ trans_choice('general.i_accept_item', $acceptance->qty ?? 1) }}');
                 $("#note").prop('required', false);
-
-
-
             }
-
         });
-
-
-
     </script>
 @stop
