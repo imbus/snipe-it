@@ -911,11 +911,12 @@
                     }'>
               <thead>
                 <tr>
-                    <th class="col-md-1">{{ trans('general.id') }}</th>
-                    <th class="col-md-4">{{ trans('general.name') }}</th>
-                    <th class="col-md-5" data-fieldname="note">{{ trans('general.notes') }}</th>
-                    <th class="col-md-1" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
-                    <th class="col-md-1 hidden-print">{{ trans('general.action') }}</th>
+                    <th>{{ trans('general.id') }}</th>
+                    <th>{{ trans('general.name') }}</th>
+                    <th>{{ trans('general.date') }}</th>
+                    <th data-fieldname="note">{{ trans('general.notes') }}</th>
+                    <th data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th class="hidden-print">{{ trans('general.action') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -923,6 +924,7 @@
                   <tr>
                       <td>{{ $accessory->pivot->id }}</td>
                       <td>{!!$accessory->present()->nameUrl()!!}</td>
+                      <td>{{ Helper::getFormattedDateObject($accessory->pivot->created_at, 'datetime',  false) }}</td>
                       <td>{!! $accessory->pivot->note !!}</td>
                       <td>
                       {!! Helper::formatCurrencyOutput($accessory->purchase_cost) !!}
