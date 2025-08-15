@@ -3,6 +3,7 @@
 namespace Tests\Feature\CheckoutAcceptances\Ui;
 
 use App\Models\Accessory;
+use App\Models\AccessoryCheckout;
 use App\Models\Asset;
 use App\Models\CheckoutAcceptance;
 use App\Models\User;
@@ -102,19 +103,73 @@ class AccessoryAcceptanceTest extends TestCase
      */
     public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance()
     {
-        $this->markTestIncomplete();
+        // $this->markTestIncomplete();
+
+        $user = User::factory()->create();
+
+        $this->actingAs(User::factory()->checkoutAccessories()->create());
 
         // create accessory that requires acceptance
+        $accessoryA = Accessory::factory()->requiringAcceptance()->create(['qty' => 4]);
+        $accessoryB = Accessory::factory()->requiringAcceptance()->create(['qty' => 4]);
 
         // check out the accessory to a user with qty of 2 using the legacy behavior: `checkout_acceptances.qty` is null
+        $this->post(route('accessories.checkout.store', $accessoryA), [
+            'assigned_user' => $user->id,
+            'checkout_qty' => 2,
+        ]);
+
+        $this->assertEquals(2, AccessoryCheckout::count());
+
+        $legacyCheckoutAcceptance = CheckoutAcceptance::query()
+            ->where([
+                'assigned_to_id' => $user->id,
+                'qty' => 2,
+            ])
+            ->whereNull(['accepted_at', 'declined_at'])
+            ->whereHasMorph(
+                'checkoutable',
+                [Accessory::class],
+            )
+            ->sole();
+
+        $legacyCheckoutAcceptance->qty = null;
+        $legacyCheckoutAcceptance->save();
 
         // check out the accessory to a user with qty of 2 using the new behavior: `checkout_acceptances.qty` is 2
+        $this->post(route('accessories.checkout.store', $accessoryB), [
+            'assigned_user' => $user->id,
+            'checkout_qty' => 2,
+        ]);
 
-        // decline the first checkout
-        // ❓
+        $this->assertEquals(4, AccessoryCheckout::count());
 
-        // decline the second checkout
+        $checkoutAcceptance = CheckoutAcceptance::query()
+            ->where([
+                'assigned_to_id' => $user->id,
+                'qty' => 2,
+            ])
+            ->whereNull(['accepted_at', 'declined_at'])
+            ->whereHasMorph(
+                'checkoutable',
+                [Accessory::class],
+            )
+            ->sole();
+
+        // decline the "legacy" checkout
+        $this->actingAs($user);
+
+        $this->post(route('account.store-acceptance', $legacyCheckoutAcceptance), [
+            'asset_acceptance' => 'declined',
+        ]);
+
+        // decline the checkout
+        $this->post(route('account.store-acceptance', $checkoutAcceptance), [
+            'asset_acceptance' => 'declined',
+        ]);
+
         // both rows from `accessories_checkout` should be removed
+        $this->assertEquals(0, AccessoryCheckout::count());
 
         // ensure existing checkouts for the user are not affected.
         // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
