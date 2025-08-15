@@ -14,6 +14,12 @@
 | **{{ trans('mail.checkout_date') }}** | {{ $checkout_date }} |
 @endif
 | **{{ trans('general.accessory') }}** | {{ $item->name }} |
+@if (isset($item->category))
+    | **{{ trans('general.category') }}** | {{ $item->category->name }} |
+@endif
+@if (isset($item->model_number))
+    | **{{ trans('general.model_no') }}** | {{ $item->model_number }} |
+@endif
 @if (isset($item->manufacturer))
 | **{{ trans('general.manufacturer') }}** | {{ $item->manufacturer->name }} |
 @endif
