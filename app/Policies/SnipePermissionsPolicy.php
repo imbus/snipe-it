@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * SnipePermissionsPolicy provides methods for handling the granular permissions used throughout Snipe-IT.
@@ -85,7 +86,7 @@ abstract class SnipePermissionsPolicy
     }
 
     /**
-     * Determine whether the user can view the accessory.
+     * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -101,7 +102,7 @@ abstract class SnipePermissionsPolicy
     }
 
     /**
-     * Determine whether the user can create accessories.
+     * Determine whether the user can create model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -112,7 +113,7 @@ abstract class SnipePermissionsPolicy
     }
 
     /**
-     * Determine whether the user can update the accessory.
+     * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -124,7 +125,7 @@ abstract class SnipePermissionsPolicy
 
 
     /**
-     * Determine whether the user can update the accessory.
+     * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -135,7 +136,7 @@ abstract class SnipePermissionsPolicy
     }
 
     /**
-     * Determine whether the user can delete the accessory.
+     * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
@@ -151,7 +152,7 @@ abstract class SnipePermissionsPolicy
     }
 
     /**
-     * Determine whether the user can manage the accessory.
+     * Determine whether the user can manage the model.
      *
      * @param  \App\Models\User  $user
      * @return mixed
