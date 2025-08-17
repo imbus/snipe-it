@@ -351,6 +351,17 @@ class UserFactory extends Factory
         return $this->appendPermission(['import' => '1']);
     }
 
+    public function createCustomFields()
+    {
+        return $this->appendPermission(['customfields.create' => '1']);
+    }
+
+    public function viewCustomFields()
+    {
+        return $this->appendPermission(['customfields.view' => '1']);
+    }
+
+
     public function deleteCustomFields()
     {
         return $this->appendPermission(['customfields.delete' => '1']);
