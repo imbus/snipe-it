@@ -119,9 +119,9 @@
 
                                                 <td>
 
-                                                    @if ($requestableModel->image)
-                                                        <a href="{{ config('app.url') }}/uploads/models/{{ $requestableModel->image }}" data-toggle="lightbox" data-type="image">
-                                                            <img src="{{ config('app.url') }}/uploads/models/{{ $requestableModel->image }}" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive">
+                                                    @if (($requestableModel->image) && ($requestableModel->getImageUrl()))
+                                                        <a href="{{ $requestableModel->getImageUrl() }}" data-toggle="lightbox" data-type="image">
+                                                            <img src="{{ $requestableModel->getImageUrl() }}" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive">
                                                         </a>
                                                     @endif
 
