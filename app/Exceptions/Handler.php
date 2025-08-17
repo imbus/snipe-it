@@ -144,7 +144,7 @@ class Handler extends ExceptionHandler
             }
 
         // This gets the MVC model name from the exception and formats in a way that's less fugly
-            $model_name = strtolower(implode(" ", preg_split('/(?=[A-Z])/', last(explode('\\', $e->getModel())))));
+            $model_name = trim(strtolower(implode(" ", preg_split('/(?=[A-Z])/', last(explode('\\', $e->getModel()))))));
             $route = str_plural(strtolower(last(explode('\\', $e->getModel())))).'.index';
 
             // Sigh.
