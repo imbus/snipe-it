@@ -125,7 +125,7 @@ class CheckoutAssetMail extends Mailable
     private function getSubject(): string
     {
         if ($this->firstTimeSending) {
-            return trans('mail.Asset_Checkout_Notification');
+            return trans('mail.Asset_Checkout_Notification', ['tag' => $this->item->asset_tag]);
         }
 
         return trans('mail.unaccepted_asset_reminder');
