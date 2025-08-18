@@ -138,7 +138,7 @@ class Handler extends ExceptionHandler
             if (in_array('bulkedit', $ids, true)) {
             $error_array = session()->get('bulk_asset_errors');
                 return redirect()
-                    ->route('hardware.bulkedit')
+                    ->route('hardware.index')
                     ->withErrors($error_array, 'bulk_asset_errors')
                     ->withInput();
             }
