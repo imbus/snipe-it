@@ -28,7 +28,7 @@ class CheckoutAssetMailTest extends TestCase
 
         yield 'Asset not requiring acceptance' => [
             function () {
-                $asset = Asset::factory()->requiresAcceptance()->create();
+                $asset = Asset::factory()->create();
                 return [
                     'asset' => $asset,
                     'acceptance' => null,
