@@ -118,10 +118,9 @@ class AssetsController extends Controller
         ];
 
         $all_custom_fields = CustomField::all(); //used as a 'cache' of custom fields throughout this page load
+
         foreach ($all_custom_fields as $field) {
-            // custom fields are prefixed with "custom_fields.".
-            // We'll add them to the allowed columns so they can be searched.
-            $allowed_columns[] = 'custom_fields.' . $field->db_column_name();
+            $allowed_columns[] = $field->db_column_name();
         }
 
         $filter = [];
