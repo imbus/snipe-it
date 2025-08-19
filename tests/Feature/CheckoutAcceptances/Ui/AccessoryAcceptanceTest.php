@@ -119,8 +119,11 @@ class AccessoryAcceptanceTest extends TestCase
             'checkout_qty' => 2,
         ]);
 
-        // @todo: this is flaky
-        $this->assertEquals(2, AccessoryCheckout::count());
+        $this->assertEquals(2, AccessoryCheckout::where([
+            'accessory_id' => $accessoryA->id,
+            'assigned_to' => $user->id,
+            'assigned_type' => User::class,
+        ])->count());
 
         $legacyCheckoutAcceptance = CheckoutAcceptance::query()
             ->where([
@@ -143,8 +146,11 @@ class AccessoryAcceptanceTest extends TestCase
             'checkout_qty' => 2,
         ]);
 
-        // @todo: this is flaky
-        $this->assertEquals(4, AccessoryCheckout::count());
+        $this->assertEquals(2, AccessoryCheckout::where([
+            'accessory_id' => $accessoryB->id,
+            'assigned_to' => $user->id,
+            'assigned_type' => User::class,
+        ])->count());
 
         $checkoutAcceptance = CheckoutAcceptance::query()
             ->where([
