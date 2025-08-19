@@ -291,7 +291,7 @@ class LdapSync extends Command
                 $user->username = $item['username'];
             }
             if($ldap_map["display_name"]  != null){
-                $user->username = $item['display_name'];
+                $user->display_name = $item['display_name'];
             }
             if($ldap_map["last_name"] != null){
                 $user->last_name = $item['lastname'];
