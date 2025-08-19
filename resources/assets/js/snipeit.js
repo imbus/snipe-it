@@ -11,7 +11,7 @@ window.$ = jQuery
  itself
  *****************************************/
 
-require('jquery-ui'); //should we export this to the window?
+require("jquery-ui/dist/jquery-ui")
 jQuery.fn.uitooltip = jQuery.fn.tooltip;
 require('bootstrap-less');
 require('select2');
