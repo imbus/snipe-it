@@ -119,6 +119,7 @@ class AccessoryAcceptanceTest extends TestCase
             'checkout_qty' => 2,
         ]);
 
+        // @todo: this is flaky
         $this->assertEquals(2, AccessoryCheckout::count());
 
         $legacyCheckoutAcceptance = CheckoutAcceptance::query()
@@ -142,6 +143,7 @@ class AccessoryAcceptanceTest extends TestCase
             'checkout_qty' => 2,
         ]);
 
+        // @todo: this is flaky
         $this->assertEquals(4, AccessoryCheckout::count());
 
         $checkoutAcceptance = CheckoutAcceptance::query()
@@ -168,10 +170,12 @@ class AccessoryAcceptanceTest extends TestCase
             'asset_acceptance' => 'declined',
         ]);
 
-        // both rows from `accessories_checkout` should be removed
+        // four rows from `accessories_checkout` should be removed
+        // @todo: this is flaky
         $this->assertEquals(0, AccessoryCheckout::count());
 
         // ensure existing checkouts for the user are not affected.
         // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
+        // ie...if a user accepted previous accessories then those should not be touched.
     }
 }
