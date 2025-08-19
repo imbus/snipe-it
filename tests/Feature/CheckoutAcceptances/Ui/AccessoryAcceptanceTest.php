@@ -152,6 +152,8 @@ class AccessoryAcceptanceTest extends TestCase
             'assigned_type' => User::class,
         ])->count());
 
+        $originalAccessoryCheckoutCount = AccessoryCheckout::count();
+
         $checkoutAcceptance = CheckoutAcceptance::query()
             ->where([
                 'assigned_to_id' => $user->id,
@@ -177,8 +179,7 @@ class AccessoryAcceptanceTest extends TestCase
         ]);
 
         // four rows from `accessories_checkout` should be removed
-        // @todo: this is flaky
-        $this->assertEquals(0, AccessoryCheckout::count());
+        $this->assertEquals($originalAccessoryCheckoutCount - 4, AccessoryCheckout::count());
 
         // ensure existing checkouts for the user are not affected.
         // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
