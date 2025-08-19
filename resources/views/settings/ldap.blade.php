@@ -425,6 +425,47 @@
                                 </div>
                             </div>
 
+                            <!--  Default LDAP Permissions Group Select -->
+
+                            <div class="form-group{{ $errors->has('group') ? ' has-error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_default_group">{{ trans('admin/settings/general.ldap_default_group') }}</label>
+                                </div>
+
+                                <div class="col-md-8">
+
+                                    @if ($groups->count())
+                                        @if ((Config::get('app.lock_passwords') || (!Auth::user()->isSuperUser())))
+                                            <ul>
+                                                @foreach ($groups as $id => $group)
+                                                    {!! '<li>'.e($group).'</li>' !!}
+                                                @endforeach
+                                            </ul>
+
+                                            <span class="help-block">{{ trans('admin/users/general.group_memberships_helpblock') }}</span>
+                                        @else
+                                            <div class="controls">
+                                                <select name="ldap_default_group" aria-label="ldap_default_group" id="ldap_default_group" class="form-control select2">
+                                                    <option value="">{{ trans('admin/settings/general.no_default_group') }}</option>
+                                                    @foreach ($groups as $id => $group)
+                                                        <option value="{{ $id }}" {{ $setting->ldap_default_group == $id ? 'selected' : '' }}>
+                                                            {{ $group }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                <span class="help-block">
+                                                        {{ trans('admin/settings/general.ldap_default_group_info') }}
+                                                    </span>
+                                            </div>
+                                        @endif
+                                    @else
+                                        <p>{!! trans('admin/settings/general.no_groups') !!}</p>
+                                    @endif
+
+                                </div>
+                            </div>
+
                         </fieldset>
 
                         <fieldset class="bottom-padded">
@@ -491,6 +532,7 @@
 
                             @endif
 
+
                         </fieldset>
                             <fieldset class="bottom-padded">
                             <legend class="highlight">
@@ -553,7 +595,7 @@
                                         <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_display_name') }}</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayName' }}">
+                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayName/displayname' }}">
                                         @error('ldap_display_name')
                                         <span class="alert-msg">
                                                     <x-icon type="x" />
@@ -564,47 +606,6 @@
                                     </div>
                                 </div>
 
-
-                                <!--  Default LDAP Permissions Group Select -->
-
-                                <div class="form-group{{ $errors->has('group') ? ' has-error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_default_group">{{ trans('admin/settings/general.ldap_default_group') }}</label>
-                                    </div>
-
-                                    <div class="col-md-8">
-
-                                        @if ($groups->count())
-                                            @if ((Config::get('app.lock_passwords') || (!Auth::user()->isSuperUser())))
-                                                <ul>
-                                                    @foreach ($groups as $id => $group)
-                                                        {!! '<li>'.e($group).'</li>' !!}
-                                                    @endforeach
-                                                </ul>
-
-                                                <span class="help-block">{{ trans('admin/users/general.group_memberships_helpblock') }}</span>
-                                            @else
-                                                <div class="controls">
-                                                    <select name="ldap_default_group" aria-label="ldap_default_group" id="ldap_default_group" class="form-control select2">
-                                                        <option value="">{{ trans('admin/settings/general.no_default_group') }}</option>
-                                                        @foreach ($groups as $id => $group)
-                                                            <option value="{{ $id }}" {{ $setting->ldap_default_group == $id ? 'selected' : '' }}>
-                                                                {{ $group }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-
-                                                    <span class="help-block">
-                                                        {{ trans('admin/settings/general.ldap_default_group_info') }}
-                                                    </span>
-                                                </div>
-                                            @endif
-                                        @else
-                                            <p>{!! trans('admin/settings/general.no_groups') !!}</p>
-                                        @endif
-
-                                    </div>
-                                </div>
 
                                 <!-- LDAP active flag -->
                                 <div class="form-group {{ $errors->has('ldap_active_flag') ? 'error' : '' }}">
