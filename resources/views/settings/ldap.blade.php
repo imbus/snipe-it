@@ -784,7 +784,7 @@
                                         <label for="ldap_mobile">{{ trans('admin/settings/general.ldap_mobile') }}</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'telephonenumber' }}" name="ldap_phone" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
+                                        <input class="form-control" placeholder="{{ trans('general.example') .'mobile' }}" name="ldap_phone" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
                                         @error('ldap_mobile')
                                         <span class="alert-msg">
                                                 <x-icon type="x" />
