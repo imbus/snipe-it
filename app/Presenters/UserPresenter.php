@@ -80,6 +80,14 @@ class UserPresenter extends Presenter
                 'formatter' => 'usersLinkFormatter',
             ],
             [
+                'field' => 'display_name',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => false,
+                'title' => trans('admin/users/table.display_name'),
+                'visible' => true,
+            ],
+            [
                 'field' => 'jobtitle',
                 'searchable' => true,
                 'sortable' => true,
@@ -191,6 +199,7 @@ class UserPresenter extends Presenter
                 'visible' => true,
                 'formatter' => 'usernameRoleLinkFormatter',
             ],
+
             [
                 'field' => 'employee_num',
                 'searchable' => true,
