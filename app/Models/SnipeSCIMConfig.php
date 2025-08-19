@@ -165,7 +165,7 @@ class SnipeSCIMConfig extends \ArieTimmerman\Laravel\SCIMServer\SCIMConfig
                             "value" => AttributeMapping::eloquent("mobile"),
                             "display" => null,
                             "type" => AttributeMapping::constant("mobile")->ignoreWrite(),
-                            "primary" => AttributeMapping::constant(true)->ignoreWrite()
+                            "primary" => AttributeMapping::constant(false)->ignoreWrite()
                         ]
                     ],
 
