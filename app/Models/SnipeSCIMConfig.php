@@ -153,12 +153,21 @@ class SnipeSCIMConfig extends \ArieTimmerman\Laravel\SCIMServer\SCIMConfig
                         "primary" => AttributeMapping::constant(true)->ignoreWrite()
                     ]],
 
-                    'phoneNumbers' => [[
-                        "value" => AttributeMapping::eloquent("phone"),
-                        "display" => null,
-                        "type" => AttributeMapping::constant("work")->ignoreWrite(),
-                        "primary" => AttributeMapping::constant(true)->ignoreWrite()
-                    ]],
+                    // Mobile and work phone numbers
+                    'phoneNumbers' => [
+                        [
+                            "value" => AttributeMapping::eloquent("phone"),
+                            "display" => null,
+                            "type" => AttributeMapping::constant("work")->ignoreWrite(),
+                            "primary" => AttributeMapping::constant(true)->ignoreWrite(),
+                        ],
+                        [
+                            "value" => AttributeMapping::eloquent("mobile"),
+                            "display" => null,
+                            "type" => AttributeMapping::constant("mobile")->ignoreWrite(),
+                            "primary" => AttributeMapping::constant(false)->ignoreWrite()
+                        ]
+                    ],
 
                     'ims' => [[
                         "value" => null,
