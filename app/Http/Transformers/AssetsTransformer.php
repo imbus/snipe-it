@@ -58,6 +58,13 @@ class AssetsTransformer
                 'id' => (int) $asset->model->manufacturer->id,
                 'name'=> e($asset->model->manufacturer->name),
             ] : null,
+            'depreciation' => (($asset->model) && ($asset->model->depreciation)) ? [
+                'id' => (int) $asset->model->depreciation->id,
+                'name'=> e($asset->model->depreciation->name),
+                'months'=> (int) $asset->model->depreciation->months,
+                'type'=>  e($asset->model->depreciation->depreciation_type),
+                'minimum'=> ($asset->model->depreciation->depreciation_min) ? (int) $asset->model->depreciation->depreciation_min : null,
+            ] : null,
             'supplier' => ($asset->supplier) ? [
                 'id' => (int) $asset->supplier->id,
                 'name'=> e($asset->supplier->name),
