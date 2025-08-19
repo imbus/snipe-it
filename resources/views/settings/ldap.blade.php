@@ -69,7 +69,7 @@
 
                         <fieldset class="bottom-padded">
                             <legend class="highlight">
-                                {{ trans('admin/settings/general.legends.general') }}
+                                {{ trans('admin/settings/general.legends.server') }}
                             </legend>
                                 <!-- Enable LDAP -->
                                 <div class="form-group {{ $errors->has('ldap_integration') ? 'error' : '' }}">
@@ -400,9 +400,99 @@
                                         @endif
                                     </div>
                                 </div>
+
+                            <!-- LDAP Auth Filter Query -->
+                            <div class="form-group {{ $errors->has('ldap_auth_filter_query') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_auth_filter_query">{{ trans('admin/settings/general.ldap_auth_filter_query') }}</label>
+                                </div>
+                                <div class="col-md-8">
+
+                                    <input type="text" name="ldap_auth_filter_query" id="ldap_auth_filter_query" value="{{  old('ldap_auth_filter_query', $setting->ldap_auth_filter_query) }}" class="form-control" placeholder="{{ trans('general.example') .'uid='  }}">
+                                    @error('ldap_auth_filter_query')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {!! $message !!}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
                         </fieldset>
 
                         <fieldset class="bottom-padded">
+                            <legend class="highlight">
+                                {{ trans('admin/settings/general.legends.test') }}
+                            </legend>
+                            @if ($setting->ldap_enabled)
+
+                                <!-- LDAP test -->
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label for="test_ldap_sync"> {{trans('admin/settings/general.ldap_test_label')}} </label>
+                                    </div>
+                                    <div class="col-md-8" id="ldaptestrow">
+                                        <a class="btn btn-default btn-sm" id="ldaptest" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test_sync') }}</a>
+                                    </div>
+                                    <div class="col-md-8 col-md-offset-3">
+                                        <br />
+                                        <div id="ldapad_test_results" class="hidden well well-sm"></div>
+                                    </div>
+                                    <div class="col-md-8 col-md-offset-3">
+                                        <p class="help-block">{{ trans('admin/settings/general.ldap_login_sync_help') }}</p>
+                                        @if (config('app.lock_passwords')===true)
+                                            <p class="text-warning">
+                                                <x-icon type="locked" />
+                                                {{ trans('general.feature_disabled') }}
+                                            </p>
+                                        @endif
+                                    </div>
+
+                                </div>
+
+                                <!-- LDAP Login test -->
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <label for="test_ldap_login"> {{trans('admin/settings/general.ldap_test_login')}} </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <input type="text" name="ldaptest_user" id="ldaptest_user"  class="form-control" placeholder="{{trans('admin/settings/general.ldap_username_placeholder')}}">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="password" name="ldaptest_password" id="ldaptest_password" class="form-control" placeholder="{{trans('admin/settings/general.ldap_password_placeholder')}}" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <a class="btn btn-default btn-sm" id="ldaptestlogin" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test') }}</a>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-md-offset-3">
+                                        <span id="ldaptestloginicon"></span>
+                                        <span id="ldaptestloginresult"></span>
+                                        <span id="ldaptestloginstatus"></span>
+                                    </div>
+                                    <div class="col-md-8 col-md-offset-3">
+                                        <p class="help-block">{{ trans('admin/settings/general.ldap_login_test_help') }}</p>
+                                    </div>
+
+                                </div>
+
+
+                            @endif
+
+                        </fieldset>
+                            <fieldset class="bottom-padded">
                             <legend class="highlight">
                                 {{ trans('admin/settings/general.legends.mapping') }}
                             </legend>
@@ -420,12 +510,6 @@
                                             </span>
                                         @enderror
 
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
                                     </div>
                                 </div>
 
@@ -443,12 +527,6 @@
                                             </span>
                                         @enderror
 
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
                                     </div>
                                 </div>
 
@@ -466,38 +544,26 @@
                                             </span>
                                         @enderror
 
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
                                     </div>
                                 </div>
 
-                                <!-- LDAP Auth Filter Query -->
-                                <div class="form-group {{ $errors->has('ldap_auth_filter_query') ? 'error' : '' }}">
+                                <!-- LDAP Display Name Field -->
+                                <div class="form-group {{ $errors->has('ldap_display_name') ? 'error' : '' }}">
                                     <div class="col-md-3">
-                                        <label for="ldap_auth_filter_query">{{ trans('admin/settings/general.ldap_auth_filter_query') }}</label>
+                                        <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_display_name') }}</label>
                                     </div>
                                     <div class="col-md-8">
-
-                                        <input type="text" name="ldap_auth_filter_query" id="ldap_auth_filter_query" value="{{  old('ldap_auth_filter_query', $setting->ldap_auth_filter_query) }}" class="form-control" placeholder="{{ trans('general.example') .'uid='  }}">
-                                        @error('ldap_auth_filter_query')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {!! $message !!}
-                                            </span>
+                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayName' }}">
+                                        @error('ldap_display_name')
+                                        <span class="alert-msg">
+                                                    <x-icon type="x" />
+                                                    {{ $message }}
+                                                </span>
                                         @enderror
 
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
                                     </div>
                                 </div>
+
 
                                 <!--  Default LDAP Permissions Group Select -->
 
@@ -863,70 +929,11 @@
                                     </div>
                                 </div>
                         </fieldset>
+
                         <fieldset class="bottom-padded">
                             <legend class="highlight">
                                 {{ trans('admin/settings/general.legends.misc') }}
                             </legend>
-                                @if ($setting->ldap_enabled)
-
-                                    <!-- LDAP test -->
-                                    <div class="form-group">
-                                        <div class="col-md-3">
-                                            <label for="test_ldap_sync"> {{trans('admin/settings/general.ldap_test_label')}} </label>
-                                        </div>
-                                        <div class="col-md-8" id="ldaptestrow">
-                                            <a class="btn btn-default btn-sm" id="ldaptest" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test_sync') }}</a>
-                                        </div>
-                                        <div class="col-md-8 col-md-offset-3">
-                                            <br />
-                                            <div id="ldapad_test_results" class="hidden well well-sm"></div>
-                                        </div>
-                                        <div class="col-md-8 col-md-offset-3">
-                                            <p class="help-block">{{ trans('admin/settings/general.ldap_login_sync_help') }}</p>
-                                            @if (config('app.lock_passwords')===true)
-                                                <p class="text-warning">
-                                                    <x-icon type="locked" />
-                                                    {{ trans('general.feature_disabled') }}
-                                                </p>
-                                            @endif
-                                        </div>
-
-                                    </div>
-
-                                    <!-- LDAP Login test -->
-                                    <div class="form-group">
-                                        <div class="col-md-3">
-                                            <label for="test_ldap_login"> {{trans('admin/settings/general.ldap_test_login')}} </label>
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="row">
-                                            <div class="col-md-4">
-                                                <input type="text" name="ldaptest_user" id="ldaptest_user"  class="form-control" placeholder="{{trans('admin/settings/general.ldap_username_placeholder')}}">
-                                            </div>
-                                            <div class="col-md-4">
-                                            <input type="password" name="ldaptest_password" id="ldaptest_password" class="form-control" placeholder="{{trans('admin/settings/general.ldap_password_placeholder')}}" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <a class="btn btn-default btn-sm" id="ldaptestlogin" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test') }}</a>
-                                            </div>
-
-
-                                        </div>
-                                        </div>
-                                        <div class="col-md-8 col-md-offset-3">
-                                            <span id="ldaptestloginicon"></span>
-                                            <span id="ldaptestloginresult"></span>
-                                            <span id="ldaptestloginstatus"></span>
-                                        </div>
-                                        <div class="col-md-8 col-md-offset-3">
-                                            <p class="help-block">{{ trans('admin/settings/general.ldap_login_test_help') }}</p>
-                                        </div>
-
-                                </div>
-
-
-                               @endif
-
                                 <!-- LDAP Forgotten password -->
                                 <div class="form-group {{ $errors->has('custom_forgot_pass_url') ? 'error' : '' }}">
                                     <div class="col-md-3">
