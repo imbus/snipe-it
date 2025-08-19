@@ -339,6 +339,7 @@ class Importer extends Component
             'start_date' => trans('general.start_date'),
             'state' => trans('general.state'),
             'username' => trans('admin/users/table.username'),
+            'display_name' => trans('admin/users/table.display_name'),
             'vip' => trans('general.importer.vip'),
             'website' => trans('general.website'),
             'zip' => trans('general.zip'),
@@ -484,6 +485,13 @@ class Importer extends Component
                     'user name',
                     'username',
                     trans('general.importer.checked_out_to_username'),
+                ],
+            'display_name' =>
+                [
+                    'display name',
+                    'displayName',
+                    'display',
+                    trans('admin/users/table.display_name'),
                 ],
             'first_name' =>
                 [

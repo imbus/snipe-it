@@ -517,6 +517,10 @@ class UsersController extends Controller
                     $user->username = $request->input('username');
                 }
 
+                if ($request->filled('display_name')) {
+                    $user->display_name = $request->input('display_name');
+                }
+
                 if ($request->filled('email')) {
                     $user->email = $request->input('email');
                 }
