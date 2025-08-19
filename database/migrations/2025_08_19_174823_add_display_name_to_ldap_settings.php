@@ -14,27 +14,27 @@ return new class extends Migration
         Schema::table('settings', function (Blueprint $table) {
 
             if (!Schema::hasColumn('settings', 'ldap_display_name')) {
-                $table->text('ldap_display_name')->after('ldap_fname_field')->nullable()->default(null);
+                $table->string('ldap_display_name', 191)->after('ldap_fname_field')->nullable()->default(null);
             }
 
             if (!Schema::hasColumn('settings', 'ldap_zip')) {
-                $table->text('ldap_zip')->after('ldap_manager')->nullable()->default(null);
+                $table->string('ldap_zip', 191)->after('ldap_manager')->nullable()->default(null);
             }
 
             if (!Schema::hasColumn('settings', 'ldap_state')) {
-                $table->text('ldap_state')->after('ldap_manager')->nullable()->default(null);
+                $table->string('ldap_state', 191)->after('ldap_manager')->nullable()->default(null);
             }
 
             if (!Schema::hasColumn('settings', 'ldap_city')) {
-                $table->text('ldap_city')->after('ldap_manager')->nullable()->default(null);
+                $table->string('ldap_city', 191)->after('ldap_manager')->nullable()->default(null);
             }
 
             if (!Schema::hasColumn('settings', 'ldap_address')) {
-                $table->text('ldap_address')->after('ldap_manager')->nullable()->default(null);
+                $table->string('ldap_address', 191)->after('ldap_manager')->nullable()->default(null);
             }
 
             if (!Schema::hasColumn('settings', 'ldap_mobile')) {
-                $table->text('ldap_mobile')->after('ldap_phone_field')->nullable()->default(null);
+                $table->string('ldap_mobile', 191)->after('ldap_phone_field')->nullable()->default(null);
             }
 
         });
