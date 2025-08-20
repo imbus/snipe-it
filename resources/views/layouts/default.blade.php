@@ -985,7 +985,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                         @endif
                     @endif
 
-                    @if (($user->isSuperUser()) && (app()->environment('local')))
+                    @if (isset($user) && ($user->isSuperUser()) && (app()->environment('local')))
                        <a href="{{ url('telescope') }}" class="btn btn-default btn-xs" rel="noopener">Open Telescope</a>
                     @endif
 
