@@ -30,9 +30,7 @@ class CleanDeclinedAccessoryCheckouts extends Command
      */
     public function handle()
     {
-        // $accessoryCheckouts = AccessoryCheckout::where('assigned_type', User::class)->get();
-        //
-        // dd($accessoryCheckouts);
+        $accessoryCheckouts = AccessoryCheckout::where('assigned_type', User::class)->get();
 
         $declinedCheckoutAcceptances = CheckoutAcceptance::query()
             ->where([
@@ -44,7 +42,23 @@ class CleanDeclinedAccessoryCheckouts extends Command
             ->declined()
             ->get();
 
-        
+        $declinedCheckoutAcceptances->map(function (CheckoutAcceptance $acceptance) use ($accessoryCheckouts) {
+            $matchedCheckouts = $accessoryCheckouts->filter(function ($checkout) use ($acceptance) {
+                return $checkout->accessory_id == $acceptance->checkoutable_id
+                    && $checkout->assigned_to == $acceptance->assigned_to_id
+                    && $checkout->created_at == $acceptance->created_at;
+            });
+
+            $acceptance->setRelation('accessoryCheckouts', $matchedCheckouts);
+
+            return $acceptance;
+        });
+
+        $checkoutsToDelete = $declinedCheckoutAcceptances->pluck('accessoryCheckouts')->flatten();
+
+        if ($this->confirm("Delete {$checkoutsToDelete->count()} entries from the accessory_checkout table?")) {
+            $checkoutsToDelete->each(fn($checkout) => $checkout->delete());
+        }
 
         return 0;
     }
