@@ -103,7 +103,7 @@ class AccessoryAcceptanceTest extends TestCase
      */
     public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance()
     {
-        $user = User::factory()->create();
+        $assignee = User::factory()->create();
 
         $this->actingAs(User::factory()->checkoutAccessories()->create());
 
@@ -112,13 +112,13 @@ class AccessoryAcceptanceTest extends TestCase
 
         // check out the accessory to a user with qty of 2 using the new behavior: `checkout_acceptances.qty` is 2
         $this->post(route('accessories.checkout.store', $accessory), [
-            'assigned_user' => $user->id,
+            'assigned_user' => $assignee->id,
             'checkout_qty' => 3,
         ]);
 
         $this->assertEquals(3, AccessoryCheckout::where([
             'accessory_id' => $accessory->id,
-            'assigned_to' => $user->id,
+            'assigned_to' => $assignee->id,
             'assigned_type' => User::class,
         ])->count());
 
@@ -126,7 +126,7 @@ class AccessoryAcceptanceTest extends TestCase
 
         $checkoutAcceptance = CheckoutAcceptance::query()
             ->where([
-                'assigned_to_id' => $user->id,
+                'assigned_to_id' => $assignee->id,
                 'qty' => 3,
             ])
             ->whereNull('accepted_at')
@@ -138,7 +138,7 @@ class AccessoryAcceptanceTest extends TestCase
             ->sole();
 
         // decline the checkout
-        $this->actingAs($user)
+        $this->actingAs($assignee)
             ->post(route('account.store-acceptance', $checkoutAcceptance), [
                 'asset_acceptance' => 'declined',
             ]);
