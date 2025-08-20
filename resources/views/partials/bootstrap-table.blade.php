@@ -1340,7 +1340,7 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}',
+                title: '{{ trans('button.add_maintenance') }}',
             }
         },
         @endcan
