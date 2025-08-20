@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\AcceptanceAssetAcceptedNotification;
 use App\Notifications\AcceptanceAssetDeclinedNotification;
 use Illuminate\Support\Facades\Notification;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AccessoryAcceptanceTest extends TestCase
@@ -98,46 +99,51 @@ class AccessoryAcceptanceTest extends TestCase
         $this->assertNull($acceptance->fresh()->accepted_at);
     }
 
-    /**
-     * @link https://github.com/grokability/snipe-it/issues/17589
-     */
-    public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance()
+    public static function data()
     {
-        $assignee = User::factory()->create();
+        yield 'Current behavior' => [
+            function () {
+                return function (User $assignee) {
+                    return CheckoutAcceptance::query()
+                        ->where([
+                            'assigned_to_id' => $assignee->id,
+                            'qty' => 3,
+                        ])
+                        ->whereNull('accepted_at')
+                        ->whereNull('declined_at')
+                        ->whereHasMorph(
+                            'checkoutable',
+                            [Accessory::class],
+                        )
+                        ->sole();
+                };
+            }
+        ];
 
-        $this->actingAs(User::factory()->checkoutAccessories()->create());
+        yield 'Previous behavior' => [
+            function () {
+                return function (User $assignee) {
+                    $checkoutAcceptance = CheckoutAcceptance::query()
+                        ->where([
+                            'assigned_to_id' => $assignee->id,
+                            'qty' => 3,
+                        ])
+                        ->whereNull('accepted_at')
+                        ->whereNull('declined_at')
+                        ->whereHasMorph(
+                            'checkoutable',
+                            [Accessory::class],
+                        )
+                        ->sole();
 
-        // create accessory that requires acceptance
-        $accessory = Accessory::factory()->requiringAcceptance()->create(['qty' => 5]);
+                    // previous behavior did not set `qty`.
+                    $checkoutAcceptance->qty = null;
+                    $checkoutAcceptance->save();
 
-        // check out the accessory to a user with qty of 3 using the new behavior: `checkout_acceptances.qty` is 3
-        $this->post(route('accessories.checkout.store', $accessory), [
-            'assigned_user' => $assignee->id,
-            'checkout_qty' => 3,
-        ]);
-
-        $originalAccessoryCheckoutCount = AccessoryCheckout::count();
-
-        $checkoutAcceptance = CheckoutAcceptance::query()
-            ->where([
-                'assigned_to_id' => $assignee->id,
-                'qty' => 3,
-            ])
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->whereHasMorph(
-                'checkoutable',
-                [Accessory::class],
-            )
-            ->sole();
-
-        // decline the checkout
-        $this->actingAs($assignee)
-            ->post(route('account.store-acceptance', $checkoutAcceptance), [
-                'asset_acceptance' => 'declined',
-            ]);
-
-        $this->assertEquals($originalAccessoryCheckoutCount - 3, AccessoryCheckout::count());
+                    return $checkoutAcceptance;
+                };
+            }
+        ];
 
         // @todo:
         // ensure existing checkouts for the user are not affected.
@@ -145,8 +151,14 @@ class AccessoryAcceptanceTest extends TestCase
         // ie...if a user accepted previous accessories then those should not be touched.
     }
 
-    public function test_all_previous_accessory_checkouts_are_removed_when_user_declines_acceptance()
+    /**
+     * @link https://github.com/grokability/snipe-it/issues/17589
+     */
+    #[DataProvider('data')]
+    public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance($provided)
     {
+        $getCheckoutAcceptance = $provided();
+
         $assignee = User::factory()->create();
 
         $this->actingAs(User::factory()->checkoutAccessories()->create());
@@ -154,6 +166,7 @@ class AccessoryAcceptanceTest extends TestCase
         // create accessory that requires acceptance
         $accessory = Accessory::factory()->requiringAcceptance()->create(['qty' => 5]);
 
+        // checkout 3 accessories to the user
         $this->post(route('accessories.checkout.store', $accessory), [
             'assigned_user' => $assignee->id,
             'checkout_qty' => 3,
@@ -161,26 +174,12 @@ class AccessoryAcceptanceTest extends TestCase
 
         $originalAccessoryCheckoutCount = AccessoryCheckout::count();
 
-        $legacyCheckoutAcceptance = CheckoutAcceptance::query()
-            ->where([
-                'assigned_to_id' => $assignee->id,
-                'qty' => 3,
-            ])
-            ->whereNull('accepted_at')
-            ->whereNull('declined_at')
-            ->whereHasMorph(
-                'checkoutable',
-                [Accessory::class],
-            )
-            ->sole();
-
-        // previous behavior did not set `qty`.
-        $legacyCheckoutAcceptance->qty = null;
-        $legacyCheckoutAcceptance->save();
+        // get the checkout acceptance via the function that will put it in a state ready for testing
+        $checkoutAcceptance = $getCheckoutAcceptance($assignee);
 
         // decline the checkout
         $this->actingAs($assignee)
-            ->post(route('account.store-acceptance', $legacyCheckoutAcceptance), [
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
                 'asset_acceptance' => 'declined',
             ]);
 
