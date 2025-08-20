@@ -99,7 +99,7 @@ class AccessoryAcceptanceTest extends TestCase
         $this->assertNull($acceptance->fresh()->accepted_at);
     }
 
-    public static function data()
+    public static function provider()
     {
         yield 'Current behavior' => [
             function () {
@@ -154,7 +154,7 @@ class AccessoryAcceptanceTest extends TestCase
     /**
      * @link https://github.com/grokability/snipe-it/issues/17589
      */
-    #[DataProvider('data')]
+    #[DataProvider('provider')]
     public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance($provided)
     {
         $getCheckoutAcceptance = $provided();
