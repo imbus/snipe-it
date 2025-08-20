@@ -96,11 +96,9 @@ class StorageHelper
             'webp',
         ];
 
-        \Log::error(pathinfo($file_with_path, PATHINFO_EXTENSION));
 
         // The file exists and is allowed to be displayed inline
         if (Storage::exists($file_with_path) && (in_array(pathinfo($file_with_path, PATHINFO_EXTENSION), $allowed_inline))) {
-            \Log::error('File is allowed inline: ' . $file_with_path);
             return true;
         }
         return false;
