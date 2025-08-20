@@ -103,7 +103,6 @@ class AccessoryAcceptanceTest extends TestCase
      */
     public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance()
     {
-        // $this->markTestIncomplete();
 
         $user = User::factory()->create();
 
@@ -181,6 +180,7 @@ class AccessoryAcceptanceTest extends TestCase
         // four rows from `accessories_checkout` should be removed
         $this->assertEquals($originalAccessoryCheckoutCount - 4, AccessoryCheckout::count());
 
+        // @todo:
         // ensure existing checkouts for the user are not affected.
         // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
         // ie...if a user accepted previous accessories then those should not be touched.

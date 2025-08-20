@@ -108,10 +108,14 @@ class CheckoutAcceptance extends Model
         $this->signature_filename = $signature_filename;
         $this->save();
 
-        /**
-         * Update state for the checked out item
-         */
-        $this->checkoutable->declinedCheckout($this->assignedTo, $signature_filename);
+        $qty = $this->qty ?? 1;
+
+        foreach (range(0, $qty) as $count) {
+            /**
+             * Update state for the checked out item
+             */
+            $this->checkoutable->declinedCheckout($this->assignedTo, $signature_filename);
+        }
     }
 
     /**
