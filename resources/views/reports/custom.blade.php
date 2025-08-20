@@ -672,7 +672,7 @@
 
                     <span data-tooltip="true" title="{{ trans('general.delete') }}">
                         <a href="#"
-                                class="btn btn-sm btn-danger btn-social btn-block"
+                                class="btn btn-sm btn-danger btn-social btn-block delete-asset"
                                 data-toggle="modal"
                                 data-title="{{ trans('general.delete') }}"
                                 data-content="{{ trans('general.delete_confirm', ['item' => $template->name]) }}"
