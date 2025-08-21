@@ -930,9 +930,7 @@
                                             <div class="col-md-3">
                                                 <strong>
                                                     {{ trans('admin/hardware/form.warranty_expires') }}
-                                                    @if ($asset->purchase_date)
-                                                        {!! $asset->present()->warranty_expires() < date("Y-m-d") ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
-                                                    @endif
+
 
                                                 </strong>
                                             </div>
@@ -941,6 +939,10 @@
                                                     {{ Helper::getFormattedDateObject($asset->present()->warranty_expires(), 'date', false) }}
                                                     -
                                                     {{ Carbon::parse($asset->present()->warranty_expires())->diffForHumans(['parts' => 3]) }}
+
+                                                    @if ($asset->purchase_date)
+                                                        {!! $asset->present()->warranty_expires() < date("Y-m-d") ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
+                                                    @endif
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -1017,7 +1019,7 @@
                                                                 data-placement="top"
                                                                 data-title="Explicit EOL"
                                                                 title="Explicit EOL">
-                                                                <x-icon type="warning" class="text-orange" />
+                                                                <x-icon type="warning" class="text-primary" />
                                                         </span>
                                                 @endif
                                             </div>
