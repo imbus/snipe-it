@@ -232,6 +232,7 @@ class AcceptanceController extends Controller
                 'signature' => ($sig_filename) ? storage_path() . '/private_uploads/signatures/' . $sig_filename : null,
                 'logo' => $path_logo,
                 'date_settings' => $branding_settings->date_display_format,
+                'qty' => $acceptance->qty ?? 1,
             ];
 
             if ($pdf_view_route!='') {
