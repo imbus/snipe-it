@@ -30,7 +30,6 @@ class AcceptanceAssetAcceptedToUserNotification extends Notification
         $this->settings = Setting::getSettings();
         $this->file = $params['file'] ?? null;
         $this->qty = $params['qty'] ?? null;
-
     }
 
     /**

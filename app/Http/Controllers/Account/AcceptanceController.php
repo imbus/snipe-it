@@ -338,6 +338,7 @@ class AcceptanceController extends Controller
                 'assigned_to' => $assigned_to,
                 'company_name' => $branding_settings->site_name,
                 'date_settings' => $branding_settings->date_display_format,
+                'qty' => $acceptance->qty ?? 1,
             ];
 
             if ($pdf_view_route!='') {
