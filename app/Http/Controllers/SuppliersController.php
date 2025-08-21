@@ -135,7 +135,7 @@ class SuppliersController extends Controller
             $errors->add('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
         } catch (ItemStillHasLicenses $e) {
             $errors->add('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             report($e);
             $errors->add('error', trans('general.something_went_wrong'));
         }

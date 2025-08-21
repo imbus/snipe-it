@@ -173,17 +173,10 @@ class ManufacturersController extends Controller
         } catch (ItemStillHasChildren $e) {
             return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.assoc_users'));
         } catch (\Exception $e) {
+            report($e);
             return redirect()->route('manufacturers.index')->with('error', trans('general.something_went_wrong'));
         }
 
-        // Soft delete the manufacturer if active, permanent delete if is already deleted
-        // do we really want to do that?...
-        // commenting it out for now because it's weird...
-        //if ($manufacturer->deleted_at === null) {
-        //    $manufacturer->delete();
-        //} else {
-        //    $manufacturer->forceDelete();
-        //}
         return redirect()->route('manufacturers.index')->with('success', trans('admin/manufacturers/message.delete.success'));
     }
 

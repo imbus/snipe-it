@@ -220,7 +220,7 @@ class CategoriesController extends Controller
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
             );
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             report($e);
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong'))

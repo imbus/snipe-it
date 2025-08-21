@@ -199,6 +199,7 @@ class ManufacturersController extends Controller
         } catch (ItemStillHasChildren $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
         } catch (\Exception $e) {
+            report($e);
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));
         }
 
