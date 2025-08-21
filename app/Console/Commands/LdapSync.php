@@ -243,7 +243,7 @@ class LdapSync extends Command
         for ($i = 0; $i < $results['count']; $i++) {
             $item = [];
             $item['username'] = $results[$i][$ldap_map["username"]][0] ?? '';
-            $item['display_name'] = $results[$i][$ldap_map["ldap_display_name"]][0] ?? '';
+            $item['display_name'] = $results[$i][$ldap_map["display_name"]][0] ?? '';
             $item['employee_number'] = $results[$i][$ldap_map["emp_num"]][0] ?? '';
             $item['lastname'] = $results[$i][$ldap_map["last_name"]][0] ?? '';
             $item['firstname'] = $results[$i][$ldap_map["first_name"]][0] ?? '';
@@ -254,10 +254,10 @@ class LdapSync extends Command
             $item['mobile'] = $results[$i][$ldap_map["mobile"]][0] ?? '';
             $item['jobtitle'] = $results[$i][$ldap_map["jobtitle"]][0] ?? '';
             $item['address'] = $results[$i][$ldap_map["ldap_address"]][0] ?? '';
-            $item['city'] = $results[$i][$ldap_map["ldap_city"]][0] ?? '';
-            $item['state'] = $results[$i][$ldap_map["ldap_state"]][0] ?? '';
+            $item['city'] = $results[$i][$ldap_map["city"]][0] ?? '';
+            $item['state'] = $results[$i][$ldap_map["state"]][0] ?? '';
             $item['country'] = $results[$i][$ldap_map["country"]][0] ?? '';
-            $item['zip'] = $results[$i][$ldap_map["ldap_zip"]][0] ?? '';
+            $item['zip'] = $results[$i][$ldap_map["zip"]][0] ?? '';
             $item['department'] = $results[$i][$ldap_map["dept"]][0] ?? '';
             $item['manager'] = $results[$i][$ldap_map["manager"]][0] ?? '';
             $item['location'] = $results[$i][$ldap_map["location"]][0] ?? '';
