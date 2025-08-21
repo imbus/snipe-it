@@ -319,12 +319,33 @@
                         {{ trans('admin/users/table.name') }}
                       </div>
                       <div class="col-md-9">
-                        {{ $user->first_name }} {{ $user->last_name }}
+                        {{ $user->present()->fullName() }}
                       </div>
 
                   </div>
 
 
+
+                   <!-- company -->
+                    @if (!is_null($user->company))
+                    <div class="row">
+
+                      <div class="col-md-3">
+                        {{ trans('general.company') }}
+                      </div>
+                      <div class="col-md-9">
+                          @can('view', 'App\Models\Company')
+                            <a href="{{ route('companies.show', $user->company->id) }}">
+                                {{ $user->company->name }}
+                            </a>
+                              @else
+                              {{ $user->company->name }}
+                            @endcan
+                      </div>
+
+                    </div>
+
+                    @endif
 
                     <!-- username -->
                     <div class="row">
@@ -344,19 +365,6 @@
                       </div>
 
                     </div>
-
-                   <!-- display name -->
-                   @if ($user->display_name)
-                   <div class="row">
-
-                       <div class="col-md-3">
-                           {{ trans('admin/users/table.display_name') }}
-                       </div>
-                       <div class="col-md-9">
-                           {{ $user->display_name }}
-                       </div>
-                   </div>
-                   @endif
 
                     <!-- address -->
                     @if (($user->address) || ($user->city) || ($user->state) || ($user->country))
@@ -386,26 +394,6 @@
                     </div>
                     @endif
 
-                   <!-- company -->
-                   @if (!is_null($user->company))
-                       <div class="row">
-
-                           <div class="col-md-3">
-                               {{ trans('general.company') }}
-                           </div>
-                           <div class="col-md-9">
-                               @can('view', 'App\Models\Company')
-                                   <a href="{{ route('companies.show', $user->company->id) }}">
-                                       {{ $user->company->name }}
-                                   </a>
-                               @else
-                                   {{ $user->company->name }}
-                               @endcan
-                           </div>
-
-                       </div>
-
-                   @endif
 
                      <!-- groups -->
                      <div class="row">

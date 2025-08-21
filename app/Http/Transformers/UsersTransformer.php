@@ -31,11 +31,10 @@ class UsersTransformer
         $array = [
                 'id' => (int) $user->id,
                 'avatar' => e($user->present()->gravatar) ?? null,
-                'name' => e($user->getFullNameAttribute()) ?? null,
-                'first_name' => e($user->first_name) ?? null,
-                'last_name' => e($user->last_name) ?? null,
-                'display_name' => e($user->display_name) ?? null,
-                'username' => e($user->username) ?? null,
+                'name' => e($user->getFullNameAttribute()),
+                'first_name' => e($user->first_name),
+                'last_name' => e($user->last_name),
+                'username' => e($user->username),
                 'remote' => ($user->remote == '1') ? true : false,
                 'locale' => ($user->locale) ? e($user->locale) : null,
                 'employee_num' => ($user->employee_num) ? e($user->employee_num) : null,
@@ -139,7 +138,6 @@ class UsersTransformer
             'first_name' => e($user->first_name),
             'last_name' => e($user->last_name),
             'username' => e($user->username),
-            'display_name' => e($user->display_name),
             'created_by' => $user->adminuser ? [
                 'id' => (int) $user->adminuser->id,
                 'name'=> e($user->adminuser->present()->fullName),
