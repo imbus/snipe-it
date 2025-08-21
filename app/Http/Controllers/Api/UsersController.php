@@ -64,6 +64,7 @@ class UsersController extends Controller
             'users.jobtitle',
             'users.last_login',
             'users.last_name',
+            'users.display_name',
             'users.locale',
             'users.location_id',
             'users.manager_id',
@@ -152,6 +153,10 @@ class UsersController extends Controller
 
         if ($request->filled('last_name')) {
             $users = $users->where('users.last_name', '=', $request->input('last_name'));
+        }
+
+        if ($request->filled('display_name')) {
+            $users = $users->where('users.display_name', '=', $request->input('display_name'));
         }
 
         if ($request->filled('employee_num')) {
@@ -284,6 +289,7 @@ class UsersController extends Controller
                     [
                         'last_name',
                         'first_name',
+                        'display_name',
                         'email',
                         'jobtitle',
                         'username',
@@ -509,6 +515,10 @@ class UsersController extends Controller
 
                 if ($request->filled('username')) {
                     $user->username = $request->input('username');
+                }
+
+                if ($request->filled('display_name')) {
+                    $user->display_name = $request->input('display_name');
                 }
 
                 if ($request->filled('email')) {

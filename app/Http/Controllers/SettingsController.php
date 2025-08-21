@@ -873,6 +873,7 @@ class SettingsController extends Controller
             $setting->ldap_default_group = $request->input('ldap_default_group');
             $setting->ldap_filter = $request->input('ldap_filter');
             $setting->ldap_username_field = $request->input('ldap_username_field');
+            $setting->ldap_display_name = $request->input('ldap_display_name');
             $setting->ldap_lname_field = $request->input('ldap_lname_field');
             $setting->ldap_fname_field = $request->input('ldap_fname_field');
             $setting->ldap_auth_filter_query = $request->input('ldap_auth_filter_query');
@@ -889,7 +890,12 @@ class SettingsController extends Controller
             $setting->ldap_pw_sync = $request->input('ldap_pw_sync', '0');
             $setting->custom_forgot_pass_url = $request->input('custom_forgot_pass_url');
             $setting->ldap_phone_field = $request->input('ldap_phone');
+            $setting->ldap_mobile = $request->input('ldap_mobile');
             $setting->ldap_jobtitle = $request->input('ldap_jobtitle');
+            $setting->ldap_address = $request->input('ldap_address');
+            $setting->ldap_city = $request->input('ldap_city');
+            $setting->ldap_state = $request->input('ldap_state');
+            $setting->ldap_zip = $request->input('ldap_zip');
             $setting->ldap_country = $request->input('ldap_country');
             $setting->ldap_location = $request->input('ldap_location');
             $setting->ldap_dept = $request->input('ldap_dept');

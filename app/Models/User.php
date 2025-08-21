@@ -64,6 +64,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'first_name',
         'jobtitle',
         'last_name',
+        'display_name',
         'ldap_import',
         'locale',
         'location_id',
@@ -103,6 +104,8 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
 
     protected $rules = [
         'first_name'              => 'required|string|min:1|max:191',
+        'last_name'               => 'nullable|string|max:191',
+        'display_name'            => 'nullable|string|max:191',
         'username'                => 'required|string|min:1|unique_undeleted|max:191',
         'email'                   => 'email|nullable|max:191',
         'password'                => 'required|min:8',
@@ -113,9 +116,9 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'start_date'              => 'nullable|date_format:Y-m-d',
         'end_date'                => 'nullable|date_format:Y-m-d|after_or_equal:start_date',
         'autoassign_licenses'     => 'boolean',
-        'address'                 => 'max:191|nullable',
-        'city'                    => 'max:191|nullable',
-        'state'                   => 'min:2|max:191|nullable',
+        'address'                 => 'nullable|string|max:191',
+        'city'                    => 'nullable|string|max:191',
+        'state'                   => 'nullable|string|max:191',
         'country'                 => 'min:2|max:191|nullable',
         'zip'                     => 'max:10|nullable',
         'vip'                     => 'boolean',
@@ -132,15 +135,16 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'address',
         'city',
         'country',
+        'display_name',
         'email',
         'employee_num',
         'first_name',
         'jobtitle',
         'last_name',
         'locale',
+        'mobile',
         'notes',
         'phone',
-        'mobile',
         'state',
         'username',
         'website',
@@ -157,7 +161,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         'department' => ['name'],
         'groups'     => ['name'],
         'company'    => ['name'],
-        'manager'    => ['first_name', 'last_name', 'username'],
+        'manager'    => ['first_name', 'last_name', 'username', 'display_name'],
     ];
 
 
@@ -859,6 +863,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
     {
         return $query->where('first_name', 'LIKE', '%' . $search . '%')
             ->orWhere('last_name', 'LIKE', '%' . $search . '%')
+            ->orWhere('display_name', 'LIKE', '%' . $search . '%')
             ->orWhereMultipleColumns(
                 [
                 'users.first_name',
@@ -1068,6 +1073,7 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
             ->orWhere('users.jobtitle', 'LIKE', '%' . $search . '%')
             ->orWhere('users.employee_num', 'LIKE', '%' . $search . '%')
             ->orWhere('users.username', 'LIKE', '%' . $search . '%')
+            ->orWhere('users.display_name', 'LIKE', '%' . $search . '%')
             ->orwhereRaw('CONCAT(users.first_name," ",users.last_name) LIKE \''.$search.'%\'');
 
     }

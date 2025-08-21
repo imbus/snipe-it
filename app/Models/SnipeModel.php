@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class SnipeModel extends Model
@@ -155,9 +156,19 @@ class SnipeModel extends Model
         $this->attributes['status_id'] = $value;
     }
 
-    //
-    public function getDisplayNameAttribute()
+    // This gets a little twitchy since *most* things have a property in the table called "name" (but users don't)
+    // AND we want to be able to use the actual display_name value from the database if it's set (usually via SCIM)
+    protected function displayNameAttribute(): Attribute
     {
-        return $this->name;
+        // This override should only kick in if the model has a display_name property (users)
+        if (isset($this->display_name)) {
+            return Attribute::make(
+                get: fn (string $value) => $this->display_name,
+            );
+        }
+        return Attribute::make(
+            get: fn (string $value) => $this->name,
+        );
     }
+
 }
