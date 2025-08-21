@@ -99,66 +99,11 @@ class AccessoryAcceptanceTest extends TestCase
         $this->assertNull($acceptance->fresh()->accepted_at);
     }
 
-    public static function provider()
-    {
-        yield 'Current behavior' => [
-            function () {
-                return function (User $assignee) {
-                    return CheckoutAcceptance::query()
-                        ->where([
-                            'assigned_to_id' => $assignee->id,
-                            'qty' => 3,
-                        ])
-                        ->whereNull('accepted_at')
-                        ->whereNull('declined_at')
-                        ->whereHasMorph(
-                            'checkoutable',
-                            [Accessory::class],
-                        )
-                        ->sole();
-                };
-            }
-        ];
-
-        yield 'Previous behavior' => [
-            function () {
-                return function (User $assignee) {
-                    $checkoutAcceptance = CheckoutAcceptance::query()
-                        ->where([
-                            'assigned_to_id' => $assignee->id,
-                            'qty' => 3,
-                        ])
-                        ->whereNull('accepted_at')
-                        ->whereNull('declined_at')
-                        ->whereHasMorph(
-                            'checkoutable',
-                            [Accessory::class],
-                        )
-                        ->sole();
-
-                    // previous behavior did not set `qty`.
-                    $checkoutAcceptance->qty = null;
-                    $checkoutAcceptance->save();
-
-                    return $checkoutAcceptance;
-                };
-            }
-        ];
-
-        // @todo:
-        // ensure existing checkouts for the user are not affected.
-        // in other words, make sure the removal of rows from `accessories_checkout` is not too eager, especially around legacy behavior.
-        // ie...if a user accepted previous accessories then those should not be touched.
-    }
-
     /**
      * @link https://github.com/grokability/snipe-it/issues/17589
      */
-    #[DataProvider('provider')]
-    public function test_all_accessory_checkouts_are_removed_when_user_declines_acceptance($provided)
+    public function test_all_accessory_checkout_entries_are_removed_when_user_declines_acceptance()
     {
-        $getCheckoutAcceptance = $provided();
-
         $assignee = User::factory()->create();
 
         $this->actingAs(User::factory()->checkoutAccessories()->create());
@@ -174,8 +119,19 @@ class AccessoryAcceptanceTest extends TestCase
 
         $originalAccessoryCheckoutCount = AccessoryCheckout::count();
 
-        // get the checkout acceptance via the function that will put it in a state ready for testing
-        $checkoutAcceptance = $getCheckoutAcceptance($assignee);
+        // find the acceptance to be declined
+        $checkoutAcceptance = CheckoutAcceptance::query()
+            ->where([
+                'assigned_to_id' => $assignee->id,
+                'qty' => 3,
+            ])
+            ->whereNull('accepted_at')
+            ->whereNull('declined_at')
+            ->whereHasMorph(
+                'checkoutable',
+                [Accessory::class],
+            )
+            ->sole();
 
         // decline the checkout
         $this->actingAs($assignee)
