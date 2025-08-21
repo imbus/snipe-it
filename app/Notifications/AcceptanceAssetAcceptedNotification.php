@@ -30,6 +30,7 @@ class AcceptanceAssetAcceptedNotification extends Notification
         $this->note = $params['note'];
         $this->company_name = $params['company_name'];
         $this->settings = Setting::getSettings();
+        $this->qty = $params['qty'] ?? null;
 
     }
 
@@ -71,6 +72,7 @@ class AcceptanceAssetAcceptedNotification extends Notification
                 'accepted_date' => $this->accepted_date,
                 'assigned_to'   => $this->assigned_to,
                 'company_name'  => $this->company_name,
+                'qty' => $this->qty,
                 'intro_text'    => trans('mail.acceptance_asset_accepted'),
             ])
             ->subject(trans('mail.acceptance_asset_accepted'));
