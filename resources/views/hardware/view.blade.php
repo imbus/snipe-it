@@ -809,7 +809,7 @@
                                             <div class="col-md-9">
                                                 {{ Helper::getFormattedDateObject($asset->purchase_date, 'date', false) }}
                                                 -
-                                                {{ Carbon::parse($asset->purchase_date)->diff(Carbon::now())->format('%y years, %m months and %d days')}}
+                                                {{ Carbon::parse($asset->purchase_date)->diffForHumans(['parts' => 3]) }}
 
                                             </div>
                                         </div>
@@ -940,7 +940,7 @@
                                                 @if ($asset->purchase_date)
                                                     {{ Helper::getFormattedDateObject($asset->present()->warranty_expires(), 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->present()->warranty_expires())->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->present()->warranty_expires())->diffForHumans(['parts' => 3]) }}
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -971,7 +971,7 @@
                                                 @if ($asset->purchase_date)
                                                     {{ Helper::getFormattedDateObject($asset->depreciated_date()->format('Y-m-d'), 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->depreciated_date())->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->depreciated_date())->diffForHumans(['parts' => 3]) }}
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -1008,7 +1008,7 @@
                                                 @if ($asset->asset_eol_date)
                                                     {{ Helper::getFormattedDateObject($asset->asset_eol_date, 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->asset_eol_date)->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->asset_eol_date)->locale(app()->getLocale())->diffForHumans(['parts' => 3]) }}
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
