@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Suppliers\DestroySupplierAction;
-use App\Exceptions\ModelStillHasMaintenances;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasMaintenances;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\SelectlistTransformer;
@@ -200,11 +200,11 @@ class SuppliersController extends Controller
         $this->authorize('delete', $supplier);
         try {
             DestroySupplierAction::run(supplier: $supplier);
-        } catch (ModelStillHasAssets $e) {
+        } catch (ItemStillHasAssets $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count])));
-        } catch (ModelStillHasMaintenances $e) {
+        } catch (ItemStillHasMaintenances $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count])));
-        } catch (ModelStillHasLicenses $e) {
+        } catch (ItemStillHasLicenses $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
         } catch (\Exception $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));

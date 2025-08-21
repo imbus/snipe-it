@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Manufacturers\DeleteManufacturerAction;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetModels;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasChildren;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssetModels;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasChildren;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Models\Manufacturer;
 use Illuminate\Http\Request;
 
@@ -28,15 +28,15 @@ class BulkManufacturersController extends Controller
             }
             try {
                 DeleteManufacturerAction::run(manufacturer: $manufacturer);
-            } catch (ModelStillHasAssets $e) {
+            } catch (ItemStillHasAssets $e) {
                 $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_assets', ['manufacturer_name' => $manufacturer->name]);
-            } catch (ModelStillHasAccessories $e) {
+            } catch (ItemStillHasAccessories $e) {
                 $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_accessories', ['manufacturer_name' => $manufacturer->name]);
-            } catch (ModelStillHasConsumables $e) {
+            } catch (ItemStillHasConsumables $e) {
                 $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_consumables', ['manufacturer_name' => $manufacturer->name]);
-            } catch (ModelStillHasComponents $e) {
+            } catch (ItemStillHasComponents $e) {
                 $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_components', ['manufacturer_name' => $manufacturer->name]);;
-            } catch (ModelStillHasLicenses $e) {
+            } catch (ItemStillHasLicenses $e) {
                 $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_licenses', ['manufacturer_name' => $manufacturer->name]);;
             } catch (\Exception $e) {
                 report($e);

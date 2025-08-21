@@ -2,11 +2,11 @@
 
 namespace App\Actions\Manufacturers;
 
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Models\Manufacturer;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Storage;
 class DeleteManufacturerAction
 {
     /**
-     * @throws ModelStillHasAssets
-     * @throws ModelStillHasComponents
-     * @throws ModelStillHasAccessories
-     * @throws ModelStillHasLicenses
-     * @throws ModelStillHasConsumables
+     * @throws ItemStillHasAssets
+     * @throws ItemStillHasComponents
+     * @throws ItemStillHasAccessories
+     * @throws ItemStillHasLicenses
+     * @throws ItemStillHasConsumables
      */
     static function run(Manufacturer $manufacturer): bool
     {
@@ -31,19 +31,19 @@ class DeleteManufacturerAction
         ]);
 
         if ($manufacturer->assets_count > 0) {
-            throw new ModelStillHasAssets($manufacturer);
+            throw new ItemStillHasAssets($manufacturer);
         }
         if ($manufacturer->accessories_count > 0) {
-            throw new ModelStillHasAccessories($manufacturer);
+            throw new ItemStillHasAccessories($manufacturer);
         }
         if ($manufacturer->consumables_count > 0) {
-            throw new ModelStillHasConsumables($manufacturer);
+            throw new ItemStillHasConsumables($manufacturer);
         }
         if ($manufacturer->components_count > 0) {
-            throw new ModelStillHasComponents($manufacturer);
+            throw new ItemStillHasComponents($manufacturer);
         }
         if ($manufacturer->licenses_count > 0) {
-            throw new ModelStillHasLicenses($manufacturer);
+            throw new ItemStillHasLicenses($manufacturer);
         }
 
         if ($manufacturer->image) {

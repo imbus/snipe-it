@@ -2,26 +2,24 @@
 
 namespace App\Actions\Categories;
 
-use App\Exceptions\ModelIsNotDeletable;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetModels;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
-use App\Helpers\Helper;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssetModels;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 
 class DestroyCategoryAction
 {
     /**
-     * @throws ModelStillHasAssets
-     * @throws ModelStillHasAssetModels
-     * @throws ModelStillHasComponents
-     * @throws ModelStillHasAccessories
-     * @throws ModelStillHasLicenses
-     * @throws ModelStillHasConsumables
+     * @throws ItemStillHasAssets
+     * @throws ItemStillHasAssetModels
+     * @throws ItemStillHasComponents
+     * @throws ItemStillHasAccessories
+     * @throws ItemStillHasLicenses
+     * @throws ItemStillHasConsumables
      */
     static function run(Category $category): bool
     {
@@ -35,22 +33,22 @@ class DestroyCategoryAction
         ]);
 
         if ($category->assets_count > 0) {
-            throw new ModelStillHasAssets($category);
+            throw new ItemStillHasAssets($category);
         }
         if ($category->accessories_count > 0) {
-            throw new ModelStillHasAccessories($category);
+            throw new ItemStillHasAccessories($category);
         }
         if ($category->consumables_count > 0) {
-            throw new ModelStillHasConsumables($category);
+            throw new ItemStillHasConsumables($category);
         }
         if ($category->components_count > 0) {
-            throw new ModelStillHasComponents($category);
+            throw new ItemStillHasComponents($category);
         }
         if ($category->licenses_count > 0) {
-            throw new ModelStillHasLicenses($category);
+            throw new ItemStillHasLicenses($category);
         }
         if ($category->models_count > 0) {
-            throw new ModelStillHasAssetModels($category);
+            throw new ItemStillHasAssetModels($category);
         }
 
         Storage::disk('public')->delete('categories'.'/'.$category->image);

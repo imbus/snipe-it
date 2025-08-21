@@ -3,18 +3,18 @@
 namespace App\Actions\Suppliers;
 
 use App\Models\Supplier;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasMaintenances;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasMaintenances;
+use App\Exceptions\ItemStillHasLicenses;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class DestroySupplierAction
 {
     /**
-     * @throws ModelStillHasLicenses
-     * @throws ModelStillHasAssets
-     * @throws ModelStillHasMaintenances
+     * @throws ItemStillHasLicenses
+     * @throws ItemStillHasAssets
+     * @throws ItemStillHasMaintenances
      */
     static function run(Supplier $supplier): bool
     {
@@ -24,15 +24,15 @@ class DestroySupplierAction
             'licenses as licenses_count'
         ]);
         if ($supplier->assets_count > 0) {
-            throw new ModelStillHasAssets($supplier);
+            throw new ItemStillHasAssets($supplier);
         }
 
         if ($supplier->maintenances_count > 0) {
-            throw new ModelStillHasMaintenances($supplier);
+            throw new ItemStillHasMaintenances($supplier);
         }
 
         if ($supplier->licenses_count > 0) {
-            throw new ModelStillHasLicenses($supplier);
+            throw new ItemStillHasLicenses($supplier);
         }
 
         if ($supplier->image) {

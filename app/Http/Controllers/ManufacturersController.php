@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Manufacturers\DeleteManufacturerAction;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasChildren;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasChildren;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Actionlog;
@@ -170,7 +170,7 @@ class ManufacturersController extends Controller
         $this->authorize('delete', $manufacturer);
         try {
             DeleteManufacturerAction::run($manufacturer);
-        } catch (ModelStillHasChildren $e) {
+        } catch (ItemStillHasChildren $e) {
             return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.assoc_users'));
         } catch (\Exception $e) {
             return redirect()->route('manufacturers.index')->with('error', trans('general.something_went_wrong'));

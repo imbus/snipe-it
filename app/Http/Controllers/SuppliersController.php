@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Suppliers\DestroySupplierAction;
-use App\Exceptions\ModelStillHasMaintenances;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasMaintenances;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Supplier;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Contracts\View\View;
+use Illuminate\Support\MessageBag;
 
 /**
  * This controller handles all actions related to Suppliers for
@@ -124,18 +125,23 @@ class SuppliersController extends Controller
      */
     public function destroy(Supplier $supplier): RedirectResponse
     {
+        $errors = new MessageBag();
         $this->authorize('delete', Supplier::class);
         try {
             DestroySupplierAction::run(supplier: $supplier);
-        } catch (ModelStillHasAssets $e) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
-        } catch (ModelStillHasMaintenances $e) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
-        } catch (ModelStillHasLicenses $e) {
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
+        } catch (ItemStillHasAssets $e) {
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
+        } catch (ItemStillHasMaintenances $e) {
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
+        } catch (ItemStillHasLicenses $e) {
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
         } catch (\Throwable $e) {
             report($e);
-            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.error'));
+            $errors->add('error', trans('general.something_went_wrong'));
+        }
+
+        if ($errors->count() > 0) {
+            return redirect()->route('suppliers.index')->with('multi_errors', $errors);
         }
 
         return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Manufacturers\DeleteManufacturerAction;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasChildren;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasChildren;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\ManufacturersTransformer;
@@ -196,7 +196,7 @@ class ManufacturersController extends Controller
         $this->authorize('delete', $manufacturer);
         try {
             DeleteManufacturerAction::run($manufacturer);
-        } catch (ModelStillHasChildren $e) {
+        } catch (ItemStillHasChildren $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
         } catch (\Exception $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));

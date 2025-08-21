@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Categories\DestroyCategoryAction;
-use App\Exceptions\ModelStillHasAccessories;
-use App\Exceptions\ModelStillHasAssetModels;
-use App\Exceptions\ModelStillHasAssets;
-use App\Exceptions\ModelStillHasChildren;
-use App\Exceptions\ModelStillHasComponents;
-use App\Exceptions\ModelStillHasConsumables;
-use App\Exceptions\ModelStillHasLicenses;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasAssetModels;
+use App\Exceptions\ItemStillHasAssets;
+use App\Exceptions\ItemStillHasChildren;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
+use App\Exceptions\ItemStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\Category;
@@ -156,7 +156,7 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run($category);
-        } catch (ModelStillHasChildren $e) {
+        } catch (ItemStillHasChildren $e) {
             return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]));
         } catch (\Exception $e) {
             report($e);

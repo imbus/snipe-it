@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Categories\DestroyCategoryAction;
-use App\Exceptions\ModelStillHasChildren;
+use App\Exceptions\ItemStillHasChildren;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
@@ -216,7 +216,7 @@ class CategoriesController extends Controller
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run(category: $category);
-        } catch (ModelStillHasChildren $e) {
+        } catch (ItemStillHasChildren $e) {
             return response()->json(
                 Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
             );
