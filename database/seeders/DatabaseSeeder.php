@@ -84,6 +84,7 @@ class DatabaseSeeder extends Seeder
         $this->reportMemory('after ActionlogSeeder');
         $this->call(MaintenanceSeeder::class);
         $this->reportMemory('after MaintenanceSeeder');
+        $this->call(PredefinedFilterSeeder::class);
 
         // snipeit:sync-asset-locations used to run here to backfill location_id
         // on seeded assets. AssetFactory::configure() now sets location_id at
