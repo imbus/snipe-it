@@ -5,11 +5,6 @@
 {{ trans('admin/manufacturers/table.asset_manufacturers') }} 
 @parent
 @stop
-@php
-
-    $canDelete = \Illuminate\Support\Facades\Auth::user()->can('delete', Manufacturer::class)
-
-@endphp
 
 {{-- Page content --}}
 @section('content')
