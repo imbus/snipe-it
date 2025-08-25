@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-{{ trans('admin/users/general.view_user', ['name' => $user->present()->fullName()]) }}
+{{ trans('admin/users/general.view_user', ['name' => $user->display_name]) }}
 @parent
 @stop
 
@@ -179,7 +179,7 @@
 
               </div>
               <div class="col-md-12 text-center">
-                <img src="{{ $user->present()->gravatar() }}"  class=" img-thumbnail hidden-print" style="margin-bottom: 20px;" alt="{{ $user->present()->fullName() }}">
+                <img src="{{ $user->present()->gravatar() }}"  class=" img-thumbnail hidden-print" style="margin-bottom: 20px;" alt="{{ $user->display_name }}">
                </div>
 
               @can('update', $user)
@@ -266,7 +266,7 @@
                   @if ($user->deleted_at=='')
                     <div class="col-md-12" style="padding-top: 30px;">
                         @if ($user->isDeletable())
-                            <a href="" class="delete-asset btn-block btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->present()->fullName]) }}" data-icon="fa-trash" data-target="#dataConfirmModal" onClick="return false;" >
+                            <a href="" class="delete-asset btn-block btn btn-sm btn-danger btn-social hidden-print" data-toggle="modal" data-title="{{ trans('general.delete') }}" data-content="{{ trans('general.sure_to_delete_var', ['item' => $user->display_name]) }}" data-icon="fa-trash" data-target="#dataConfirmModal" onClick="return false;" >
                                 <x-icon type="delete" />
                                 {{ trans('button.delete')}}
                             </a>
@@ -353,7 +353,7 @@
                            {{ trans('admin/users/table.display_name') }}
                        </div>
                        <div class="col-md-9">
-                           {{ $user->display_name }}
+                           {{ $user->getRawOriginal('display_name') }}
                        </div>
                    </div>
                    @endif
@@ -490,7 +490,7 @@
                         </div>
                         <div class="col-md-9">
                           <a href="{{ route('users.show', $user->manager->id) }}">
-                            {{ $user->manager->getFullNameAttribute() }}
+                            {{ $user->manager->display_name }}
                           </a>
                         </div>
 
@@ -613,7 +613,7 @@
                           @if ($user->createdBy)
                               -
                               @if ($user->createdBy->deleted_at=='')
-                                  <a href="{{ route('users.show', ['user' => $user->created_by]) }}">{{ $user->createdBy->present()->fullName }}</a>
+                                  <a href="{{ route('users.show', ['user' => $user->created_by]) }}">{{ $user->createdBy->display_name }}</a>
                               @else
                                   <del>{{ $user->createdBy->present()->fullName }}</del>
                               @endif
@@ -838,7 +838,7 @@
                     class="table table-striped snipe-table"
                     data-url="{{ route('api.assets.index',['assigned_to' => e($user->id), 'assigned_type' => 'App\Models\User']) }}"
                     data-export-options='{
-                "fileName": "export-{{ str_slug($user->present()->fullName()) }}-assets-{{ date('Y-m-d') }}",
+                "fileName": "export-{{ str_slug($user->username) }}-assets-{{ date('Y-m-d') }}",
                 "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
                 }'>
             </table>

@@ -338,7 +338,7 @@
 
                                             @if (($asset->checkedOutToUser()) && ($asset->assignedTo->present()->gravatar()))
                                                 <li>
-                                                    <img src="{{ $asset->assignedTo->present()->gravatar() }}" class="user-image-inline hidden-print" alt="{{ $asset->assignedTo->present()->fullName() }}">
+                                                    <img src="{{ $asset->assignedTo->present()->gravatar() }}" class="user-image-inline hidden-print" alt="{{ $asset->assignedTo->display_name }}">
                                                     {!! $asset->assignedTo->present()->nameUrl() !!}
                                                 </li>
                                             @else
@@ -547,7 +547,7 @@
                                                 {!! $asset->checkInvalidNextAuditDate() ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
                                                 {{ Helper::getFormattedDateObject($audit_log->created_at, 'datetime', false) }}
                                                 @if ($audit_log->user)
-                                                    (by {{ link_to_route('users.show', $audit_log->user->present()->fullname(), [$audit_log->user->id]) }})
+                                                    (by {{ link_to_route('users.show', $audit_log->user->display_name, [$audit_log->user->id]) }})
                                                 @endif
 
                                             </div>

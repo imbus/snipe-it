@@ -609,7 +609,7 @@ class AssetsController extends Controller
             $asset->use_text = $asset->present()->fullName;
 
             if (($asset->checkedOutToUser()) && ($asset->assigned)) {
-                $asset->use_text .= ' → ' . $asset->assigned->getFullNameAttribute();
+                $asset->use_text .= ' → ' . $asset->assigned->display_name;
             }
 
 

@@ -64,7 +64,7 @@ use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
                 $item = $this->params['item'];
                 $admin_user = $this->params['admin'];
                 $fields = [
-                    'By' => '<'.$admin_user->present()->viewUrl().'|'.$admin_user->present()->fullName().'>',
+                    'By' => '<'.$admin_user->present()->viewUrl().'|'.$admin_user->display_name.'>',
                 ];
                 array_key_exists('note', $this->params) && $fields['Notes'] = $this->params['note'];
                 array_key_exists('location', $this->params) && $fields['Location'] = $this->params['location'];
@@ -89,9 +89,9 @@ use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
                 ->title(class_basename(get_class($params['item'])) . ' Audited')
                 ->addStartGroupToSection('activityText')
                 ->fact(trans('mail.asset'), $item)
-                ->fact(trans('general.administrator'), $admin_user->present()->viewUrl() . '|' . $admin_user->present()->fullName());
+                ->fact(trans('general.administrator'), $admin_user->present()->viewUrl() . '|' . $admin_user->display_name);
         }
-            $message = class_basename(get_class($params['item'])) . ' Audited By '.$admin_user->present()->fullName();
+            $message = class_basename(get_class($params['item'])) . ' Audited By '.$admin_user->display_name;
             $details = [
                 trans('mail.asset') => htmlspecialchars_decode($item->present()->name),
                 trans('mail.notes') => $note ?: '',

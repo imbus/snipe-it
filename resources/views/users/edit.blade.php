@@ -3,7 +3,7 @@
 @section('title')
 	@if ($user->id)
 		{{ trans('admin/users/table.updateuser') }}
-		{{ $user->present()->fullName() }}
+		{{ $user->display_name }}
 	@else
 		{{ trans('admin/users/table.createuser') }}
 	@endif
@@ -322,7 +322,7 @@
                                               maxlength="191"
                                               name="display_name"
                                               id="display_name"
-                                              value="{{ old('display_name', $user->display_name) }}"
+                                              value="{{ old('display_name', $user->getRawOriginal('display_name')) }}"
                                       />
                                       {!! $errors->first('display_name', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
                                   </div>

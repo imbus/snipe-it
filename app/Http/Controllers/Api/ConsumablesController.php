@@ -230,13 +230,13 @@ class ConsumablesController extends Controller
                 'avatar' => ($consumable_assignment->user) ? e($consumable_assignment->user->present()->gravatar) : '',
                 'user' => ($consumable_assignment->user) ? [
                     'id' => (int) $consumable_assignment->user->id,
-                    'name'=> e($consumable_assignment->user->present()->fullName()),
+                    'name'=> e($consumable_assignment->user->display_name),
                 ] : null,
                 'created_at' => Helper::getFormattedDateObject($consumable_assignment->created_at, 'datetime'),
                 'note' => ($consumable_assignment->note) ? e($consumable_assignment->note) : null,
                 'created_by' => ($consumable_assignment->adminuser) ? [
                     'id' => (int) $consumable_assignment->adminuser->id,
-                    'name'=> e($consumable_assignment->adminuser->present()->fullName()),
+                    'name'=> e($consumable_assignment->adminuser->display_name),
                 ] : null,
             ];
         }
