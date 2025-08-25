@@ -200,8 +200,20 @@ class User extends SnipeModel implements AuthenticatableContract, AuthorizableCo
         });
     }
 
+    /**
+     * This overrides the SnipeModel displayName accessor to return the full name if display_name is not set
+     * @see SnipeModel::displayName()
+     * @return Attribute
+     */
 
-    public function isAvatarExternal()
+    protected function displayName(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value) => $value ?? $this->getFullNameAttribute(),
+        );
+    }
+
+    public function isAvatarExternal() : bool
     {
         // Check if it's a google avatar or some external avatar
         if (Str::startsWith($this->avatar, ['http://', 'https://'])) {
