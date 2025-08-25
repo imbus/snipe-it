@@ -5,6 +5,11 @@
 {{ trans('admin/manufacturers/table.asset_manufacturers') }} 
 @parent
 @stop
+@php
+
+    $canDelete = \Illuminate\Support\Facades\Auth::user()->can('delete', Manufacturer::class)
+
+@endphp
 
 {{-- Page content --}}
 @section('content')
@@ -30,8 +35,16 @@
             </form>
 
       @else
-                @include ('partials.manufacturer-bulk-actions')
-
+                <x-tables.bulk-actions
+                        id_divname='manufacturersBulkEditToolbar'
+                        action_route="{{route('manufacturers.bulk.delete')}}"
+                        id_formname="manufacturersBulkForm"
+                        id_button="bulkManufacturerEditButton"
+                >
+                    @can('delete', App\Models\Manufacturer::class)
+                        <option>Delete</option>
+                    @endcan
+                </x-tables.bulk-actions>
 
             <table
               data-columns="{{ \App\Presenters\ManufacturerPresenter::dataTableLayout() }}"
@@ -54,8 +67,7 @@
                 }'>
             </table>
 
-
-  @endif
+            @endif
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div>

@@ -153,11 +153,13 @@
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <i class="fas fa-exclamation-triangle faa-pulse animated"></i>
             <strong>{{ trans('general.notification_error') }}: </strong>
+            <div class="accordion">
             @foreach($messages as $key => $message)
                 <ul>
                     <li>{{ $message }}</li>
                 </ul>
             @endforeach
+            </div>
         </div>
     </div>
 @endif

@@ -17,8 +17,17 @@
 
         <div class="row">
           <div class="col-md-12">
-            @include('partials.supplier-bulk-actions')
 
+              <x-tables.bulk-actions
+                      id_divname='suppliersBulkEditToolbar'
+                      action_route="{{route('suppliers.bulk.delete')}}"
+                      id_formname="suppliersBulkForm"
+                      id_button="bulkSupplierEditButton"
+              >
+                  @can('delete', App\Models\Supplier::class)
+                      <option>Delete</option>
+                  @endcan
+              </x-tables.bulk-actions>
             <table
             data-columns="{{ \App\Presenters\SupplierPresenter::dataTableLayout() }}"
             data-cookie-id-table="suppliersTable"

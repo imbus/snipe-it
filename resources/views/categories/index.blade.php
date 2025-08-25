@@ -13,9 +13,20 @@
   <div class="col-md-12">
     <div class="box box-default">
       <div class="box-body">
-        @include('partials.category-bulk-actions')
-        <table
-            data-columns="{{ \App\Presenters\CategoryPresenter::dataTableLayout() }}"
+
+          <x-tables.bulk-actions
+                  id_divname='categoriesBulkEditToolbar'
+                  action_route="{{route('categories.bulk.delete')}}"
+                  id_formname="categoriesBulkForm"
+                  id_button="bulkCategoryEditButton"
+          >
+              @can('delete', App\Models\Category::class)
+                  <option>Delete</option>
+              @endcan
+          </x-tables.bulk-actions>
+
+          <table
+                  data-columns="{{ \App\Presenters\CategoryPresenter::dataTableLayout() }}"
             data-cookie-id-table="categoryTable"
             data-id-table="categoryTable"
             data-side-pagination="server"
