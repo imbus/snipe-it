@@ -45,7 +45,7 @@ class UploadedFilesTransformer
             ] : null,
             'created_at' => Helper::getFormattedDateObject($file->created_at, 'datetime'),
             'deleted_at' => Helper::getFormattedDateObject($file->deleted_at, 'datetime'),
-            'inlineable' => StorageHelper::allowSafeInline($file->uploads_file_path()),
+            'inlineable' => StorageHelper::allowSafeInline($file->uploads_file_path()) ?? false,
             'exists_on_disk' => (Storage::exists($file->uploads_file_path()) ? true : false),
         ];
 

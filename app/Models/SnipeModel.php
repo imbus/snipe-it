@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class SnipeModel extends Model
@@ -22,7 +21,7 @@ class SnipeModel extends Model
      */
     public function setPurchaseCostAttribute($value)
     {
-        if (is_float($value)) {
+        if (is_numeric($value)) {
             //value is *already* a floating-point number. Just assign it directly
             $this->attributes['purchase_cost'] = $value;
             return;
@@ -156,9 +155,9 @@ class SnipeModel extends Model
         $this->attributes['status_id'] = $value;
     }
 
+
     protected function displayName(): Attribute
     {
-
         return Attribute:: make(
             get: fn(mixed $value) => $this->name,
         );

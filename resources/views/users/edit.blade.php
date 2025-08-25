@@ -328,6 +328,7 @@
                                   </div>
                               </div>
 
+
                               <!-- Company -->
                               @if ((Gate::allows('canEditAuthFields', $user)) && (\App\Models\Company::canManageUsersCompanies()))
                                   @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.select_company'), 'fieldname' => 'company_id'])
