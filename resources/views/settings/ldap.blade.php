@@ -595,7 +595,8 @@
                                         <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_display_name') }}</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayName/displayname' }}">
+                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayname' }}">
+                                        <p class="help-block">{{ trans('admin/settings/general.ldap_display_name_help') }}</p>
                                         @error('ldap_display_name')
                                         <span class="alert-msg">
                                                     <x-icon type="x" />

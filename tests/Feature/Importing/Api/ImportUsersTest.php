@@ -260,21 +260,26 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
         );
     }
 
+
+    /**
+     * Some of these should mismatch on purpose to ensure the mapping is working
+     * @return void
+     */
     #[Test]
     public function customColumnMapping(): void
     {
         $faker = ImportFileBuilder::new()->definition();
         $row = [
             'companyName'    => $faker['username'],
-            'email'          => $faker['email'],
+            'email'          => $faker['position'],
             'employeeNumber' => $faker['phoneNumber'],
             'firstName'       => $faker['location'],
             'lastName'       => $faker['lastName'],
             'location'       => $faker['firstName'],
             'phoneNumber'    => $faker['employeeNumber'],
-            'position'       => $faker['position'],
+            'position'       => $faker['email'],
             'username'       => $faker['companyName'],
-            'display_name'   => $faker['displayName'],
+            'dumbName'       => $faker['displayName'],
         ];
 
         $importFileBuilder = new ImportFileBuilder([$row]);
@@ -290,13 +295,15 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
                 'Employee Number' => 'phone_number',
                 'First Name'      => 'location',
                 'Last Name'       => 'last_name',
-                'Display Name'    => 'display_name',
                 'Location'        => 'first_name',
                 'Phone Number'    => 'employee_num',
                 'Job Title'       => 'email',
                 'Username'        => 'company',
+                'dumbName'    => 'display_name',
             ]
-        ])->assertOk();
+        ])->assertOk()
+            ->json();
+
 
         $newUser = User::query()
             ->with(['company', 'location'])
@@ -306,7 +313,7 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
         $this->assertEquals($row['position'], $newUser->email);
         $this->assertEquals($row['location'], $newUser->first_name);
         $this->assertEquals($row['lastName'], $newUser->last_name);
-        $this->assertEquals($row['displayName'], $newUser->display_name);
+        $this->assertEquals($row['dumbName'], $newUser->display_name);
         $this->assertEquals($row['email'], $newUser->jobtitle);
         $this->assertEquals($row['phoneNumber'], $newUser->employee_num);
         $this->assertEquals($row['username'], $newUser->company->name);
