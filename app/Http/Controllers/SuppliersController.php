@@ -125,23 +125,18 @@ class SuppliersController extends Controller
      */
     public function destroy(Supplier $supplier): RedirectResponse
     {
-        $errors = new MessageBag();
         $this->authorize('delete', Supplier::class);
         try {
             DestroySupplierAction::run(supplier: $supplier);
         } catch (ItemStillHasAssets $e) {
-            $errors->add('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
+            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count]));
         } catch (ItemStillHasMaintenances $e) {
-            $errors->add('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
+            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count]));
         } catch (ItemStillHasLicenses $e) {
-            $errors->add('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
+            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count]));
         } catch (\Exception $e) {
             report($e);
-            $errors->add('error', trans('general.something_went_wrong'));
-        }
-
-        if ($errors->count() > 0) {
-            return redirect()->route('suppliers.index')->with('multi_errors', $errors);
+            return redirect()->route('suppliers.index')->with('error', trans('admin/suppliers/message.delete.error'));
         }
 
         return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));
