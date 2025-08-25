@@ -11,7 +11,6 @@ use App\Exceptions\ItemStillHasConsumables;
 use App\Exceptions\ItemStillHasLicenses;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\MessageBag;
 
 class BulkCategoriesController extends Controller
 {
@@ -19,7 +18,7 @@ class BulkCategoriesController extends Controller
     {
         $this->authorize('delete', Category::class);
 
-        $errors = new MessageBag();
+        $errors = [];
         foreach ($request->ids as $id) {
             $category = Category::find($id);
             if (is_null($category)) {
@@ -29,20 +28,20 @@ class BulkCategoriesController extends Controller
             try {
                 DestroyCategoryAction::run(category: $category);
             } catch (ItemStillHasAccessories $e) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_accessories', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_accessories', ['category_name' => $category->name]);
             } catch (ItemStillHasAssetModels) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_models', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_models', ['category_name' => $category->name]);
             } catch (ItemStillHasAssets) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_assets', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_assets', ['category_name' => $category->name]);
             } catch (ItemStillHasComponents) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_components', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_components', ['category_name' => $category->name]);
             } catch (ItemStillHasConsumables) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_consumables', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_consumables', ['category_name' => $category->name]);
             } catch (ItemStillHasLicenses) {
-                $errors->add('error', trans('admin/categories/message.delete.bulk_assoc_licenses', ['category_name' => $category->name]));
+                $errors[] = trans('admin/categories/message.delete.bulk_assoc_licenses', ['category_name' => $category->name]);
             } catch (\Exception $e) {
                 report($e);
-                $errors->add('error', trans('general.something_went_wrong'));
+                $errors[] = trans('general.something_went_wrong');
             }
         }
         if (count($errors) > 0) {

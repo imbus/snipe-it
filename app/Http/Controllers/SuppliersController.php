@@ -141,7 +141,7 @@ class SuppliersController extends Controller
         }
 
         if ($errors->count() > 0) {
-            return redirect()->route('suppliers.index')->with('error', $errors);
+            return redirect()->route('suppliers.index')->with('multi_errors', $errors);
         }
 
         return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.success'));

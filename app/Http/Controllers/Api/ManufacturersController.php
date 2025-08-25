@@ -19,7 +19,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ImageUploadRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\MessageBag;
 
 class ManufacturersController extends Controller
 {
@@ -194,18 +193,14 @@ class ManufacturersController extends Controller
      */
     public function destroy(Manufacturer $manufacturer): JsonResponse
     {
-        $errors = new MessageBag();
         $this->authorize('delete', $manufacturer);
         try {
             DeleteManufacturerAction::run($manufacturer);
         } catch (ItemStillHasChildren $e) {
-            $errors->add('error', trans('admin/manufacturers/message.delete.assoc_children', ['manufacturer_name' => $manufacturer->name]));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
         } catch (\Exception $e) {
             report($e);
-            $errors->add('error', trans('general.something_went_wrong'));
-        }
-        if (count($errors) > 0) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, $errors->messages()));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));
         }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/manufacturers/message.delete.success')));
