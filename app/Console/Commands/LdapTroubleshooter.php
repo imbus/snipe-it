@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\Setting;
 use Exception;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Ldap;
 
 /**
  * Check if a given ip is in a network
@@ -210,32 +211,40 @@ class LdapTroubleshooter extends Command
             $this->info("Determined LDAP hostname to be: ".$parsed['host']);
         }
 
-        $this->info("Performing DNS lookup of: ".$parsed['host']);
-        $ips = dns_get_record($parsed['host']);
         $raw_ips = [];
 
-        //$this->info("Host IP is: ".print_r($ips,true));
+        if (inet_pton($parsed['host']) !== false) {
+            $this->info($parsed['host'] . " already looks like an address; skipping DNS lookup");
+            $raw_ips[] = $parsed['host'];
+        } else {
+            $this->info("Performing DNS lookup of: " . $parsed['host']);
+            $ips = dns_get_record($parsed['host']);
 
-        if(!$ips || count($ips) == 0) {
-            $this->error("ERROR: DNS lookup of host: ".$parsed['host']." has failed. ABORTING.");
-            exit(-1);
-        }
-        $this->debugout("IP's? ".print_r($ips,true));
-        foreach($ips as $ip) {
-            if(!isset($ip['ip'])) {
-                continue;
+            //$this->info("Host IP is: ".print_r($ips,true));
+
+            if (!$ips || count($ips) == 0) {
+                $this->error("ERROR: DNS lookup of host: " . $parsed['host'] . " has failed. ABORTING.");
+                exit(-1);
             }
-            $raw_ips[]=$ip['ip'];
-            if($ip['ip'] == "127.0.0.1") {
+            $this->debugout("IP's? " . print_r($ips, true));
+            foreach ($ips as $ip) {
+                if (!isset($ip['ip'])) {
+                    continue;
+                }
+                $raw_ips[] = $ip['ip'];
+            }
+        }
+        foreach ($raw_ips as $ip) {
+            if ($ip == "127.0.0.1") {
                 $this->error("WARNING: Using the localhost IP as the LDAP server. This is usually wrong");
             }
-            if(ip_in_range($ip['ip'],'10.0.0.0/8') || ip_in_range($ip['ip'],'192.168.0.0/16') || ip_in_range($ip['ip'], '172.16.0.0/12')) {
+            if (ip_in_range($ip, '10.0.0.0/8') || ip_in_range($ip, '192.168.0.0/16') || ip_in_range($ip, '172.16.0.0/12')) {
                 $this->error("WARNING: Using an RFC1918 Private address for LDAP server. This may be correct, but it can be a problem if your Snipe-IT instance is not hosted on your private network");
             }
         }
 
         $this->info("STAGE 2: Checking basic network connectivity");
-        $ports = [389,636];
+        $ports = [636, 389];
         if(@$parsed['port'] && !in_array($parsed['port'],$ports)) {
             $ports[] = $parsed['port'];
         }
@@ -267,7 +276,7 @@ class LdapTroubleshooter extends Command
 
         $this->info("STAGE 3: Determine encryption algorithm, if any");
 
-        $ldap_urls = [];
+        $ldap_urls = []; // [url, cert-check?, start_tls?]
         $pretty_ldap_urls = [];
         foreach($open_ports as $port) {
             $this->line("Trying TLS first for port $port");
@@ -275,35 +284,46 @@ class LdapTroubleshooter extends Command
             if($this->test_anonymous_bind($ldap_url)) {
                 $this->info("Anonymous bind succesful to $ldap_url!");
                 $ldap_urls[] = [ $ldap_url, true, false ];
-                $pretty_ldap_urls[] = [ $ldap_url, "YES", "no" ];
+                $pretty_ldap_urls[] = [$ldap_url, "enabled", "n/a (no)"];
                 continue; // TODO - lots of copypasta in these if(test_anonymous_bind()) routines...
             } else {
                 $this->error("WARNING: Failed to bind to $ldap_url - trying without certificate checks.");
             }
 
             if($this->test_anonymous_bind($ldap_url, false)) {
-                $this->info("Anonymous bind succesful to $ldap_url with certifcate-checks disabled");
-                $ldap_urls[] = [ $ldap_url, false, false ]; 
-                $pretty_ldap_urls[] = [ $ldap_url, "no", "no" ]; 
+                $this->info("Anonymous bind successful to $ldap_url with certificate-checks disabled");
+                $ldap_urls[] = [$ldap_url, false, false];
+                $pretty_ldap_urls[] = [$ldap_url, "DISABLED", "n/a (no)"];
                 continue;
             } else {
                 $this->error("WARNING: Failed to bind to $ldap_url with certificate checks disabled. Trying unencrypted with STARTTLS");
             }
 
+            // now switching to ldap:// URL's from ldaps://
             $ldap_url = "ldap://".$parsed['host'].":$port";
+
             if($this->test_anonymous_bind($ldap_url, true, true)) {
                 $this->info("Plain connection to $ldap_url with STARTTLS succesful!");
                 $ldap_urls[] = [ $ldap_url, true, true ];
-                $pretty_ldap_urls[] = [ $ldap_url, "YES", "YES" ];
+                $pretty_ldap_urls[] = [$ldap_url, "enabled", "STARTTLS ENABLED"];
                 continue;
             } else {
-                $this->error("WARNING: Failed to bind to $ldap_url with STARTTLS enabled. Trying without STARTTLS");
+                $this->error("WARNING: Failed to bind to $ldap_url with STARTTLS enabled. Trying without certificate checks.");
+            }
+
+            if ($this->test_anonymous_bind($ldap_url, false, true)) {
+                $this->info("Plain connection to $ldap_url with STARTTLS and cert checks *disabled* successful!");
+                $ldap_urls[] = [$ldap_url, false, true];
+                $pretty_ldap_urls[] = [$ldap_url, "DISABLED", "STARTTLS ENABLED"];
+                continue;
+            } else {
+                $this->error("WARNING: Failed to bind to $ldap_url with STARTTLS enabled, and cert checks disabled. Trying without STARTTLS");
             }
 
             if($this->test_anonymous_bind($ldap_url)) {
                 $this->info("Plain connection to $ldap_url succesful!");
                 $ldap_urls[] = [ $ldap_url, true, false ];
-                $pretty_ldap_urls[] = [ $ldap_url, "YES", "no" ];
+                $pretty_ldap_urls[] = [$ldap_url, "n/a", "starttls disabled"];
                 continue;
             } else {
                 $this->error("WARNING: Failed to bind to $ldap_url. Giving up on port $port");
@@ -313,12 +333,12 @@ class LdapTroubleshooter extends Command
         $this->debugout(print_r($ldap_urls,true));
 
         if(count($ldap_urls) > 0 ) {
-            $this->info("Found working LDAP URL's: ");
+            $this->debugout("Found working LDAP URL's: ");
             foreach($ldap_urls as $ldap_url) { // TODO maybe do this as a $this->table() instead?
-                $this->info("LDAP URL: ".$ldap_url[0]);
-                $this->info($ldap_url[0]. ($ldap_url[1] ? " certificate checks enabled" : " certificate checks disabled"). ($ldap_url[2] ? " STARTTLS Enabled ": " STARTTLS Disabled"));
+                $this->debugout("LDAP URL: " . $ldap_url[0]);
+                $this->debugout($ldap_url[0] . ($ldap_url[1] ? " certificate checks enabled" : " certificate checks disabled") . ($ldap_url[2] ? " STARTTLS Enabled " : " STARTTLS Disabled"));
             }
-            $this->table(["URL", "Cert Checks Enabled?", "STARTTLS Enabled?"],$pretty_ldap_urls);
+            $this->table(["URL", "Cert Checks?", "STARTTLS?"], $pretty_ldap_urls);
         } else {
             $this->error("ERROR - no valid LDAP URL's available - ABORTING");
             exit(1);
@@ -368,13 +388,21 @@ class LdapTroubleshooter extends Command
 
     public function connect_to_ldap($ldap_url, $check_cert, $start_tls) 
     {
+        if ($check_cert) {
+            $this->info("we *ARE* checking certs");
+            Ldap::ignoreCertificates(false);
+
+        } else {
+            $this->info("we are IGNORING certs");
+            Ldap::ignoreCertificates(true);
+        }
         $lconn = ldap_connect($ldap_url);
         ldap_set_option($lconn, LDAP_OPT_PROTOCOL_VERSION, 3); // should we 'test' different protocol versions here? Does anyone even use anything other than LDAPv3?
                                                              // no - it's formally deprecated: https://tools.ietf.org/html/rfc3494
         if(!$check_cert) {
-            putenv('LDAPTLS_REQCERT=never'); // This is horrible; is this *really* the only way to do it?
+            //putenv('LDAPTLS_REQCERT=never'); // This is horrible; is this *really* the only way to do it?
         } else {
-            putenv('LDAPTLS_REQCERT'); // have to very explicitly and manually *UN* set the env var here to ensure it works
+            //putenv('LDAPTLS_REQCERT'); // have to very explicitly and manually *UN* set the env var here to ensure it works
         }
         if($this->settings->ldap_client_tls_cert && $this->settings->ldap_client_tls_key) {
             // client-side TLS certificate support for LDAP (Google Secure LDAP)
@@ -407,6 +435,7 @@ class LdapTroubleshooter extends Command
                 $this->info("gonna try to bind now, this can take a while if we mess it up");
                 $bind_results = ldap_bind($lconn);
                 $this->info("Bind results are: ".$bind_results." which translate into boolean: ".(bool)$bind_results);
+                ldap_close($lconn);
                 return (bool)$bind_results;
             } catch (Exception $e) {
                 $this->error("WARNING: Exception caught during bind - ".$e->getMessage());
@@ -421,6 +450,7 @@ class LdapTroubleshooter extends Command
             try {
                 $lconn = $this->connect_to_ldap($ldap_url, $check_cert, $start_tls);
                 $bind_results = ldap_bind($lconn, $username, $password);
+                ldap_close($lconn);
                 if(!$bind_results) {
                     $this->error("WARNING: Failed to bind to $ldap_url as $username");
                     return false;
@@ -449,6 +479,7 @@ class LdapTroubleshooter extends Command
                 $result = ldap_read($conn, '', '(objectClass=*)'/* , ['supportedControl']*/);
                 $results = ldap_get_entries($conn, $result);
                 $cleaned_results = $this->ldap_results_cleaner($results);
+                return true;
                 $this->line(print_r($cleaned_results,true));
                 //okay, great - now how do we display those results? I have no idea.
                 // I don't see why this throws an Exception for Google LDAP, but I guess we ought to try and catch it?
@@ -462,6 +493,8 @@ class LdapTroubleshooter extends Command
             } catch (\Exception $e) {
                 $this->error("WARNING: Exception caught during Authed bind to $username - ".$e->getMessage());
                 return false;
+            } finally {
+                ldap_close($conn);
             }
         });
     }

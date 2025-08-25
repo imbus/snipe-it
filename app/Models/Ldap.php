@@ -27,6 +27,37 @@ use Illuminate\Support\Facades\Crypt;
 
 class Ldap extends Model
 {
+    public static function ignoreCertificates(bool $ignore_cert = true)
+    {
+        if (defined('LDAP_OPT_X_TLS_REQUIRE_CERT') && defined('LDAP_OPT_X_TLS_NEVER')) {
+            \Log::debug("used new-style certificate ignore");
+            if ($ignore_cert) {
+                \Log::debug("IGNORING certs");
+                if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER)) {
+                    $value = 0;
+                    $results = ldap_set_option(null, 0x66f, $value); //
+                    \Log::error("RESULT OF WEIRD SET OPTION(disabling certs): " . $results);
+
+                    return true;
+                }
+            } else {
+                \Log::debug("ENABLING certs");
+                if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_DEMAND)) {
+                    $results = ldap_set_option(null, 0x66f, 0); //
+                    \Log::error("RESULT OF WEIRD SET OPTION(enabling certs): " . $results);
+
+                    return true;
+                }
+            }
+        }
+        \Log::debug("using legacy environment variables");
+        if ($ignore_cert) {
+            return putenv('LDAPTLS_REQCERT=never');
+        } else {
+            return putenv('LDAPTLS_REQCERT');
+        }
+    }
+
     /**
      * Makes a connection to LDAP using the settings in Admin > Settings.
      *
@@ -43,15 +74,13 @@ class Ldap extends Model
 
         // If we are ignoring the SSL cert we need to setup the environment variable
         // before we create the connection
-        if ($ldap_server_cert_ignore == '1') {
-            putenv('LDAPTLS_REQCERT=never');
-        }
+        self::ignoreCertificates((bool)$ldap_server_cert_ignore);
 
         // If the user specifies where CA Certs are, make sure to use them
         if (env('LDAPTLS_CACERT')) {
             putenv('LDAPTLS_CACERT='.env('LDAPTLS_CACERT'));
         }
-
+// work around bug *HERE* maybe?
         $connection = @ldap_connect($ldap_host);
 
         if (! $connection) {
