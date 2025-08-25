@@ -80,6 +80,14 @@ class UserPresenter extends Presenter
                 'formatter' => 'usersLinkFormatter',
             ],
             [
+                'field' => 'display_name',
+                'searchable' => true,
+                'sortable' => true,
+                'switchable' => false,
+                'title' => trans('admin/users/table.display_name'),
+                'visible' => true,
+            ],
+            [
                 'field' => 'jobtitle',
                 'searchable' => true,
                 'sortable' => true,
@@ -191,6 +199,7 @@ class UserPresenter extends Presenter
                 'visible' => true,
                 'formatter' => 'usernameRoleLinkFormatter',
             ],
+
             [
                 'field' => 'employee_num',
                 'searchable' => true,
@@ -440,6 +449,30 @@ class UserPresenter extends Presenter
 
         return '';
     }
+
+    /**
+     * Returns the user full name, it simply concatenates
+     * the user first and last name.
+     *
+     * @return string
+     */
+//    public function fullName()
+//    {
+//        if ($this->display_name) {
+//            return 'kjdfh'.html_entity_decode($this->display_name, ENT_QUOTES | ENT_XML1, 'UTF-8');
+//        }
+//        return 'roieuoe'.html_entity_decode($this->first_name.' '.$this->last_name, ENT_QUOTES | ENT_XML1, 'UTF-8');
+//    }
+
+//    /**
+//     * Standard accessor.
+//     * @TODO Remove presenter::fullName() entirely?
+//     * @return string
+//     */
+//    public function name()
+//    {
+//        return $this->fullName();
+//    }
 
 
 

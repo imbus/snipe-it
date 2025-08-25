@@ -319,33 +319,12 @@
                         {{ trans('admin/users/table.name') }}
                       </div>
                       <div class="col-md-9">
-                        {{ $user->present()->fullName() }}
+                        {{ $user->first_name }} {{ $user->last_name }}
                       </div>
 
                   </div>
 
 
-
-                   <!-- company -->
-                    @if (!is_null($user->company))
-                    <div class="row">
-
-                      <div class="col-md-3">
-                        {{ trans('general.company') }}
-                      </div>
-                      <div class="col-md-9">
-                          @can('view', 'App\Models\Company')
-                            <a href="{{ route('companies.show', $user->company->id) }}">
-                                {{ $user->company->name }}
-                            </a>
-                              @else
-                              {{ $user->company->name }}
-                            @endcan
-                      </div>
-
-                    </div>
-
-                    @endif
 
                     <!-- username -->
                     <div class="row">
@@ -365,7 +344,6 @@
                       </div>
 
                     </div>
-
 
                    <!-- display name -->
                    @if ($user->display_name)
@@ -408,6 +386,26 @@
                     </div>
                     @endif
 
+                   <!-- company -->
+                   @if (!is_null($user->company))
+                       <div class="row">
+
+                           <div class="col-md-3">
+                               {{ trans('general.company') }}
+                           </div>
+                           <div class="col-md-9">
+                               @can('view', 'App\Models\Company')
+                                   <a href="{{ route('companies.show', $user->company->id) }}">
+                                       {{ $user->company->name }}
+                                   </a>
+                               @else
+                                   {{ $user->company->name }}
+                               @endcan
+                           </div>
+
+                       </div>
+
+                   @endif
 
                      <!-- groups -->
                      <div class="row">
