@@ -19,6 +19,7 @@
                   action_route="{{route('categories.bulk.delete')}}"
                   id_formname="categoriesBulkForm"
                   id_button="bulkCategoryEditButton"
+                  model_name="category"
           >
               @can('delete', App\Models\Category::class)
                   <option>Delete</option>

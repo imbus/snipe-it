@@ -1,10 +1,10 @@
-@use (App\Models\Manufacturer)
 @props([
         'id_divname',
         'id_formname',
         'id_button',
         'action_route',
         'action_method',
+        'model_name' => 'asset',
     ])
 
 <div id="{{ $id_divname }}" style="min-width:400px">
@@ -18,7 +18,7 @@
         @csrf
 
         {{--        The sort and order will only be used if the cookie is actually empty (like on first-use)--}}
-        <input name="sort" type="hidden" value="assets.id">
+        <input name="sort" type="hidden" value="{{`$model_name.id`}}">
         <input name="order" type="hidden" value="asc">
         <label for="bulk_actions">
             <span class="sr-only">

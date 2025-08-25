@@ -23,6 +23,7 @@
                       action_route="{{route('suppliers.bulk.delete')}}"
                       id_formname="suppliersBulkForm"
                       id_button="bulkSupplierEditButton"
+                      model_name="supplier"
               >
                   @can('delete', App\Models\Supplier::class)
                       <option>Delete</option>
