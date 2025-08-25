@@ -40,10 +40,8 @@ abstract class L6009 extends RectangleSheet
         $this->pageMarginTop = Helper::convertUnit(self::ROW1_Y, 'pt', $this->getUnit());
 
         $columnSpacingPt = self::COLUMN2_X - self::COLUMN1_X - self::LABEL_W;
-        $columnSpacingPt = self::COLUMN2_X - self::LABEL_W + 7.15;
         $this->columnSpacing = Helper::convertUnit($columnSpacingPt, 'pt', $this->getUnit());
         $rowSpacingPt = self::ROW2_Y - self::ROW1_Y - self::LABEL_H;
-        $rowSpacingPt = self::ROW2_Y - self::LABEL_H;
         $this->rowSpacing = Helper::convertUnit($rowSpacingPt, 'pt', $this->getUnit());
 
         $this->labelWidth = Helper::convertUnit(self::LABEL_W, 'pt', $this->getUnit());
