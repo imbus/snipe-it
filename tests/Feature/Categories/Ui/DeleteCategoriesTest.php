@@ -39,6 +39,7 @@ class DeleteCategoriesTest extends TestCase
 
         $this->actingAs(User::factory()->deleteCategories()->create())
             ->delete(route('categories.destroy', $category))
+            ->dumpSession()
             ->assertRedirectToRoute('categories.index')
             ->assertSessionHas('error');
         $this->assertNotSoftDeleted($category);

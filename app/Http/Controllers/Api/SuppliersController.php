@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ImageUploadRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\MessageBag;
 
 class SuppliersController extends Controller
 {
@@ -197,18 +198,22 @@ class SuppliersController extends Controller
      */
     public function destroy(Supplier $supplier): JsonResponse
     {
+        $errors = new MessageBag();
         $this->authorize('delete', $supplier);
         try {
             DestroySupplierAction::run(supplier: $supplier);
         } catch (ItemStillHasAssets $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count])));
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_assets', ['supplier_name' => $supplier->name]));
         } catch (ItemStillHasMaintenances $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count])));
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_maintenances', ['supplier_name' => $supplier->name]));
         } catch (ItemStillHasLicenses $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
+            $errors->add('error', trans('admin/suppliers/message.delete.assoc_licenses', ['supplier_name' => $supplier->name]));
         } catch (\Exception $e) {
             report($e);
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));
+            $errors->add('error', trans('general.something_went_wrong'));
+        }
+        if (count($errors) > 0) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, $errors->messages()));
         }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/suppliers/message.delete.success')));

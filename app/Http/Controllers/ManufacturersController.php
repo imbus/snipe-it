@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Contracts\View\View;
+use Illuminate\Support\MessageBag;
 
 /**
  * This controller handles all actions related to Manufacturers for
@@ -167,14 +168,18 @@ class ManufacturersController extends Controller
      */
     public function destroy(Manufacturer $manufacturer): RedirectResponse
     {
+        $errors = new MessageBag();
         $this->authorize('delete', $manufacturer);
         try {
             DeleteManufacturerAction::run($manufacturer);
         } catch (ItemStillHasChildren $e) {
-            return redirect()->route('manufacturers.index')->with('error', trans('admin/manufacturers/message.assoc_users'));
+            $errors->add('error', trans('admin/manufacturers/message.delete.assoc_children', ['manufacturer_name' => $manufacturer->name]));
         } catch (\Exception $e) {
             report($e);
-            return redirect()->route('manufacturers.index')->with('error', trans('general.something_went_wrong'));
+            $errors->add('error', trans('general.something_went_wrong'));
+        }
+        if (count($errors) > 0) {
+            return redirect()->route('manufacturers.index')->with('error', $errors);
         }
 
         return redirect()->route('manufacturers.index')->with('success', trans('admin/manufacturers/message.delete.success'));

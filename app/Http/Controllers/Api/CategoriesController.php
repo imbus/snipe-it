@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ImageUploadRequest;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\MessageBag;
 
 class CategoriesController extends Controller
 {
@@ -213,18 +214,18 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category): JsonResponse
     {
+        $errors = new MessageBag();
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run(category: $category);
         } catch (ItemStillHasChildren $e) {
-            return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
-            );
+            $errors->add('error', trans('admin/categories/message.delete.assoc_children', ['category_name' => $category->name]));
         } catch (\Exception $e) {
             report($e);
-            return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong'))
-            );
+            $errors->add('error', trans('general.something_went_wrong'));
+        }
+        if (count($errors) > 0) {
+            return response()->json(Helper::formatStandardApiResponse('error', null, $errors));
         }
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/categories/message.delete.success')));

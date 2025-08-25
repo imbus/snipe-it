@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Contracts\View\View;
+use Illuminate\Support\MessageBag;
 
 /**
  * This class controls all actions related to Categories for
@@ -153,14 +154,19 @@ class CategoriesController extends Controller
      */
     public function destroy(Category $category): RedirectResponse
     {
+        $errors = new MessageBag();
         $this->authorize('delete', Category::class);
         try {
             DestroyCategoryAction::run($category);
         } catch (ItemStillHasChildren $e) {
-            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]));
+            $errors->add('error', trans('admin/categories/message.delete.assoc_children', ['category_name' => $category->name]));
         } catch (\Exception $e) {
             report($e);
-            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.delete.error'));
+            $errors->add('error', trans('general.something_went_wrong'));
+        }
+
+        if ($errors->count() > 0) {
+            return redirect()->route('categories.index')->with('error', $errors->messages());
         }
 
         return redirect()->route('categories.index')->with('success', trans('admin/categories/message.delete.success'));
