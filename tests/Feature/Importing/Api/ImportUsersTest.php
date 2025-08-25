@@ -77,6 +77,7 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
         $this->assertEquals($row['email'], $newUser->email);
         $this->assertEquals($row['firstName'], $newUser->first_name);
         $this->assertEquals($row['lastName'], $newUser->last_name);
+        $this->assertEquals($row['displayName'], $newUser->display_name);
         $this->assertEquals($row['employeeNumber'], $newUser->employee_num);
         $this->assertEquals($row['companyName'], $newUser->company->name);
         $this->assertEquals($row['location'], $newUser->location->name);
@@ -229,12 +230,22 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
 
         $updatedUser = User::query()->with(['company', 'location'])->find($user->id);
         $updatedAttributes = [
-            'first_name', 'email', 'last_name', 'employee_num', 'company',
-            'location_id', 'company_id', 'updated_at', 'phone', 'jobtitle'
+            'first_name',
+            'display_name',
+            'email',
+            'last_name',
+            'employee_num',
+            'company',
+            'location_id',
+            'company_id',
+            'updated_at',
+            'phone',
+            'jobtitle',
         ];
 
         $this->assertEquals($row['email'], $updatedUser->email);
         $this->assertEquals($row['firstName'], $updatedUser->first_name);
+        $this->assertEquals($row['displayName'], $updatedUser->display_name);
         $this->assertEquals($row['lastName'], $updatedUser->last_name);
         $this->assertEquals($row['employeeNumber'], $updatedUser->employee_num);
         $this->assertEquals($row['companyName'], $updatedUser->company->name);
@@ -255,14 +266,15 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
         $faker = ImportFileBuilder::new()->definition();
         $row = [
             'companyName'    => $faker['username'],
-            'email'          => $faker['position'],
+            'email'          => $faker['email'],
             'employeeNumber' => $faker['phoneNumber'],
             'firstName'       => $faker['location'],
             'lastName'       => $faker['lastName'],
             'location'       => $faker['firstName'],
             'phoneNumber'    => $faker['employeeNumber'],
-            'position'       => $faker['email'],
+            'position'       => $faker['position'],
             'username'       => $faker['companyName'],
+            'display_name'   => $faker['displayName'],
         ];
 
         $importFileBuilder = new ImportFileBuilder([$row]);
@@ -278,6 +290,7 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
                 'Employee Number' => 'phone_number',
                 'First Name'      => 'location',
                 'Last Name'       => 'last_name',
+                'Display Name'    => 'display_name',
                 'Location'        => 'first_name',
                 'Phone Number'    => 'employee_num',
                 'Job Title'       => 'email',
@@ -293,6 +306,7 @@ class ImportUsersTest extends ImportDataTestCase implements TestsPermissionsRequ
         $this->assertEquals($row['position'], $newUser->email);
         $this->assertEquals($row['location'], $newUser->first_name);
         $this->assertEquals($row['lastName'], $newUser->last_name);
+        $this->assertEquals($row['displayName'], $newUser->display_name);
         $this->assertEquals($row['email'], $newUser->jobtitle);
         $this->assertEquals($row['phoneNumber'], $newUser->employee_num);
         $this->assertEquals($row['username'], $newUser->company->name);

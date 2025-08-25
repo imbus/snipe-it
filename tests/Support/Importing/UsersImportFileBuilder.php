@@ -36,6 +36,7 @@ class UsersImportFileBuilder extends FileBuilder
             'employeeNumber' => 'Employee Number',
             'firstName'       => 'First Name',
             'lastName'       => 'Last Name',
+            'displayName'   => 'Display Name',
             'location'       => 'Location',
             'phoneNumber'    => 'Phone Number',
             'position'       => 'Job Title',
@@ -51,15 +52,16 @@ class UsersImportFileBuilder extends FileBuilder
         $faker = fake();
 
         return [
-            'companyName'    => $faker->company,
-            'email'          => Str::random(32) . "@{$faker->freeEmailDomain}",
-            'employeeNumber' => $faker->uuid,
+            'companyName'     => $faker->company,
+            'email'           => Str::random(32) . "@{$faker->freeEmailDomain}",
+            'employeeNumber'  => $faker->uuid,
             'firstName'       => $faker->firstName,
-            'lastName'       => $faker->lastName,
-            'location'       => "{$faker->city}, {$faker->country}",
-            'phoneNumber'    => $faker->phoneNumber,
-            'position'       => $faker->jobTitle,
-            'username'       => Str::random(),
+            'lastName'        => $faker->lastName,
+            'displayName'     => 'Display: '.$faker->name,
+            'location'        => "{$faker->city}, {$faker->country}",
+            'phoneNumber'     => $faker->phoneNumber,
+            'position'        => $faker->jobTitle,
+            'username'        => Str::random(),
         ];
     }
 }
