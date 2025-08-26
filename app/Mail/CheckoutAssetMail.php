@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Helpers\Helper;
 use App\Models\Asset;
+use App\Models\Location;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -35,14 +36,6 @@ class CheckoutAssetMail extends Mailable
 
         $this->settings = Setting::getSettings();
         $this->target = $checkedOutTo;
-
-        // Location is a target option, but there are no emails currently associated with locations.
-        if($this->target instanceof User){
-            $this->target = $this->target->display_name;
-        }
-        else if($this->target instanceof Asset){
-            $this->target = $this->target->assignedto?->display_name;
-        }
 
         $this->last_checkout = '';
         $this->expected_checkin = '';
@@ -85,6 +78,17 @@ class CheckoutAssetMail extends Mailable
         $eula = method_exists($this->item, 'getEula') ? $this->item->getEula() : '';
         $req_accept = $this->requiresAcceptance();
         $fields = [];
+        $location = [false, ''];
+        if($this->target instanceof User){
+            $this->target = $this->target->display_name;
+        }
+        else if($this->target instanceof Asset){
+            $this->target = $this->target->assignedto?->display_name;
+        }
+        else if($this->target instanceof Location){
+            $location = [true, $this->target->name];
+            $this->target = $this->target->manager->name;
+        }
 
         // Check if the item has custom fields associated with it
         if (($this->item->model) && ($this->item->model->fieldset)) {
@@ -107,7 +111,7 @@ class CheckoutAssetMail extends Mailable
                 'accept_url'    => $accept_url,
                 'last_checkout' => $this->last_checkout,
                 'expected_checkin'  => $this->expected_checkin,
-                'introduction_line' => $this->introductionLine(),
+                'introduction_line' => $this->introductionLine($location),
             ],
         );
     }
@@ -131,8 +135,11 @@ class CheckoutAssetMail extends Mailable
         return trans('mail.unaccepted_asset_reminder');
     }
 
-    private function introductionLine(): string
+    private function introductionLine($location= null): string
     {
+        if ($this->firstTimeSending && $location[0]) {
+            return trans('mail.new_item_checked_location', ['location' => $location[1] ]);
+        }
         if ($this->firstTimeSending && $this->requiresAcceptance()) {
             return trans('mail.new_item_checked_with_acceptance');
         }
