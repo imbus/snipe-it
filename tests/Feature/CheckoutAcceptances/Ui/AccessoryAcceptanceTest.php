@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Notifications\AcceptanceAssetAcceptedNotification;
 use App\Notifications\AcceptanceAssetDeclinedNotification;
 use Illuminate\Support\Facades\Notification;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AccessoryAcceptanceTest extends TestCase
