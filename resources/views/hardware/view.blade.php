@@ -755,7 +755,7 @@
                                                                 $fieldSize = strlen(Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}))
                                                             @endphp
                                                             @if ($fieldSize > 0)
-                                                                <span id="text-{{ $field->id }}-to-hide">{{ str_repeat('*', $fieldSize) }}</span>
+                                                                <span id="text-{{ $field->id }}-to-hide">***********</span>
                                                                     @if (($field->format=='URL') && ($asset->{$field->db_column_name()}!=''))
                                                                         <span class="js-copy-{{ $field->id }} hidden-print"
                                                                               id="text-{{ $field->id }}-to-show"
