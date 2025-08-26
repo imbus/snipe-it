@@ -371,7 +371,7 @@ abstract class Importer
         $user->first_name = $user_array['first_name'];
         $user->last_name = $user_array['last_name'];
         $user->username = $user_array['username'];
-        $user->username = $user_array['display_name'];
+        $user->display_name = $user_array['display_name'] ?? null;
         $user->email = $user_array['email'];
         $user->manager_id = $user_array['manager_id'] ?? null;
         $user->department_id = $user_array['department_id'] ?? null;
