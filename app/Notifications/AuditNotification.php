@@ -57,7 +57,7 @@ use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
         $channel = ($this->settings->webhook_channel) ? $this->settings->webhook_channel : '';
         return (new SlackMessage)
             ->success()
-            ->content(class_basename(get_class($this->params['item'])).' Audited')
+            ->content(class_basename(get_class($this->params['item'])).' '.trans('general.audited'))
             ->from(($this->settings->webhook_botname) ? $this->settings->webhook_botname : 'Snipe-Bot')
             ->to($channel)
             ->attachment(function ($attachment) {
@@ -76,17 +76,17 @@ use NotificationChannels\MicrosoftTeams\MicrosoftTeamsMessage;
 
     public static function toMicrosoftTeams($params)
     {
-        $item = $params['item'];
-        $admin_user = $params['admin'];
-        $note = $params['note'];
-        $location = $params['location'];
+        $item = $params['item'] ?? null;
+        $admin_user = $params['admin'] ?? null;
+        $note = $params['note'] ?? '';
+        $location = $params['location'] ?? '';
         $setting = Setting::getSettings();
 
         if(!Str::contains($setting->webhook_endpoint, 'workflows')) {
             return MicrosoftTeamsMessage::create()
                 ->to($setting->webhook_endpoint)
                 ->type('success')
-                ->title(class_basename(get_class($params['item'])) . ' Audited')
+                ->title(class_basename(get_class($params['item'])) .' '.trans('general.audited'))
                 ->addStartGroupToSection('activityText')
                 ->fact(trans('mail.asset'), $item)
                 ->fact(trans('general.administrator'), $admin_user->present()->viewUrl() . '|' . $admin_user->present()->fullName());
