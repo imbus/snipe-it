@@ -30,20 +30,25 @@ class Ldap extends Model
     public static function ignoreCertificates(bool $ignore_cert = true)
     {
         if (defined('LDAP_OPT_X_TLS_REQUIRE_CERT') && defined('LDAP_OPT_X_TLS_NEVER')) {
-            \Log::debug("used new-style certificate ignore");
+            // TODO - we are currently, as a 'safety', doing *both* the following 'new-style' ldap_set_option calls,
+            // as well as "falling-through" to the 'old-style' putenv() calls.
+            //
+            // I *suspect* we can eventually remove the putenv() calls, but I'm just a little nervous about that.
+            // According to the PHP docs, the LDAP_OPT_X_TLS_REQUIRE_CERT constant has been available since PHP 7.0.
+            // We're currently using PHP versions way, way later than that (v8.2-v8.4 as of this writing). So it's
+            // unlikely that these constants wouldn't be defined - unless you didn't have LDAP support in the first
+            // place. But if that were to happen, I would hope we would've detected that long, long ago, rather than at
+            // this point.
             if ($ignore_cert) {
-                \Log::debug("IGNORING certs");
                 if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER)) {
-                    return true;
+                    //return true;
                 }
             } else {
-                \Log::debug("ENABLING certs");
                 if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_DEMAND)) {
-                    return true;
+                    //return true;
                 }
             }
         }
-        \Log::debug("using legacy environment variables");
         if ($ignore_cert) {
             return putenv('LDAPTLS_REQCERT=never');
         } else {
