@@ -3,6 +3,7 @@ name: Crowdin Action
 on:
   push:
     branches: [ develop ]
+  workflow_dispatch:
 
 jobs:
   upload-sources-to-crowdin:
