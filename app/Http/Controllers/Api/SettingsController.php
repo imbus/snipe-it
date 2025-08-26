@@ -57,7 +57,7 @@ class SettingsController extends Controller
                         'email'           => $item[$settings['ldap_email']][0] ?? null,
                         'phone'           => $item[$settings['ldap_phone_field']][0] ?? null,
                         'mobile'          => $item[$settings['ldap_mobile']][0] ?? null,
-                        'jobtitle'        => $item[$settings['ldap_email']][0] ?? null,
+                        'jobtitle'        => $item[$settings['ldap_jobtitle']][0] ?? null,
                         'department'      => $item[$settings['ldap_department']][0] ?? null,
                         'manager'         => $item[$settings['ldap_manager']][0] ?? null,
                         'address'         => $item[$settings['ldap_address']][0] ?? null,
