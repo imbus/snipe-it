@@ -364,7 +364,7 @@ class LicensesController extends Controller
                             $license->order_number,
                             $license->free_seat_count,
                             $license->seats,
-                            ($license->adminuser ? $license->adminuser->present()->fullName() : trans('admin/reports/general.deleted_user')),
+                            ($license->adminuser ? $license->adminuser->display_name : trans('admin/reports/general.deleted_user')),
                             $license->depreciation ? $license->depreciation->name: '',
                             $license->updated_at,
                             $license->deleted_at,

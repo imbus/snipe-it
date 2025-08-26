@@ -38,10 +38,10 @@ class CheckoutAssetMail extends Mailable
 
         // Location is a target option, but there are no emails currently associated with locations.
         if($this->target instanceof User){
-            $this->target = $this->target->present()?->fullName();
+            $this->target = $this->target->display_name;
         }
         else if($this->target instanceof Asset){
-            $this->target = $this->target->assignedto?->present()?->fullName();
+            $this->target = $this->target->assignedto?->display_name;
         }
 
         $this->last_checkout = '';

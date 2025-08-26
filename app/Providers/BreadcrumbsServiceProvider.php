@@ -74,12 +74,12 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 
         Breadcrumbs::for('hardware.show', fn (Trail $trail, Asset $asset) =>
         $trail->parent('hardware.index', route('hardware.index'))
-            ->push($asset->present()->fullName(), route('hardware.show', $asset))
+            ->push($asset->display_name, route('hardware.show', $asset))
         );
 
         Breadcrumbs::for('hardware.edit', fn (Trail $trail, Asset $asset) =>
         $trail->parent('hardware.index', route('hardware.index'))
-            ->push($asset->present()->fullName(), route('hardware.show', $asset))
+            ->push($asset->display_name, route('hardware.show', $asset))
             ->push(trans('admin/hardware/general.edit'))
         );
 
@@ -579,7 +579,7 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 
         Breadcrumbs::for('users.show', fn (Trail $trail, User $user) =>
         $trail->parent('users.index', route('users.index'))
-            ->push($user->getFullNameAttribute() ?? 'Missing Username!', route('users.show', $user))
+            ->push($user->display_name ?? 'Missing Username!', route('users.show', $user))
         );
 
         Breadcrumbs::for('users.edit', fn (Trail $trail, User $user) =>

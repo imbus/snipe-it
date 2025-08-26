@@ -42,7 +42,7 @@ class ConsumablesTransformer
             'notes'         => ($consumable->notes) ? Helper::parseEscapedMarkedownInline($consumable->notes) : null,
             'created_by' => ($consumable->adminuser) ? [
                 'id' => (int) $consumable->adminuser->id,
-                'name'=> e($consumable->adminuser->present()->fullName()),
+                'name'=> e($consumable->adminuser->display_name),
             ] : null,
             'created_at' => Helper::getFormattedDateObject($consumable->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($consumable->updated_at, 'datetime'),

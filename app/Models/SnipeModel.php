@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class SnipeModel extends Model
@@ -155,9 +156,13 @@ class SnipeModel extends Model
         $this->attributes['status_id'] = $value;
     }
 
-    //
-    public function getDisplayNameAttribute()
+
+    protected function displayName(): Attribute
     {
-        return $this->name;
+        return Attribute:: make(
+            get: fn(mixed $value) => $this->name,
+        );
     }
+
+
 }
