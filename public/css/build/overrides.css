@@ -1108,6 +1108,15 @@ caption.tableCaption {
 .popover.help-popover .popover-header {
   color: #000;
 }
+.visually-hidden {
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: preserve;
+  display: inline-block;
+}
 
 
 /*# sourceMappingURL=overrides.css.map*/

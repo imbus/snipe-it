@@ -732,7 +732,7 @@
                                                     @if (!empty($asset->{$field->db_column_name()}))
                                                         {{-- Hidden span used as copy target --}}
                                                         {{-- It's tempting to break out the HTML into separate lines for this, but it results in extra spaces being added onto the end of the coipied value --}}
-                                                        <span class="js-copy-{{ $field->id }} hidden-print" style="font-size: 0px;">{{ ($field->isFieldDecryptable($asset->{$field->db_column_name()}) ? Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) : $asset->{$field->db_column_name()}) }}</span>
+                                                        <span class="js-copy-{{ $field->id }} visually-hidden hidden-print" style="font-size: 0px;">{{ ($field->isFieldDecryptable($asset->{$field->db_column_name()}) ? Helper::gracefulDecrypt($field, $asset->{$field->db_column_name()}) : $asset->{$field->db_column_name()}) }}</span>
 
                                                         {{-- Clipboard icon --}}
                                                         <i class="fa-regular fa-clipboard js-copy-link hidden-print"
