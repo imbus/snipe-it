@@ -150,7 +150,7 @@ class ActionlogsTransformer
 
             'item' => ($actionlog->item) ? [
                 'id' => (int) $actionlog->item->id,
-                'name' => ($actionlog->itemType()=='user') ? e($actionlog->item->getFullNameAttribute()) : e($actionlog->item->getDisplayNameAttribute()),
+                'name' => e($actionlog->item->display_name) ?? null,
                 'type' => e($actionlog->itemType()),
                 'serial' =>e($actionlog->item->serial) ? e($actionlog->item->serial) : null
             ] : null,
@@ -165,19 +165,19 @@ class ActionlogsTransformer
             'action_type'   => $actionlog->present()->actionType(),
             'admin' => ($actionlog->adminuser) ? [
                 'id' => (int) $actionlog->adminuser->id,
-                'name' => e($actionlog->adminuser->getFullNameAttribute()),
+                'name' => e($actionlog->adminuser->display_name),
                 'first_name'=> e($actionlog->adminuser->first_name),
                 'last_name'=> e($actionlog->adminuser->last_name)
             ] : null,
             'created_by' => ($actionlog->adminuser) ? [
                 'id' => (int) $actionlog->adminuser->id,
-                'name' => e($actionlog->adminuser->getFullNameAttribute()),
+                'name' => e($actionlog->adminuser->display_name),
                 'first_name'=> e($actionlog->adminuser->first_name),
                 'last_name'=> e($actionlog->adminuser->last_name)
             ] : null,
             'target' => ($actionlog->target) ? [
                 'id' => (int) $actionlog->target->id,
-                'name' => ($actionlog->targetType()=='user') ? e($actionlog->target->getFullNameAttribute()) : e($actionlog->target->getDisplayNameAttribute()),
+                'name' => ($actionlog->target->display_name) ?? null,
                 'type' => e($actionlog->targetType()),
             ] : null,
 

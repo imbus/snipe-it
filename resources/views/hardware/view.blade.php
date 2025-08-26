@@ -338,7 +338,7 @@
 
                                             @if (($asset->checkedOutToUser()) && ($asset->assignedTo->present()->gravatar()))
                                                 <li>
-                                                    <img src="{{ $asset->assignedTo->present()->gravatar() }}" class="user-image-inline hidden-print" alt="{{ $asset->assignedTo->present()->fullName() }}">
+                                                    <img src="{{ $asset->assignedTo->present()->gravatar() }}" class="user-image-inline hidden-print" alt="{{ $asset->assignedTo->display_name }}">
                                                     {!! $asset->assignedTo->present()->nameUrl() !!}
                                                 </li>
                                             @else
@@ -547,7 +547,7 @@
                                                 {!! $asset->checkInvalidNextAuditDate() ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
                                                 {{ Helper::getFormattedDateObject($audit_log->created_at, 'datetime', false) }}
                                                 @if ($audit_log->user)
-                                                    (by {{ link_to_route('users.show', $audit_log->user->present()->fullname(), [$audit_log->user->id]) }})
+                                                    (by {{ link_to_route('users.show', $audit_log->user->display_name, [$audit_log->user->id]) }})
                                                 @endif
 
                                             </div>
@@ -809,7 +809,7 @@
                                             <div class="col-md-9">
                                                 {{ Helper::getFormattedDateObject($asset->purchase_date, 'date', false) }}
                                                 -
-                                                {{ Carbon::parse($asset->purchase_date)->diff(Carbon::now())->format('%y years, %m months and %d days')}}
+                                                {{ Carbon::parse($asset->purchase_date)->diffForHumans(['parts' => 3]) }}
 
                                             </div>
                                         </div>
@@ -930,9 +930,7 @@
                                             <div class="col-md-3">
                                                 <strong>
                                                     {{ trans('admin/hardware/form.warranty_expires') }}
-                                                    @if ($asset->purchase_date)
-                                                        {!! $asset->present()->warranty_expires() < date("Y-m-d") ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
-                                                    @endif
+
 
                                                 </strong>
                                             </div>
@@ -940,7 +938,11 @@
                                                 @if ($asset->purchase_date)
                                                     {{ Helper::getFormattedDateObject($asset->present()->warranty_expires(), 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->present()->warranty_expires())->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->present()->warranty_expires())->diffForHumans(['parts' => 3]) }}
+
+                                                    @if ($asset->purchase_date)
+                                                        {!! $asset->present()->warranty_expires() < date("Y-m-d") ? '<i class="fas fa-exclamation-triangle text-orange" aria-hidden="true"></i>' : '' !!}
+                                                    @endif
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -971,7 +973,7 @@
                                                 @if ($asset->purchase_date)
                                                     {{ Helper::getFormattedDateObject($asset->depreciated_date()->format('Y-m-d'), 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->depreciated_date())->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->depreciated_date())->diffForHumans(['parts' => 3]) }}
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -1008,7 +1010,7 @@
                                                 @if ($asset->asset_eol_date)
                                                     {{ Helper::getFormattedDateObject($asset->asset_eol_date, 'date', false) }}
                                                     -
-                                                    {{ Carbon::parse($asset->asset_eol_date)->diffForHumans(['parts' => 2]) }}
+                                                    {{ Carbon::parse($asset->asset_eol_date)->locale(app()->getLocale())->diffForHumans(['parts' => 3]) }}
                                                 @else
                                                     {{ trans('general.na_no_purchase_date') }}
                                                 @endif
@@ -1017,7 +1019,7 @@
                                                                 data-placement="top"
                                                                 data-title="Explicit EOL"
                                                                 title="Explicit EOL">
-                                                                <x-icon type="warning" class="text-orange" />
+                                                                <x-icon type="warning" class="text-primary" />
                                                         </span>
                                                 @endif
                                             </div>

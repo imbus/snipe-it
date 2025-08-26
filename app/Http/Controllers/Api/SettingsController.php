@@ -51,6 +51,7 @@ class SettingsController extends Controller
                 })->slice(0, 10)->map(function ($item) use ($settings) {
                     return (object) [
                         'username'        => $item[$settings['ldap_username_field']][0] ?? null,
+                        'display_name' => $item[$settings['ldap_display_name']][0] ?? null,
                         'employee_number' => $item[$settings['ldap_emp_num']][0] ?? null,
                         'lastname'        => $item[$settings['ldap_lname_field']][0] ?? null,
                         'firstname'       => $item[$settings['ldap_fname_field']][0] ?? null,

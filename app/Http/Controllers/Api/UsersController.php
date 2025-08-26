@@ -64,6 +64,7 @@ class UsersController extends Controller
             'users.jobtitle',
             'users.last_login',
             'users.last_name',
+            'users.display_name',
             'users.locale',
             'users.location_id',
             'users.manager_id',
@@ -152,6 +153,10 @@ class UsersController extends Controller
 
         if ($request->filled('last_name')) {
             $users = $users->where('users.last_name', '=', $request->input('last_name'));
+        }
+
+        if ($request->filled('display_name')) {
+            $users = $users->where('users.display_name', '=', $request->input('display_name'));
         }
 
         if ($request->filled('employee_num')) {
@@ -284,6 +289,7 @@ class UsersController extends Controller
                     [
                         'last_name',
                         'first_name',
+                        'display_name',
                         'email',
                         'jobtitle',
                         'username',
@@ -355,6 +361,7 @@ class UsersController extends Controller
                 'users.employee_num',
                 'users.first_name',
                 'users.last_name',
+                'users.display_name',
                 'users.gravatar',
                 'users.avatar',
                 'users.email',
@@ -365,20 +372,17 @@ class UsersController extends Controller
             $users = $users->where(function ($query) use ($request) {
                 $query->SimpleNameSearch($request->get('search'))
                     ->orWhere('username', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('display_name', 'LIKE', '%'.$request->get('search').'%')
                     ->orWhere('email', 'LIKE', '%'.$request->get('search').'%')
                     ->orWhere('employee_num', 'LIKE', '%'.$request->get('search').'%');
             });
         }
 
-        $users = $users->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+        $users = $users->orderBy('display_name', 'asc')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
         $users = $users->paginate(50);
 
         foreach ($users as $user) {
-            $name_str = '';
-            if ($user->last_name != '') {
-                $name_str .= $user->last_name.', ';
-            }
-            $name_str .= $user->first_name;
+            $name_str = $user->display_name;
 
             if ($user->username != '') {
                 $name_str .= ' ('.$user->username.')';
@@ -509,6 +513,10 @@ class UsersController extends Controller
 
                 if ($request->filled('username')) {
                     $user->username = $request->input('username');
+                }
+
+                if ($request->filled('display_name')) {
+                    $user->display_name = $request->input('display_name');
                 }
 
                 if ($request->filled('email')) {

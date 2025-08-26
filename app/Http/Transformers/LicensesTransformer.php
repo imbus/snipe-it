@@ -48,7 +48,7 @@ class LicensesTransformer
             'category' =>  ($license->category) ? ['id' => (int) $license->category->id, 'name'=> e($license->category->name)] : null,
             'created_by' => ($license->adminuser) ? [
                 'id' => (int) $license->adminuser->id,
-                'name'=> e($license->adminuser->present()->fullName()),
+                'name'=> e($license->adminuser->display_name),
             ] : null,
             'created_at' => Helper::getFormattedDateObject($license->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($license->updated_at, 'datetime'),

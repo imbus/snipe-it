@@ -88,6 +88,7 @@ class UsersController extends Controller
         //Username, email, and password need to be handled specially because the need to respect config values on an edit.
         $user->email = trim($request->input('email'));
         $user->username = trim($request->input('username'));
+        $user->display_name = $request->input('display_name');
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
         }
@@ -240,6 +241,7 @@ class UsersController extends Controller
 
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
+        $user->display_name = $request->input('display_name');
         $user->two_factor_optin = $request->input('two_factor_optin') ?: 0;
         $user->locale = $request->input('locale');
         $user->employee_num = $request->input('employee_num');
@@ -562,10 +564,10 @@ class UsersController extends Controller
                             $user->employee_num,
                             $user->first_name,
                             $user->last_name,
-                            $user->present()->fullName(),
+                            $user->display_name,
                             $user->username,
                             $user->email,
-                            ($user->manager) ? $user->manager->present()->fullName() : '',
+                            ($user->manager) ? $user->manager->display_name : '',
                             ($user->userloc) ? $user->userloc->name : '',
                             ($user->department) ? $user->department->name : '',
                             $user->assets->count(),

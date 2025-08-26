@@ -38,7 +38,7 @@
 | **{{ trans('mail.serial') }}** | {{ $item_serial }} |
 @endif
 @if (isset($admin))
-| **{{ trans('general.checked_out').' '.trans('general.by')}}** | {{ $admin }} |
+| **{{ trans('general.administrator') }}** | {{ $admin }} |
 @endif
 @endcomponent
 

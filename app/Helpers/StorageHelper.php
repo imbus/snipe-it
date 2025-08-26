@@ -29,7 +29,7 @@ class StorageHelper
 
     public static function getMediaType($file_with_path) {
 
-        // The file exists and is allowed to be displayed inline
+        // Get the file extension and determine the media type
         if (Storage::exists($file_with_path)) {
             $fileinfo = pathinfo($file_with_path);
             $extension = strtolower($fileinfo['extension']);
@@ -51,6 +51,15 @@ class StorageHelper
                 case 'webm':
                 case 'mov':
                     return 'video';
+                case 'doc':
+                case 'docx':
+                    return 'document';
+                case 'txt':
+                    return 'text';
+                case 'xls':
+                case 'xlsx':
+                case 'ods':
+                    return 'spreadsheet';
                 default:
                     return $extension; // Default for unknown types
             }

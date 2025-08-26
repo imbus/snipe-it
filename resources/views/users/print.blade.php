@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     @if ((isset($users) && count($users) === 1))
-        <title>{{ trans('general.assigned_to', ['name' => $users[0]->present()->fullName()]) }} - {{ date('Y-m-d H:i', time()) }}</title>
+        <title>{{ trans('general.assigned_to', ['name' => $users[0]->display_name]) }} - {{ date('Y-m-d H:i', time()) }}</title>
     @else
         <title>{{ trans('admin/users/general.print_assigned') }} - {{ date('Y-m-d H:i', time()) }}</title>
     @endisset
@@ -96,10 +96,10 @@
     <div id="start_of_user_section"> {{-- used for page breaks when printing --}}</div>
     <h3>
         @if ($show_user->company)
-            <b>{{ trans('admin/companies/table.name') }}:</b> {{ $show_user->company->name }}</b>
+            <b>{{ trans('admin/companies/table.name') }}:</b> {{ $show_user->company->name }}
         <br>
         @endif
-        {{ trans('general.assigned_to', ['name' => $show_user->present()->fullName()]) }}
+        {{ trans('general.assigned_to', ['name' => $show_user->display_name]) }}
         {{ ($show_user->employee_num!='') ? ' (#'.$show_user->employee_num.') ' : '' }}
         {{ ($show_user->jobtitle!='' ? ' - '.$show_user->jobtitle : '') }}
     </h3>
