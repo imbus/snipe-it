@@ -819,7 +819,7 @@
                                     <label for="ldap_zip">{{ trans('admin/settings/general.ldap_zip') }}</label>
                                 </div>
                                 <div class="col-md-8">
-                                    <input class="form-control" name="ldap_zip" type="text" id="ldap_zip" placeholder="{{ trans('general.example') .'postalCode' }}"  value="{{ old('ldap_zip', $setting->ldap_zip) }}">
+                                    <input class="form-control" name="ldap_zip" type="text" id="ldap_zip" placeholder="{{ trans('general.example') .'postalcode' }}"  value="{{ old('ldap_zip', $setting->ldap_zip) }}">
                                     @error('ldap_zip')
                                     <span class="alert-msg">
                                                 <x-icon type="x" />
