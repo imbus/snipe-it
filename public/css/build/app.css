@@ -1072,7 +1072,6 @@ th.css-house-laptop > .th-inner::before,
 th.css-house-user > .th-inner::before,
 th.css-license > .th-inner::before,
 th.css-location > .th-inner::before,
-th.css-padlock > .th-inner::before,
 th.css-users > .th-inner::before,
 th.css-currency > .th-inner::before,
 th.css-history > .th-inner::before {
@@ -1129,7 +1128,8 @@ th.css-component > .th-inner::before {
 th.css-padlock > .th-inner::before {
   content: "\f023";
   font-family: "Font Awesome 5 Free";
-  font-weight: 900;
+  font-weight: 800;
+  padding-right: 3px;
 }
 th.css-house-user > .th-inner::before {
   content: "\e1b0";
@@ -1479,6 +1479,13 @@ caption.tableCaption {
   padding-bottom: 12px;
   margin-left: -47px;
   margin-top: 2px;
+}
+.popover.help-popover,
+.popover.help-popover .popover-content,
+.popover.help-popover .popover-body,
+.popover.help-popover .popover-title,
+.popover.help-popover .popover-header {
+  color: #000;
 }
 
 

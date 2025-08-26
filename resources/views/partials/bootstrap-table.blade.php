@@ -966,10 +966,14 @@
             var download_button = '<a href="' + download_url + '" class="btn btn-sm btn-default" data-tooltip="true" title="{{ trans('general.download') }}"><x-icon type="download" /></a>';
             var download_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled"><x-icon type="download" /></a></span>';
             var inline_button = '<a href="'+ download_url +'?inline=true" class="btn btn-sm btn-default" target="_blank" data-tooltip="true" title="{{ trans('general.open_new_window') }}"><x-icon type="external-link" /></a>';
-            var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
+            var inline_button_disabled = '<span data-tooltip="true" title="{{ trans('general.file_not_inlineable') }}"><a class="btn btn-sm btn-default disabled" target="_blank" data-tooltip="true" title="{{ trans('general.file_does_not_exist') }}"><x-icon type="external-link" /></a></span>';
 
             if (exists_on_disk === true) {
-                return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
+                if (inlinable === true) {
+                    return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button + '</span>';
+                } else {
+                    return '<span style="white-space: nowrap;">' + download_button + ' ' + inline_button_disabled + '</span>';
+                }
             } else {
                 return '<span style="white-space: nowrap;">' + download_button_disabled + ' ' + inline_button_disabled + '</span>';
             }
@@ -1340,7 +1344,7 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
-                title: '{{ trans('general.create') }}',
+                title: '{{ trans('button.add_maintenance') }}',
             }
         },
         @endcan

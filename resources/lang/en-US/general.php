@@ -337,6 +337,7 @@ return [
     'zip'  					=> 'Zip',
     'noimage'				=> 'No image uploaded or image not found.',
     'file_does_not_exist'   => 'The requested file does not exist on the server.',
+    'file_not_inlineable'        => 'The requested file cannot be opened inline in your browser. You can download it instead.',
     'open_new_window'       => 'Open this file in a new window',
     'file_upload_success'   => 'File upload success!',
     'no_files_uploaded'     => 'File upload success!',

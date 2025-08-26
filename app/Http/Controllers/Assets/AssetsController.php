@@ -424,6 +424,9 @@ class AssetsController extends Controller
         $model = AssetModel::find($request->get('model_id'));
         if (($model) && ($model->fieldset)) {
             foreach ($model->fieldset->fields as $field) {
+                if ($field->element == 'checkbox' && !$request->has($field->db_column)) {
+                    $asset->{$field->db_column} = null;
+                }
                 if ($request->has($field->db_column)) {
                     if ($field->field_encrypted == '1') {
                         if (Gate::allows('assets.view.encrypted_custom_fields')) {
