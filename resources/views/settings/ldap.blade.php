@@ -19,6 +19,11 @@
             padding-right: 40px;
         }
 
+        span.nullval {
+            color: darkgrey;
+            font-style: italic;
+        }
+
         /*
            Don't make the password field *look* readonly - this is for usability, so admins don't think they can't edit this field.
          */
@@ -27,6 +32,13 @@
             color: #555555;
             cursor:text;
         }
+
+        .table-wrapper {
+            overflow-x: auto;
+            display: block;
+            background-color: white;
+        }
+
     </style>
 
     @if ((!function_exists('ldap_connect')) || (!function_exists('ldap_set_option')) || (!function_exists('ldap_bind')))
@@ -786,7 +798,7 @@
                                         <label for="ldap_mobile">{{ trans('admin/settings/general.ldap_mobile') }}</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'mobile' }}" name="ldap_phone" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
+                                        <input class="form-control" placeholder="{{ trans('general.example') .'mobile' }}" name="ldap_mobile" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
                                         @error('ldap_mobile')
                                         <span class="alert-msg">
                                                 <x-icon type="x" />
@@ -825,7 +837,7 @@
                                         <label for="ldap_address">{{ trans('admin/settings/general.ldap_address') }}</label>
                                     </div>
                                     <div class="col-md-8">
-                                        <input class="form-control" name="ldap_address" placeholder="{{ trans('general.example') .'streetAddress' }}"  type="text" id="ldap_address" value="{{ old('ldap_address', $setting->ldap_address) }}">
+                                        <input class="form-control" name="ldap_address" placeholder="{{ trans('general.example') .'streetaddress' }}"  type="text" id="ldap_address" value="{{ old('ldap_address', $setting->ldap_address) }}">
                                         @error('ldap_address')
                                         <span class="alert-msg">
                                                 <x-icon type="x" />
@@ -1123,11 +1135,11 @@
             html += '<li class="text-success"><i class="fas fa-check""></i> ' + results.bind.message + ' </li>'
             html += '</ul>'
             html += '<div style="overflow:auto;">'
-            html += '<div>{{ trans('admin/settings/message.ldap.sync_success') }}</div>'
-            html += '<table class="table table-bordered table-condensed" style=" table-layout:fixed; width:100%;background-color: #fff">'
+            html += '<div>{{ trans('admin/settings/message.ldap.sync_success') }}<br><br></div>'
+            html += '<div class="table-wrapper"><table class="table table-bordered table-condensed">'
             html += buildLdapResultsTableHeader()
             html += buildLdapResultsTableBody(results.user_sync.users)
-            html += '</table>'
+            html += '</table></div>'
             html += '</div>'
             return html;
         }
@@ -1140,11 +1152,19 @@
                 '{{ trans('admin/users/table.display_name') }}',
                 '{{ trans('general.first_name') }}',
                 '{{ trans('general.last_name') }}',
-                '{{ trans('general.email') }}'
+                '{{ trans('general.email') }}',
+                '{{ trans('general.phone') }}',
+                '{{ trans('admin/users/table.mobile') }}',
+                '{{ trans('general.address') }}',
+                '{{ trans('general.city') }}',
+                '{{ trans('general.state') }}',
+                '{{ trans('general.zip') }}',
+                '{{ trans('general.country') }}',
+                '{{ trans('general.location') }}',
             ]
             let header = '<thead><tr>'
             for (var i in keys) {
-                header += '<th>' + keys[i] + '</th>'
+                header += '<th style="white-space: nowrap;">' + keys[i] + '</th>'
             }
             header += "</tr></thead>"
             return header;
@@ -1154,7 +1174,22 @@
         {
             let body = '<tbody>'
             for (var i in users) {
-                body += '<tr><td>' + users[i].employee_number + '</td><td>' + users[i].username + '</td><td>' + users[i].display_name + '</td><td>' + users[i].firstname + '</td><td>' + users[i].lastname + '</td><td>' + users[i].email + '</td></tr>'
+                body += '<tr>';
+                body += '<td style="white-space: nowrap;">' + (users[i].employee_number ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].username ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].display_name ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].firstname ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].lastname ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].email ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].phone ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].mobile ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].address ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].city ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].state ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].zip ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].country ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].location ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '</tr>'
             }
             body += "</tbody>"
             return body;
