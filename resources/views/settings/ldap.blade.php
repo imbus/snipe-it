@@ -19,6 +19,11 @@
             padding-right: 40px;
         }
 
+        span.nullval {
+            color: darkgrey;
+            font-style: italic;
+        }
+
         /*
            Don't make the password field *look* readonly - this is for usability, so admins don't think they can't edit this field.
          */
@@ -27,6 +32,13 @@
             color: #555555;
             cursor:text;
         }
+
+        .table-wrapper {
+            overflow-x: auto;
+            display: block;
+            background-color: white;
+        }
+
     </style>
 
     @if ((!function_exists('ldap_connect')) || (!function_exists('ldap_set_option')) || (!function_exists('ldap_bind')))
@@ -53,7 +65,7 @@
     <input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
 
     <div class="row">
-        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <div class="col-md-10 col-md-offset-1">
 
 
             <div class="panel box box-default">
@@ -470,33 +482,407 @@
 
                         <fieldset class="bottom-padded">
                             <legend class="highlight">
+                                {{ trans('admin/settings/general.legends.mapping') }}
+                            </legend>
+                            <!-- LDAP  username field-->
+                            <div class="form-group {{ $errors->has('ldap_username_field') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_username_field">{{ trans('admin/settings/general.ldap_username_field') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="ldap_username_field" id="ldap_username_field" value="{{  old('ldap_username_field', $setting->ldap_username_field) }}" class="form-control" placeholder="{{  trans('general.example') .'samaccountname' }}">
+                                    @error('ldap_username_field')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {!! $message !!}
+                                            </span>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            <!-- LDAP Last Name Field -->
+                            <div class="form-group {{ $errors->has('ldap_lname_field') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_lname_field') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="ldap_lname_field" id="ldap_lname_field" value="{{  old('ldap_lname_field', $setting->ldap_lname_field) }}" class="form-control" placeholder="{{  trans('general.example') .'sn' }}">
+                                    @error('ldap_lname_field')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            <!-- LDAP First Name field -->
+                            <div class="form-group {{ $errors->has('ldap_fname_field') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_fname_field">{{ trans('admin/settings/general.ldap_fname_field') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="ldap_fname_field" id="ldap_fname_field" value="{{  old('ldap_fname_field', $setting->ldap_fname_field) }}" class="form-control" placeholder="{{ trans('general.example') .'givenname'  }}">
+                                    @error('ldap_fname_field')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            <!-- LDAP Display Name Field -->
+                            <div class="form-group {{ $errors->has('ldap_display_name') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_display_name') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayname' }}">
+                                    <p class="help-block">{{ trans('admin/settings/general.ldap_display_name_help') }}</p>
+                                    @error('ldap_display_name')
+                                    <span class="alert-msg">
+                                                    <x-icon type="x" />
+                                                    {{ $message }}
+                                                </span>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+
+                            <!-- LDAP active flag -->
+                            <div class="form-group {{ $errors->has('ldap_active_flag') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_active_flag">{{ trans('admin/settings/general.ldap_active_flag') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" name="ldap_active_flag" id="ldap_active_flag" value="{{  old('ldap_active_flag', $setting->ldap_active_flag) }}" class="form-control">
+                                    <p class="help-block">{!! trans('admin/settings/general.ldap_activated_flag_help') !!}</p>
+
+                                    @error('ldap_active_flag')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP invert active flag -->
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <label for="ldap_invert_active_flag">
+                                        {{ trans('admin/settings/general.ldap_invert_active_flag') }}
+                                    </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-control">
+                                        <input type="checkbox" name="ldap_invert_active_flag" value="1" id="ldap_invert_active_flag" @checked(old('ldap_invert_active_flag', $setting->ldap_invert_active_flag)) />
+                                        {{ trans('general.yes') }}
+                                    </label>
+                                    @error('ldap_invert_active_flag')
+                                    <span class="alert-msg">
+                                                 <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    <p class="help-block">
+                                        {!! trans('admin/settings/general.ldap_invert_active_flag_help') !!}
+                                    </p>
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {!! trans('general.feature_disabled') !!}
+                                        </p>
+                                    @endif
+                                </div>
+
+                            </div>
+
+                            <!-- LDAP emp number -->
+                            <div class="form-group {{ $errors->has('ldap_emp_num') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_emp_num">{{ trans('admin/settings/general.ldap_emp_num') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'employeenumber/employeeid' }}" name="ldap_emp_num" type="text" id="ldap_emp_num" value="{{ old('ldap_emp_num', $setting->ldap_emp_num) }}">
+                                    @error('ldap_emp_num')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                            <!-- LDAP department -->
+                            <div class="form-group {{ $errors->has('ldap_dept') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_dept">{{ trans('admin/settings/general.ldap_dept') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'department' }}" name="ldap_dept" type="text" id="ldap_dept" value="{{ old('ldap_dept', $setting->ldap_dept) }}">
+
+                                    @error('ldap_dept')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                            <!-- LDAP Manager -->
+                            <div class="form-group {{ $errors->has('ldap_dept') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_manager">{{ trans('admin/settings/general.ldap_manager') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder=" {{ trans('general.example') .'manager' }}" name="ldap_manager" type="text" value="{{ old('ldap_manager', $setting->ldap_manager) }}">
+                                    @error('ldap_manager')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP email -->
+                            <div class="form-group {{ $errors->has('ldap_email') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_email">{{ trans('admin/settings/general.ldap_email') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'mail' }}" name="ldap_email" type="text" id="ldap_email" value="{{ old('ldap_email', $setting->ldap_email) }}">
+                                    @error('ldap_email')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP Phone -->
+                            <div class="form-group {{ $errors->has('ldap_phone') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_phone">{{ trans('admin/settings/general.ldap_phone') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'telephonenumber' }}" name="ldap_phone" type="text" id="ldap_phone" value="{{ old('ldap_phone', $setting->ldap_phone_field) }}">
+                                    @error('ldap_phone')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP Mobile -->
+                            <div class="form-group {{ $errors->has('ldap_mobile') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_mobile">{{ trans('admin/settings/general.ldap_mobile') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'mobile' }}" name="ldap_mobile" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
+                                    @error('ldap_mobile')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- LDAP Job title -->
+                            <div class="form-group {{ $errors->has('ldap_jobtitle') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_jobtitle">{{ trans('admin/settings/general.ldap_jobtitle') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'title' }}" name="ldap_jobtitle" type="text" id="ldap_jobtitle" value="{{ old('ldap_jobtitle', $setting->ldap_jobtitle) }}">
+                                    @error('ldap_jobtitle')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP address -->
+                            <div class="form-group {{ $errors->has('ldap_address') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_address">{{ trans('admin/settings/general.ldap_address') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" name="ldap_address" placeholder="{{ trans('general.example') .'streetaddress' }}"  type="text" id="ldap_address" value="{{ old('ldap_address', $setting->ldap_address) }}">
+                                    @error('ldap_address')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- LDAP city -->
+                            <div class="form-group {{ $errors->has('ldap_city') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_city">{{ trans('admin/settings/general.ldap_city') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'l' }}" name="ldap_city" type="text" id="ldap_city" value="{{ old('ldap_city', $setting->ldap_city) }}">
+                                    @error('ldap_city')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- LDAP state -->
+                            <div class="form-group {{ $errors->has('ldap_state') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_state">{{ trans('admin/settings/general.ldap_state') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'st' }}"  name="ldap_state" type="text" id="ldap_state" value="{{ old('ldap_state', $setting->ldap_state) }}">
+                                    @error('ldap_state')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <!-- LDAP zip -->
+                            <div class="form-group {{ $errors->has('ldap_zip') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_zip">{{ trans('admin/settings/general.ldap_zip') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" name="ldap_zip" type="text" id="ldap_zip" placeholder="{{ trans('general.example') .'postalcode' }}"  value="{{ old('ldap_zip', $setting->ldap_zip) }}">
+                                    @error('ldap_zip')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+
+                            <!-- LDAP Country -->
+                            <div class="form-group {{ $errors->has('ldap_country') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_country">{{ trans('admin/settings/general.ldap_country') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'co' }}" name="ldap_country" type="text" id="ldap_country" value="{{ old('ldap_country', $setting->ldap_country) }}">
+                                    @error('ldap_country')
+                                    <span class="alert-msg">
+                                                <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- LDAP Location -->
+                            <div class="form-group {{ $errors->has('ldap_location') ? 'error' : '' }}">
+                                <div class="col-md-3">
+                                    <label for="ldap_location">{{ trans('admin/settings/general.ldap_location') }}</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input class="form-control" placeholder="{{ trans('general.example') .'physicaldeliveryofficename' }}" name="ldap_location" type="text" id="ldap_location" value="{{ old('ldap_location', $setting->ldap_location) }}">
+                                    <p class="help-block">{!! trans('admin/settings/general.ldap_location_help') !!}</p>
+                                    @error('ldap_location')
+                                    <span class="alert-msg">
+                                                 <x-icon type="x" />
+                                                {{ $message }}
+                                            </span>
+                                    @enderror
+
+                                    @if (config('app.lock_passwords')===true)
+                                        <p class="text-warning">
+                                            <x-icon type="locked" />
+                                            {{ trans('general.feature_disabled') }}
+                                        </p>
+                                    @endif
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="bottom-padded">
+                            <legend class="highlight">
                                 {{ trans('admin/settings/general.legends.test') }}
                             </legend>
                             @if ($setting->ldap_enabled)
-
-                                <!-- LDAP test -->
-                                <div class="form-group">
-                                    <div class="col-md-3">
-                                        <label for="test_ldap_sync"> {{trans('admin/settings/general.ldap_test_label')}} </label>
-                                    </div>
-                                    <div class="col-md-8" id="ldaptestrow">
-                                        <a class="btn btn-default btn-sm" id="ldaptest" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test_sync') }}</a>
-                                    </div>
-                                    <div class="col-md-8 col-md-offset-3">
-                                        <br />
-                                        <div id="ldapad_test_results" class="hidden well well-sm"></div>
-                                    </div>
-                                    <div class="col-md-8 col-md-offset-3">
-                                        <p class="help-block">{{ trans('admin/settings/general.ldap_login_sync_help') }}</p>
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-
-                                </div>
 
                                 <!-- LDAP Login test -->
                                 <div class="form-group">
@@ -529,408 +915,33 @@
 
                                 </div>
 
+                                <!-- LDAP test -->
+                                <div class="form-group">
+                                    <div class="col-md-8 col-md-offset-3" id="ldaptestrow">
+                                        <a class="btn btn-default btn-sm" id="ldaptest" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test_sync') }}</a>
+                                        <p class="help-block">{{ trans('admin/settings/general.ldap_login_sync_help') }}</p>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <br />
+                                        <div id="ldapad_test_results" class="hidden well well-sm"></div>
+                                    </div>
+                                    <div class="col-md-8 col-md-offset-3">
+                                        @if (config('app.lock_passwords')===true)
+                                            <p class="text-warning">
+                                                <x-icon type="locked" />
+                                                {{ trans('general.feature_disabled') }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+
+
 
                             @endif
 
 
                         </fieldset>
-                            <fieldset class="bottom-padded">
-                            <legend class="highlight">
-                                {{ trans('admin/settings/general.legends.mapping') }}
-                            </legend>
-                                <!-- LDAP  username field-->
-                                <div class="form-group {{ $errors->has('ldap_username_field') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_username_field">{{ trans('admin/settings/general.ldap_username_field') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ldap_username_field" id="ldap_username_field" value="{{  old('ldap_username_field', $setting->ldap_username_field) }}" class="form-control" placeholder="{{  trans('general.example') .'samaccountname' }}">
-                                        @error('ldap_username_field')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {!! $message !!}
-                                            </span>
-                                        @enderror
 
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Last Name Field -->
-                                <div class="form-group {{ $errors->has('ldap_lname_field') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_lname_field') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ldap_lname_field" id="ldap_lname_field" value="{{  old('ldap_lname_field', $setting->ldap_lname_field) }}" class="form-control" placeholder="{{  trans('general.example') .'sn' }}">
-                                        @error('ldap_lname_field')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                    </div>
-                                </div>
-
-                                <!-- LDAP First Name field -->
-                                <div class="form-group {{ $errors->has('ldap_fname_field') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_fname_field">{{ trans('admin/settings/general.ldap_fname_field') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ldap_fname_field" id="ldap_fname_field" value="{{  old('ldap_fname_field', $setting->ldap_fname_field) }}" class="form-control" placeholder="{{ trans('general.example') .'givenname'  }}">
-                                        @error('ldap_fname_field')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Display Name Field -->
-                                <div class="form-group {{ $errors->has('ldap_display_name') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_lname_field">{{ trans('admin/settings/general.ldap_display_name') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ldap_display_name" id="ldap_display_name" value="{{  old('ldap_display_name', $setting->ldap_display_name) }}" class="form-control" placeholder="{{  trans('general.example') .'displayname' }}">
-                                        <p class="help-block">{{ trans('admin/settings/general.ldap_display_name_help') }}</p>
-                                        @error('ldap_display_name')
-                                        <span class="alert-msg">
-                                                    <x-icon type="x" />
-                                                    {{ $message }}
-                                                </span>
-                                        @enderror
-
-                                    </div>
-                                </div>
-
-
-                                <!-- LDAP active flag -->
-                                <div class="form-group {{ $errors->has('ldap_active_flag') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_active_flag">{{ trans('admin/settings/general.ldap_active_flag') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="text" name="ldap_active_flag" id="ldap_active_flag" value="{{  old('ldap_active_flag', $setting->ldap_active_flag) }}" class="form-control">
-                                        <p class="help-block">{!! trans('admin/settings/general.ldap_activated_flag_help') !!}</p>
-
-                                        @error('ldap_active_flag')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP invert active flag -->
-                                <div class="form-group">
-                                    <div class="col-md-3">
-                                        <label for="ldap_invert_active_flag">
-                                            {{ trans('admin/settings/general.ldap_invert_active_flag') }}
-                                        </label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <label class="form-control">
-                                            <input type="checkbox" name="ldap_invert_active_flag" value="1" id="ldap_invert_active_flag" @checked(old('ldap_invert_active_flag', $setting->ldap_invert_active_flag)) />
-                                            {{ trans('general.yes') }}
-                                        </label>
-                                        @error('ldap_invert_active_flag')
-                                        <span class="alert-msg">
-                                                 <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        <p class="help-block">
-                                            {!! trans('admin/settings/general.ldap_invert_active_flag_help') !!}
-                                        </p>
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {!! trans('general.feature_disabled') !!}
-                                            </p>
-                                        @endif
-                                    </div>
-
-                                </div>
-
-                                <!-- LDAP emp number -->
-                                <div class="form-group {{ $errors->has('ldap_emp_num') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_emp_num">{{ trans('admin/settings/general.ldap_emp_num') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'employeenumber/employeeid' }}" name="ldap_emp_num" type="text" id="ldap_emp_num" value="{{ old('ldap_emp_num', $setting->ldap_emp_num) }}">
-                                        @error('ldap_emp_num')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                                <!-- LDAP department -->
-                                <div class="form-group {{ $errors->has('ldap_dept') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_dept">{{ trans('admin/settings/general.ldap_dept') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'department' }}" name="ldap_dept" type="text" id="ldap_dept" value="{{ old('ldap_dept', $setting->ldap_dept) }}">
-
-                                        @error('ldap_dept')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                                <!-- LDAP Manager -->
-                                <div class="form-group {{ $errors->has('ldap_dept') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_manager">{{ trans('admin/settings/general.ldap_manager') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder=" {{ trans('general.example') .'manager' }}" name="ldap_manager" type="text" value="{{ old('ldap_manager', $setting->ldap_manager) }}">
-                                        @error('ldap_manager')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP email -->
-                                <div class="form-group {{ $errors->has('ldap_email') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_email">{{ trans('admin/settings/general.ldap_email') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'mail' }}" name="ldap_email" type="text" id="ldap_email" value="{{ old('ldap_email', $setting->ldap_email) }}">
-                                        @error('ldap_email')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Phone -->
-                                <div class="form-group {{ $errors->has('ldap_phone') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_phone">{{ trans('admin/settings/general.ldap_phone') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'telephonenumber' }}" name="ldap_phone" type="text" id="ldap_phone" value="{{ old('ldap_phone', $setting->ldap_phone_field) }}">
-                                        @error('ldap_phone')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Mobile -->
-                                <div class="form-group {{ $errors->has('ldap_mobile') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_mobile">{{ trans('admin/settings/general.ldap_mobile') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'mobile' }}" name="ldap_phone" type="text" id="ldap_mobile" value="{{ old('ldap_mobile', $setting->ldap_mobile) }}">
-                                        @error('ldap_mobile')
-                                        <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Job title -->
-                                <div class="form-group {{ $errors->has('ldap_jobtitle') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_jobtitle">{{ trans('admin/settings/general.ldap_jobtitle') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'title' }}" name="ldap_jobtitle" type="text" id="ldap_jobtitle" value="{{ old('ldap_jobtitle', $setting->ldap_jobtitle) }}">
-                                        @error('ldap_jobtitle')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP address -->
-                                <div class="form-group {{ $errors->has('ldap_address') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_address">{{ trans('admin/settings/general.ldap_address') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="ldap_address" placeholder="{{ trans('general.example') .'streetAddress' }}"  type="text" id="ldap_address" value="{{ old('ldap_address', $setting->ldap_address) }}">
-                                        @error('ldap_address')
-                                        <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- LDAP city -->
-                                <div class="form-group {{ $errors->has('ldap_city') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_city">{{ trans('admin/settings/general.ldap_city') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'l' }}" name="ldap_city" type="text" id="ldap_city" value="{{ old('ldap_city', $setting->ldap_city) }}">
-                                        @error('ldap_city')
-                                        <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- LDAP state -->
-                                <div class="form-group {{ $errors->has('ldap_state') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_state">{{ trans('admin/settings/general.ldap_state') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'st' }}"  name="ldap_state" type="text" id="ldap_state" value="{{ old('ldap_state', $setting->ldap_state) }}">
-                                        @error('ldap_state')
-                                        <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- LDAP zip -->
-                                <div class="form-group {{ $errors->has('ldap_zip') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_zip">{{ trans('admin/settings/general.ldap_zip') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" name="ldap_zip" type="text" id="ldap_zip" placeholder="{{ trans('general.example') .'postalCode' }}"  value="{{ old('ldap_zip', $setting->ldap_zip) }}">
-                                        @error('ldap_zip')
-                                        <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-
-
-                                <!-- LDAP Country -->
-                                <div class="form-group {{ $errors->has('ldap_country') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_country">{{ trans('admin/settings/general.ldap_country') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'co' }}" name="ldap_country" type="text" id="ldap_country" value="{{ old('ldap_country', $setting->ldap_country) }}">
-                                        @error('ldap_country')
-                                            <span class="alert-msg">
-                                                <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- LDAP Location -->
-                                <div class="form-group {{ $errors->has('ldap_location') ? 'error' : '' }}">
-                                    <div class="col-md-3">
-                                        <label for="ldap_location">{{ trans('admin/settings/general.ldap_location') }}</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input class="form-control" placeholder="{{ trans('general.example') .'physicaldeliveryofficename' }}" name="ldap_location" type="text" id="ldap_location" value="{{ old('ldap_location', $setting->ldap_location) }}">
-                                        <p class="help-block">{!! trans('admin/settings/general.ldap_location_help') !!}</p>
-                                        @error('ldap_location')
-                                            <span class="alert-msg">
-                                                 <x-icon type="x" />
-                                                {{ $message }}
-                                            </span>
-                                        @enderror
-
-                                        @if (config('app.lock_passwords')===true)
-                                            <p class="text-warning">
-                                                <x-icon type="locked" />
-                                                {{ trans('general.feature_disabled') }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                        </fieldset>
 
                         <fieldset class="bottom-padded">
                             <legend class="highlight">
@@ -1123,11 +1134,11 @@
             html += '<li class="text-success"><i class="fas fa-check""></i> ' + results.bind.message + ' </li>'
             html += '</ul>'
             html += '<div style="overflow:auto;">'
-            html += '<div>{{ trans('admin/settings/message.ldap.sync_success') }}</div>'
-            html += '<table class="table table-bordered table-condensed" style=" table-layout:fixed; width:100%;background-color: #fff">'
+            html += '<div>{{ trans('admin/settings/message.ldap.sync_success') }}<br><br></div>'
+            html += '<div class="table-wrapper"><table class="table table-bordered table-condensed">'
             html += buildLdapResultsTableHeader()
             html += buildLdapResultsTableBody(results.user_sync.users)
-            html += '</table>'
+            html += '</table></div>'
             html += '</div>'
             return html;
         }
@@ -1140,11 +1151,20 @@
                 '{{ trans('admin/users/table.display_name') }}',
                 '{{ trans('general.first_name') }}',
                 '{{ trans('general.last_name') }}',
-                '{{ trans('general.email') }}'
+                '{{ trans('general.email') }}',
+                '{{ trans('general.phone') }}',
+                '{{ trans('admin/users/table.mobile') }}',
+                '{{ trans('admin/users/table.manager') }}',
+                '{{ trans('general.address') }}',
+                '{{ trans('general.city') }}',
+                '{{ trans('general.state') }}',
+                '{{ trans('general.zip') }}',
+                '{{ trans('general.country') }}',
+                '{{ trans('general.location') }}',
             ]
             let header = '<thead><tr>'
             for (var i in keys) {
-                header += '<th>' + keys[i] + '</th>'
+                header += '<th style="white-space: nowrap;">' + keys[i] + '</th>'
             }
             header += "</tr></thead>"
             return header;
@@ -1154,7 +1174,23 @@
         {
             let body = '<tbody>'
             for (var i in users) {
-                body += '<tr><td>' + users[i].employee_number + '</td><td>' + users[i].username + '</td><td>' + users[i].display_name + '</td><td>' + users[i].firstname + '</td><td>' + users[i].lastname + '</td><td>' + users[i].email + '</td></tr>'
+                body += '<tr>';
+                body += '<td style="white-space: nowrap;">' + (users[i].employee_number ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].username ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].display_name ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].firstname ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].lastname ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].email ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].phone ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].mobile ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;"><span class="nullval">' + (users[i].manager ?? 'NULL') + '</span></td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].address ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].city ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].state ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].zip ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].country ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;">' + (users[i].location ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '</tr>'
             }
             body += "</tbody>"
             return body;
