@@ -1137,7 +1137,7 @@
             var keys = [
                 '{{ trans('admin/settings/general.employee_number') }}',
                 '{{ trans('mail.username') }}',
-                '{{ trans('admin/settings/general.ldap_display_name') }}',
+                '{{ trans('admin/users/table.display_name') }}',
                 '{{ trans('general.first_name') }}',
                 '{{ trans('general.last_name') }}',
                 '{{ trans('general.email') }}'
