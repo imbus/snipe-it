@@ -78,16 +78,16 @@ class CheckoutAssetMail extends Mailable
         $eula = method_exists($this->item, 'getEula') ? $this->item->getEula() : '';
         $req_accept = $this->requiresAcceptance();
         $fields = [];
-        $location = [false, ''];
+        $name = null;
+
         if($this->target instanceof User){
-            $this->target = $this->target->display_name;
+            $name = $this->target->display_name;
         }
         else if($this->target instanceof Asset){
-            $this->target = $this->target->assignedto?->display_name;
+            $name  = $this->target->assignedto?->display_name;
         }
         else if($this->target instanceof Location){
-            $location = [true, $this->target->name];
-            $this->target = $this->target->manager->name;
+            $name  = $this->target->manager->name;
         }
 
         // Check if the item has custom fields associated with it
@@ -104,14 +104,14 @@ class CheckoutAssetMail extends Mailable
                 'admin'         => $this->admin,
                 'status'        => $this->item->assetstatus?->name,
                 'note'          => $this->note,
-                'target'        => $this->target,
+                'target'        => $name,
                 'fields'        => $fields,
                 'eula'          => $eula,
                 'req_accept'    => $req_accept,
                 'accept_url'    => $accept_url,
                 'last_checkout' => $this->last_checkout,
                 'expected_checkin'  => $this->expected_checkin,
-                'introduction_line' => $this->introductionLine($location),
+                'introduction_line' => $this->introductionLine(),
             ],
         );
     }
@@ -135,10 +135,10 @@ class CheckoutAssetMail extends Mailable
         return trans('mail.unaccepted_asset_reminder');
     }
 
-    private function introductionLine($location= null): string
+    private function introductionLine(): string
     {
-        if ($this->firstTimeSending && $location[0]) {
-            return trans('mail.new_item_checked_location', ['location' => $location[1] ]);
+        if ($this->firstTimeSending && $this->target instanceof Location) {
+            return trans('mail.new_item_checked_location', ['location' => $this->target->name ]);
         }
         if ($this->firstTimeSending && $this->requiresAcceptance()) {
             return trans('mail.new_item_checked_with_acceptance');

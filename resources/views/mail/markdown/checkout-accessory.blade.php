@@ -1,7 +1,7 @@
 @component('mail::message')
-# {{ trans('mail.hello') }}{{ $target->assignedto?->display_name ? ' ' . $target->assignedto->display_name . ',' : ',' }}
+# {{ trans('mail.hello').' '.$target.','}}
 
-{{ trans('mail.new_item_checked') }}
+{{ $introduction_line }}
 
 @if (($snipeSettings->show_images_in_email =='1') && $item->getImageUrl())
 <center><img src="{{ $item->getImageUrl() }}" alt="Accessory" style="max-width: 570px;"></center>
