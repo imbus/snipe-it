@@ -172,6 +172,23 @@ class LdapTroubleshooter extends Command
             $this->line(implode(" \\\n",$output));
             exit(0);
         }
+
+        //PHP Version check for warning
+        $php_version = phpversion();
+        list($major, $minor, $patch) = explode('.', $php_version);
+        if (
+            $major < 8 ||
+            ($major == 8 && $minor < 3) ||
+            ($major == 8 && $minor == 3 && $patch < 21) ||
+            ($major == 8 && $minor == 4 && $patch < 7)
+        ) {
+            $this->warn("PHP Version: $php_version WARNING - Versions before 8.3.21 or 8.4.7 will return INCONSISTENT results!");
+            if (!$this->confirm("Are you sure you wish to continue?")) {
+                $this->warn("ABORTING");
+                exit(-1);
+            }
+        }
+
         if(!$this->option('force')) {
             $confirmation = $this->confirm('WARNING: This command will make several attempts to connect to your LDAP server. Are you sure this is ok?');
             if(!$confirmation) {

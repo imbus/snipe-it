@@ -34,18 +34,11 @@ class Ldap extends Model
             if ($ignore_cert) {
                 \Log::debug("IGNORING certs");
                 if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER)) {
-                    $value = 0;
-                    $results = ldap_set_option(null, 0x66f, $value); //
-                    \Log::error("RESULT OF WEIRD SET OPTION(disabling certs): " . $results);
-
                     return true;
                 }
             } else {
                 \Log::debug("ENABLING certs");
                 if (ldap_set_option(null, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_DEMAND)) {
-                    $results = ldap_set_option(null, 0x66f, 0); //
-                    \Log::error("RESULT OF WEIRD SET OPTION(enabling certs): " . $results);
-
                     return true;
                 }
             }
@@ -80,7 +73,6 @@ class Ldap extends Model
         if (env('LDAPTLS_CACERT')) {
             putenv('LDAPTLS_CACERT='.env('LDAPTLS_CACERT'));
         }
-// work around bug *HERE* maybe?
         $connection = @ldap_connect($ldap_host);
 
         if (! $connection) {
