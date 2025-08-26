@@ -1154,6 +1154,7 @@
                 '{{ trans('general.email') }}',
                 '{{ trans('general.phone') }}',
                 '{{ trans('admin/users/table.mobile') }}',
+                '{{ trans('admin/users/table.manager') }}',
                 '{{ trans('general.address') }}',
                 '{{ trans('general.city') }}',
                 '{{ trans('general.state') }}',
@@ -1182,6 +1183,7 @@
                 body += '<td style="white-space: nowrap;">' + (users[i].email ?? '<span class="nullval">NULL</span>') + '</td>';
                 body += '<td style="white-space: nowrap;">' + (users[i].phone ?? '<span class="nullval">NULL</span>') + '</td>';
                 body += '<td style="white-space: nowrap;">' + (users[i].mobile ?? '<span class="nullval">NULL</span>') + '</td>';
+                body += '<td style="white-space: nowrap;"><span class="nullval">' + (users[i].manager ?? 'NULL') + '</span></td>';
                 body += '<td style="white-space: nowrap;">' + (users[i].address ?? '<span class="nullval">NULL</span>') + '</td>';
                 body += '<td style="white-space: nowrap;">' + (users[i].city ?? '<span class="nullval">NULL</span>') + '</td>';
                 body += '<td style="white-space: nowrap;">' + (users[i].state ?? '<span class="nullval">NULL</span>') + '</td>';
