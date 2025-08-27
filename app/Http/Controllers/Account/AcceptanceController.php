@@ -256,7 +256,7 @@ class AcceptanceController extends Controller
                 }
             }
             try {
-                $acceptance->notify((new AcceptanceAssetAcceptedToUserNotification($data))->locale(Setting::getSettings()->locale));
+                $acceptance->notify((new AcceptanceAssetAcceptedNotification($data))->locale(Setting::getSettings()->locale));
             } catch (\Exception $e) {
                 Log::warning($e);
             }
