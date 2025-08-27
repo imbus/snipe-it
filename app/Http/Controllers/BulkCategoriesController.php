@@ -28,17 +28,17 @@ class BulkCategoriesController extends Controller
             try {
                 DestroyCategoryAction::run(category: $category);
             } catch (ItemStillHasAccessories $e) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_accessories', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasAssetModels) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_models', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_asset_models_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasAssets) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_assets', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasComponents) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_components', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_components_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasConsumables) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_consumables', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_consumables_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasLicenses) {
-                $errors[] = trans('admin/categories/message.delete.bulk_assoc_licenses', ['category_name' => $category->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);;
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');

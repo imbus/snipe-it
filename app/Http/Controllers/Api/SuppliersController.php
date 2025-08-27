@@ -201,11 +201,17 @@ class SuppliersController extends Controller
         try {
             DestroySupplierAction::run(supplier: $supplier);
         } catch (ItemStillHasAssets $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_assets', ['asset_count' => (int) $supplier->assets_count])));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.assoc_assets', [
+                'asset_count' => (int) $supplier->assets_count, 'item' => trans('general.supplier')
+            ])));
         } catch (ItemStillHasMaintenances $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count])));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.assoc_maintenances', [
+                'asset_maintenances_count' => $supplier->asset_maintenances_count, 'item' => trans('general.supplier')
+            ])));
         } catch (ItemStillHasLicenses $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/suppliers/message.delete.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count])));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.assoc_licenses', [
+                'licenses_count' => (int) $supplier->licenses_count, 'item' => trans('general.supplier')
+            ])));
         } catch (\Exception $e) {
             report($e);
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));

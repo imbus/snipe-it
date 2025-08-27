@@ -157,7 +157,7 @@ class CategoriesController extends Controller
         try {
             DestroyCategoryAction::run($category);
         } catch (ItemStillHasChildren $e) {
-            return redirect()->route('categories.index')->with('error', trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]));
+            return redirect()->route('categories.index')->with('error', trans('general.bulk_delete_associations.general_assoc_warning', ['item' => trans('general.category')]));
         } catch (\Exception $e) {
             report($e);
             return redirect()->route('categories.index')->with('error', trans('admin/categories/message.delete.error'));

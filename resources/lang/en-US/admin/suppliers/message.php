@@ -22,12 +22,6 @@ return array(
         'success' => 'Supplier was deleted successfully.',
         'not_found'               => 'Supplier not found.',
         'bulk_success'            => 'Suppliers were deleted successfully.',
-        'bulk_assoc_assets'       => ':supplier_name still has associated assets and cannot be deleted. Please update your assets to no longer reference this supplier and try again.',
-        'bulk_assoc_licenses'     => ':supplier_name still has associated licenses and cannot be deleted. Please update your licenses to no longer reference this supplier and try again.',
-        'bulk_assoc_maintenances' => ':supplier_name still has associated maintenances and cannot be deleted. Please update your maintenances to no longer reference this supplier and try again.',
-        'assoc_assets'	 => 'This supplier is currently associated with :asset_count asset(s) and cannot be deleted. Please update your assets to no longer reference this supplier and try again. ',
-        'assoc_licenses'	 => 'This supplier is currently associated with :licenses_count licences(s) and cannot be deleted. Please update your licenses to no longer reference this supplier and try again. ',
-        'assoc_maintenances'	 => 'This supplier is currently associated with :maintenances_count asset maintenances(s) and cannot be deleted. Please update your asset maintenances to no longer reference this supplier and try again. ',
     )
 
 );

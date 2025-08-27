@@ -197,7 +197,7 @@ class ManufacturersController extends Controller
         try {
             DeleteManufacturerAction::run($manufacturer);
         } catch (ItemStillHasChildren $e) {
-            return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.assoc_users')));
+            return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.general_assoc_warning', ['item' => trans('general.manufacturer')])));
         } catch (\Exception $e) {
             report($e);
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));

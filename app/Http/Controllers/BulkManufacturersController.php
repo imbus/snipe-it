@@ -29,15 +29,15 @@ class BulkManufacturersController extends Controller
             try {
                 DeleteManufacturerAction::run(manufacturer: $manufacturer);
             } catch (ItemStillHasAssets $e) {
-                $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_assets', ['manufacturer_name' => $manufacturer->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasAccessories $e) {
-                $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_accessories', ['manufacturer_name' => $manufacturer->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_accessories_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasConsumables $e) {
-                $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_consumables', ['manufacturer_name' => $manufacturer->name]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_consumables_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasComponents $e) {
-                $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_components', ['manufacturer_name' => $manufacturer->name]);;
+                $errors[] = trans('general.bulk_delete_associations.assoc_components_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasLicenses $e) {
-                $errors[] = trans('admin/manufacturers/message.delete.bulk_assoc_licenses', ['manufacturer_name' => $manufacturer->name]);;
+                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);;
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');

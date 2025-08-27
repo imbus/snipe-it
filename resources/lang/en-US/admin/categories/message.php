@@ -23,12 +23,6 @@ return array(
         'error'                  => 'There was an issue deleting the category. Please try again.',
         'success'                => 'The category was deleted successfully.',
         'bulk_success'           => 'The Categories were deleted successfully.',
-        'bulk_assoc_assets'      => ':category_name still has associated assets and cannot be deleted. Please update your assets to no longer reference this supplier and try again.',
-        'bulk_assoc_accessories' => ':category_name still has associated accessories and cannot be deleted. Please update your accessories to no longer reference this supplier and try again.',
-        'bulk_assoc_consumables' => ':category_name still has associated consumables and cannot be deleted. Please update your consumables to no longer reference this supplier and try again.',
-        'bulk_assoc_components'  => ':category_name still has associated components and cannot be deleted. Please update your components to no longer reference this supplier and try again.',
-        'bulk_assoc_licenses'    => ':category_name still has associated licenses and cannot be deleted. Please update your licenses to no longer reference this supplier and try again.',
-        'bulk_assoc_models'      => ':category_name still has associated asset models and cannot be deleted. Please update your asset models to no longer reference this supplier and try again.',
     )
 
 );

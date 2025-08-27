@@ -218,7 +218,7 @@ class CategoriesController extends Controller
             DestroyCategoryAction::run(category: $category);
         } catch (ItemStillHasChildren $e) {
             return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type' => $category->category_type]))
+                Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.general_assoc_warning', ['asset_type' => $category->category_type]))
             );
         } catch (\Exception $e) {
             report($e);
