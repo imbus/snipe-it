@@ -161,7 +161,15 @@ class LdapTroubleshooter extends Command
             $output[] = "-x";
             $output[] = "-b ".escapeshellarg($settings->ldap_basedn);
             $output[] = "-D ".escapeshellarg($settings->ldap_uname);
-            $output[] = "-w ".escapeshellarg(Crypt::Decrypt($settings->ldap_pword));
+
+            try {
+                $w = Crypt::Decrypt($settings->ldap_pword);
+            } catch (\Exception $e) {
+                $this->warn("Could not decrypt password. This usually means an LDAP password was not set or the APP_KEY was changed since the LDAP pasword was last saved.  Aborting.");
+                exit(0);
+            }
+
+            $output[] = "-w ". escapeshellarg($w);
             $output[] = escapeshellarg(parenthesized_filter($settings->ldap_filter));
             if($settings->ldap_tls) {
                 $this->line("# adding STARTTLS option");
@@ -363,7 +371,13 @@ class LdapTroubleshooter extends Command
 
         $this->line("STAGE 4: Test Administrative Bind for LDAP Sync");
         foreach($ldap_urls AS $ldap_url) {
-            $this->test_authed_bind($ldap_url[0], $ldap_url[1], $ldap_url[2], $settings->ldap_uname, Crypt::decrypt($settings->ldap_pword));
+            try {
+                $w = Crypt::Decrypt($settings->ldap_pword);
+            } catch (\Exception $e) {
+                $this->warn("Could not decrypt password. This usually means an LDAP password was not set or the APP_KEY was changed since the LDAP pasword was last saved.  Aborting.");
+                exit(0);
+            }
+            $this->test_authed_bind($ldap_url[0], $ldap_url[1], $ldap_url[2], $settings->ldap_uname, $w);
         }
 
         $this->line("STAGE 5: Test BaseDN");
@@ -378,7 +392,14 @@ class LdapTroubleshooter extends Command
         $this->debugout("LDAP constants are: ".print_r($ldap_constants,true));
 
         foreach($ldap_urls AS $ldap_url) {
-            if($this->test_informational_bind($ldap_url[0],$ldap_url[1],$ldap_url[2],$settings->ldap_uname,Crypt::decrypt($settings->ldap_pword),$settings)) {
+            try {
+                $w = Crypt::Decrypt($settings->ldap_pword);
+            } catch (\Exception $e) {
+                $this->warn("Could not decrypt password. This usually means an LDAP password was not set or the APP_KEY was changed since the LDAP pasword was last saved.  Aborting.");
+                exit(0);
+            }
+
+            if($this->test_informational_bind($ldap_url[0],$ldap_url[1],$ldap_url[2],$settings->ldap_uname,$w,$settings)) {
                 $this->info("Success getting informational bind!");
             } else {
                 $this->error("Unable to get information from bind.");
@@ -449,7 +470,7 @@ class LdapTroubleshooter extends Command
         return $this->timed_boolean_execute(function () use ($ldap_url, $check_cert , $start_tls) {
             try {
                 $lconn = $this->connect_to_ldap($ldap_url, $check_cert, $start_tls);
-                $this->line("gonna try to bind now, this can take a while if we mess it up");
+                $this->line("Attempting to bind now, this can take a while if we mess it up");
                 $bind_results = ldap_bind($lconn);
                 $this->line("Bind results are: " . $bind_results . " which translate into boolean: " . (bool)$bind_results);
                 ldap_close($lconn);
@@ -601,4 +622,6 @@ class LdapTroubleshooter extends Command
         }
 
     }
+
+
 }
