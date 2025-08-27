@@ -113,7 +113,7 @@ class Asset extends Depreciable
     /**
      * location_id and company_id should store NULL when there's no
      * assignment, never 0. Old data and previous bugs occasionally
-     * left `0` behind (empty select2 → '' → integer-cast → 0), which
+     * left `0` behind (empty select2 ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ '' ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ integer-cast ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ 0), which
      * then breaks `exists:` validation and FMCS queries that treat
      * NULL and 0 as different. `set` normalizes on write, `get`
      * normalizes on read so legacy rows already storing 0 present as
@@ -1387,7 +1387,7 @@ class Asset extends Depreciable
 
     public function getAccessoryCost()
     {
-        // purchase_cost no longer lives on the accessories parent —
+        // purchase_cost no longer lives on the accessories parent ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â
         // per-unit cost is on the last OrderItem's price, with the
         // parent's default_purchase_cost as fallback. lastOrderDefaults()
         // encapsulates that fallback ladder.
@@ -1581,7 +1581,7 @@ class Asset extends Depreciable
      */
     public function scopePending($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         $ids = Statuslabel::idsFor('pending');
 
         return $query->whereIn('assets.status_id', $ids->isEmpty() ? [0] : $ids);
@@ -1634,7 +1634,7 @@ class Asset extends Depreciable
      */
     public function scopeRTD($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         $ids = Statuslabel::idsFor('deployable');
 
         return $query->whereNull('assets.assigned_to')
@@ -1649,7 +1649,7 @@ class Asset extends Depreciable
      */
     public function scopeUndeployable($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         $ids = Statuslabel::idsFor('undeployable');
 
         return $query->whereIn('assets.status_id', $ids->isEmpty() ? [0] : $ids);
@@ -1663,7 +1663,7 @@ class Asset extends Depreciable
      */
     public function scopeNotArchived($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         $ids = Statuslabel::idsFor('not_archived');
 
         return $query->whereIn('assets.status_id', $ids->isEmpty() ? [0] : $ids);
@@ -1837,7 +1837,7 @@ class Asset extends Depreciable
      */
     public function scopeAssetsForShow($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         if (Setting::getSettings()->show_archived_in_list != 1) {
             $validStatusIds = Statuslabel::idsFor('not_archived');
 
@@ -1855,7 +1855,7 @@ class Asset extends Depreciable
      */
     public function scopeArchived($query)
     {
-        // Pluck IDs then whereIn — do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
+        // Pluck IDs then whereIn ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â do NOT replace with whereHas. whereHas generates a correlated EXISTS per row and causes severe slowdowns in withCount contexts.
         $ids = Statuslabel::idsFor('archived');
 
         return $query->whereIn('assets.status_id', $ids->isEmpty() ? [0] : $ids);
@@ -2065,6 +2065,12 @@ class Asset extends Depreciable
     {
         return $query->where(
             function ($query) use ($filter) {
+
+                $query = Asset::scopeDateRangeFilter($query, 'purchase_date', 'purchase_date_start', 'purchase_date_end', $filter);
+                $query = Asset::scopeDateRangeFilter($query, 'asset_eol_date', 'asset_eol_date_start', 'asset_eol_date_end', $filter);
+                $query = Asset::scopeDateRangeFilter($query, 'assets.created_at', 'created_at_start', 'created_at_end', $filter);
+                $query = Asset::scopeDateRangeFilter($query, 'assets.updated_at', 'updated_at_start', 'updated_at_end', $filter);
+
                 foreach ($filter as $key => $search_val) {
 
                     $fieldname = str_replace('custom_fields.', '', $key);
@@ -2277,10 +2283,35 @@ class Asset extends Depreciable
                      * - snipe
                      */
 
-                    if (($fieldname!='category') && ($fieldname!='model_number') && ($fieldname!='rtd_location') && ($fieldname!='location') && ($fieldname!='supplier')
-                        && ($fieldname!='status_label') && ($fieldname!='assigned_to') && ($fieldname!='model') && ($fieldname!='company') && ($fieldname!='manufacturer')
-                    ) {
-                        $query->where('assets.'.$fieldname, 'LIKE', '%' . $search_val . '%');
+                    $relationalFields = [
+                        'category',
+                        'model',
+                        'model_number',
+                        'rtd_location',
+                        'location',
+                        'supplier',
+                        'status_label',
+                        'assigned_to',
+                        'company',
+                        'manufacturer',
+                        'purchase_date_start',
+                        'purchase_date_end',
+                        'asset_eol_date_start',
+                        'asset_eol_date_end',
+                        'created_at_start',
+                        'created_at_end',
+                        'updated_at_start',
+                        'updated_at_end'
+                    ];
+
+                    if (!in_array($fieldname, $relationalFields)) {
+                        $query->where(function ($query) use ($search_val, $fieldname) {
+                            if (is_array($search_val)) {
+                                $query->whereIn('assets.' . $fieldname, $search_val);
+                            } else {
+                                $query->where('assets.' . $fieldname, 'LIKE', '%' . $search_val . '%');
+                            }
+                        });
                     }
 
 
@@ -2515,7 +2546,31 @@ class Asset extends Depreciable
         return ($this->assigned_to && ! $this->assigned_type)
             || ($this->assigned_to && $this->assigned_type && ! $this->assignedTo);
     }
-}
 
+    /**
+     * Query builder scope to filter by a date range on a given field
+     *
+     * @param \Illuminate\Database\Query\Builder $query   Query builder instance
+     * @param string                             $field   Database column name
+     * @param string                             $startKey Filter array key for start date
+     * @param string                             $endKey   Filter array key for end date
+     * @param array                              $filter   Filter array
+     *
+     * @return \Illuminate\Database\Query\Builder          Modified query builder
+     */
+    public function scopeDateRangeFilter($query, $field, $startKey, $endKey, $filter)
+    {
+        if (isset($filter[$startKey])) {
+            $query->whereDate($field, '>=', $filter[$startKey]);
+            //$query->whereDate('assets.created_at', '<=', '2020-01-01');
+        }
+        
+        if (isset($filter[$endKey])) {
+            $query->whereDate($field, '<=', $filter[$endKey]);
+        }
+        return $query;
+    }
+
+}
 
 
