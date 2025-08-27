@@ -25,11 +25,11 @@ class BulkSuppliersController extends Controller
             try {
                 DestroySupplierAction::run(supplier: $supplier);
             } catch (ItemStillHasAssets $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_assets', ['asset_count' => (int) $supplier->assets_count, 'item' => trans('general.supplier')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_assets', ['asset_count' => (int) $supplier->assets_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
             } catch (ItemStillHasMaintenances $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count, 'item' => trans('general.supplier')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
             } catch (ItemStillHasLicenses $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count, 'item' => trans('general.supplier')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');
