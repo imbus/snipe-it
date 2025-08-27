@@ -256,7 +256,7 @@ class LdapSync extends Command
             $item['telephone'] = $results[$i][$ldap_map["phone"]][0] ?? '';
             $item['mobile'] = $results[$i][$ldap_map["mobile"]][0] ?? '';
             $item['jobtitle'] = $results[$i][$ldap_map["jobtitle"]][0] ?? '';
-            $item['address'] = $results[$i][$ldap_map["ldap_address"]][0] ?? '';
+            $item['address'] = $results[$i][$ldap_map["address"]][0] ?? '';
             $item['city'] = $results[$i][$ldap_map["city"]][0] ?? '';
             $item['state'] = $results[$i][$ldap_map["state"]][0] ?? '';
             $item['country'] = $results[$i][$ldap_map["country"]][0] ?? '';
