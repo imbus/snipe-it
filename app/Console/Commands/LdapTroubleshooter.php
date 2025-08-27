@@ -161,7 +161,15 @@ class LdapTroubleshooter extends Command
             $output[] = "-x";
             $output[] = "-b ".escapeshellarg($settings->ldap_basedn);
             $output[] = "-D ".escapeshellarg($settings->ldap_uname);
-            $output[] = "-w ".escapeshellarg(Crypt::Decrypt($settings->ldap_pword));
+
+            try {
+                $w = Crypt::Decrypt($settings->ldap_pword);
+            } catch (\Exception $e) {
+                $this->warn("Could not decrypt password. This usually means an LDAP password was not set or the APP_KEY was changed since the LDAP pasword was last saved.  Aborting.");
+                exit(0);
+            }
+
+            $output[] = "-w ". escapeshellarg($w);
             $output[] = escapeshellarg(parenthesized_filter($settings->ldap_filter));
             if($settings->ldap_tls) {
                 $this->line("# adding STARTTLS option");
