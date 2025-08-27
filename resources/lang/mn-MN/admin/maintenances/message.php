@@ -16,6 +16,6 @@
             'success' => 'Хөрөнгийн засварыг амжилттай засварлав.',
         ],
         'asset_maintenance_incomplete' => 'Дуусаагүй',
-        'warranty'                     => 'Баталгаа',
+        'warranty'                     => 'Баталгаат',
         'not_warranty'                 => 'Баталгаагүй',
     ];

@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Feabhsúcháin Sócmhainní',
+        'asset_maintenances' => 'Feabhsúcháin Sócmhainní', // not used anymore
+        'maintenances'       => 'Maintenances',
         'edit'               => 'Athraigh Cothabháil Sócmhainní',
         'delete'             => 'Scrios Cothabháil Sócmhainní',
         'view'               => 'Féach ar Mionsonraí Cothabhála Sócmhainní',

@@ -16,6 +16,6 @@
             'success' => 'Turto aptarnavimas redaguotas sėkmingai.',
         ],
         'asset_maintenance_incomplete' => 'Nebaigta',
-        'warranty'                     => 'Garantinis',
+        'warranty'                     => 'Garantija',
         'not_warranty'                 => 'Ne garantinis',
     ];

@@ -1,10 +1,10 @@
 <?php
 
     return [
-        'select_type'            => 'Select Maintenance Type',
+        'select_type'            => 'Valitse huollon tyyppi',
         'asset_maintenance_type' => 'Laitteen huollon tyyppi',
-        'title'                  => 'Otsikko',
-        'start_date'             => 'Aloituspäivämäärä',
+        'title'                  => 'Titteli',
+        'start_date'             => 'Aloituspäivä',
         'completion_date'        => 'Valmistumispäivämäärä',
         'cost'                   => 'Kustannus',
         'is_warranty'            => 'Takuun parannus',

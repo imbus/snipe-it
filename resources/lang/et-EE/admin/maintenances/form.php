@@ -9,7 +9,7 @@
         'cost'                   => 'Kulud',
         'is_warranty'            => 'Garantii paranemine',
         'asset_maintenance_time' => 'Vara hooldusaeg (päevades)',
-        'notes'                  => 'Märkused',
+        'notes'                  => 'Märkmed',
         'update'                 => 'Vara hoolduse muutmine',
         'create'                 => 'Loo uus varahooldus'
     ];

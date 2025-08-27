@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Viðhaldssaga eignar',
+        'asset_maintenances' => 'Viðhaldssaga eignar', // not used anymore
+        'maintenances'       => 'Viðhald',
         'edit'               => 'Breyta viðhaldsskráningu',
         'delete'             => 'Eyða viðhaldsskráningu',
         'view'               => 'Sjá nánari upplýsingar um viðhald eignar',

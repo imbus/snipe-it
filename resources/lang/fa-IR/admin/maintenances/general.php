@@ -1,7 +1,9 @@
 <?php
 
     return [
-        'asset_maintenances' => 'نگهداشت دارایی',
+        'asset_maintenances' => 'نگهداشت دارایی', // not used anymore
+        'maintenances'       => 'تعمیر و نگهداری
+',
         'edit'               => 'ویرایش نگهداشت دارایی',
         'delete'             => 'حذف نگهداشت دارایی',
         'view'               => 'نمایش جزییات نگهداشت دارایی',

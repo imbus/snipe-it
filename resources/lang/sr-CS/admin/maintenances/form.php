@@ -3,7 +3,7 @@
     return [
         'select_type'            => 'Izaberite vrstu održavanja',
         'asset_maintenance_type' => 'Tip održavanja imovine',
-        'title'                  => 'Naslov',
+        'title'                  => 'Title',
         'start_date'             => 'Datum početka',
         'completion_date'        => 'Datum završetka',
         'cost'                   => 'Cena',

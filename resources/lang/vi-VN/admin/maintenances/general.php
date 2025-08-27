@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Tài sản đang bảo trì',
+        'asset_maintenances' => 'Tài sản đang bảo trì', // not used anymore
+        'maintenances'       => 'Bảo trì',
         'edit'               => 'Chỉnh sửa tài sản đang bảo trì',
         'delete'             => 'Xóa tài sản đang bảo trì',
         'view'               => 'Chi tiết tài sản đang bảo trì',

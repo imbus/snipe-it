@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Pemeliharaan Aset',
+        'asset_maintenances' => 'Pemeliharaan Aset', // not used anymore
+        'maintenances'       => 'Pemeliharaan',
         'edit'               => 'Merubah Pemeliharaan Aset',
         'delete'             => 'Menghapus Pemeliharan Aset',
         'view'               => 'Rincian Pemeliharaan Aset',

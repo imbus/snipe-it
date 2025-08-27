@@ -1,21 +1,21 @@
 <?php
 
     return [
-        'not_found'                    => 'crwdns1370:0crwdne1370:0',
+        'not_found'                    => 'crwdns13536:0crwdne13536:0',
         'delete'                       => [
-            'confirm' => 'crwdns1371:0crwdne1371:0',
-            'error'   => 'crwdns1372:0crwdne1372:0',
-            'success' => 'crwdns1373:0crwdne1373:0',
+            'confirm' => 'crwdns13538:0crwdne13538:0',
+            'error'   => 'crwdns13540:0crwdne13540:0',
+            'success' => 'crwdns13542:0crwdne13542:0',
         ],
         'create'                       => [
-            'error'   => 'crwdns1374:0crwdne1374:0',
-            'success' => 'crwdns1375:0crwdne1375:0',
+            'error'   => 'crwdns13544:0crwdne13544:0',
+            'success' => 'crwdns13546:0crwdne13546:0',
         ],
         'edit'                       => [
-            'error'   => 'crwdns1903:0crwdne1903:0',
-            'success' => 'crwdns1904:0crwdne1904:0',
+            'error'   => 'crwdns13548:0crwdne13548:0',
+            'success' => 'crwdns13550:0crwdne13550:0',
         ],
-        'asset_maintenance_incomplete' => 'crwdns1376:0crwdne1376:0',
-        'warranty'                     => 'crwdns1377:0crwdne1377:0',
-        'not_warranty'                 => 'crwdns1378:0crwdne1378:0',
+        'asset_maintenance_incomplete' => 'crwdns13552:0crwdne13552:0',
+        'warranty'                     => 'crwdns13554:0crwdne13554:0',
+        'not_warranty'                 => 'crwdns13556:0crwdne13556:0',
     ];

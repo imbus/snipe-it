@@ -3,7 +3,7 @@
     return [
         'select_type'            => 'Select Maintenance Type',
         'asset_maintenance_type' => 'Тип на поддръжка на актив',
-        'title'                  => 'Заглавие',
+        'title'                  => 'Титла',
         'start_date'             => 'Начална дата',
         'completion_date'        => 'Крайна дата',
         'cost'                   => 'Стойност',

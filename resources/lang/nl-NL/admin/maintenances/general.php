@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Activaonderhoud',
+        'asset_maintenances' => 'Asset onderhoud', // not used anymore
+        'maintenances'       => 'Onderhoudsbeurten',
         'edit'               => 'Activaonderhoud bewerken',
         'delete'             => 'Activaonderhoud verwijderen',
         'view'               => 'Details activaonderhoud tonen',
