@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Vara säilimine',
+        'asset_maintenances' => 'Vara säilimine', // not used anymore
+        'maintenances'       => 'Hooldus',
         'edit'               => 'Varade hoolduse muutmine',
         'delete'             => 'Kustuta vara hooldus',
         'view'               => 'Vaadake varahalduse üksikasju',

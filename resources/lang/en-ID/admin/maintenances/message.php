@@ -16,6 +16,6 @@
             'success' => 'Pemeliharaan Aset berhasil dirubah.',
         ],
         'asset_maintenance_incomplete' => 'Belum selesai',
-        'warranty'                     => 'Jaminan',
+        'warranty'                     => 'Garansi',
         'not_warranty'                 => 'Tidak ada Jaminan',
     ];

@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Varlık Bakımları',
+        'asset_maintenances' => 'Demirbaş bakımları', // not used anymore
+        'maintenances'       => 'Bakımlar',
         'edit'               => 'Varlık Bakımını Değiştir',
         'delete'             => 'Varlık Bakımını Sil',
         'view'               => 'Varlık Bakım Detaylarını Gör',

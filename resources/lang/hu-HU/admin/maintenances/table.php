@@ -1,8 +1,8 @@
 <?php
 
     return [
-        'title'         => 'Eszköz karbantartások',
+        'title'         => 'Eszköz karbantartás',
         'asset_name'    => 'Eszköz neve',
         'is_warranty'   => 'Garancia',
-        'dl_csv'        => 'CSV letöltése',
+        'dl_csv'        => 'Cvs letöltése',
     ];

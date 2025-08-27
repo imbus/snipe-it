@@ -6,7 +6,7 @@
         'title'                  => 'Titill',
         'start_date'             => 'Upphafsdagsetning',
         'completion_date'        => 'Completion Date',
-        'cost'                   => 'Kostnaður',
+        'cost'                   => 'Innkaupsverð',
         'is_warranty'            => 'Warranty Improvement',
         'asset_maintenance_time' => 'Asset Maintenance Time (in days)',
         'notes'                  => 'Athugasemdir',

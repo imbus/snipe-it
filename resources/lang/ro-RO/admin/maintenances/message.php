@@ -16,6 +16,6 @@
             'success' => 'Întreținerea activelor a fost editată cu succes.',
         ],
         'asset_maintenance_incomplete' => 'Nu a fost finalizată încă',
-        'warranty'                     => 'garanţie',
+        'warranty'                     => 'Garantie',
         'not_warranty'                 => 'Nu garanție',
     ];

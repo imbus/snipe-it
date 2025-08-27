@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'ការថែរក្សា Asset',
+        'asset_maintenances' => 'ការថែទាំទ្រព្យសកម្ម', // not used anymore
+        'maintenances'       => 'ការថែទាំ',
         'edit'               => 'កែសម្រួល​ការ​ថែទាំ​ Asset',
         'delete'             => 'លុប​ការ​ថែទាំ​ទ្រព្យសកម្ម',
         'view'               => 'មើលព័ត៌មានលម្អិតអំពីការថែទាំទ្រព្យសម្បត្តិ',

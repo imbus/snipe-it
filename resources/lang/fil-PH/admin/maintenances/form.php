@@ -6,10 +6,10 @@
         'title'                  => 'Ang Pamagat',
         'start_date'             => 'Start Date',
         'completion_date'        => 'Completion Date',
-        'cost'                   => 'Gastos',
+        'cost'                   => 'Ang Presyo',
         'is_warranty'            => 'Ang Pagpapabuti ng Warantiya',
         'asset_maintenance_time' => 'Asset Maintenance Time (in days)',
-        'notes'                  => 'Mga Palatandaan',
+        'notes'                  => 'Ang mga Palatandaan',
         'update'                 => 'Update Asset Maintenance',
         'create'                 => 'Create Asset Maintenance'
     ];

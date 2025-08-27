@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => '자산 관리',
+        'asset_maintenances' => '자산 관리', // not used anymore
+        'maintenances'       => '유지 관리',
         'edit'               => '자산 관리 수정',
         'delete'             => '자산 관리 삭제',
         'view'               => '자산 관리 상세 보기',

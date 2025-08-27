@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Dayactirka hantida',
+        'asset_maintenances' => 'Dayactirka hantida', // not used anymore
+        'maintenances'       => 'Dayactirka',
         'edit'               => 'Wax ka beddel Dayactirka Hantida',
         'delete'             => 'Tirtir Dayactirka Hantida',
         'view'               => 'Daawo Faahfaahinta Dayactirka Hantida',

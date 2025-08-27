@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Manutenções de Ativos',
+        'asset_maintenances' => 'Manutenções em Ativo', // not used anymore
+        'maintenances'       => 'Manutenções',
         'edit'               => 'Editar Manutenção de Ativo',
         'delete'             => 'Deletar Manutenção de Ativo',
         'view'               => 'Ver Detalhes da Manutenção do Ativo',

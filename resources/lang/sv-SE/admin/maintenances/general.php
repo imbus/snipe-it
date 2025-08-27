@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Underhåll av tillgångar',
+        'asset_maintenances' => 'Tillgångsunderhåll', // not used anymore
+        'maintenances'       => 'Underhåll',
         'edit'               => 'Redigera underhåll av tillgångar',
         'delete'             => 'Radera underhåll av tillgång',
         'view'               => 'Visa detaljer för underhåll av tillgångar',

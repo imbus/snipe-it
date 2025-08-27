@@ -6,10 +6,10 @@
         'title'                  => 'Titlu',
         'start_date'             => 'Data de început',
         'completion_date'        => 'Data finalizării',
-        'cost'                   => 'A costat',
+        'cost'                   => 'Cost',
         'is_warranty'            => 'Îmbunătățirea garanției',
         'asset_maintenance_time' => 'Timpul de întreținere a activelor (în zile)',
-        'notes'                  => 'notițe',
+        'notes'                  => 'Note',
         'update'                 => 'Actualizeaza Mentenanta Activelor',
         'create'                 => 'Creați întreținerea activelor'
     ];

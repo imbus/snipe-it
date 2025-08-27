@@ -6,7 +6,7 @@
         'title'                  => 'Titel',
         'start_date'             => 'Startdatum',
         'completion_date'        => 'Datum för slutförande',
-        'cost'                   => 'Inköpspris',
+        'cost'                   => 'Pris',
         'is_warranty'            => 'Förbättring av garanti',
         'asset_maintenance_time' => 'Tillgångens underhållstid (i dagar)',
         'notes'                  => 'Anteckningar',

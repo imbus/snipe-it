@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'אחזקת נכסים',
+        'asset_maintenances' => 'אחזקת נכסים', // not used anymore
+        'maintenances'       => 'אירועי תחזוקה',
         'edit'               => 'עריכת תחזוקת נכס',
         'delete'             => 'מחיקת תחזוקת נכס',
         'view'               => 'הצג פרטי אחזקת נכס',

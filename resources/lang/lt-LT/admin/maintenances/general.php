@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Turto aptarnavimas',
+        'asset_maintenances' => 'Turto aptarnavimai', // not used anymore
+        'maintenances'       => 'Aptarnavimai',
         'edit'               => 'Redaguoti turto aptarnavimą',
         'delete'             => 'Panaikinti turto aptarnavimą',
         'view'               => 'Peržiūrėti turto aptarnavimo informaciją',
