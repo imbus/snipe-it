@@ -353,7 +353,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         @endif
 
                                         <span class="hidden-xs">
-                                            {{ Auth::user()->getFullNameAttribute() }}
+                                            {{ Auth::user()->display_name }}
                                             <strong class="caret"></strong>
                                         </span>
                                     </a>

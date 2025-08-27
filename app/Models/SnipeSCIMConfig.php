@@ -34,6 +34,7 @@ class SnipeSCIMConfig extends \ArieTimmerman\Laravel\SCIMServer\SCIMConfig
 
             'validations' => [
                 $user_prefix . 'userName' => 'required',
+                $user_prefix . 'displayName' => 'nullable|string',
                 $user_prefix . 'name.givenName' => 'required',
                 $user_prefix . 'name.familyName' => 'nullable|string',
                 $user_prefix . 'externalId' => 'nullable|string',
@@ -121,7 +122,7 @@ class SnipeSCIMConfig extends \ArieTimmerman\Laravel\SCIMServer\SCIMConfig
                         'honorificSuffix' => null
                     ],
 
-                    'displayName' => null,
+                    'displayName' => AttributeMapping::eloquent("display_name"),
                     'nickName' => null,
                     'profileUrl' => null,
                     'title' => AttributeMapping::eloquent('jobtitle'),
@@ -153,21 +154,12 @@ class SnipeSCIMConfig extends \ArieTimmerman\Laravel\SCIMServer\SCIMConfig
                         "primary" => AttributeMapping::constant(true)->ignoreWrite()
                     ]],
 
-                    // Mobile and work phone numbers
-                    'phoneNumbers' => [
-                        [
-                            "value" => AttributeMapping::eloquent("phone"),
-                            "display" => null,
-                            "type" => AttributeMapping::constant("work")->ignoreWrite(),
-                            "primary" => AttributeMapping::constant(true)->ignoreWrite(),
-                        ],
-                        [
-                            "value" => AttributeMapping::eloquent("mobile"),
-                            "display" => null,
-                            "type" => AttributeMapping::constant("mobile")->ignoreWrite(),
-                            "primary" => AttributeMapping::constant(false)->ignoreWrite()
-                        ]
-                    ],
+                    'phoneNumbers' => [[
+                        "value" => AttributeMapping::eloquent("phone"),
+                        "display" => null,
+                        "type" => AttributeMapping::constant("work")->ignoreWrite(),
+                        "primary" => AttributeMapping::constant(true)->ignoreWrite()
+                    ]],
 
                     'ims' => [[
                         "value" => null,

@@ -3,7 +3,7 @@
 @section('title')
 	@if ($user->id)
 		{{ trans('admin/users/table.updateuser') }}
-		{{ $user->present()->fullName() }}
+		{{ $user->display_name }}
 	@else
 		{{ trans('admin/users/table.createuser') }}
 	@endif
@@ -311,6 +311,24 @@
 
                               <!-- everything here should be what is considered optional -->
                               <br>
+
+                              <!-- Display Name -->
+                              <div class="form-group {{ $errors->has('display_name') ? 'has-error' : '' }}">
+                                  <label class="col-md-3 control-label" for="display_name">{{ trans('admin/users/table.display_name') }}</label>
+                                  <div class="col-md-6">
+                                      <input
+                                              class="form-control"
+                                              type="text"
+                                              maxlength="191"
+                                              name="display_name"
+                                              id="display_name"
+                                              value="{{ old('display_name', $user->getRawOriginal('display_name')) }}"
+                                      />
+                                      {!! $errors->first('display_name', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
+                                  </div>
+                              </div>
+
+
                               <!-- Company -->
                               @if ((Gate::allows('canEditAuthFields', $user)) && (\App\Models\Company::canManageUsersCompanies()))
                                   @include ('partials.forms.edit.company-select', ['translated_name' => trans('general.select_company'), 'fieldname' => 'company_id'])

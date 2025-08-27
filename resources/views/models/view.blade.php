@@ -249,7 +249,7 @@
                         @if ($model->adminuser)
                             <li>
                                 <strong>{{ trans('general.created_by') }}</strong>:
-                                {{ $model->adminuser->present()->name() }}
+                                {{ $model->adminuser->display_name }}
                             </li>
                         @endif
 

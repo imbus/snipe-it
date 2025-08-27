@@ -23,7 +23,7 @@
 | **{{ trans('mail.additional_notes') }}** | {{ $note }} |
 @endif
 @if ($admin)
-| **{{ trans('general.administrator') }}** | {{ $admin->present()->fullName() }} |
+| **{{ trans('general.administrator') }}** | {{ $admin->display_name }} |
 @endif
 @endcomponent
 
