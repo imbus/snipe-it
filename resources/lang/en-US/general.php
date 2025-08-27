@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'show_all' => 'Show All',
     '2FA_reset'             => '2FA reset',
     'accessories'			=> 'Accessories',
     'activated'			    => 'Activated',
