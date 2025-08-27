@@ -29,15 +29,15 @@ class BulkManufacturersController extends Controller
             try {
                 DeleteManufacturerAction::run(manufacturer: $manufacturer);
             } catch (ItemStillHasAssets $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasAccessories $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_accessories_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_accessories_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasConsumables $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_consumables_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_consumables_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasComponents $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_components_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
+                $errors[] = trans('general.bulk_delete_associations.assoc_components_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasLicenses $e) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['manufacturer_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);;
+                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);;
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');
