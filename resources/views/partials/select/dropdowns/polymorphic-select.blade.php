@@ -1,0 +1,3 @@
+<select class="js-data-ajax-polymorphic" data-placeholder="{{ trans('general.select_item') }}" name="{{ $fieldname }}" style="width: 100%" id="{{ isset($select_id) ? $select_id : $fieldname . '_polymorphic_select' }}" aria-label="{{ $fieldname }}" {{ (isset($multiple) && ($multiple=='true')) ? " multiple='multiple'" : '' }}{!! ((isset($required)) && ($required=='true')) ? ' required' : '' !!}>
+    {{-- Polymorphic select supports both users and locations --}}
+</select>

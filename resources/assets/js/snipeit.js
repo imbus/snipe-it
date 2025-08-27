@@ -255,6 +255,116 @@ $(function () {
 
     });
 
+    // Polymorphic select2 dropdowns that combine multiple endpoints (users and locations)
+    $('.js-data-ajax-polymorphic').each(function (i, item) {
+        var link = $(item);
+
+        link.select2({
+            /**
+             * Polymorphic dropdown that combines users and locations
+             */
+            placeholder: '',
+            allowClear: true,
+            language: $('meta[name="language"]').attr('content'),
+            dir: $('meta[name="language-direction"]').attr('content'),
+
+            ajax: {
+                transport: function (params, success, failure) {
+                    var searchTerm = params.data.search || '';
+                    var page = params.data.page || 1;
+
+                    // Make parallel requests to both users and locations endpoints
+                    var usersRequest = $.ajax({
+                        url: baseUrl + 'api/v1/users/selectlist',
+                        dataType: 'json',
+                        headers: {
+                            "X-Requested-With": 'XMLHttpRequest',
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            search: searchTerm,
+                            page: page
+                        }
+                    });
+
+                    var locationsRequest = $.ajax({
+                        url: baseUrl + 'api/v1/locations/selectlist',
+                        dataType: 'json',
+                        headers: {
+                            "X-Requested-With": 'XMLHttpRequest',
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            search: searchTerm,
+                            page: page
+                        }
+                    });
+
+                    // Wait for both requests to complete
+                    $.when(usersRequest, locationsRequest).done(function(usersData, locationsData) {
+                        // usersData and locationsData are arrays: [responseData, textStatus, jqXHR]
+                        var usersResults = usersData[0].results || [];
+                        var locationsResults = locationsData[0].results || [];
+
+                        // Add type information to each result
+                        var processedUsers = usersResults.map(function(user) {
+                            return {
+                                id: 'user_' + user.id,
+                                text: user.text,
+                                image: user.image,
+                                itemKey: 'user_' + user.id,
+                                type: 'user'
+                            };
+                        });
+
+                        var processedLocations = locationsResults.map(function(location) {
+                            return {
+                                id: 'location_' + location.id,
+                                text: location.text,
+                                image: location.image,
+                                itemKey: 'location_' + location.id,
+                                type: 'location'
+                            };
+                        });
+
+                        // Combine the results
+                        var combinedResults = processedUsers.concat(processedLocations);
+
+                        // Sort by text for better UX
+                        combinedResults.sort(function(a, b) {
+                            return a.text.localeCompare(b.text);
+                        });
+
+                        // Determine if there are more results
+                        var hasMore = (usersData[0].pagination && usersData[0].pagination.more) ||
+                                     (locationsData[0].pagination && locationsData[0].pagination.more);
+
+                        success({
+                            results: combinedResults,
+                            pagination: {
+                                more: hasMore
+                            }
+                        });
+                    }).fail(function() {
+                        failure();
+                    });
+
+                    // Return a deferred object for proper cleanup
+                    return {
+                        abort: function () {
+                            usersRequest.abort();
+                            locationsRequest.abort();
+                        }
+                    };
+                },
+                delay: 250,
+                cache: true
+            },
+            templateResult: formatDatalistSafe,
+            templateSelection: formatDataSelection
+        });
+    });
+
 	function getSelect2Value(element) {
 		
 		// if the passed object is not a jquery object, assuming 'element' is a selector

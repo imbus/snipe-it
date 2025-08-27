@@ -121,7 +121,12 @@
                                         @break
 
                                         @case('polymorphicItemFormatter')
-                                            <p>polymorphicItemFormatter</p>
+                                            @include('partials.select.dropdowns.polymorphic-select', [
+                                                'fieldname' => $tableField->field,
+                                                'select_id' => "advancedSearch_$tableField->field",
+                                                'required' => 'false',
+                                                'multiple' => 'true',
+                                            ])
                                         @break
 
                                         @case('statuslabelsLinkObjFormatter')
