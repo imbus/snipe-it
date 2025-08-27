@@ -31,7 +31,7 @@
             <thead>
               <tr>
                 <th>{{ trans('general.name')}}</th>
-                  <th>{{ trans('general.category')}}</th>
+                  <th>{{ trans('general.type')}}</th>
                 <th>{{ trans('general.serial_number')}}</th>
                 <th>{{ trans('table.actions')}}</th>
               </tr>
