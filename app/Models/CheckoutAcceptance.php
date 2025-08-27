@@ -32,7 +32,7 @@ class CheckoutAcceptance extends Model
 
         return array_filter($recipients);
     }
-    public function getCheckoutableCategoryTypeAttribute(): string
+    public function getCheckoutableItemTypeAttribute(): string
     {
         $type = $this->checkoutable_type;
 
