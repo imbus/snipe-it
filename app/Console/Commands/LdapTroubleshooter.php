@@ -392,7 +392,14 @@ class LdapTroubleshooter extends Command
         $this->debugout("LDAP constants are: ".print_r($ldap_constants,true));
 
         foreach($ldap_urls AS $ldap_url) {
-            if($this->test_informational_bind($ldap_url[0],$ldap_url[1],$ldap_url[2],$settings->ldap_uname,Crypt::decrypt($settings->ldap_pword),$settings)) {
+            try {
+                $w = Crypt::Decrypt($settings->ldap_pword);
+            } catch (\Exception $e) {
+                $this->warn("Could not decrypt password. This usually means an LDAP password was not set or the APP_KEY was changed since the LDAP pasword was last saved.  Aborting.");
+                exit(0);
+            }
+
+            if($this->test_informational_bind($ldap_url[0],$ldap_url[1],$ldap_url[2],$settings->ldap_uname,$w,$settings)) {
                 $this->info("Success getting informational bind!");
             } else {
                 $this->error("Unable to get information from bind.");
@@ -615,4 +622,6 @@ class LdapTroubleshooter extends Command
         }
 
     }
+
+
 }
