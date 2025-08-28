@@ -288,6 +288,23 @@
 
                   </div>
                 </div>
+
+                  <!-- Send welcome email to user -->
+                  @if (!$user->id)
+                      <div class="form-group" id="email_user_row">
+
+                          <div class="col-md-8 col-md-offset-3">
+                              <label class="form-control form-control--disabled">
+                                  {{ Form::checkbox('send_welcome', '1', old('send_welcome'), ['id' => "email_user_checkbox", 'aria-label'=>'send_welcome']) }}
+                                  {{ trans('general.send_welcome_email_to_users') }}
+                              </label>
+
+                              <p class="help-block"> {{ trans('general.send_welcome_email_help') }}</p>
+
+                          </div>
+                      </div> <!--/form-group-->
+                  @endif
+
                   
                   @include ('partials.forms.edit.image-upload', ['fieldname' => 'avatar', 'image_path' => app('users_upload_path')])
 
@@ -685,7 +702,28 @@
 $(document).ready(function() {
 
 
+    // Set some defaults
+    $('#email_user_checkbox').prop("disabled", true);
+    $('#email_user_checkbox').prop("checked", false);
+    $("#email_user_checkbox").removeAttr('checked');
 
+    // If the email address is longer than 5 characters, enable the "send email" checkbox
+    $('#email').on('keyup',function(){
+        //event.preventDefault();
+
+        @if (!config('app.lock_passwords'))
+
+        if (this.value.length > 5) {
+            $('#email_user_checkbox').prop("disabled", false);
+            $("#email_user_checkbox").parent().removeClass("form-control--disabled");
+        } else {
+            $('#email_user_checkbox').prop("disabled", true);
+            $('#email_user_checkbox').prop("checked", false);
+            $("#email_user_checkbox").parent().addClass("form-control--disabled");
+        }
+
+        @endif
+    });
 
 
 	// Check/Uncheck all radio buttons in the group
