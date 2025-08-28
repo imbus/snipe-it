@@ -5,6 +5,8 @@ namespace Tests\Feature\Users\Api;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -58,21 +60,61 @@ class CreateUserTest extends TestCase
             });
     }
 
-    public function testCanStoreUser()
+    public function testCanCreateUser()
     {
         $this->actingAsForApi(User::factory()->createUsers()->create())
             ->postJson(route('api.users.store'), [
-                'first_name' => 'Darth',
-                'username' => 'darthvader',
-                'password' => 'darth_password',
-                'password_confirmation' => 'darth_password',
+                'first_name' => 'Test First Name',
+                'last_name' => 'Test Last Name',
+                'username' => 'testuser',
+                'password' => 'testpassword1235!!',
+                'password_confirmation' => 'testpassword1235!!',
+                'send_welcome' => '1',
+                'activated' => '1',
+                'notes' => 'Test Note',
             ])
             ->assertStatusMessageIs('success')
             ->assertOk();
 
         $this->assertDatabaseHas('users', [
-            'first_name' => 'Darth',
-            'username' => 'darthvader',
+            'first_name' => 'Test First Name',
+            'last_name' => 'Test Last Name',
+            'username' => 'testuser',
+            'activated' => '1',
+            'notes' => 'Test Note',
+
         ]);
+    }
+
+    public function testCanCreateAndNotifyUser()
+    {
+        Notification::fake();
+
+        $this->actingAsForApi(User::factory()->createUsers()->create())
+            ->postJson(route('api.users.store'), [
+                'first_name' => 'Test First Name',
+                'last_name' => 'Test Last Name',
+                'username' => 'testuser',
+                'password' => 'testpassword1235!!',
+                'password_confirmation' => 'testpassword1235!!',
+                'send_welcome' => '1',
+                'activated' => '1',
+                'email' => 'foo@example.org',
+                'notes' => 'Test Note',
+            ])
+            ->assertStatusMessageIs('success')
+            ->assertOk();
+
+        $this->assertDatabaseHas('users', [
+            'first_name' => 'Test First Name',
+            'last_name' => 'Test Last Name',
+            'username' => 'testuser',
+            'activated' => '1',
+            'email' => 'foo@example.org',
+            'notes' => 'Test Note',
+        ]);
+
+        $user = User::where('username', 'testuser')->first();
+        Notification::assertSentTo($user, WelcomeNotification::class);
     }
 }
