@@ -248,15 +248,15 @@ class AcceptanceController extends Controller
 
                 // Add the attachment for the signing user into the $data array
                 $data['file'] = $pdf_filename;
-
+                $locale = $assigned_user->locale;
                 try {
-                    $assigned_user->notify(new AcceptanceAssetAcceptedToUserNotification($data));
+                    $assigned_user->notify((new AcceptanceAssetAcceptedToUserNotification($data))->locale($locale));
                 } catch (\Exception $e) {
                     Log::warning($e);
                 }
             }
             try {
-                $acceptance->notify(new AcceptanceAssetAcceptedNotification($data));
+                $acceptance->notify((new AcceptanceAssetAcceptedNotification($data))->locale(Setting::getSettings()->locale));
             } catch (\Exception $e) {
                 Log::warning($e);
             }
