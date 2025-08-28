@@ -13,7 +13,9 @@ use App\Models\Company;
 use App\Models\Group;
 use App\Models\Setting;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Notifications\CurrentInventory;
@@ -128,7 +130,7 @@ class UsersController extends Controller
         // we have to invoke the form request here to handle image uploads
         app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
 
-        if($request->get('redirect_option') === 'back'){
+        if ($request->get('redirect_option') === 'back'){
             session()->put(['redirect_option' => 'index']);
         } else {
             session()->put(['redirect_option' => $request->get('redirect_option')]);
@@ -136,6 +138,18 @@ class UsersController extends Controller
 
 
         if ($user->save()) {
+
+            if (($user->activated == '1') && ($user->email != '') && ($request->input('send_welcome') == '1')) {
+
+                try {
+                    $user->notify(new WelcomeNotification($user));
+                } catch (\Exception $e) {
+                    Log::warning('Could not send welcome notification for user: ' . $e->getMessage());
+                }
+
+
+            }
+
             if ($request->filled('groups')) {
                 $user->groups()->sync($request->input('groups'));
             } else {
