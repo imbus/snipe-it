@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
-class StoreUsersTest extends TestCase
+class CreateUserTest extends TestCase
 {
     public function testRequiresPermission()
     {
