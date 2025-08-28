@@ -14,14 +14,13 @@ $icon = ($diff <= ($threshold / 2)) ? '🚨' : (($diff <= $threshold) ? '⚠️'
 @component('mail::table')
 |        |          |
 | ------------- | ------------- |
-| {{ $icon }} **{{ trans('mail.name') }}** | <a href="{{ route('hardware.show', $asset->id) }}">{{ $asset->present()->name }}</a> <br><small>{{trans('mail.serial').': '.$asset->serial}}</small> |
-| **{{ trans('mail.Days') }}** | {{ $diff }} {{ trans('mail.Days') }} |
-| **{{ trans('mail.expires') }}** | {{ !is_null($expires) ? $expires['formatted'] : '' }} |
+| **{{ trans('mail.name') }}** | <a href="{{ route('hardware.show', $asset->id) }}">{{ $asset->present()->name }}</a> <br><small>{{trans('mail.serial').': '.$asset->serial}}</small> |
+| **{{ trans('mail.expires') }}** | {{ !is_null($expires) ? $expires['formatted'] : '' }} ( {{ $icon }} {{ $diff }} {{ trans('mail.Days') }} ) |
 @if ($asset->supplier)
 | **{{ trans('mail.supplier') }}** | {{ ($asset->supplier ? e($asset->supplier->name) : '') }} |
 @endif
 @if ($asset->assignedTo)
-| **{{ trans('mail.assigned_to') }}** | e($asset->assignedTo->present()->display_name) |
+| **{{ trans('mail.assigned_to') }}** | {{ e($asset->assignedTo->present()->display_name) }} |
 @endif
 @endcomponent
 @endforeach
