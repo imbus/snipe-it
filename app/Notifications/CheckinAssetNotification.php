@@ -93,7 +93,7 @@ class CheckinAssetNotification extends Notification
 
 
         return (new SlackMessage)
-            ->content(':arrow_down: :computer: '.trans('mail.Asset_Checkin_Notification'))
+            ->content(':arrow_down: :computer: '.trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]))
             ->from($botname)
             ->to($channel)
             ->attachment(function ($attachment) use ($item, $note, $admin, $fields) {
@@ -112,7 +112,7 @@ class CheckinAssetNotification extends Notification
             return MicrosoftTeamsMessage::create()
                 ->to($this->settings->webhook_endpoint)
                 ->type('success')
-                ->title(trans('mail.Asset_Checkin_Notification'))
+                ->title(trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]))
                 ->addStartGroupToSection('activityText')
                 ->fact(htmlspecialchars_decode($item->display_name), '', 'activityText')
                 ->fact(trans('mail.checked_into'), ($item->location) ? $item->location->name : '')
@@ -122,7 +122,7 @@ class CheckinAssetNotification extends Notification
         }
 
 
-        $message = trans('mail.Asset_Checkin_Notification');
+        $message = trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]);
         $details = [
             trans('mail.asset') => htmlspecialchars_decode($item->display_name),
             trans('mail.checked_into') => ($item->location) ? $item->location->name : '',
@@ -144,7 +144,7 @@ class CheckinAssetNotification extends Notification
             ->card(
                 Card::create()
                     ->header(
-                        '<strong>'.trans('mail.Asset_Checkin_Notification').'</strong>' ?: '',
+                        '<strong>'.trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]).'</strong>' ?: '',
                         htmlspecialchars_decode($item->display_name) ?: '',
                     )
                     ->section(
