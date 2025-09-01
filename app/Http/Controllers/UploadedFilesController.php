@@ -139,7 +139,7 @@ class UploadedFilesController extends Controller
 
 
         // Check for the file
-        $log = Actionlog::find($file_id)->where('item_type', self::$map_object_type[$object_type])
+        $log = Actionlog::where('id',$file_id)->where('item_type', self::$map_object_type[$object_type])
             ->where('item_id', $object->id)->first();
 
         if ($log) {
