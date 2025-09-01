@@ -22,7 +22,7 @@ class UsersTransformer
     public function transformUser(User $user)
     {
 
-        $role = '';
+        $role = null;
         if ($user->isSuperUser()) {
             $role = 'superadmin';
         } elseif ($user->isAdmin()) {
