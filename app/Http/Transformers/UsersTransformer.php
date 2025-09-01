@@ -34,7 +34,7 @@ class UsersTransformer
                 'name' => e($user->getFullNameAttribute()) ?? null,
                 'first_name' => e($user->first_name) ?? null,
                 'last_name' => e($user->last_name) ?? null,
-                'display_name' => e($user->getRawOriginal('display_name')) ?? null,
+                'display_name' => ($user->getRawOriginal('display_name')) ? e($user->getRawOriginal('display_name')) : null,
                 'username' => e($user->username) ?? null,
                 'remote' => ($user->remote == '1') ? true : false,
                 'locale' => ($user->locale) ? e($user->locale) : null,
