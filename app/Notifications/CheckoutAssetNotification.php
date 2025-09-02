@@ -114,7 +114,7 @@ class CheckoutAssetNotification extends Notification
             ->from($botname)
             ->to($channel)
             ->attachment(function ($attachment) use ($item, $note, $admin, $fields) {
-                $attachment->title(htmlspecialchars_decode($item->present()->name), $item->present()->viewUrl())
+                $attachment->title(htmlspecialchars_decode($item->display_name), $item->present()->viewUrl())
                     ->fields($fields)
                     ->content($note);
             });
@@ -133,8 +133,8 @@ class CheckoutAssetNotification extends Notification
                 ->type('success')
                 ->title(trans('mail.Asset_Checkout_Notification'))
                 ->addStartGroupToSection('activityText')
-                ->fact(trans('mail.assigned_to'), $target->present()->name)
-                ->fact(htmlspecialchars_decode($item->present()->name), '', 'activityText')
+                ->fact(trans('mail.assigned_to'), $target->display_name)
+                ->fact(htmlspecialchars_decode($item->display_name), '', 'activityText')
                 ->fact(trans('mail.Asset_Checkout_Notification') . " by ", $admin->display_name)
                 ->fact(trans('mail.notes'), $note ?: '');
         }
@@ -142,7 +142,7 @@ class CheckoutAssetNotification extends Notification
         $message = trans('mail.Asset_Checkout_Notification');
         $details = [
             trans('mail.assigned_to') => $target->present()->name,
-            trans('mail.asset') => htmlspecialchars_decode($item->present()->name),
+            trans('mail.asset') => htmlspecialchars_decode($item->display_name),
             trans('mail.Asset_Checkout_Notification'). ' by' => $admin->display_name,
             trans('mail.notes') => $note ?: '',
         ];
@@ -160,7 +160,7 @@ public function toGoogleChat()
                 Card::create()
                     ->header(
                         '<strong>'.trans('mail.Asset_Checkout_Notification').'</strong>' ?: '',
-                        htmlspecialchars_decode($item->present()->name) ?: '',
+                        htmlspecialchars_decode($item->display_name) ?: '',
                     )
                     ->section(
                         Section::create(
