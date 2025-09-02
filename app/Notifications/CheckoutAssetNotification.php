@@ -131,19 +131,19 @@ class CheckoutAssetNotification extends Notification
             return MicrosoftTeamsMessage::create()
                 ->to($this->settings->webhook_endpoint)
                 ->type('success')
-                ->title(trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]))
+                ->title(trans('mail.Asset_Checkout_Notification', ['tag' => '']))
                 ->addStartGroupToSection('activityText')
                 ->fact(trans('mail.assigned_to'), $target->display_name)
                 ->fact(htmlspecialchars_decode($item->display_name), '', 'activityText')
-                ->fact(trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]) . " by ", $admin->display_name)
+                ->fact(trans('general.administrator'), $admin->display_name)
                 ->fact(trans('mail.notes'), $note ?: '');
         }
 
-        $message = trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]);
+        $message = trans('mail.Asset_Checkout_Notification', ['tag' => '']);
         $details = [
             trans('mail.assigned_to') => $target->present()->name,
             trans('mail.asset') => htmlspecialchars_decode($item->display_name),
-            trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]). ' by' => $admin->display_name,
+            trans('general.administrator') => $admin->display_name,
             trans('mail.notes') => $note ?: '',
         ];
        return  array($message, $details);

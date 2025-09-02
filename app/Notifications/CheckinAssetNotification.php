@@ -112,21 +112,21 @@ class CheckinAssetNotification extends Notification
             return MicrosoftTeamsMessage::create()
                 ->to($this->settings->webhook_endpoint)
                 ->type('success')
-                ->title(trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]))
+                ->title(trans('mail.Asset_Checkin_Notification', ['tag' => '']))
                 ->addStartGroupToSection('activityText')
                 ->fact(htmlspecialchars_decode($item->display_name), '', 'activityText')
                 ->fact(trans('mail.checked_into'), ($item->location) ? $item->location->name : '')
-                ->fact(trans('mail.Asset_Checkin_Notification') . " by ", $admin->display_name)
+                ->fact(trans('general.administrator'), $admin->display_name)
                 ->fact(trans('admin/hardware/form.status'), $item->assetstatus?->name)
                 ->fact(trans('mail.notes'), $note ?: '');
         }
 
 
-        $message = trans('mail.Asset_Checkin_Notification', ['tag' => $item->asset_tag]);
+        $message = trans('mail.Asset_Checkin_Notification', ['tag' => '']);
         $details = [
             trans('mail.asset') => htmlspecialchars_decode($item->display_name),
             trans('mail.checked_into') => ($item->location) ? $item->location->name : '',
-            trans('mail.Asset_Checkin_Notification')." by " => $admin->display_name,
+            trans('general.administrator') => $admin->display_name,
             trans('admin/hardware/form.status') => $item->assetstatus?->name,
             trans('mail.notes') => $note ?: '',
         ];
