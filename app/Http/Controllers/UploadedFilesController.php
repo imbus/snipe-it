@@ -36,7 +36,7 @@ class UploadedFilesController extends Controller
     {
 
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('update', $object);
 
         if (!$object) {
@@ -85,7 +85,7 @@ class UploadedFilesController extends Controller
     public function show($object_type, $id, $file_id) : RedirectResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('view', $object);
 
         if (!$object) {
@@ -130,7 +130,7 @@ class UploadedFilesController extends Controller
     {
 
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('update', self::$map_object_type[$object_type]);
 
         if (!$object) {
