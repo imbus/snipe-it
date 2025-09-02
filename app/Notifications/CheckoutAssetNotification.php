@@ -110,7 +110,7 @@ class CheckoutAssetNotification extends Notification
         }
 
         return (new SlackMessage)
-            ->content(':arrow_up: :computer: '.trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]))
+            ->content(':arrow_up: :computer: '.trans('mail.Asset_Checkout_Notification', ['tag' => '']))
             ->from($botname)
             ->to($channel)
             ->attachment(function ($attachment) use ($item, $note, $admin, $fields) {
@@ -159,7 +159,7 @@ public function toGoogleChat()
             ->card(
                 Card::create()
                     ->header(
-                        '<strong>'.trans('mail.Asset_Checkout_Notification', ['tag' => $item->asset_tag]).'</strong>' ?: '',
+                        '<strong>'.trans('mail.Asset_Checkout_Notification', ['tag' => '']).'</strong>' ?: '',
                         htmlspecialchars_decode($item->display_name) ?: '',
                     )
                     ->section(
