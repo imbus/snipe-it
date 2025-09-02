@@ -25,7 +25,7 @@ class ProfileTransformer
             'id' => (int) $file->id,
             'icon' => Helper::filetype_icon($file->filename),
             'item' => ($file->item) ? [
-                'name' => ($file->itemType()=='user') ? e($file->item->display_name) : e($file->item->getDisplayNameAttribute()),
+                'name' => $file->item->display_name ? e($file->item->display_name) : null,
                 'type' => e($file->itemType()),
             ] : null,
             'filename' => e($file->filename),
