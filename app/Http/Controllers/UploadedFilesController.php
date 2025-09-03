@@ -148,7 +148,7 @@ class UploadedFilesController extends Controller
                 Storage::delete(self::$map_storage_path[$object_type].'/'.$log->filename);
             }
             // Delete the record of the file
-            if ($log->delete()) {
+            if ($log->logUploadDelete($object, $log->filename)) {
                 return redirect()->back()->withFragment('files')->with('success', trans_choice('general.file_upload_status.delete.success', 1));
             }
 
