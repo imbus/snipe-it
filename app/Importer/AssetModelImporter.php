@@ -40,7 +40,7 @@ class AssetModelImporter extends ItemImporter
     {
 
         $editingAssetModel = false;
-        $assetModel = AssetModel::where('name', '=', $this->findCsvMatch($row, 'name'))->first();
+        $assetModel = AssetModel::where('name', '=', $this->findCsvMatch($row, 'name'))->where('model_number', '=', $this->findCsvMatch($row, 'model_number'))->first();
 
         if ($assetModel) {
             if (! $this->updating) {
