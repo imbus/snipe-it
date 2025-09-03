@@ -35,6 +35,7 @@ return array(
     'total_assets_cost'     => "Total Assets Cost",
     'updateuser' 			=> 'Update User',
     'username' 				=> 'Username',
+    'display_name' 			=> 'Display Name',
 	'user_deleted_text' 	=> 'This user has been marked as deleted.',
     'username_note' 		=> '(This is used for Active Directory binding only, not for login.)',
     'cloneuser'             => 'Clone User',

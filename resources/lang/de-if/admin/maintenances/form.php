@@ -3,7 +3,7 @@
     return [
         'select_type'            => 'Wartungsart auswählen',
         'asset_maintenance_type' => 'Wartungsart',
-        'title'                  => 'Bezeichnung',
+        'title'                  => 'Titel',
         'start_date'             => 'Startdatum',
         'completion_date'        => 'Abschlussdatum',
         'cost'                   => 'Kosten',

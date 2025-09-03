@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'ინვენტარის მომსახურებები',
+        'asset_maintenances' => 'ინვენტარის მომსახურებები', // not used anymore
+        'maintenances'       => 'მომსახურებები',
         'edit'               => 'Edit Asset Maintenance',
         'delete'             => 'Delete Asset Maintenance',
         'view'               => 'View Asset Maintenance Details',

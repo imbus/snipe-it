@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Dhammajjuu Qabeenya',
+        'asset_maintenances' => 'Dhammajjuu Qabeenya', // not used anymore
+        'maintenances'       => 'Dammamoo',
         'edit'               => 'Edit Asset Maintenance',
         'delete'             => 'Delete Asset Maintenance',
         'view'               => 'View Asset Maintenance Details',

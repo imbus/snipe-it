@@ -16,6 +16,6 @@
             'success' => '资产维护信息已成功编辑。',
         ],
         'asset_maintenance_incomplete' => '尚未完成',
-        'warranty'                     => '有质保',
+        'warranty'                     => '质保',
         'not_warranty'                 => '无质保',
     ];

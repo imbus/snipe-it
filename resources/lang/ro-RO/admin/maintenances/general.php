@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Întreținerea activelor',
+        'asset_maintenances' => 'Întreținerea activelor', // not used anymore
+        'maintenances'       => 'Mentenanțe',
         'edit'               => 'Editați întreținerea activelor',
         'delete'             => 'Șterge întreținerea activelor',
         'view'               => 'Vizualizați detaliile de întreținere a activelor',

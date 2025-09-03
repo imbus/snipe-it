@@ -2,7 +2,7 @@
 
     return [
         'title'         => 'Varade hooldus',
-        'asset_name'    => 'Vara nimi',
+        'asset_name'    => 'Ressursi nimi',
         'is_warranty'   => 'Garantii',
         'dl_csv'        => 'Laadige alla CSV',
     ];

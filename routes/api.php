@@ -137,7 +137,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
 
      
      /**
-      * Categpries API routes
+      * Categories API routes
       */
       Route::group(['prefix' => 'categories'], function () {
         
@@ -841,6 +841,28 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ); // end asset models API routes
 
 
+        /**
+         * Asset notes API routes
+         */
+        Route::group(['prefix' => 'notes'], function () {
+
+            Route::post(
+                '{asset}/store',
+                [
+                    Api\NotesController::class,
+                    'store'
+                ]
+            )->name('api.notes.store');
+
+            Route::get(
+                '{asset}/index',
+                [
+                    Api\NotesController::class,
+                    'index'
+                ]
+            )->name('api.notes.index');
+        }
+        ); // end asset notes API routes
 
         /**
         * Settings API routes

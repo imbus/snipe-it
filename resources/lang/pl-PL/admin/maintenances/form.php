@@ -1,12 +1,12 @@
 <?php
 
     return [
-        'select_type'            => 'Select Maintenance Type',
+        'select_type'            => 'Wybierz typ konserwacji',
         'asset_maintenance_type' => 'Rodzaj konserwacji aktywów',
         'title'                  => 'Tytuł',
         'start_date'             => 'Data rozpoczęcia',
         'completion_date'        => 'Data zakończenia',
-        'cost'                   => 'Cena',
+        'cost'                   => 'Koszt',
         'is_warranty'            => 'Wydłużenie gwarancji',
         'asset_maintenance_time' => 'Czas konserwacji aktywów (w dniach)',
         'notes'                  => 'Notatki',

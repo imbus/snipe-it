@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Upravljanje resursom',
+        'asset_maintenances' => 'Održavanja imovine', // not used anymore
+        'maintenances'       => 'Održavanja',
         'edit'               => 'Održavanje imovine, uredi',
         'delete'             => 'Održavanje imovine, Brisanje',
         'view'               => 'Prikaz pojedinosti o održavanju imovine',

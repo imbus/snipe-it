@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Záznamy o údržbe majetku',
+        'asset_maintenances' => 'Záznamy o údržbe majetku', // not used anymore
+        'maintenances'       => 'Opravy',
         'edit'               => 'Upraviť záznam o údržbe majetku',
         'delete'             => 'Odstrániť záznam o údržbe majetku',
         'view'               => 'Zobraziž podrobnosti o údržbe majetku',

@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-    {{trans('general.accept', ['asset' => $acceptance->checkoutable->present()->name()])}}
+    {{trans('general.accept', ['asset' => $acceptance->checkoutable->display_name])}}
     @parent
 @stop
 
@@ -39,7 +39,7 @@
                     <div class="box-header with-border">
                         <h2 class="box-title">
                             <div>
-                                {{$acceptance->checkoutable->present()->name()}}
+                                {{ $acceptance->checkoutable->display_name }}
                                 @if ($acceptance->qty > 1)
                                     <strong>×{{ $acceptance->qty }}</strong>
                                 @endif

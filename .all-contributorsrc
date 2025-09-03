@@ -4216,6 +4216,24 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nickwest",
+      "name": "Nicky West",
+      "avatar_url": "https://avatars.githubusercontent.com/u/634790?v=4",
+      "profile": "http://nickwest.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "akaspeh1",
+      "name": "akaspeh1",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1347327?v=4",
+      "profile": "https://github.com/akaspeh1",
+      "contributions": [
+        "code"
+      ]
     }
   ]
 }

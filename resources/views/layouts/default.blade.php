@@ -353,7 +353,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
                                         @endif
 
                                         <span class="hidden-xs">
-                                            {{ Auth::user()->getFullNameAttribute() }}
+                                            {{ Auth::user()->display_name }}
                                             <strong class="caret"></strong>
                                         </span>
                                     </a>
@@ -984,6 +984,13 @@ dir="{{ Helper::determineLanguageDirection() }}">
                             {{ trans('general.build') }} {{ config('version.build_version') }} ({{ config('version.branch') }})
                         @endif
                     @endif
+
+                    @if (isset($user) && ($user->isSuperUser()) && (app()->environment('local')))
+                       <a href="{{ url('telescope') }}" class="btn btn-default btn-xs" rel="noopener">Open Telescope</a>
+                    @endif
+
+
+
 
                     @if ($snipeSettings->support_footer!='off')
                         @if (($snipeSettings->support_footer=='on') || (($snipeSettings->support_footer=='admin') && (Auth::user()->isSuperUser()=='1')))

@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Asset Maintenances',
+        'asset_maintenances' => 'Asset Maintenances', // not used anymore
+        'maintenances'       => 'Maintenances',
         'edit'               => 'Wysig bateonderhoud',
         'delete'             => 'Verwyder Bate Onderhoud',
         'view'               => 'Bekyk Bate Onderhoud Besonderhede',

@@ -16,6 +16,6 @@
             'success' => 'Ang Asset Maintenance ay matagumay nang na-edit.',
         ],
         'asset_maintenance_incomplete' => 'Hindi pa nakompleto',
-        'warranty'                     => 'Ang warantiya',
+        'warranty'                     => 'Ang Warantiya',
         'not_warranty'                 => 'Hindi Warantiya',
     ];

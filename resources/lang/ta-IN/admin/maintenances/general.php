@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'சொத்து பராமரித்தல்',
+        'asset_maintenances' => 'சொத்து பராமரித்தல்', // not used anymore
+        'maintenances'       => 'Maintenances',
         'edit'               => 'சொத்து பராமரிப்பு திருத்தவும்',
         'delete'             => 'சொத்து பராமரிப்பு நீக்கு',
         'view'               => 'சொத்து பராமரிப்பு விவரங்களைக் காண்க',

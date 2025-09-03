@@ -16,6 +16,6 @@
             'success' => 'תחזוקת הנכסים נערכה בהצלחה.',
         ],
         'asset_maintenance_incomplete' => 'לא הושלם עדיין',
-        'warranty'                     => 'אחריות',
+        'warranty'                     => 'אַחֲרָיוּת',
         'not_warranty'                 => 'ללא אחריות',
     ];

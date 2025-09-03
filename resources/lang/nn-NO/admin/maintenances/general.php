@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Vedlikehold av eiendeler',
+        'asset_maintenances' => 'Vedlikehold av eiendeler', // not used anymore
+        'maintenances'       => 'Vedlikehold',
         'edit'               => 'Rediger Vedlikehold',
         'delete'             => 'Slett Vedlikehold',
         'view'               => 'Vedlikehold detaljer',

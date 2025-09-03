@@ -1,8 +1,8 @@
 <?php
 
     return [
-        'title'         => 'Manutenzione Prodotto',
-        'asset_name'    => 'Nome prodotto',
+        'title'         => 'Manutenzione Bene',
+        'asset_name'    => 'Nome Bene',
         'is_warranty'   => 'Garanzia',
         'dl_csv'        => 'Scarica CSV',
     ];

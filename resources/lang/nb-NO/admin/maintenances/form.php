@@ -6,7 +6,7 @@
         'title'                  => 'Tittel',
         'start_date'             => 'Startdato',
         'completion_date'        => 'Fullført dato',
-        'cost'                   => 'Innkjøpskostnad',
+        'cost'                   => 'Kostnad',
         'is_warranty'            => 'Uthevet garanti',
         'asset_maintenance_time' => 'Tid brukt på ressursvedlikehold (i dager)',
         'notes'                  => 'Notater',
