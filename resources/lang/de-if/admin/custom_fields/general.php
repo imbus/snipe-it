@@ -5,7 +5,7 @@ return [
     'manage'                    => 'Verwalten',
     'field'		                => 'Feld',
     'about_fieldsets_title'		=> 'Über Feldsätze',
-    'about_fieldsets_text'		=> 'Feldsätze erlauben es, Gruppen aus benutzerdefinierten Feldern zu erstellen, welche regelmäßig für spezifische Modelltypen benutzt werden.',
+    'about_fieldsets_text'		=> 'Feldsätze erlauben es, Gruppen aus benutzerdefinierten Feldern zu erstellen, die regelmäßig für spezifische Modelltypen wiederverwendet werden.',
     'custom_format'             => 'Benutzerdefiniertes Regex-Format...',
     'encrypt_field'      	        => 'Den Wert dieses Feldes in der Datenbank verschlüsseln',
     'encrypt_field_help'      => 'WARNUNG: Ein verschlüsseltes Feld kann nicht durchsucht werden.',
@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Neuen Feldsatz erstellen',
     'create_field'            => 'Neues benutzerdefiniertes Feld',
     'create_field_title' => 'Neues benutzerdefiniertes Feld erstellen',
-    'value_encrypted'      	        => 'Der Wert dieses Feldes ist in der Datenbank verschlüsselt. Nur Benutzer mit Administratorrechten können den entschlüsselten Wert anzeigen',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Feld miteinbeziehen bei Herausgabe-Emails an die Benutzer? Verschlüsselte Felder können nicht miteinbezogen werden',
     'show_in_email_short' => 'In E-Mails einbeziehen',
     'help_text' => 'Hilfetext',
@@ -59,6 +59,12 @@ return [
     'encrypted_options' => 'Dieses Feld ist verschlüsselt, so dass einige Display-Optionen nicht verfügbar sind.',
     'display_checkin' => 'In Check-in-Formularen anzeigen',
     'display_checkout' => 'In Check-out-Formularen anzeigen',
-    'display_audit' => 'Display in audit forms',
-
+    'display_audit' => 'In Audit-Formularen anzeigen',
+    'types' => [
+        'text' => 'Textfeld',
+        'listbox' => 'Listenfeld',
+        'textarea' => 'Textbereich (multi-Zeilen)',
+        'checkbox' => 'Auswahlfeld',
+        'radio' => 'Auswahlknöpfe',
+    ],
 ];

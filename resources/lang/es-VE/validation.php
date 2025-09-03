@@ -31,6 +31,7 @@ return [
         'numeric' => 'El campo :attribute debe estar entre :min y :max.',
         'string' => 'El campo :attribute debe tener entre :min y :max caracteres.',
     ],
+    'valid_regex' => 'La expresión regular no es válida.',
     'boolean' => 'El campo :attribute debe ser verdadero o falso.',
     'can' => 'El campo :attribute contiene un valor no autorizado.',
     'confirmed' => 'La confirmación del campo :attribute no coincide.',
@@ -172,6 +173,7 @@ return [
     'url' => 'El campo :attribute debe ser una URL válida.',
     'ulid' => 'El campo :attribute debe ser un ULID válido.',
     'uuid' => 'El campo :attribute debe ser un UUID válido.',
+    'fmcs_location' => 'El soporte completo de múltiples empresas y el alcance de la ubicación están habilitados en la Configuración de Administración, y la ubicación seleccionada y la empresa seleccionada no son compatibles.',
 
 
     /*

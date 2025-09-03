@@ -50,6 +50,7 @@ class AssetModelsController extends Controller
                 'fieldset',
                 'deleted_at',
                 'updated_at',
+                'require_serial',
             ];
 
         $assetmodels = AssetModel::select([
@@ -69,6 +70,7 @@ class AssetModelsController extends Controller
             'models.fieldset_id',
             'models.deleted_at',
             'models.updated_at',
+            'models.require_serial'
          ])
             ->with('category', 'depreciation', 'manufacturer', 'fieldset.fields.defaultValues', 'adminuser')
             ->withCount('assets as assets_count');
@@ -84,6 +86,12 @@ class AssetModelsController extends Controller
         if ($request->filled('model_number')) {
             $assetmodels = $assetmodels->where('models.model_number', '=', $request->input('model_number'));
         }
+
+        if ($request->input('requestable') == 'true') {
+            $assetmodels = $assetmodels->where('models.requestable', '=', '1');
+        } elseif ($request->input('requestable') == 'false') {
+            $assetmodels = $assetmodels->where('models.requestable', '=', '0');
+        }        
 
         if ($request->filled('notes')) {
             $assetmodels = $assetmodels->where('models.notes', '=', $request->input('notes'));
@@ -148,7 +156,7 @@ class AssetModelsController extends Controller
         $assetmodel = $request->handleImages($assetmodel);
 
         if ($assetmodel->save()) {
-            return response()->json(Helper::formatStandardApiResponse('success', $assetmodel, trans('admin/models/message.create.success')));
+            return response()->json(Helper::formatStandardApiResponse('success', (new AssetModelsTransformer)->transformAssetModel($assetmodel), trans('admin/models/message.create.success')));
         }
         return response()->json(Helper::formatStandardApiResponse('error', null, $assetmodel->getErrors()));
 
@@ -201,7 +209,7 @@ class AssetModelsController extends Controller
         $assetmodel = AssetModel::findOrFail($id);
         $assetmodel->fill($request->all());
         $assetmodel = $request->handleImages($assetmodel);
-        
+
         /**
          * Allow custom_fieldset_id to override and populate fieldset_id.
          * This is stupid, but required for legacy API support.
@@ -216,7 +224,7 @@ class AssetModelsController extends Controller
 
 
         if ($assetmodel->save()) {
-            return response()->json(Helper::formatStandardApiResponse('success', $assetmodel, trans('admin/models/message.update.success')));
+            return response()->json(Helper::formatStandardApiResponse('success', (new AssetModelsTransformer)->transformAssetModel($assetmodel), trans('admin/models/message.update.success')));
         }
 
         return response()->json(Helper::formatStandardApiResponse('error', null, $assetmodel->getErrors()));

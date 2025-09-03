@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use \Illuminate\Contracts\View\View;
 use \Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Validator;
 
 class AssetCheckinController extends Controller
 {
@@ -40,6 +41,14 @@ class AssetCheckinController extends Controller
         if (!$asset->model) {
             return redirect()->route('hardware.show', $asset->id)->with('error', trans('admin/hardware/general.model_invalid_fix'));
         }
+
+        // Invoke the validation to see if the audit will complete successfully
+        $asset->setRules($asset->getRules() + $asset->customFieldValidationRules());
+
+        if ($asset->isInvalid()) {
+            return redirect()->route('hardware.edit', $asset)->withErrors($asset->getErrors());
+        }
+
         $target_option = match ($asset->assigned_type) {
             'App\Models\Asset' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.asset_previous')]),
             'App\Models\Location' => trans('admin/hardware/form.redirect_to_type', ['type' => trans('general.location')]),
@@ -87,7 +96,6 @@ class AssetCheckinController extends Controller
         });
 
         $asset->expected_checkin = null;
-        $asset->last_checkin = now();
         $asset->assignedTo()->disassociate($asset);
         $asset->accepted = null;
         $asset->name = $request->get('name');
@@ -114,11 +122,14 @@ class AssetCheckinController extends Controller
 
         $originalValues = $asset->getRawOriginal();
 
+        // Handle last checkin date
         $checkin_at = date('Y-m-d H:i:s');
         if (($request->filled('checkin_at')) && ($request->get('checkin_at') != date('Y-m-d'))) {
             $originalValues['action_date'] = $checkin_at;
             $checkin_at = $request->get('checkin_at');
+
         }
+        $asset->last_checkin = $checkin_at;
 
         $asset->licenseseats->each(function (LicenseSeat $seat) {
             $seat->update(['assigned_to' => null]);
@@ -142,7 +153,8 @@ class AssetCheckinController extends Controller
         if ($asset->save()) {
 
             event(new CheckoutableCheckedIn($asset, $target, auth()->user(), $request->input('note'), $checkin_at, $originalValues));
-            return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))->with('success', trans('admin/hardware/message.checkin.success'));
+            return Helper::getRedirectOption($request, $asset->id, 'Assets')
+                ->with('success', trans('admin/hardware/message.checkin.success'));
         }
         // Redirect to the asset management page with error
         return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.checkin.error').$asset->getErrors());

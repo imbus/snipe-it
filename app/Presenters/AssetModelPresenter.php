@@ -16,6 +16,7 @@ class AssetModelPresenter extends Presenter
                 'field' => 'checkbox',
                 'checkbox' => true,
                 'titleTooltip' => trans('general.select_all_none'),
+                'printIgnore' => true,
             ],
             [
                 'field' => 'id',
@@ -143,6 +144,14 @@ class AssetModelPresenter extends Presenter
                 'formatter' => 'trueFalseFormatter',
             ],
             [
+                'field' => 'require_serial',
+                'searchable' => false,
+                'sortable' => true,
+                'visible' => false,
+                'title' => trans('admin/hardware/general.require_serial'),
+                'formatter' => 'trueFalseFormatter',
+            ],
+            [
                 'field' => 'notes',
                 'searchable' => true,
                 'sortable' => true,
@@ -185,6 +194,7 @@ class AssetModelPresenter extends Presenter
             'switchable' => false,
             'title' => trans('table.actions'),
             'formatter' => 'modelsActionsFormatter',
+            'printIgnore' => true,
         ];
 
         return json_encode($layout);

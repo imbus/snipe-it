@@ -106,11 +106,11 @@
                                         <div class="form-group">
                                             <div class="col-md-9 col-md-offset-3">
                                                 <label class="form-control">
-                                                    {{ Form::radio('update_default_location', '1', old('update_default_location'), ['checked'=> 'checked', 'aria-label'=>'update_default_location']) }}
+                                                    <input name="update_default_location" type="radio" value="1" checked="checked" aria-label="update_default_location" />
                                                     {{ trans('admin/hardware/form.asset_location') }}
                                                 </label>
                                                 <label class="form-control">
-                                                    {{ Form::radio('update_default_location', '0', old('update_default_location'), ['aria-label'=>'update_default_location']) }}
+                                                    <input name="update_default_location" type="radio" value="0" aria-label="update_default_location" />
                                                     {{ trans('admin/hardware/form.asset_location_update_default_current') }}
                                                 </label>
                                             </div>
@@ -139,29 +139,26 @@
                                             </div>
                                         </div>
 
+                                        <!-- Note -->
+                                        <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
+                                            <label for="note" class="col-md-3 control-label">
+                                                {{ trans('general.notes') }}
+                                            </label>
+                                            <div class="col-md-8">
+                                                <textarea class="col-md-6 form-control" id="note" @required($snipeSettings->require_checkinout_notes)
+                                                name="note">{{ old('note', $asset->note) }}</textarea>
+                                                {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+                                            </div>
+                                        </div>
+
+
                                         <!-- Custom fields -->
                                         @include("models/custom_fields_form", [
                                                 'model' => $asset->model,
-                                                'show_display_checkin_fields' => 'true'
+                                                'show_custom_fields_type' => 'checkin'
                                         ])
 
 
-
-
-
-
-
-                        <!-- Note -->
-                        <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
-                            <label for="note" class="col-md-3 control-label">
-                                {{ trans('general.notes') }}
-                            </label>
-                            <div class="col-md-8">
-                                <textarea class="col-md-6 form-control" id="note" @required($snipeSettings->require_checkinout_notes)
-                                        name="note">{{ old('note', $asset->note) }}</textarea>
-                                {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
-                            </div>
-                        </div>
                     </div> <!--/.box-body-->
                 </div> <!--/.box-body-->
 

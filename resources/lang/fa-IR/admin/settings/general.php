@@ -13,6 +13,8 @@ return [
     'admin_cc_email'            => 'ایمیل CC
 ',
     'admin_cc_email_help'       => 'Send a copy of checkin/checkout emails to this address.',
+    'admin_cc_always' => 'Always send copy upon checkin/checkout',
+    'admin_cc_when_acceptance_required' => 'Only send copy upon checkout if acceptance is required',
     'admin_settings'            => 'Admin Settings',
     'is_ad'				        => 'این سرور Active Directory است',
     'alerts'                	=> 'هشدار',
@@ -31,7 +33,8 @@ return [
     'audit_interval_help'       => 'If you are required to regularly physically audit your assets, enter the interval in months that you use. If you update this value, all of the "next audit dates" for assets with an upcoming audit date will be updated.',
     'audit_warning_days'        => 'آستانه هشدار حسابرسی',
     'audit_warning_days_help'   => 'چند روز پیش باید به شما هشدار می دهیم هنگامی که دارایی ها برای حسابرسی مورد نیاز است؟',
-    'auto_increment_assets'		=> 'Enerate auto-incrementing asset tags',
+    'auto_increment_assets'		=> 'برچسب‌های دارایی با افزایش خودکار را ایجاد کنید
+',
     'auto_increment_prefix'		=> 'پیشوند (اختیاری)',
     'auto_incrementing_help'    => 'برای تنظیم، ابتدا برچسب‌های دارایی افزایش خودکار را فعال کنید
 ',
@@ -70,7 +73,7 @@ return [
     'default_eula_text_placeholder' => 'Add your default EULA text',
     'default_language'			=> 'زبان پیش فرض',
     'default_eula_help_text'	=> 'همچنین می توانید  EULA های سفارشی به دسته های خاص دارایی مرتبط کنید.',
-    'acceptance_note'           => 'Add a note for your decision (Optional)',
+    'acceptance_note'           => 'Add a note for your decision (required if declining)',
     'display_asset_name'        => 'نمایش نام حساب',
     'display_checkout_date'     => 'نمایش تاریخ پرداخت',
     'display_eol'               => 'نمایش EOL در جدول',
@@ -82,6 +85,8 @@ return [
 ',
     'eula_settings'				=> 'EULA تنظیمات',
     'eula_markdown'				=> 'این EULA اجازه می دهد تا <a href="https://help.github.com/articles/github-flavored-markdown/">Github با طعم markdown</a>.',
+    'empty_row_count'           => 'Field Start Offset (Empty Rows)',
+    'empty_row_count_help'      => 'Fields will begin populating after this many empty rows are skipped at the top of the label.',
     'favicon'                   => 'فاویکون',
     'favicon_format'            => 'انواع فایل های پذیرفته شده عبارتند از ico، png و gif. سایر فرمت های تصویر ممکن است در همه مرورگرها کار نکنند.
 ',
@@ -116,14 +121,12 @@ return [
     'ldap_settings'             => 'تنظیمات LDAP',
     'ldap_client_tls_cert_help' => 'گواهی TLS سمت کلاینت و کلید برای اتصالات LDAP معمولاً فقط در پیکربندی‌های Google Workspace با « LDAP ایمن» مفید هستند. هر دو مورد نیاز است.
 ',
-    'ldap_location'             => 'LDAP Location',
-'ldap_location_help'             => 'The Ldap Location field should be used if <strong>an OU is not being used in the Base Bind DN.</strong> Leave this blank if an OU search is being used.',
+    'ldap_location'             => 'LDAP Location Field',
+'ldap_location_help'             => 'The LDAP Location field should be used if <strong>an OU is not being used in the Base Bind DN.</strong> Leave this blank if an OU search is being used.',
     'ldap_login_test_help'      => 'یک نام کاربری و رمز عبور LDAP معتبر از DN پایه ای که در بالا مشخص کرده اید وارد کنید تا بررسی کنید که آیا ورود به سیستم LDAP شما به درستی پیکربندی شده است یا خیر. ابتدا باید تنظیمات LDAP به روز شده خود را ذخیره کنید.
 ',
-    'ldap_login_sync_help'      => 'این فقط آزمایش می کند که LDAP می تواند به درستی همگام شود. اگر درخواست احراز هویت LDAP شما صحیح نباشد، کاربران ممکن است هنوز نتوانند وارد سیستم شوند. ابتدا باید تنظیمات LDAP به روز شده خود را ذخیره کنید.
-',
-    'ldap_manager'              => 'مدیر LDAP
-',
+    'ldap_login_sync_help'      => 'This only tests that LDAP can sync and that your fields are mapped correctly. If your LDAP Authentication query is not correct, users may still not be able to login. YOU MUST SAVE YOUR UPDATED LDAP SETTINGS FIRST.',
+    'ldap_manager'              => 'LDAP Manager Field',
     'ldap_server'               => 'سرویس دهنده LDAP',
     'ldap_server_help'          => 'This should start with ldap:// (for unencrypted) or ldaps:// (for TLS or SSL)',
     'ldap_server_cert'			=> 'اعتبار گواهی نامه LDAP SSL',
@@ -132,30 +135,33 @@ return [
     'ldap_tls'                  => 'از TLS استفاده کنید',
     'ldap_tls_help'             => 'این باید فقط در صورتی که STARTTLS را در سرور LDAP خود اجرا می کنید، بررسی شود.',
     'ldap_uname'                => 'حالت نام کاربری نامرئی LDAP',
-    'ldap_dept'                 => 'بخش LDAP
-',
-    'ldap_phone'                => 'شماره تلفن LDAP
-',
-    'ldap_jobtitle'             => 'عنوان شغلی LDAP
-',
-    'ldap_country'              => 'کشور LDAP
-',
+    'ldap_dept'                 => 'LDAP Department Field',
+    'ldap_phone'                => 'LDAP Phone Number Field',
+    'ldap_jobtitle'             => 'LDAP Job Title Field',
+    'ldap_country'              => 'LDAP Country Field',
     'ldap_pword'                => 'LDAP اتصال رمز عبور',
     'ldap_basedn'               => 'اتصال پایگاه DN',
     'ldap_filter'               => 'LDAP فیلتر',
     'ldap_pw_sync'              => 'Cache LDAP Passwords',
     'ldap_pw_sync_help'         => 'Uncheck this box if you do not wish to keep LDAP passwords cached as local hashed passwords. Disabling this means that your users may not be able to login if your LDAP server is unreachable for some reason.',
-    'ldap_username_field'       => 'فیلد نام کاربری',
-    'ldap_lname_field'          => 'نام خانوادگی',
-    'ldap_fname_field'          => 'LDAP نام',
+    'ldap_username_field'       => 'LDAP Username Field',
+    'ldap_display_name'          => 'LDAP Display Name Field',
+    'ldap_display_name_help'    => 'If you have a separate displayName field in your LDAP/AD, map it here and it will be used for displaying users within Snipe-IT.',
+    'ldap_lname_field'          => 'LDAP Last Name Field',
+    'ldap_fname_field'          => 'LDAP First Name Field',
     'ldap_auth_filter_query'    => 'تأیید اعتبار  پرس و جوLDAP',
     'ldap_version'              => 'نسخهٔ LDAP',
     'ldap_active_flag'          => ' پرچم فعالLDAP',
     'ldap_activated_flag_help'  => 'This value is used to determine whether a synced user can login to Snipe-IT. <strong>It does not affect the ability to check items in or out to them</strong>, and should be the <strong>attribute name</strong> within your AD/LDAP, <strong>not the value</strong>. <br><br>If this field is set to a field name that does not exist in your AD/LDAP, or the value in the AD/LDAP field is set to <code>0</code> or <code>false</code>, <strong>user login will be disabled</strong>. If the value in the AD/LDAP field is set to <code>1</code> or <code>true</code> or <em>any other text</em> means the user can log in. When the field is blank in your AD, we respect the <code>userAccountControl</code> attribute, which usually allows non-suspended users to log in.',
     'ldap_invert_active_flag'   => 'LDAP Invert Active Flag',
     'ldap_invert_active_flag_help'     => 'If enabled: when the value returned by LDAP Active Flag is <code>0</code> or <code>false</code> the user account will be active.',
-    'ldap_emp_num'              => 'LDAP تعداد کارکنان',
-    'ldap_email'                => 'ایمیل LDAP',
+    'ldap_emp_num'              => 'LDAP Employee Number Field',
+    'ldap_email'                => 'LDAP Email Field',
+    'ldap_mobile'               => 'LDAP Mobile Field',
+    'ldap_address'              => 'LDAP Address Field',
+    'ldap_city'                 => 'LDAP City Field',
+    'ldap_state'                => 'LDAP State/Province Field',
+    'ldap_zip'                  => 'LDAP Postal Code Field',
     'ldap_test'                 => 'تست LDAP
 ',
     'ldap_test_sync'            => 'تست همگام سازی LDAP
@@ -203,7 +209,10 @@ return [
     'full_multiple_companies_support_help_text' => 'محدود کردن کاربران (از جمله مدیران) اختصاص داده شده به شرکت ها برای دارایی های شرکت خود را.',
     'full_multiple_companies_support_text' => 'شرکت های متعدد پشتیبانی کامل',
     'scope_locations_fmcs_support_text'  => 'Scope Locations with Full Multiple Companies Support',
-    'scope_locations_fmcs_support_help_text'  => 'In previous versions, locations were not restricted to a particular company. If this setting is disabled, this preserves backward compatibility with older versions and locations can be used across multiple companies. If this setting is enabled, locations are restricted to their selected company.',
+    'scope_locations_fmcs_support_help_text'  => 'Restrict locations to their selected company.',
+    'scope_locations_fmcs_check_button' => 'Check Compatibility',
+    'scope_locations_fmcs_test_needed' => 'Please Check Compatibility to enable this',
+    'scope_locations_fmcs_support_disabled_text'  => 'This option is disabled because you have conflicting locations set for :count or more items.',
     'show_in_model_list'   => 'نمایش در مدل کشویی 
 ',
     'optional'					=> 'اختیاری',
@@ -531,6 +540,9 @@ return [
     'due_checkin_days_help' => 'How many days before the expected checkin of an asset should it be listed in the "Due for checkin" page?',
     'no_groups' => 'No groups have been created yet. Visit <code>Admin Settings > Permission Groups</code> to add one.',
     'text' => 'Text',
+    'manager_view' => 'Manager View',
+    'manager_view_enabled_text' => 'Enable Manager View',
+    'manager_view_enabled_help' => 'Allow managers to view assigned items to their direct and indirect reports in their account view.',
 
     'username_formats' => [
         'username_format'		=> 'فرمت نام کاربری',
@@ -540,7 +552,7 @@ return [
         'filastname_format'			=> 'First Initial Last Name (jsmith)',
         'lastnamefirstinitial_format' =>  'Last Name First Initial (smithj)',
         'firstname_lastname_underscore_format' => 'First Name Last Name (jane_smith)',
-        'firstinitial.lastname' => 'First Initial Last Name (j.smith)',
+        'firstinitial_lastname' => 'First Initial Last Name (j.smith)',
         'lastname_firstinitial' => 'Last Name First Initial (smith_j)',
         'lastname_dot_firstinitial_format' => 'Last Name First Initial (smith.j)',
         'firstnamelastname'     => 'First Name Last Name (janesmith)',
@@ -556,7 +568,7 @@ return [
         'filastname_format'			=> 'اولین نام خانوادگی (jsmith@example.com)',
         'lastnamefirstinitial_format' =>  'فامیل نام میانه (smithj@example.com)',
         'firstname_lastname_underscore_format' => 'نام خانوادگی (jane.smith@example.com)',
-        'firstinitial.lastname' => 'نام میانه فامیل (j.smith@example.com)',
+        'firstinitial_lastname' => 'نام میانه فامیل (j.smith@example.com)',
         'lastname_firstinitial' => 'فامیل نام میانه (smith_j@example.com)',
         'lastname_dot_firstinitial_format' => 'فامیل نام میانه (smith.j@example.com)',
         'firstnamelastname'     => 'نام فامیل (janesmith@example.com)',
@@ -588,6 +600,27 @@ return [
     ],
 
 
+    'legends' => [
+        'checkin' => 'Checkin Preferences',
+        'colors' => 'Colors & Skins',
+        'dashboard' => 'Login & Dashboard Preferences',
+        'email' => 'Email Preferences',
+        'eula' => 'EULA & Acceptance Preferences',
+        'footer' => 'Footer Preferences',
+        'formats' => 'Default Formats',
+        'general' => 'General',
+        'intervals' => 'Intervals & Thresholds',
+        'logos' => 'Logos & Display',
+        'mapping' => 'LDAP Field Mapping',
+        'test' => 'Test LDAP Connection',
+        'misc' => 'Miscellaneous',
+        'misc_display' => 'Miscellaneous Display Options',
+        'profiles' => 'User Profiles',
+        'server' => 'Server Settings',
+        'scoping' => 'Scoping',
+        'security' => 'Security Preferences',
+    ],
+
 
     /* Keywords for settings overview help */
     'keywords' => [
@@ -604,6 +637,7 @@ return [
 ',
         'security'          => 'رمز عبور، رمزهای عبور، الزامات، دو عاملی، دو عاملی، رمزهای عبور رایج، ورود از راه دور، خروج از سیستم، احراز هویت
 ',
+        'notifications'     => 'alerts, email, notifications, audit, threshold, email alerts, cc',
     ],
 
 ];

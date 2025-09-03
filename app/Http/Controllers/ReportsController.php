@@ -9,7 +9,7 @@ use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\Category;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\CheckoutAcceptance;
 use App\Models\Company;
 use App\Models\CustomField;
@@ -17,13 +17,11 @@ use App\Models\Depreciation;
 use App\Models\License;
 use App\Models\ReportTemplate;
 use App\Models\Setting;
-use App\Notifications\CheckoutAssetNotification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use \Illuminate\Contracts\View\View;
 use League\Csv\Reader;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -184,7 +182,7 @@ class ReportsController extends Controller
                 $currency = e(Setting::getSettings()->default_currency);
             }
 
-            $row[] = $asset->purchase_date;
+            $row[] = Helper::getFormattedDateObject($asset->purchase_date, 'date', false);
             $row[] = $currency.Helper::formatCurrencyOutput($asset->purchase_cost);
             $row[] = $currency.Helper::formatCurrencyOutput($asset->getDepreciatedValue());
             $row[] = $currency.Helper::formatCurrencyOutput(($asset->purchase_cost - $asset->getDepreciatedValue()));
@@ -277,7 +275,7 @@ class ReportsController extends Controller
 
                     if ($actionlog->target) {
                             if ($actionlog->targetType() == 'user') {
-                                $target_name = $actionlog->target->getFullNameAttribute();
+                                $target_name = $actionlog->target->display_name;
                         } else {
                             $target_name = $actionlog->target->getDisplayNameAttribute();
                         }
@@ -291,7 +289,7 @@ class ReportsController extends Controller
 
                     $row = [
                         $actionlog->created_at,
-                        ($actionlog->adminuser) ? e($actionlog->adminuser->getFullNameAttribute()) : '',
+                        ($actionlog->adminuser) ? e($actionlog->adminuser->display_name) : '',
                         $actionlog->present()->actionType(),
                         e($actionlog->itemType()),
                         ($actionlog->itemType() == 'user') ? $actionlog->filename : $item_name,
@@ -485,7 +483,7 @@ class ReportsController extends Controller
                 $header[] = trans('admin/hardware/table.purchase_date');
             }
 
-            if (($request->filled('purchase_cost')) || ($request->filled('depreciation'))) {
+            if ($request->filled('purchase_cost')) {
                 $header[] = trans('admin/hardware/table.purchase_cost');
             }
 
@@ -737,6 +735,11 @@ class ReportsController extends Controller
             if (($request->filled('next_audit_start')) && ($request->filled('next_audit_end'))) {
                 $assets->whereBetween('assets.next_audit_date', [$request->input('next_audit_start'), $request->input('next_audit_end')]);
             }
+
+            if (($request->filled('last_updated_start')) && ($request->filled('last_updated_end'))) {
+                $assets->whereBetween('assets.updated_at', [$request->input('last_updated_start'), $request->input('last_updated_end')]);
+            }
+
             if ($request->filled('exclude_archived')) {
                 $assets->notArchived();
             }
@@ -827,7 +830,7 @@ class ReportsController extends Controller
                     }
                     
                     if ($request->filled('location')) {
-                        $row[] = ($asset->location) ? $asset->location->present()->name() : '';
+                        $row[] = ($asset->location) ? $asset->location->display_name : '';
                     }
 
                     if ($request->filled('location_address')) {
@@ -840,7 +843,7 @@ class ReportsController extends Controller
                     }
 
                     if ($request->filled('rtd_location')) {
-                        $row[] = ($asset->defaultLoc) ? $asset->defaultLoc->present()->name() : '';
+                        $row[] = ($asset->defaultLoc) ? $asset->defaultLoc->display_name : '';
                     }
 
                     if ($request->filled('rtd_location_address')) {
@@ -853,7 +856,7 @@ class ReportsController extends Controller
                     }
 
                     if ($request->filled('assigned_to')) {
-                        $row[] = ($asset->checkedOutToUser() && $asset->assigned) ? $asset->assigned->getFullNameAttribute() : ($asset->assigned ? $asset->assigned->display_name : '');
+                        $row[] = ($asset->checkedOutToUser() && $asset->assigned) ?? $asset->assigned->display_name;
                         $row[] = ($asset->checkedOutToUser() && $asset->assigned) ? 'user' : $asset->assignedType();
                     }
 
@@ -1033,11 +1036,11 @@ class ReportsController extends Controller
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @version v1.0
      */
-    public function getAssetMaintenancesReport() : View
+    public function getMaintenancesReport() : View
     {
         $this->authorize('reports.view');
 
-        return view('reports.asset_maintenances');
+        return view('reports.maintenances');
     }
 
     /**
@@ -1046,11 +1049,11 @@ class ReportsController extends Controller
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
      * @version v1.0
      */
-    public function exportAssetMaintenancesReport() : Response
+    public function exportMaintenancesReport() : Response
     {
         $this->authorize('reports.view');
         // Grab all the improvements
-        $assetMaintenances = AssetMaintenance::with('asset', 'supplier')
+        $Maintenances = Maintenance::with('asset', 'supplier')
                                              ->orderBy('created_at', 'DESC')
                                              ->get();
 
@@ -1058,36 +1061,36 @@ class ReportsController extends Controller
 
         $header = [
             trans('admin/hardware/table.asset_tag'),
-            trans('admin/asset_maintenances/table.asset_name'),
+            trans('admin/maintenances/table.asset_name'),
             trans('general.supplier'),
-            trans('admin/asset_maintenances/form.asset_maintenance_type'),
-            trans('admin/asset_maintenances/form.title'),
-            trans('admin/asset_maintenances/form.start_date'),
-            trans('admin/asset_maintenances/form.completion_date'),
-            trans('admin/asset_maintenances/form.asset_maintenance_time'),
-            trans('admin/asset_maintenances/form.cost'),
+            trans('admin/maintenances/form.asset_maintenance_type'),
+            trans('admin/maintenances/form.title'),
+            trans('admin/maintenances/form.start_date'),
+            trans('admin/maintenances/form.completion_date'),
+            trans('admin/maintenances/form.asset_maintenance_time'),
+            trans('admin/maintenances/form.cost'),
         ];
 
         $header = array_map('trim', $header);
         $rows[] = implode(',', $header);
 
-        foreach ($assetMaintenances as $assetMaintenance) {
+        foreach ($Maintenances as $maintenance) {
             $row = [];
-            $row[] = str_replace(',', '', e($assetMaintenance->asset->asset_tag));
-            $row[] = str_replace(',', '', e($assetMaintenance->asset->name));
-            $row[] = str_replace(',', '', e($assetMaintenance->supplier->name));
-            $row[] = e($assetMaintenance->improvement_type);
-            $row[] = e($assetMaintenance->title);
-            $row[] = e($assetMaintenance->start_date);
-            $row[] = e($assetMaintenance->completion_date);
-            if (is_null($assetMaintenance->asset_maintenance_time)) {
+            $row[] = str_replace(',', '', e($maintenance->asset->asset_tag));
+            $row[] = str_replace(',', '', e($maintenance->asset->name));
+            $row[] = str_replace(',', '', e($maintenance->supplier->name));
+            $row[] = e($maintenance->improvement_type);
+            $row[] = e($maintenance->name);
+            $row[] = e($maintenance->start_date);
+            $row[] = e($maintenance->completion_date);
+            if (is_null($maintenance->asset_maintenance_time)) {
                 $improvementTime = (int) Carbon::now()
-                    ->diffInDays(Carbon::parse($assetMaintenance->start_date), true);
+                    ->diffInDays(Carbon::parse($maintenance->start_date), true);
             } else {
-                $improvementTime = (int) $assetMaintenance->asset_maintenance_time;
+                $improvementTime = (int) $maintenance->asset_maintenance_time;
             }
             $row[]  = $improvementTime;
-            $row[]  = trans('general.currency') . Helper::formatCurrencyOutput($assetMaintenance->cost);
+            $row[]  = trans('general.currency') . Helper::formatCurrencyOutput($maintenance->cost);
             $rows[] = implode(',', $row);
         }
 

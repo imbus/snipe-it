@@ -31,6 +31,7 @@ return [
         'numeric' => 'Pole :attribute musí obsahovať hodnotu medzi :min a :max.',
         'string' => 'Pole :attribute musí obsahovať hodnotu medzi :min a :max znamkmi.',
     ],
+    'valid_regex' => 'The regular expression is invalid.',
     'boolean' => 'Pole :attribút musí obsahovať hodnoty pravda alebo nepravda.',
     'can' => 'Pole :attribute obsahuje nepovolenú hodnotu.',
     'confirmed' => 'Pole :attribute nesedí s overením.',
@@ -172,6 +173,7 @@ return [
     'url' => 'Pole :attribute musí obsahovať správnu URL adresu.',
     'ulid' => 'Pole :attribute musí obsahovať platný ULID.',
     'uuid' => 'Pole :attribute musí obsahovať platný ULID.',
+    'fmcs_location' => 'Full multiple company support and location scoping is enabled in the Admin Settings, and the selected location and selected company are not compatible.',
 
 
     /*

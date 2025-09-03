@@ -53,6 +53,7 @@ class LicensePresenter extends Presenter
                 'searchable' => true,
                 'sortable' => true,
                 'title' => trans('admin/licenses/form.to_email'),
+                'formatter' => 'emailFormatter',
             ], [
                 'field' => 'license_name',
                 'searchable' => true,
@@ -202,6 +203,7 @@ class LicensePresenter extends Presenter
             'title' => trans('general.checkin').'/'.trans('general.checkout'),
             'visible' => true,
             'formatter' => 'licensesInOutFormatter',
+            'printIgnore' => true,
         ];
 
         $layout[] = [
@@ -211,6 +213,7 @@ class LicensePresenter extends Presenter
             'switchable' => false,
             'title' => trans('table.actions'),
             'formatter' => 'licensesActionsFormatter',
+            'printIgnore' => true,
         ];
 
         return json_encode($layout);
@@ -230,16 +233,7 @@ class LicensePresenter extends Presenter
                 'switchable' => true,
                 'title' => trans('general.id'),
                 'visible' => false,
-           ],
-           [
-                'field' => 'name',
-                'searchable' => false,
-                'sortable' => false,
-                'sorter'   => 'numericOnly',
-                'switchable' => true,
-                'title' => trans('admin/licenses/general.seat'),
-                'visible' => true,
-            ], [
+           ],[
                 'field' => 'assigned_user',
                 'searchable' => false,
                 'sortable' => false,
@@ -279,6 +273,14 @@ class LicensePresenter extends Presenter
                 'title' => trans('general.location'),
                 'visible' => true,
                 'formatter' => 'locationsLinkObjFormatter',
+            ],
+            [
+                'field' => 'updated_at',
+                'searchable' => false,
+                'sortable' => true,
+                'visible' => false,
+                'title' => trans('general.updated_at'),
+                'formatter' => 'dateDisplayFormatter',
             ],
             [
                 'field' => 'notes',

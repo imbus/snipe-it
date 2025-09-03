@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Yeni bir alan kümesi oluştur',
     'create_field'            => 'Yeni özel alan',
     'create_field_title' => 'Yeni bir özel alan oluştur',
-    'value_encrypted'      	        => 'Bu alanın değeri veritabanında şifrelidir. Yalnızca yönetici kullanıcıları şifresi çözülen değeri görüntüleyebilir',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Bu hane içerisindeki bilgi "Zimmet e-postası" içerisinde kullanıcıya gönderilsinmi? Şifrelenmiş hanelerin içerisindeki bilgiler gönderilemez.',
     'show_in_email_short' => 'E-postalara dahil edin',
     'help_text' => 'Yardım Metni',
@@ -57,8 +57,14 @@ return [
     'show_in_requestable_list_short' => 'Talep edilebilir varlıklar listesinde göster',
     'show_in_requestable_list' => 'Değeri talep edilebilir varlıklar listesinde gösterin. Şifreli alanlar gösterilmeyecek',
     'encrypted_options' => 'Bu alan şifrelendiğinden bazı görüntüleme seçenekleri kullanılamayacaktır.',
-    'display_checkin' => 'Display in checkin forms',
-    'display_checkout' => 'Display in checkout forms',
-    'display_audit' => 'Display in audit forms',
-
+    'display_checkin' => 'Teslimat formlarında görüntüle',
+    'display_checkout' => 'Çıkış formlarında görüntüle',
+    'display_audit' => 'Denetim formlarında görüntüle',
+    'types' => [
+        'text' => 'Text Box',
+        'listbox' => 'List Box',
+        'textarea' => 'Textarea (multi-line)',
+        'checkbox' => 'Checkbox',
+        'radio' => 'Radio Buttons',
+    ],
 ];

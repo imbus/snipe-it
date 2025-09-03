@@ -31,6 +31,7 @@ return [
         'numeric' => 'Поле :attribute має бути в межах від :min до :max.',
         'string' => 'Поле :attribute має містити від :min до :max символів.',
     ],
+    'valid_regex' => 'The regular expression is invalid.',
     'boolean' => 'Поле :attribute повинне містити логічний тип.',
     'can' => 'Поле :attribute містить недозволене значення.',
     'confirmed' => 'Поле підтвердження :attribute не збігається.',
@@ -172,6 +173,7 @@ return [
     'url' => 'Поле :attribute має бути коректним URL.',
     'ulid' => 'Поле :attribute має бути дійсним ULID.',
     'uuid' => 'Поле :attribute має бути коректним UUID.',
+    'fmcs_location' => 'Full multiple company support and location scoping is enabled in the Admin Settings, and the selected location and selected company are not compatible.',
 
 
     /*

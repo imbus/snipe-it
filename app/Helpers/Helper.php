@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\License;
 use App\Models\Location;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Carbon\Carbon;
@@ -722,8 +723,8 @@ class Helper
         // The check and message that the user is still using the deprecated version
         $deprecations = [
             'ms_teams_deprecated' => array(
-            'check' => !Str::contains(Setting::getSettings()->webhook_endpoint, 'workflows'),
-            'message' => 'The Microsoft Teams webhook URL being used will be deprecated Jan 31st, 2025. <a class="btn btn-primary" href="' . route('settings.slack.index') . '">Change webhook endpoint</a>'),
+            'check' => !Str::contains(Setting::getSettings()->webhook_endpoint, 'workflows') && (Setting::getSettings()->webhook_selected === 'microsoft'),
+            'message' => 'The Microsoft Teams webhook URL being used will be deprecated Dec 31st, 2025. <a class="btn btn-primary" href="' . route('settings.slack.index') . '">Change webhook endpoint</a>'),
         ];
 
         // if item of concern is being used and its being used with the deprecated values return the notification array.
@@ -870,6 +871,48 @@ class Helper
         finfo_close($finfo);
 
         if (($filetype == 'image/jpeg') || ($filetype == 'image/jpg') || ($filetype == 'image/png') || ($filetype == 'image/bmp') || ($filetype == 'image/gif') || ($filetype == 'image/avif') || ($filetype == 'image/webp')) {
+            return $filetype;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the file is a video, so we can show a preview
+     *
+     * @param File $file
+     * @return string | Boolean
+     * @author [B. Wetherington] [<bwetherington@grokability.com>]
+     * @since [v8.1.18]
+     */
+    public static function checkUploadIsVideo($file)
+    {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        $filetype = @finfo_file($finfo, $file);
+        finfo_close($finfo);
+
+        if (($filetype == 'video/mp4') || ($filetype == 'video/quicktime') || ($filetype == 'video/mpeg') || ($filetype == 'video/ogg') || ($filetype == 'video/webm') || ($filetype == 'video/x-msvide')) {
+            return $filetype;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the file is audio, so we can show a preview
+     *
+     * @param File $file
+     * @return string | Boolean
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v3.0]
+     */
+    public static function checkUploadIsAudio($file)
+    {
+        $finfo = @finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+        $filetype = @finfo_file($finfo, $file);
+        finfo_close($finfo);
+
+        if (($filetype == 'audio/mpeg') || ($filetype == 'audio/ogg')) {
             return $filetype;
         }
 
@@ -1154,22 +1197,42 @@ class Helper
             'webp'   => 'far fa-image',
             'avif'   => 'far fa-image',
             'svg' => 'fas fa-vector-square',
+
             // word
             'doc'   => 'far fa-file-word',
             'docx'   => 'far fa-file-word',
+
             // Excel
             'xls'   => 'far fa-file-excel',
             'xlsx'   => 'far fa-file-excel',
+            'ods'   => 'far fa-file-excel',
+
+            // Presentation
+            'ppt'   => 'far fa-file-powerpoint',
+            'odp'   => 'far fa-file-powerpoint',
+
             // archive
             'zip'   => 'fas fa-file-archive',
             'rar'   => 'fas fa-file-archive',
+
             //Text
+            'odt'   => 'far fa-file-alt',
             'txt'   => 'far fa-file-alt',
             'rtf'   => 'far fa-file-alt',
             'xml'   => 'fas fa-code',
+
             // Misc
             'pdf'   => 'far fa-file-pdf',
             'lic'   => 'far fa-save',
+
+            // video
+            'mov'   => 'fa-solid fa-video',
+            'mp4'   => 'fa-solid fa-video',
+
+            // audio
+            'ogg'   => 'fa-solid fa-file-audio',
+            'mp3'   => 'fa-solid fa-file-audio',
+            'wav'   => 'fa-solid fa-file-audio',
         ];
 
         if ($extension && array_key_exists($extension, $allowedExtensionMap)) {
@@ -1313,25 +1376,24 @@ class Helper
         switch ($item) {
             case 'asset':
                 return 'fas fa-barcode';
-                break;
             case 'accessory':
                 return 'fas fa-keyboard';
-                break;
             case 'component':
                 return 'fas fa-hdd';
-                break;
             case 'consumable':
                 return 'fas fa-tint';
-                break;
             case 'license':
                 return 'far fa-save';
-                break;
             case 'location':
                 return 'fas fa-map-marker-alt';
-                break;
             case 'user':
                 return 'fas fa-user';
-                break;
+            case 'supplier':
+                return 'fa-solid fa-store';
+            case 'manufacturer':
+                return 'fa-solid fa-building';
+            case 'category':
+                return 'fa-solid fa-table-columns';
         }
 
     }
@@ -1481,60 +1543,62 @@ class Helper
     }
 
 
-    static public function getRedirectOption($request, $id, $table, $item_id = null)
+    static public function getRedirectOption($request, $id, $table, $item_id = null) : RedirectResponse
     {
 
-        $redirect_option = Session::get('redirect_option');
-        $checkout_to_type = Session::get('checkout_to_type');
+        $redirect_option = Session::get('redirect_option') ?? $request->redirect_option;
+        $checkout_to_type = Session::get('checkout_to_type') ?? null;
         $checkedInFrom = Session::get('checkedInFrom');
+        $other_redirect = Session::get('other_redirect');
+        $backUrl = Session::pull('back_url', route('home'));
+
+       // return to previous page
+        if ($redirect_option === 'back') {
+            return redirect()->to($backUrl);
+        }
 
         // return to index
         if ($redirect_option == 'index') {
-            switch ($table) {
-                case "Assets":
-                    return route('hardware.index');
-                case "Users":
-                    return route('users.index');
-                case "Licenses":
-                    return route('licenses.index');
-                case "Accessories":
-                    return route('accessories.index');
-                case "Components":
-                    return route('components.index');
-                case "Consumables":
-                    return route('consumables.index');
-            }
+            return match ($table) {
+                'Assets' => redirect()->route('hardware.index'),
+                'Users' => redirect()->route('users.index'),
+                'Licenses' => redirect()->route('licenses.index'),
+                'Accessories' => redirect()->route('accessories.index'),
+                'Components' => redirect()->route('components.index'),
+                'Consumables' => redirect()->route('consumables.index'),
+            };
         }
 
         // return to thing being assigned
         if ($redirect_option == 'item') {
-            switch ($table) {
-                case "Assets":
-                    return route('hardware.show', $id ?? $item_id);
-                case "Users":
-                    return route('users.show', $id ?? $item_id);
-                case "Licenses":
-                    return route('licenses.show', $id ?? $item_id);
-                case "Accessories":
-                    return route('accessories.show', $id ?? $item_id);
-                case "Components":
-                    return route('components.show', $id ?? $item_id);
-                case "Consumables":
-                    return route('consumables.show', $id ?? $item_id);
-            }
+            return match ($table) {
+                'Assets'      => redirect()->route('hardware.show', $id ?? $item_id),
+                'Users'       => redirect()->route('users.show', $id ?? $item_id),
+                'Licenses'    => redirect()->route('licenses.show', $id ?? $item_id),
+                'Accessories' => redirect()->route('accessories.show', $id ?? $item_id),
+                'Components'  => redirect()->route('components.show', $id ?? $item_id),
+                'Consumables' => redirect()->route('consumables.show', $id ?? $item_id),
+            };
         }
 
         // return to assignment target
         if ($redirect_option == 'target') {
-            switch ($checkout_to_type) {
-                case 'user':
-                    return route('users.show', $request->assigned_user ?? $checkedInFrom);
-                case 'location':
-                    return route('locations.show', $request->assigned_location ?? $checkedInFrom);
-                case 'asset':
-                    return route('hardware.show', $request->assigned_asset ?? $checkedInFrom);
-            }
+            return match ($checkout_to_type) {
+                'user'     => redirect()->route('users.show', $request->assigned_user ?? $checkedInFrom),
+                'location' => redirect()->route('locations.show', $request->assigned_location ?? $checkedInFrom),
+                'asset'    => redirect()->route('hardware.show', $request->assigned_asset ?? $checkedInFrom),
+            };
         }
+
+        // return to somewhere else
+        if ($redirect_option == 'other_redirect') {
+            return match ($other_redirect) {
+                'audit' => redirect()->route('assets.audit.due'),
+                'model' => redirect()->route('models.show', $request->model_id),
+            };
+
+        }
+
         return redirect()->back()->with('error', trans('admin/hardware/message.checkout.error'));
     }
 
@@ -1560,6 +1624,11 @@ class Helper
             }
         } else {
             $locations = Location::all();
+        }
+
+        // Bail out early if there are no locations
+        if ($locations->count() == 0) {
+            return [];
         }
 
         foreach($locations as $location) {
@@ -1600,14 +1669,17 @@ class Helper
                         $items = collect([])->push($location->$keyword);
                     }
 
+                    $count = 0;
                     foreach ($items as $item) {
 
+
                         if ($item && $item->company_id != $location_company) {
+
                             $mismatched[] = [
                                     class_basename(get_class($item)),
                                     $item->id,
                                     $item->name ?? $item->asset_tag ?? $item->serial ?? $item->username,
-                                    str_replace('App\\Models\\', '', $item->assigned_type) ?? null,
+                                    $item->assigned_type ? str_replace('App\\Models\\', '', $item->assigned_type) : null,
                                     $item->company_id ?? null,
                                     $item->company->name ?? null,
 //                                    $item->defaultLoc->id ?? null,
@@ -1618,6 +1690,15 @@ class Helper
                                     $item->location->company->name ?? null,
                                     $location_company ?? null,
                                 ];
+
+                            $count++;
+
+                            // Bail early if this is not being run via artisan
+                            if ((!$artisan) && ($count > 0)) {
+                                return $mismatched;
+                            }
+
+
 
                         }
                     }

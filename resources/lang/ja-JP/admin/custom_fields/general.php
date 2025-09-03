@@ -5,8 +5,7 @@ return [
     'manage'                    => '管理',
     'field'		                => 'フィールド',
     'about_fieldsets_title'		=> 'フィールドセットについて',
-    'about_fieldsets_text'		=> 'フィールドセットでは、頻繁に利用されるカスタム フィールドのグループを作成することができます。
-よく',
+    'about_fieldsets_text'		=> 'フィールドセットでは、特定の資産モデルタイプで頻繁に再利用されるカスタムフィールドのグループを作成することができます。',
     'custom_format'             => 'カスタム正規表現形式…',
     'encrypt_field'      	        => 'このフィールドの値をデータベースにて暗号化する',
     'encrypt_field_help'      => '警告: 暗号化フィールドは検索することができなくなります。',
@@ -34,7 +33,7 @@ return [
     'create_fieldset_title' => '新しいフィールドセットを作成',
     'create_field'            => '新しいユーザー設定フィールド',
     'create_field_title' => '新しいカスタムフィールドを作成',
-    'value_encrypted'      	        => 'このフィールドの値は、データベースで暗号化されます。管理者ユーザーのみが復号化された値を表示することができます。',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'このフィールドの値をユーザーに送信されたチェックアウトメールに含めますか？暗号化されたフィールドはメールに含めることはできません',
     'show_in_email_short' => '電子メールに含める',
     'help_text' => 'ヘルプ テキスト',
@@ -61,5 +60,11 @@ return [
     'display_checkin' => 'チェックインフォームに表示',
     'display_checkout' => 'チェックアウトフォームに表示',
     'display_audit' => '監査フォームに表示',
-
+    'types' => [
+        'text' => 'Text Box',
+        'listbox' => 'List Box',
+        'textarea' => 'Textarea (multi-line)',
+        'checkbox' => 'Checkbox',
+        'radio' => 'Radio Buttons',
+    ],
 ];

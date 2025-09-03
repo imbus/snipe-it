@@ -5,7 +5,7 @@ return [
     'manage'                    => 'Gestire',
     'field'		                => 'Campo',
     'about_fieldsets_title'		=> 'Fileldsets',
-    'about_fieldsets_text'		=> 'I Fieldsets ti permettono di creare gruppi di campi personalizzati che sono frequentemente riutilizzati per modelli specifici di asset.',
+    'about_fieldsets_text'		=> 'I set di campi consentono di creare gruppi di campi personalizzati che sono utilizzati spesso per tipi di modelli di Bene specifici.',
     'custom_format'             => 'Formato Regex personalizzato...',
     'encrypt_field'      	        => 'Crittografare il valore di questo campo nel database',
     'encrypt_field_help'      => 'ATTENZIONE: Se il campo viene crittografato non sarà possibile cercarlo.',
@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Crea un nuovo campo',
     'create_field'            => 'Nuovo campo personalizzato',
     'create_field_title' => 'Crea un nuovo campo personalizzato',
-    'value_encrypted'      	        => 'Il valore di questo campo viene crittografato nel database. Solo gli utenti amministratori saranno in grado di visualizzare il valore decrittografato',
+    'value_encrypted'      	        => 'Il valore di questo campo viene crittografato nel database. Solo gli utenti con i giusti permessi saranno in grado di visualizzare il valore in chiaro',
     'show_in_email'     => 'Includere il valore di questo campo nelle e-mail di assegnazione inviate all\'utente? I campi crittografati non possono essere inclusi nelle e-mail',
     'show_in_email_short' => 'Includi nelle email',
     'help_text' => 'Testo guida',
@@ -60,5 +60,11 @@ return [
     'display_checkin' => 'Mostra nei moduli di check-in',
     'display_checkout' => 'Mostra nei moduli di assegnazione',
     'display_audit' => 'Mostra nei moduli di revisione',
-
+    'types' => [
+        'text' => 'Casella di testo',
+        'listbox' => 'Casella elenco',
+        'textarea' => 'Area di testo (multi-riga)',
+        'checkbox' => 'Casella di spunta',
+        'radio' => 'Pulsanti di opzione',
+    ],
 ];

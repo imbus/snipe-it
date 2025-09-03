@@ -31,6 +31,7 @@ return [
         'numeric' => 'Isian kolom :attribute harus antara :min dan :max.',
         'string' => 'Panjang isian kolom :attribute harus antara :min dan :max karakter.',
     ],
+    'valid_regex' => 'The regular expression is invalid.',
     'boolean' => 'Bidang atribut: harus benar atau salah.',
     'can' => 'Kolom :attribute berisi nilai yang tidak sah.',
     'confirmed' => 'Konfirmasi kolom :attribute tidak sesuai.',
@@ -172,6 +173,7 @@ return [
     'url' => 'Isian kolom :attribute harus berupa URL yang valid.',
     'ulid' => 'Isian kolom :attribute harus berupa ULID yang valid.',
     'uuid' => 'Isian kolom :attribute harus berupa UUID yang valid.',
+    'fmcs_location' => 'Full multiple company support and location scoping is enabled in the Admin Settings, and the selected location and selected company are not compatible.',
 
 
     /*

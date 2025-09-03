@@ -31,6 +31,7 @@ return [
         'numeric' => 'Das Feld :attribute muss zwischen :min und :max liegen.',
         'string' => 'Das Feld :attribute muss zwischen :min und :max Zeichen enthalten.',
     ],
+    'valid_regex' => 'Der reguläre Ausdruck ist ungültig.',
     'boolean' => 'Das Feld :attribute muss true oder false sein.',
     'can' => 'Das Feld :attribute enthält einen nicht autorisierten Wert.',
     'confirmed' => 'Die Bestätigung des Feldes :attribute stimmt nicht überein.',
@@ -172,6 +173,7 @@ return [
     'url' => 'Das Feld :attribute muss eine gültige URL sein.',
     'ulid' => 'Das Feld :attribute muss eine gültige ULID sein.',
     'uuid' => 'Das Feld :attribute muss eine gültige UUID sein.',
+    'fmcs_location' => 'In den Admin-Einstellungen ist eine vollständige Mehrfachunterstützung für Unternehmen und Standortbereicherung aktiviert und der ausgewählte Standort und die ausgewählte Firma sind nicht kompatibel.',
 
 
     /*

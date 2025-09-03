@@ -31,6 +31,7 @@ return [
         'numeric' => 'វាល :attribute ត្រូវតែស្ថិតនៅចន្លោះ :min និង :max។',
         'string' => 'វាល :attribute ត្រូវតែស្ថិតនៅចន្លោះ :min និង :max តួអក្សរ។',
     ],
+    'valid_regex' => 'The regular expression is invalid.',
     'boolean' => 'វាល :attribute ត្រូវតែពិត ឬមិនពិត។',
     'can' => 'វាល :attribute មានតម្លៃដែលមិនមានការអនុញ្ញាត។',
     'confirmed' => 'ការបញ្ជាក់វាល :attribute មិនត្រូវគ្នាទេ។',
@@ -172,6 +173,7 @@ return [
     'url' => 'វាល :attribute ត្រូវតែជា URL ត្រឹមត្រូវ។',
     'ulid' => 'វាល :attribute ត្រូវតែជា ULID ត្រឹមត្រូវ។',
     'uuid' => 'វាល :attribute ត្រូវតែជា UUID ត្រឹមត្រូវ។',
+    'fmcs_location' => 'Full multiple company support and location scoping is enabled in the Admin Settings, and the selected location and selected company are not compatible.',
 
 
     /*

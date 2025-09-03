@@ -2,7 +2,7 @@
 
 use App\Models\Accessory;
 use App\Models\Asset;
-use App\Models\AssetMaintenance;
+use App\Models\Maintenance;
 use App\Models\AssetModel;
 use App\Models\Category;
 use App\Models\Company;
@@ -67,14 +67,20 @@ class BreadcrumbsServiceProvider extends ServiceProvider
         ->push(trans('general.create'), route('hardware.create'))
         );
 
+        Breadcrumbs::for('clone/hardware', fn (Trail $trail) =>
+        $trail->parent('hardware.index', route('hardware.index'))
+            ->push(trans('admin/hardware/general.clone'), route('hardware.create'))
+        );
+
         Breadcrumbs::for('hardware.show', fn (Trail $trail, Asset $asset) =>
         $trail->parent('hardware.index', route('hardware.index'))
-            ->push($asset->present()->fullName(), route('hardware.show', $asset))
+            ->push($asset->display_name, route('hardware.show', $asset))
         );
 
         Breadcrumbs::for('hardware.edit', fn (Trail $trail, Asset $asset) =>
         $trail->parent('hardware.index', route('hardware.index'))
-            ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $asset->asset_tag]), route('hardware.edit', $asset))
+            ->push($asset->display_name, route('hardware.show', $asset))
+            ->push(trans('admin/hardware/general.edit'))
         );
 
 
@@ -377,6 +383,12 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             ->push(trans('general.create'), route('locations.create'))
         );
 
+        Breadcrumbs::for('clone/location', fn (Trail $trail) =>
+        $trail->parent('locations.index', route('locations.index'))
+            ->push(trans('admin/locations/table.clone'), route('locations.create'))
+        );
+
+
         Breadcrumbs::for('locations.show', fn (Trail $trail, Location $location) =>
         $trail->parent('locations.index', route('locations.index'))
             ->push($location->name, route('locations.show', $location))
@@ -384,6 +396,7 @@ class BreadcrumbsServiceProvider extends ServiceProvider
 
         Breadcrumbs::for('locations.edit', fn (Trail $trail, Location $location) =>
         $trail->parent('locations.index', route('locations.index'))
+            ->push($location->name, route('locations.show', $location))
             ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $location->name]), route('locations.edit', $location))
         );
 
@@ -400,14 +413,14 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             ->push(trans('general.create'), route('maintenances.create'))
         );
 
-        Breadcrumbs::for('maintenances.show', fn (Trail $trail, AssetMaintenance $maintenance) =>
-        $trail->parent('maintenances.index', route('locations.index'))
-            ->push($maintenance->title, route('maintenances.show', $maintenance))
+        Breadcrumbs::for('maintenances.show', fn (Trail $trail, Maintenance $maintenance) =>
+        $trail->parent('maintenances.index', route('maintenances.index'))
+            ->push($maintenance->name, route('maintenances.show', $maintenance))
         );
 
-        Breadcrumbs::for('manufacturers.edit', fn (Trail $trail, Manufacturer $manufacturer) =>
-        $trail->parent('manufacturers.index', route('manufacturers.index'))
-            ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $manufacturer->name]), route('manufacturers.edit', $manufacturer))
+        Breadcrumbs::for('maintenances.edit', fn (Trail $trail, Maintenance $maintenance) =>
+        $trail->parent('maintenances.index', route('maintenances.index'))
+            ->push(trans('general.breadcrumb_button_actions.edit_item', ['name' => $maintenance->name]), route('maintenances.edit', $maintenance))
         );
 
 
@@ -526,6 +539,26 @@ class BreadcrumbsServiceProvider extends ServiceProvider
                 ->push(trans('general.users'), route('users.index'))
                 ->push(trans('general.deleted_users'), route('users.index'))
             );
+        } elseif ((request()->is('users*')) && (request()->admins=='true')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.show_admins'), route('users.index'))
+            );
+        } elseif ((request()->is('users*')) && (request()->superadmins=='true')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.show_superadmins'), route('users.index'))
+            );
+        } elseif ((request()->is('users*')) && (request()->activated=='0')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.login_disabled'), route('users.index'))
+            );
+        } elseif ((request()->is('users*')) && (request()->activated=='1')) {
+            Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
+                ->push(trans('general.users'), route('users.index'))
+                ->push(trans('general.login_enabled'), route('users.index'))
+            );
         } else {
             Breadcrumbs::for('users.index', fn(Trail $trail) => $trail->parent('home', route('home'))
                 ->push(trans('general.users'), route('users.index'))
@@ -537,9 +570,16 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             ->push(trans('general.create'), route('users.create'))
         );
 
+        Breadcrumbs::for('users.clone.show', fn (Trail $trail) =>
+        $trail->parent('users.index', route('users.index'))
+            ->push(trans('admin/users/general.clone'), route('users.create'))
+        );
+
+
+
         Breadcrumbs::for('users.show', fn (Trail $trail, User $user) =>
         $trail->parent('users.index', route('users.index'))
-            ->push($user->getFullNameAttribute() ?? 'Missing Username!', route('users.show', $user))
+            ->push($user->display_name ?? 'Missing Username!', route('users.show', $user))
         );
 
         Breadcrumbs::for('users.edit', fn (Trail $trail, User $user) =>

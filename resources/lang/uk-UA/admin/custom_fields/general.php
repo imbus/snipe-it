@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Створити новий філдсет',
     'create_field'            => 'Нове власне поле',
     'create_field_title' => 'Створіть нове спеціальне поле',
-    'value_encrypted'      	        => 'Значення цього поля зашифровано в базі даних. Тільки адміністратори зможуть переглядати значення розшифрованого',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Включити значення цього поля в листа для перевірки, які відправляються користувачу? Зашифровані поля не можуть бути включені в листи',
     'show_in_email_short' => 'Включити до email',
     'help_text' => 'Текст довідки',
@@ -60,5 +60,11 @@ return [
     'display_checkin' => 'Відображати в формах перевірки',
     'display_checkout' => 'Відображати в формах перевірки',
     'display_audit' => 'Відображати в формах перевірки',
-
+    'types' => [
+        'text' => 'Text Box',
+        'listbox' => 'List Box',
+        'textarea' => 'Textarea (multi-line)',
+        'checkbox' => 'Checkbox',
+        'radio' => 'Radio Buttons',
+    ],
 ];

@@ -31,6 +31,7 @@ return [
         'numeric' => 'Polje :attribute mora biti između :min i :max.',
         'string' => 'Polje :attribute mora biti između :min i :max karaktera.',
     ],
+    'valid_regex' => 'Regularni izraz nije ispravan.',
     'boolean' => 'Polje :attribute mora biti tačno ili netačno.',
     'can' => 'Polje :attribute mora da sadrži neovlašćenu vrednost.',
     'confirmed' => 'Potvrda polja :attribute se ne poklapa.',
@@ -172,6 +173,7 @@ return [
     'url' => 'Polje :attribute mora biti ispravna URL adresa.',
     'ulid' => 'Polje :attribute mora biti ispravan ULID.',
     'uuid' => 'Polje :attribute mora biti ispravan UUID.',
+    'fmcs_location' => 'Puna podrška za višestruko kompanija i opsezi lokacija je omogućeno u administratorskim podešavanjima, a izabrana lokacija i kompanija nisu kompatibilne.',
 
 
     /*

@@ -55,9 +55,10 @@ class BulkAssetCheckoutTest extends TestCase
             $asset->assignedTo()->is($user);
             $asset->last_checkout = $checkoutAt;
             $asset->expected_checkin = $expectedCheckin;
+            $this->assertHasTheseActionLogs($asset, ['create', 'checkout']); //Note: '$this' gets auto-bound in closures, so this does work.
         });
 
-        Mail::assertSent(CheckoutAssetMail::class, 2);
+        Mail::assertSent(CheckoutAssetMail::class, 4);
         Mail::assertSent(CheckoutAssetMail::class, function (CheckoutAssetMail $mail) {
             return $mail->hasTo('someone@example.com');
         });
