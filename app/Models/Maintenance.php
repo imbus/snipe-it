@@ -37,7 +37,7 @@ class Maintenance extends SnipeModel implements ICompanyableChild
         'start_date'             => 'required|date_format:Y-m-d',
         'completion_date'        => 'date_format:Y-m-d|nullable|after_or_equal:start_date',
         'notes'                  => 'string|nullable',
-        'cost'                   => ['nullable', 'numeric', 'gte:0', 'max:99999999999999999.99'],
+        'cost'                   =>  'numeric|nullable|gte:0|max:99999999999999999.99',
     ];
 
 
