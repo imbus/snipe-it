@@ -10,8 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('checkout_acceptances', function (Blueprint $table) {
-            $table->unsignedInteger('qty')->nullable()->after('assigned_to_id')->default(null);
+        Schema::whenTableDoesntHaveColumn('checkout_acceptances', 'qty', function () {
+            Schema::table('checkout_acceptances', function (Blueprint $table) {
+                $table->unsignedInteger('qty')->nullable()->after('assigned_to_id')->default(null);
+            });
         });
     }
 
@@ -20,8 +22,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('checkout_acceptances', function (Blueprint $table) {
-            $table->dropColumn('qty');
+        Schema::whenTableHasColumn('checkout_acceptances', 'qty', function () {
+            Schema::table('checkout_acceptances', function (Blueprint $table) {
+                $table->dropColumn('qty');
+            });
         });
     }
 };
