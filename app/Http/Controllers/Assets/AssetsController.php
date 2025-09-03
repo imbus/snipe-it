@@ -66,12 +66,14 @@ class AssetsController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('index', Asset::class);
-        $companyId = $request->input('company_id');
+$companyId = $request->input('company_id');
         $company = is_scalar($companyId) ? Company::find($companyId) : null;
 
-        $predefined_filters = PredefinedFilter::orderBy('name')->get();
+        $predefined_filters = PredefinedFilter::where('created_by', auth()->user()->id)
+            ->orderBy('name')
+            ->get();
 
-        return view('hardware/index')->with('company', $company)->with('predefined_filters', $predefined_filters);
+        return view('hardware/index')->with('company', $company)->with('predefined_filters', $predefined_filters); // TODO maybe switch later to user / role based view
     }
 
     /**
