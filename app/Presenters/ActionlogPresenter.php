@@ -145,7 +145,7 @@ class ActionlogPresenter extends Presenter
                 return $target->present()->nameUrl();
             }
 
-            return '<del>'.$target->present()->name().'</del>';
+            return '<del>'.$target->display_name.'</del>';
         }
 
         return '';

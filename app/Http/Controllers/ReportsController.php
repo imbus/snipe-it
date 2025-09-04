@@ -159,7 +159,7 @@ class ReportsController extends Controller
             $row[] = e($asset->serial);
 
             if ($target = $asset->assignedTo) {
-                $row[] = e($target->present()->name());
+                $row[] = e($target->display_name);
             } else {
                 $row[] = ''; // Empty string if unassigned
             }
@@ -856,8 +856,8 @@ class ReportsController extends Controller
                     }
 
                     if ($request->filled('assigned_to')) {
-                        $row[] = ($asset->checkedOutToUser() && $asset->assigned) ? $asset->assigned->display_name : '';
-                        $row[] = ($asset->checkedOutToUser() && $asset->assigned) ? 'user' : $asset->assignedType();
+                        $row[] = ($asset->assigned) ? $asset->assigned->display_name : '';
+                        $row[] = ($asset->assigned) ? $asset->assignedType() : '';
                     }
 
                     if ($request->filled('username')) {
@@ -1260,7 +1260,7 @@ class ReportsController extends Controller
                 $row[]  = str_replace(',', '', e($item['assetItem']->model->name));
                 $row[]  = str_replace(',', '', e($item['assetItem']->name));
                 $row[]  = str_replace(',', '', e($item['assetItem']->asset_tag));
-                $row[]  = str_replace(',', '', e(($item['acceptance']->assignedTo) ? $item['acceptance']->assignedTo->present()->name() : trans('admin/reports/general.deleted_user')));
+                $row[]  = str_replace(',', '', e(($item['acceptance']->assignedTo) ? $item['acceptance']->assignedTo->display_name : trans('admin/reports/general.deleted_user')));
                 $rows[] = implode(',', $row);
             }
         }
