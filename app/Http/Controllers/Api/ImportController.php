@@ -136,7 +136,7 @@ class ImportController extends Controller
 
                 try {
                     // Grab the first row to display via ajax as the user picks fields
-                    $import->first_row = $reader->fetchOne(1);
+                    $import->first_row = $reader->nth(1);
                 } catch (JsonEncodingException $e) {
                     return response()->json(
                         Helper::formatStandardApiResponse(
