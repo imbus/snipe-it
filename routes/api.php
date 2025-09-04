@@ -168,6 +168,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     );
 
     /**
+     * Assigned to dropdown selectlist routes group
+     */
+    Route::group(['prefix' => 'assignedTo'], function () {
+
+        Route::get('selectlist',
+            [
+                Api\AssignedToDropdownController::class,
+                'selectlist',
+            ]
+        )->name('api.assignedTo.selectlist');
+
+    }); // end Assigned to dropdown selectlist routes group
+
+    /**
      * Categories API routes
      */
     Route::group(['prefix' => 'categories'], function () {
