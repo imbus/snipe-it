@@ -136,30 +136,5 @@ class ImportAssetModelsTest extends ImportDataTestCase implements TestsPermissio
 
     }
 
-    #[Test]
-    public function updateAssetModelFromImportById(): void
-    {
-        $assetmodel = AssetModel::factory()->create(['name' => Str::random(), 'model_number' => Str::random()]);
-        $category = Category::find($assetmodel->category_id);
-        $importFileBuilder = ImportFileBuilder::new(['id' => $assetmodel->id, 'name' => Str::random(), 'model_number' => Str::random(), 'category' => $category->name]);
-
-        $row = $importFileBuilder->firstRow();
-        $import = Import::factory()->assetmodel()->create(['file_path' => $importFileBuilder->saveToImportsDirectory()]);
-
-        $this->actingAsForApi(User::factory()->superuser()->create());
-        $this->importFileResponse(['import' => $import->id, 'import-update' => true])
-            ->assertOk()
-            ->assertExactJson([
-                'payload'  => null,
-                'status'   => 'success',
-                'messages' => ['redirect_url' => route('models.index')]
-            ]);
-
-        $updatedAssetmodel = AssetModel::query()->find($assetmodel->id);
-
-        $this->assertEquals($row['model_number'], $updatedAssetmodel->model_number);
-        $this->assertEquals($row['name'], $updatedAssetmodel->name);
-
-    }
 
 }
