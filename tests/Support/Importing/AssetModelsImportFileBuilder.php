@@ -27,6 +27,7 @@ class AssetModelsImportFileBuilder extends FileBuilder
     protected function getDictionary(): array
     {
         return [
+            'id'             => 'ID',
             'name'           => 'Name',
             'category'       => 'Category',
             'manufacturer'   => 'Manufacturer',
@@ -48,6 +49,7 @@ class AssetModelsImportFileBuilder extends FileBuilder
         $faker = fake();
 
         return [
+            'id'               => 1,
             'name'            => $faker->catchPhrase,
             'category'        => Str::random(),
             'model_number'    => $faker->creditCardNumber(),
