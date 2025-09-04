@@ -403,6 +403,7 @@ class Importer extends Component
 
 
         $this->assetmodels_fields  = [
+            'id' => trans('general.id'),
             'category' => trans('general.category'),
             'eol' => trans('general.eol'),
             'fieldset' => trans('admin/models/general.fieldset'),
@@ -412,6 +413,7 @@ class Importer extends Component
             'model_number' => trans('general.model_no'),
             'notes' => trans('general.item_notes', ['item' => trans('admin/hardware/form.model')]),
             'requestable' => trans('admin/models/general.requestable'),
+            'require_serial' => trans('admin/hardware/general.require_serial'),
 
         ];
 
@@ -534,6 +536,10 @@ class Importer extends Component
                     'serial no',
                     'product key',
                     'key',
+                ],
+            'require_serial' =>
+                [
+                    'serial required',
                 ],
             'model_number' =>
                 [
