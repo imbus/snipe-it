@@ -142,7 +142,7 @@
         <td>{{ (($asset->model) && ($asset->model->manufacturer)) ? $asset->model->manufacturer->name : '' }}</td>
         <td>{{ ($asset->model) ? $asset->model->name : '' }}</td>
         <td>{{ $asset->serial }}</td>
-        <td>{{ ($asset->location->name) ? $asset->location->name : '' }}</td>
+        <td>{{ ($asset->location) ? $asset->location->name : '' }}</td>
         <td>{{ \App\Helpers\Helper::getFormattedDateObject( $asset->last_checkout, 'datetime', false) }}</td>
         <td>{{ \App\Helpers\Helper::getFormattedDateObject( $asset->expected_checkin, 'datetime', false) }}</td>
         </tr>
