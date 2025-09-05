@@ -9,3 +9,4 @@
 - scope_id: asset-scope-byfilter-mixed-id-name | file: app/Models/Asset.php | decision: kept incoming mixed id/name + scalar filtering blocks for status_label, location, rtd_location, assigned_to, manufacturer, category, and model.
 - scope_id: assignedto-dropdown-route | file: routes/api.php | decision: resolved by restoring upstream routes structure/content and adding only the api.assignedTo.selectlist endpoint to avoid formatting-only churn or unrelated route regressions.
 - scope_id: selectlist-itemkey-removal | file: app/Http/Transformers/SelectlistTransformer.php | decision: intentionally removed itemKey path because ID-based filtering no longer requires use_item_key.
+- scope_id: assignedto-selectlist-output-shape | file: app/Http/Transformers/SelectlistTransformer.php | decision: kept incoming assignedTo selectlist output shape (id/text/image with optional type), removed conflict markers, and retained prior itemKey removal.

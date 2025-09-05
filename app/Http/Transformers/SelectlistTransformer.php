@@ -25,27 +25,19 @@ class SelectlistTransformer
 
         // Loop through the paginated collection to set the array values
         foreach ($select_items as $select_item) {
-            $row = [
+            $item = [
                 'id' => (int) $select_item->id,
-                'text' => ($select_item->use_text) ? $select_item->use_text : $select_item->name,
-                'image' => ($select_item->use_image) ? $select_item->use_image : null,
-                'tag_color' => ($select_item->tag_color) ? $select_item->tag_color : null,
-
-<<<<<<< HEAD
-                // Optional value to identify value in the select-dropdowns when it is build out of multiple attributes. Required for the aavanced search.
-                'itemKey' => ($select_item->use_item_key) ? $select_item->use_item_key : null,
-=======
->>>>>>> e85b67105d (Removed use_item_key because it isn't required anymore with IDs)
+                'text' => $select_item->use_text ?: $select_item->name,
+                'image' => $select_item->use_image ?: null,
             ];
 
-            // Optional: when set, select2 renders the option as un-selectable.
-            // Used to enforce hierarchy / membership constraints up-front.
-            if (! empty($select_item->use_disabled)) {
-                $row['disabled'] = true;
+            if (!empty($select_item->type)) {
+                $item['type'] = $select_item->type;
             }
 
-            $items_array[] = $row;
+            $items_array[] = $item;
         }
+
 
         $results = [
             'results' => $items_array,
