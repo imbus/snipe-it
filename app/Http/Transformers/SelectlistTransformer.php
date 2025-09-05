@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Http\Transformers;
 
@@ -31,8 +31,11 @@ class SelectlistTransformer
                 'image' => ($select_item->use_image) ? $select_item->use_image : null,
                 'tag_color' => ($select_item->tag_color) ? $select_item->tag_color : null,
 
+<<<<<<< HEAD
                 // Optional value to identify value in the select-dropdowns when it is build out of multiple attributes. Required for the aavanced search.
                 'itemKey' => ($select_item->use_item_key) ? $select_item->use_item_key : null,
+=======
+>>>>>>> e85b67105d (Removed use_item_key because it isn't required anymore with IDs)
             ];
 
             // Optional: when set, select2 renders the option as un-selectable.
@@ -58,6 +61,7 @@ class SelectlistTransformer
         return $results;
     }
 }
+
 
 
 
