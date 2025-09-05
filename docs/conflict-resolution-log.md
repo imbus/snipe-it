@@ -18,3 +18,4 @@
 - scope_id: predefined-filter-conflict-step | file: app/Http/Controllers/Api/AssetsController.php | decision: kept incoming predefinedFilter filters as additive optional logic (guarded by request presence) while preserving existing asset query, sort, and pagination flow.
 - scope_id: predefined-filter-seeder-merge | file: database/seeders/DatabaseSeeder.php | decision: additive merge kept Actionlog/Maintenance memory reporting and added PredefinedFilterSeeder call.
 - scope_id: predefined-filter-user-company-safe-merge | file: app/Http/Controllers/Assets/AssetsController.php | decision: merged index() by keeping scalar-safe company_id lookup and applying user-scoped PredefinedFilter query (created_by + name order).
+- scope_id: predefined-filter-permissions-config | file: config/permissions.php | decision: additive merge inserted PredefinedFilters immediately before User (Self) Accounts and preserved self section key name unchanged.

@@ -469,6 +469,33 @@ return [
         ],
     ],
 
+    'PredefinedFilters' => [
+        [
+            'permission' => 'predefinedFilter.view',
+            'label'      => 'View ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'predefinedFilter.create',
+            'label'      => 'Create ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'predefinedFilter.edit',
+            'label'      => 'Edit  ',
+            'note'       => '',
+            'display'    => true,
+        ],
+        [
+            'permission' => 'predefinedFilter.delete',
+            'label'      => 'Delete ',
+            'note'       => '',
+            'display'    => true,
+        ],
+    ],
+
     'User (Self) Accounts' => [
         [
             'permission' => 'self.two_factor',
