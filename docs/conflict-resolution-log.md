@@ -11,3 +11,4 @@
 - scope_id: selectlist-itemkey-removal | file: app/Http/Transformers/SelectlistTransformer.php | decision: intentionally removed itemKey path because ID-based filtering no longer requires use_item_key.
 - scope_id: assignedto-selectlist-output-shape | file: app/Http/Transformers/SelectlistTransformer.php | decision: kept incoming assignedTo selectlist output shape (id/text/image with optional type), removed conflict markers, and retained prior itemKey removal.
 - scope_id: button-i18n-keys-merge | files: resources/lang/{en-GB,de-DE,de-if}/button.php | decision: kept HEAD key sets/translations and formatting, added incoming delete_search_query and search keys, removed conflict markers.
+- scope_id: profile-location-fieldname-stale-block | file: resources/views/account/profile.blade.php | decision: resolved stale legacy conflict block by keeping HEAD refactored profile component structure and excluding incoming old-template chunk.
