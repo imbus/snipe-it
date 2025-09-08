@@ -233,6 +233,7 @@ class AcceptanceController extends Controller
                 'logo' => $path_logo,
                 'date_settings' => $branding_settings->date_display_format,
                 'admin' => auth()->user()->present()?->fullName,
+                'qty' => $acceptance->qty ?? 1,
             ];
 
             if ($pdf_view_route!='') {
@@ -338,6 +339,7 @@ class AcceptanceController extends Controller
                 'assigned_to' => $assigned_to,
                 'company_name' => $branding_settings->site_name,
                 'date_settings' => $branding_settings->date_display_format,
+                'qty' => $acceptance->qty ?? 1,
             ];
 
             if ($pdf_view_route!='') {
@@ -346,7 +348,10 @@ class AcceptanceController extends Controller
                 Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf->output());
             }
 
-            $acceptance->decline($sig_filename, $request->input('note'));
+            for ($i = 0; $i < ($acceptance->qty ?? 1); $i++) {
+                $acceptance->decline($sig_filename, $request->input('note'));
+            }
+
             $acceptance->notify(new AcceptanceAssetDeclinedNotification($data));
             Log::debug('New event acceptance.');
             event(new CheckoutDeclined($acceptance));
