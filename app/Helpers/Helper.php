@@ -748,7 +748,7 @@ class Helper
         $consumables = Consumable::withCount('consumableAssignments as consumable_assignments_count')->whereNotNull('min_amt')->get();
         $accessories = Accessory::withCount('checkouts as checkouts_count')->whereNotNull('min_amt')->get();
         $components = Component::whereNotNull('min_amt')->get();
-        $asset_models = AssetModel::where('min_amt', '>', 0)->get();
+        $asset_models = AssetModel::where('min_amt', '>', 0)->with('assets')->get();
         $licenses = License::where('min_amt', '>', 0)->get();
 
         $items_array = [];
@@ -812,10 +812,13 @@ class Helper
         }
 
 
-        $total_owned = Asset::whereIn('model_id', $asset_models->pluck('id'))->count();
-        $avail = Asset::whereIn('model_id', $asset_models->pluck('id'))->whereNull('assigned_to')->count();
+
 
         foreach ($asset_models as $asset_model) {
+
+            $total_owned = $asset_model->assets->count();
+            $avail =  $asset_model->assets->whereNull('assigned_to')->count();
+
             if ($avail < ($asset_model->min_amt) + $alert_threshold) {
                 if ($avail > 0) {
                     $percent = number_format((($avail / $total_owned) * 100), 0);
