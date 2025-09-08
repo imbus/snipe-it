@@ -274,22 +274,18 @@ class ReportsController extends Controller
                     $target_name = '';
 
                     if ($actionlog->target) {
-                            if ($actionlog->targetType() == 'user') {
-                                $target_name = $actionlog->target->display_name;
-                        } else {
-                            $target_name = $actionlog->target->getDisplayNameAttribute();
-                        }
+                        $target_name = $actionlog->target->display_name;
                     }
 
-                    if($actionlog->item){
-                        $item_name = e($actionlog->item->getDisplayNameAttribute());
+                    if ($actionlog->item){
+                        $item_name = e($actionlog->item->display_name);
                     } else {
                         $item_name = '';
                     }
 
                     $row = [
                         $actionlog->created_at,
-                        ($actionlog->adminuser) ? e($actionlog->adminuser->display_name) : '',
+                        ($actionlog->adminuser) ? $actionlog->adminuser->display_name : '',
                         $actionlog->present()->actionType(),
                         e($actionlog->itemType()),
                         ($actionlog->itemType() == 'user') ? $actionlog->filename : $item_name,
@@ -298,10 +294,10 @@ class ReportsController extends Controller
                         (($actionlog->item) && ($actionlog->item->model))  ? $actionlog->item->model->model_number : null,
                         $target_name,
                         ($actionlog->note) ? e($actionlog->note) : '',
-                        $actionlog->log_meta,
                         $actionlog->remote_ip,
                         $actionlog->user_agent,
                         $actionlog->action_source,
+                        $actionlog->log_meta,
                     ];
                     fputcsv($handle, $row);
                 }
