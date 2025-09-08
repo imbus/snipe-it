@@ -43,7 +43,7 @@ class CheckoutAccessoryMail extends Mailable
 
         return new Envelope(
             from: $from,
-            subject: trans('mail.Accessory_Checkout_Notification'),
+            subject: trans_choice('mail.Accessory_Checkout_Notification', $this->checkout_qty),
         );
     }
 
