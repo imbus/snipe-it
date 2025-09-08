@@ -1256,6 +1256,7 @@
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
+                class: 'btn btn-primary',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1311,6 +1312,7 @@
                 window.location.href = '{{ route('companies.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1333,6 +1335,7 @@
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
+                class: 'btn btn-primary',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1388,6 +1391,7 @@
                 window.location.href = '{{ route('locations.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1407,6 +1411,7 @@
                 window.location.href = '{{ route('accessories.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                     accesskey: 'n'
@@ -1426,6 +1431,7 @@
                 window.location.href = '{{ route('depreciations.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1445,6 +1451,7 @@
                 window.location.href = '{{ route('fields.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1465,6 +1472,7 @@
                 window.location.href = '{{ route('fieldsets.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1484,6 +1492,7 @@
                 window.location.href = '{{ route('components.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1503,6 +1512,7 @@
                 window.location.href = '{{ route('consumables.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1522,6 +1532,7 @@
                 window.location.href = '{{ route('manufacturers.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1553,6 +1564,7 @@
                 window.location.href = '{{ route('suppliers.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1572,6 +1584,7 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1591,6 +1604,7 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1610,6 +1624,7 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1629,6 +1644,7 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1648,6 +1664,7 @@
                 window.location.href = '{{ route('categories.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1667,6 +1684,7 @@
                 window.location.href = '{{ route('models.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1697,6 +1715,7 @@
                 window.location.href = '{{ route('statuslabels.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -1717,6 +1736,7 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
+                class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
