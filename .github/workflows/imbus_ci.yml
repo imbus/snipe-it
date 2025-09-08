@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   tests-mysql:
-    name: MySQL • PHP ${{ matrix.php }}
+    name: MySQL â€¢ PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -81,7 +81,7 @@ jobs:
         run: php artisan test --env=testing
 
   tests-sqlite:
-    name: SQLite • PHP ${{ matrix.php }}
+    name: SQLite â€¢ PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
