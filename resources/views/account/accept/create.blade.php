@@ -46,7 +46,7 @@
                         @if ($acceptance->checkoutable->getEula())
                             <div class="col-md-12" style="padding-top: 15px; padding-bottom: 15px;">
                                 <div style="background-color: rgba(211,211,211,0.25); padding: 10px; border: lightgrey 1px solid;">
-                                    {!!  $acceptance->checkoutable->getEula() !!}
+                                    {!!  str_replace('<p>', '<p dir="auto">', $acceptance->checkoutable->getEula()) !!}
                                 </div>
                             </div>
                         @endif
