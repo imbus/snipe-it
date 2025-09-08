@@ -148,4 +148,9 @@ class CheckoutAcceptance extends Model
     {
         return $query->whereNull('accepted_at')->whereNull('declined_at');
     }
+
+    public function scopeDeclined(Builder $query)
+    {
+        return $query->whereNull('accepted_at')->whereNotNull('declined_at');
+    }
 }
