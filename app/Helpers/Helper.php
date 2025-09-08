@@ -811,12 +811,11 @@ class Helper
             }
         }
 
-        foreach ($asset_models as $asset_model){
 
-            $asset = new Asset();
-            $total_owned = $asset->where('model_id', '=', $asset_model->id)->count();
-            $avail = $asset->where('model_id', '=', $asset_model->id)->whereNull('assigned_to')->count();
+        $total_owned = Asset::whereIn('model_id', $asset_models->pluck('id'))->count();
+        $avail = Asset::whereIn('model_id', $asset_models->pluck('id'))->whereNull('assigned_to')->count();
 
+        foreach ($asset_models as $asset_model) {
             if ($avail < ($asset_model->min_amt) + $alert_threshold) {
                 if ($avail > 0) {
                     $percent = number_format((($avail / $total_owned) * 100), 0);
