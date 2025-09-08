@@ -817,7 +817,7 @@ class Helper
         foreach ($asset_models as $asset_model) {
 
             $total_owned = $asset_model->assets->count();
-            $avail =  $asset_model->assets->whereNull('assigned_to')->count();
+            $avail =  $asset_model->assets->whereNull('assets.assigned_to')->count();
 
             if ($avail < ($asset_model->min_amt) + $alert_threshold) {
                 if ($avail > 0) {
