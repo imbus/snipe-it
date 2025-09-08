@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 return [
     'actions' => 'Aktionen',
@@ -11,6 +11,8 @@ return [
     'clone' => 'Duplizieren',
     'restore' => 'Wiederherstellen',
     'remove' => 'Entfernen',
+    'delete_search_query' => 'Suche löschen',
+    'search' => 'Suchen',
     'request' => 'Anfragen',
     'submit' => 'Abschicken',
     'upload' => 'Hochladen',
