@@ -16,6 +16,11 @@ class AssignedAssetsTest extends TestCase
             ->assertForbidden();
     }
 
+    public function test_adheres_to_company_scoping()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function test_can_get_assets_assigned_to_specific_asset()
     {
         $unassociatedAsset = Asset::factory()->create();
