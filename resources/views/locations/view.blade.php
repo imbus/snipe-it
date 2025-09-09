@@ -42,7 +42,7 @@
                               <span class="sr-only">
                             {{ trans('general.users') }}
                               </span>
-                              {!! ($location->users->count() > 0) ? '<span class="badge">'.number_format($location->users->count()).'</span>' : '' !!}
+                              {!! ($location->users()->count() > 0) ? '<span class="badge">'.number_format($location->users()->count()).'</span>' : '' !!}
                           </a>
                       </li>
               @endcan
@@ -83,7 +83,7 @@
                           <li>
                               <a href="#accessories" data-toggle="tab" data-tooltip="true" title="{{ trans('general.accessories') }}">
                                   <i class="far fa-keyboard fa-fw" style="font-size: 17px" aria-hidden="true"></i>
-                                  {!! ($location->accessories->count() > 0) ? '<span class="badge">'.number_format($location->accessories->count()).'</span>' : '' !!}
+                                  {!! ($location->accessories()->count() > 0) ? '<span class="badge">'.number_format($location->accessories()->count()).'</span>' : '' !!}
                                   <span class="sr-only">
                                     {{ trans('general.accessories') }}
                                   </span>
@@ -93,7 +93,7 @@
                           <li>
                               <a href="#accessories_assigned" data-toggle="tab" data-tooltip="true" title="{{ trans('general.accessories_assigned') }}">
                                   <i class="fas fa-keyboard fa-fw" style="font-size: 17px" aria-hidden="true"></i>
-                                  {!! ($location->assignedAccessories->count() > 0) ? '<span class="badge">'.number_format($location->assignedAccessories->count()).'</span>' : '' !!}
+                                  {!! ($location->assignedAccessories()->count() > 0) ? '<span class="badge">'.number_format($location->assignedAccessories()->count()).'</span>' : '' !!}
                                   <span class="sr-only">
                                       {{ trans('general.accessories_assigned') }}
                                   </span>
@@ -106,7 +106,7 @@
                           <li>
                               <a href="#consumables" data-toggle="tab" data-tooltip="true" title="{{ trans('general.consumables') }}">
                                   <i class="fas fa-tint fa-fw" style="font-size: 17px" aria-hidden="true"></i>
-                                  {!! ($location->consumables->count() > 0) ? '<span class="badge">'.number_format($location->consumables->count()).'</span>' : '' !!}
+                                  {!! ($location->consumables()->count() > 0) ? '<span class="badge">'.number_format($location->consumables->count()).'</span>' : '' !!}
                                   <span class="sr-only">
                               {{ trans('general.consumables') }}
                           </span>
@@ -118,13 +118,25 @@
                           <li>
                               <a href="#components" data-toggle="tab" data-tooltip="true" title="{{ trans('general.components') }}">
                                   <i class="fas fa-hdd fa-fw" style="font-size: 17px" aria-hidden="true"></i>
-                                  {!! ($location->components->count() > 0) ? '<span class="badge">'.number_format($location->components->count()).'</span>' : '' !!}
+                                  {!! ($location->components->count() > 0) ? '<span class="badge">'.number_format($location->components()->count()).'</span>' : '' !!}
                                   <span class="sr-only">
                                     {{ trans('general.components') }}
                                   </span>
                               </a>
                           </li>
                   @endcan
+
+                  <li>
+                      <a href="#child_locations" data-toggle="tab" data-tooltip="true" title="{{ trans('general.child_locations') }}">
+                          <span class="hidden-xs hidden-sm">
+                               <i class="fa-solid fa-city fa-fw" style="font-size: 17px" aria-hidden="true"></i>
+                          <span class="sr-only">
+                            {{ trans('general.child_locations') }}
+                          </span>
+                          {!! ($location->children()->count() > 0 ) ? '<span class="badge">'.number_format($location->children()->count()).'</span>' : '' !!}
+                      </span>
+                      </a>
+                  </li>
 
               <li>
                   <a href="#files" data-toggle="tab" data-tooltip="true" title="{{ trans('general.files') }}">
@@ -137,10 +149,14 @@
                           <span class="sr-only">
                             {{ trans('general.files') }}
                           </span>
-                          {!! ($location->uploads->count() > 0 ) ? '<span class="badge">'.number_format($location->uploads->count()).'</span>' : '' !!}
+                          {!! ($location->uploads()->count() > 0 ) ? '<span class="badge">'.number_format($location->uploads()->count()).'</span>' : '' !!}
                       </span>
                   </a>
               </li>
+
+
+
+
 
               <li>
                   <a href="#history" data-toggle="tab" data-tooltip="true" title="{{ trans('general.history') }}">
@@ -350,15 +366,52 @@
                           </table>
               </div><!-- /.tab-pane -->
 
-                  <div class="tab-pane fade" id="files">
-
-                      <div class="row">
-                          <div class="col-md-12">
-                              <x-filestable object_type="locations" :object="$location" />
-                          </div> <!-- /.col-md-12 -->
-                      </div> <!-- /.row -->
-
+                  <div class="tab-pane fade" id="child_locations">
+                      <div class="tab-pane" id="child_locations">
+                          <h2 class="box-title">
+                              {{ trans('general.child_locations') }}
+                          </h2>
+                          <table
+                                  role="table"
+                                  data-columns="{{ \App\Presenters\LocationPresenter::dataTableLayout() }}"
+                                  data-cookie-id-table="childrenListingTable"
+                                  data-id-table="childrenListingTable"
+                                  data-side-pagination="server"
+                                  data-sort-order="asc"
+                                  id="childrenListingTable"
+                                  data-buttons="childrenListingTable"
+                                  class="table table-striped snipe-table"
+                                  data-url="{{route('api.locations.index', ['parent_id' => $location->id]) }}"
+                                  data-export-options='{
+                              "fileName": "export-children-locations-{{ str_slug($location->name) }}-{{ date('Y-m-d') }}",
+                              "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                              }'>
+                          </table>
+                      </div><!-- /.tab-pane -->
                   </div>
+
+                  <div class="tab-pane" id="accessories_assigned">
+                      <h2 class="box-title" style="float:left">
+                          {{ trans('general.accessories_assigned') }}
+                      </h2>
+
+                      <table
+                              role="table"
+                              data-columns="{{ \App\Presenters\LocationPresenter::assignedAccessoriesDataTableLayout() }}"
+                              data-cookie-id-table="accessoriesAssignedListingTable"
+                              data-id-table="accessoriesAssignedListingTable"
+                              data-side-pagination="server"
+                              data-sort-order="asc"
+                              id="accessoriesAssignedListingTable"
+                              data-buttons="accessoryButtons"
+                              class="table table-striped snipe-table"
+                              data-url="{{ route('api.locations.assigned_accessories', ['location' => $location]) }}"
+                              data-export-options='{
+                              "fileName": "export-locations-{{ str_slug($location->name) }}-accessories-{{ date('Y-m-d') }}",
+                              "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","icon"]
+                              }'>
+                      </table>
+                  </div><!-- /.tab-pane -->
 
                 <div class="tab-pane" id="history">
                     <h2 class="box-title">{{ trans('general.history') }}</h2>
@@ -424,16 +477,16 @@
                   <li>{{ $location->city }} {{ $location->state }} {{ $location->zip }}</li>
               @endif
               @if ($location->manager)
-                  <li>{{ trans('admin/users/table.manager') }}: {!! $location->manager->present()->nameUrl() !!}</li>
+                  <li><strong>{{ trans('admin/users/table.manager') }}</strong>: {!! $location->manager->present()->nameUrl() !!}</li>
               @endif
               @if ($location->company)
-                  <li>{{ trans('admin/companies/table.name') }}: {!! $location->company->present()->nameUrl() !!}</li>
+                  <li><strong>{{ trans('admin/companies/table.name') }}</strong>: {!! $location->company->present()->nameUrl() !!}</li>
               @endif
               @if ($location->parent)
-                  <li>{{ trans('admin/locations/table.parent') }}: {!! $location->parent->present()->nameUrl() !!}</li>
+                  <li><strong>{{ trans('admin/locations/table.parent') }}</strong>: {!! $location->parent->present()->nameUrl() !!}</li>
               @endif
               @if ($location->ldap_ou)
-                  <li>{{ trans('admin/locations/table.ldap_ou') }}: {{ $location->ldap_ou }}</li>
+                  <li><strong>{{ trans('admin/locations/table.ldap_ou') }}</strong>: {{ $location->ldap_ou }}</li>
               @endif
 
 
@@ -476,7 +529,7 @@
       <div class="col-md-12" style="padding-top: 5px;">
           <a href="{{ route('locations.print_assigned', ['locationId' => $location->id]) }}" style="width: 100%;" class="btn btn-sm btn-primary btn-social hidden-print">
               <x-icon type="print" />
-              {{ trans('admin/locations/table.print_assigned') }}
+              {{ trans('admin/locations/table.print_inventory') }}
           </a>
       </div>
       <div class="col-md-12" style="padding-top: 5px;">

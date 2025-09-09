@@ -253,20 +253,38 @@ class LocationsController extends Controller
         $this->authorize('view', Location::class);
 
         if ($location = Location::where('id', $id)->first()) {
-            $parent = Location::where('id', $location->parent_id)->first();
-            $manager = User::where('id', $location->manager_id)->first();
-            $company = Company::where('id', $location->company_id)->first();
-            $users = User::where('location_id', $id)->with('company', 'department', 'location')->get();
-            $assets = Asset::where('assigned_to', $id)->where('assigned_type', Location::class)->with('model', 'model.category')->get();
             return view('locations/print')
-                ->with('assets', $assets)
-                ->with('users',$users)
+                ->with('assigned', false)
+                ->with('assets', $location->assets)
+                ->with('assignedAssets', $location->assignedAssets)
+                ->with('accessories', $location->accessories)
+                ->with('assignedAccessories', $location->assignedAccessories)
+                ->with('users',$location->users)
                 ->with('location', $location)
-                ->with('parent', $parent)
-                ->with('manager', $manager)
-                ->with('company', $company);
+                ->with('consumables', $location->consumables)
+                ->with('components', $location->components)
+                ->with('children', $location->children);
         }
 
+        return redirect()->route('locations.index')->with('error', trans('admin/locations/message.does_not_exist'));
+    }
+
+    public function print_all_assigned($id) : View | RedirectResponse
+    {
+        $this->authorize('view', Location::class);
+        if ($location = Location::where('id', $id)->first()) {
+            return view('locations/print')
+                ->with('assigned', true)
+                ->with('assets', $location->assets)
+                ->with('assignedAssets', $location->assignedAssets)
+                ->with('accessories', $location->accessories)
+                ->with('assignedAccessories', $location->assignedAccessories)
+                ->with('users',$location->users)
+                ->with('location', $location)
+                ->with('consumables', $location->consumables)
+                ->with('components', $location->components)
+                ->with('children', $location->children);
+        }
         return redirect()->route('locations.index')->with('error', trans('admin/locations/message.does_not_exist'));
     }
 
@@ -333,26 +351,6 @@ class LocationsController extends Controller
         return redirect()->back()->with('error', trans('admin/models/message.does_not_exist'));
 
     }
-    public function print_all_assigned($id) : View | RedirectResponse
-    {
-        $this->authorize('view', Location::class);
-        if ($location = Location::where('id', $id)->first()) {
-            $parent = Location::where('id', $location->parent_id)->first();
-            $manager = User::where('id', $location->manager_id)->first();
-            $company = Company::where('id', $location->company_id)->first();
-            $users = User::where('location_id', $id)->with('company', 'department', 'location')->get();
-            $assets = Asset::where('location_id', $id)->with('model', 'model.category')->get();
-            return view('locations/print')
-                ->with('assets', $assets)
-                ->with('users',$users)
-                ->with('location', $location)
-                ->with('parent', $parent)
-                ->with('manager', $manager)
-                ->with('company', $company);
-        }
-        return redirect()->route('locations.index')->with('error', trans('admin/locations/message.does_not_exist'));
-    }
-
 
     /**
      * Returns a view that allows the user to bulk delete locations
