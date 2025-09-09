@@ -3,8 +3,8 @@
 namespace Tests\Feature\Assets\Api;
 
 use App\Models\Asset;
+use App\Models\Company;
 use App\Models\User;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class AssignedAssetsTest extends TestCase
@@ -18,7 +18,19 @@ class AssignedAssetsTest extends TestCase
 
     public function test_adheres_to_company_scoping()
     {
-        $this->markTestIncomplete();
+        $this->settings->enableMultipleFullCompanySupport();
+
+        [$companyA, $companyB] = Company::factory()->count(2)->create();
+
+        $asset = Asset::factory()->for($companyA)->create();
+
+        $user = User::factory()->for($companyB)->viewAssets()->create();
+
+        $this->actingAsForApi($user)
+            ->getJson(route('api.assets.assigned_assets', $asset))
+            ->assertOk()
+            ->assertStatusMessageIs('error')
+            ->assertMessagesAre('Asset not found');
     }
 
     public function test_can_get_assets_assigned_to_specific_asset()
@@ -35,11 +47,7 @@ class AssignedAssetsTest extends TestCase
         $this->actingAsForApi(User::factory()->viewAssets()->create())
             ->getJson(route('api.assets.assigned_assets', $asset))
             ->assertOk()
-            ->dump()
             ->assertResponseContainsInRows($assetsAssignedToAsset, 'serial')
-            ->assertResponseDoesNotContainInRows($unassociatedAsset, 'serial')
-            ->assertJson(function (AssertableJson $json) {
-                $json->etc();
-            });
+            ->assertResponseDoesNotContainInRows($unassociatedAsset, 'serial');
     }
 }
