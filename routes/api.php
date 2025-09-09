@@ -1262,6 +1262,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             ]
         )->name('api.predefined-filters.store');
 
+        Route::put('{id}',
+            [
+                Api\PredefinedFilterController::class,
+                'update',
+            ]
+        )->name('api.predefined-filters.update');
+
+        Route::delete('{id}',
+            [
+                Api\PredefinedFilterController::class,
+                'destroy',
+            ]
+        )->name('api.predefined-filters.destroy');
+
     }); // end predefined filters API routes
 
     /**
