@@ -75,7 +75,6 @@ class AssignedAssetsTest extends TestCase
             ->assertOk()
             ->assertResponseDoesNotContainInRows($assetsAssignedToAsset->first(), 'serial')
             ->assertResponseContainsInRows($assetsAssignedToAsset->last(), 'serial')
-            ->dump()
             ->assertJson(function (AssertableJson $json) {
                 $json->where('total', 2)
                     ->count('rows', 1)
