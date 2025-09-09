@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
 
 class SnipeModel extends Model
 {
@@ -156,6 +158,20 @@ class SnipeModel extends Model
         $this->attributes['status_id'] = $value;
     }
 
+    /**
+     * Applies offset (from request) and limit to query.
+     *
+     * @param  Builder  $query
+     * @param  int  $total
+     * @return void
+     */
+    public function scopeApplyOffsetAndLimit(Builder $query, int $total)
+    {
+        $offset = (Request::input('offset') > $total) ? $total : app('api_offset_value');
+        $limit = app('api_limit_value');
+
+        $query->skip($offset)->take($limit);
+    }
 
     protected function displayName(): Attribute
     {

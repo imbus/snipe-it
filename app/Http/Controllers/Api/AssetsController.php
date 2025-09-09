@@ -1300,10 +1300,7 @@ class AssetsController extends Controller
 
         $total = $query->count();
 
-        $offset = ($request->input('offset') > $total) ? $total : app('api_offset_value');
-        $limit = app('api_limit_value');
-
-        $assets = $query->skip($offset)->take($limit)->get();
+        $assets = $query->applyOffsetAndLimit($total)->get();
 
         return (new AssetsTransformer)->transformAssets($assets, $total);
     }
