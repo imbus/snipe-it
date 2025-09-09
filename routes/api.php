@@ -1237,6 +1237,34 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     ); // end users API routes
 
     /**
+     * Predefined filters API routes
+     */
+    Route::group(['prefix' => 'predefinedFilters'], function () {
+
+        Route::get('',
+            [
+                Api\PredefinedFilterController::class,
+                'index',
+            ]
+        )->name('api.predefined-filters.index');
+
+        Route::get('{id}',
+            [
+                Api\PredefinedFilterController::class,
+                'show',
+            ]
+        )->name('api.predefined-filters.show');
+
+        Route::post('',
+            [
+                Api\PredefinedFilterController::class,
+                'store',
+            ]
+        )->name('api.predefined-filters.store');
+
+    }); // end predefined filters API routes
+
+    /**
      * Kits API routes
      */
     Route::resource('kits',
