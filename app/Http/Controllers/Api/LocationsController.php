@@ -137,6 +137,10 @@ class LocationsController extends Controller
             $locations->where('locations.company_id', '=', $request->input('company_id'));
         }
 
+        if ($request->filled('parent_id')) {
+            $locations->where('locations.parent_id', '=', $request->input('parent_id'));
+        }
+
         if ($request->input('status') == 'deleted') {
             $locations->onlyTrashed();
         }
