@@ -79,8 +79,9 @@ class LocationsController extends Controller
             'locations.currency',
             'locations.company_id',
             'locations.notes',
+            'locations.created_by',
+            'locations.deleted_at',
         ])
-            ->withCount('assignedAssets as assigned_assets_count')
             ->withCount('assignedAssets as assigned_assets_count')
             ->withCount('assets as assets_count')
             ->withCount('assignedAccessories as assigned_accessories_count')
@@ -88,6 +89,8 @@ class LocationsController extends Controller
             ->withCount('rtd_assets as rtd_assets_count')
             ->withCount('children as children_count')
             ->withCount('users as users_count')
+            ->withCount('consumables as consumables_count')
+            ->withCount('components as components_count')
             ->with('adminuser');
 
         // Only scope locations if the setting is enabled
@@ -129,6 +132,10 @@ class LocationsController extends Controller
 
         if ($request->filled('company_id')) {
             $locations->where('locations.company_id', '=', $request->input('company_id'));
+        }
+
+        if ($request->input('status') == 'deleted') {
+            $locations->onlyTrashed();
         }
 
         // Make sure the offset and limit are actually integers and do not exceed system limits

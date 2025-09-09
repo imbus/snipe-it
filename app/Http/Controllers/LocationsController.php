@@ -193,26 +193,21 @@ class LocationsController extends Controller
             return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.does_not_exist'));
         }
 
-        if ($location->users()->count() > 0) {
-            return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.assoc_users'));
-        } elseif ($location->children()->count() > 0) {
-            return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.assoc_child_loc'));
-        } elseif ($location->assets()->count() > 0) {
-            return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.assoc_assets'));
-        } elseif ($location->assignedassets()->count() > 0) {
-            return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.assoc_assets'));
-        }
+        if ($location->isDeletable()) {
 
-        if ($location->image) {
-            try {
-                Storage::disk('public')->delete('locations/'.$location->image);
-            } catch (\Exception $e) {
-                Log::error($e);
+            if ($location->image) {
+                try {
+                    Storage::disk('public')->delete('locations/'.$location->image);
+                } catch (\Exception $e) {
+                    Log::error($e);
+                }
             }
+            $location->delete();
+            return redirect()->to(route('locations.index'))->with('success', trans('admin/locations/message.delete.success'));
+        } else {
+            return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.assoc_users'));
         }
-        $location->delete();
 
-        return redirect()->to(route('locations.index'))->with('success', trans('admin/locations/message.delete.success'));
     }
 
     /**
@@ -321,7 +316,6 @@ class LocationsController extends Controller
                 return redirect()->route('locations.index')->with('success', trans('admin/locations/message.restore.success'));
             }
 
-            // Check validation
             return redirect()->back()->with('error', trans('general.could_not_restore', ['item_type' => trans('general.location'), 'error' => $location->getErrors()->first()]));
         }
 
@@ -366,8 +360,12 @@ class LocationsController extends Controller
             $locations = Location::whereIn('id', $locations_raw_array)
                 ->withCount('assignedAssets as assigned_assets_count')
                 ->withCount('assets as assets_count')
+                ->withCount('assignedAccessories as assigned_accessories_count')
+                ->withCount('accessories as accessories_count')
                 ->withCount('rtd_assets as rtd_assets_count')
                 ->withCount('children as children_count')
+                ->withCount('consumables as consumables_count')
+                ->withCount('components as components_count')
                 ->withCount('users as users_count')->get();
 
                 $valid_count = 0;
@@ -400,9 +398,13 @@ class LocationsController extends Controller
             $locations = Location::whereIn('id', $locations_raw_array)
                 ->withCount('assignedAssets as assigned_assets_count')
                 ->withCount('assets as assets_count')
+                ->withCount('assignedAccessories as assigned_accessories_count')
+                ->withCount('accessories as accessories_count')
                 ->withCount('rtd_assets as rtd_assets_count')
                 ->withCount('children as children_count')
-                ->withCount('users as users_count')->get();
+                ->withCount('users as users_count')
+                ->withCount('consumables as consumables_count')
+                ->withCount('components as components_count')->get();
 
             $success_count = 0;
             $error_count = 0;

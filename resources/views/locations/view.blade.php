@@ -17,7 +17,20 @@
 @section('content')
 
 <div class="row">
+
+    @if ($location->deleted_at!='')
+        <div class="col-md-12">
+            <div class="callout callout-warning">
+                <x-icon type="warning" />
+                {{ trans('admin/locations/message.deleted_warning') }}
+            </div>
+        </div>
+    @endif
+
+
   <div class="col-md-9">
+
+
 
       <div class="nav-tabs-custom">
           <ul class="nav nav-tabs hidden-print">
@@ -442,14 +455,24 @@
       </div>
 
       @can('update', $location)
-      <div class="col-md-12">
-          <a href="{{ route('locations.edit', ['location' => $location->id]) }}" style="width: 100%;" class="btn btn-sm btn-warning btn-social">
-              <x-icon type="edit" />
-              {{ trans('admin/locations/table.update') }}
-          </a>
-      </div>
+          @if ($location->deleted_at=='')
+              <div class="col-md-12">
+                  <a href="{{ route('locations.edit', ['location' => $location->id]) }}" style="width: 100%;" class="btn btn-sm btn-warning btn-social">
+                      <x-icon type="edit" />
+                      {{ trans('admin/locations/table.update') }}
+                  </a>
+              </div>
+              @else
+              <div class="col-md-12">
+                  <a style="width: 100%;" class="btn btn-sm btn-warning btn-social disabled">
+                      <x-icon type="edit" />
+                      {{ trans('admin/locations/table.update') }}
+                  </a>
+              </div>
+              @endif
       @endcan
 
+     @if ($location->deleted_at=='')
       <div class="col-md-12" style="padding-top: 5px;">
           <a href="{{ route('locations.print_assigned', ['locationId' => $location->id]) }}" style="width: 100%;" class="btn btn-sm btn-primary btn-social hidden-print">
               <x-icon type="print" />
@@ -462,6 +485,7 @@
               {{ trans('admin/locations/table.print_all_assigned') }}
           </a>
       </div>
+      @endif
 
           @can('delete', $location)
               <div class="col-md-12 hidden-print" style="padding-top: 10px;">
@@ -483,7 +507,7 @@
             @else
                   <form method="POST" action="{{ route('locations.restore', ['location' => $location->id]) }}">
                       @csrf
-                      <button class="btn btn-sm btn-block btn-warning btn-social delete-asset">
+                      <button class="btn btn-sm btn-block btn-warning btn-social">
                           <x-icon type="restore" />
                           {{ trans('general.restore') }}
                       </button>
