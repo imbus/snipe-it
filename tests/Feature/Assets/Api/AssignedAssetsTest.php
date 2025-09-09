@@ -36,11 +36,10 @@ class AssignedAssetsTest extends TestCase
             ->getJson(route('api.assets.assigned_assets', $asset))
             ->assertOk()
             ->dump()
+            ->assertResponseContainsInRows($assetsAssignedToAsset, 'serial')
+            ->assertResponseDoesNotContainInRows($unassociatedAsset, 'serial')
             ->assertJson(function (AssertableJson $json) {
                 $json->etc();
             });
-
-        // assert assigned asset included in response
-        // assert unassociated asset not in response
     }
 }
