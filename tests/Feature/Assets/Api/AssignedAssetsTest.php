@@ -4,6 +4,7 @@ namespace Tests\Feature\Assets\Api;
 
 use App\Models\Asset;
 use App\Models\User;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class AssignedAssetsTest extends TestCase
@@ -17,12 +18,24 @@ class AssignedAssetsTest extends TestCase
 
     public function test_can_get_assets_assigned_to_specific_asset()
     {
-        $this->markTestIncomplete();
+        $unassociatedAsset = Asset::factory()->create();
 
-        // check out asset to an asset
+        $asset = Asset::factory()->hasAssignedAssets(2)->create();
 
-        // make request
+        $assetsAssignedToAsset = Asset::where([
+            'assigned_to' => $asset->id,
+            'assigned_type' => Asset::class,
+        ])->get();
+
+        $this->actingAsForApi(User::factory()->viewAssets()->create())
+            ->getJson(route('api.assets.assigned_assets', $asset))
+            ->assertOk()
+            ->dump()
+            ->assertJson(function (AssertableJson $json) {
+                $json->etc();
+            });
 
         // assert assigned asset included in response
+        // assert unassociated asset not in response
     }
 }

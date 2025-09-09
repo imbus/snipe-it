@@ -1290,9 +1290,20 @@ class AssetsController extends Controller
 
     public function assignedAssets(Request $request, Asset $asset) : JsonResponse | array
     {
+        // @todo: authorization
 
-        return [];
-        // to do
+        $query = Asset::where([
+            'assigned_to' => $asset->id,
+            'assigned_type' => Asset::class,
+        ]);
+
+        // @todo: offset
+        // @todo: limit
+
+        $total = $query->count();
+        $assets = $query->get();
+
+        return (new AssetsTransformer)->transformAssets($assets, $total);
     }
 
     public function assignedAccessories(Request $request, Asset $asset) : JsonResponse | array
