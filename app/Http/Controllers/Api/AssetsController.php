@@ -1298,11 +1298,12 @@ class AssetsController extends Controller
             'assigned_type' => Asset::class,
         ]);
 
-        // @todo: offset
-        // @todo: limit
-
         $total = $query->count();
-        $assets = $query->get();
+
+        $offset = ($request->input('offset') > $total) ? $total : app('api_offset_value');
+        $limit = app('api_limit_value');
+
+        $assets = $query->skip($offset)->take($limit)->get();
 
         return (new AssetsTransformer)->transformAssets($assets, $total);
     }
