@@ -27,14 +27,12 @@ trait CustomTestMacros
                 }
 
                 foreach ($models as $model) {
-
                     $guardAgainstNullProperty($model, $property);
 
                     Assert::assertTrue(
                         collect($this['rows'])->pluck($property)->contains(e($model->{$property})),
                         "Response did not contain the expected value: {$model->{$property}}"
                     );
-
                 }
 
                 return $this;
