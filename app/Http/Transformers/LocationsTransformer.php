@@ -55,6 +55,7 @@ class LocationsTransformer
                 'users_count'    => (int) $location->users_count,
                 'consumables_count'    => (int) $location->consumables_count,
                 'components_count'    => (int) $location->components_count,
+                'children_count'    => (int) $location->children_count,
                 'currency' =>  ($location->currency) ? e($location->currency) : null,
                 'ldap_ou' =>  ($location->ldap_ou) ? e($location->ldap_ou) : null,
                 'notes' => Helper::parseEscapedMarkedownInline($location->notes),

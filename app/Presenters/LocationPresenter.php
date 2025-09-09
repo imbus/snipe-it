@@ -135,7 +135,17 @@ class LocationPresenter extends Presenter
                 'titleTooltip' =>  trans('general.consumables'),
                 'visible' => true,
                 'class' => 'css-consumable',
-            ],  [
+            ],
+            [
+                'field' => 'children_count',
+                'searchable' => false,
+                'sortable' => true,
+                'switchable' => true,
+                'title' =>  trans('general.child_locations'),
+                'titleTooltip' =>  trans('general.child_locations'),
+                'visible' => true,
+                'class' => 'css-child-locations',
+            ], [
                 'field' => 'currency',
                 'searchable' => true,
                 'sortable' => true,
