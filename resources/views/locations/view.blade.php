@@ -366,7 +366,7 @@
                           </table>
               </div><!-- /.tab-pane -->
 
-                  <div class="tab-pane fade" id="child_locations">
+
                       <div class="tab-pane" id="child_locations">
                           <h2 class="box-title">
                               {{ trans('general.child_locations') }}
@@ -388,7 +388,19 @@
                               }'>
                           </table>
                       </div><!-- /.tab-pane -->
+
+                  <div class="tab-pane fade" id="files">
+                      <h2 class="box-title">
+                          {{ trans('general.child_locations') }}
+                      </h2>
+
+                      <div class="row">
+                          <div class="col-md-12">
+                              <x-filestable object_type="locations" :object="$location" />
+                          </div> <!-- /.col-md-12 -->
+                      </div> <!-- /.row -->
                   </div>
+
 
                   <div class="tab-pane" id="accessories_assigned">
                       <h2 class="box-title" style="float:left">
