@@ -189,7 +189,18 @@ class LocationsController extends Controller
     {
         $this->authorize('delete', Location::class);
 
-        if (is_null($location = Location::find($locationId))) {
+        $location = Location::withCount('assignedAssets as assigned_assets_count')
+        ->withCount('assets as assets_count')
+        ->withCount('assignedAccessories as assigned_accessories_count')
+        ->withCount('accessories as accessories_count')
+        ->withCount('rtd_assets as rtd_assets_count')
+        ->withCount('children as children_count')
+        ->withCount('users as users_count')
+        ->withCount('consumables as consumables_count')
+        ->withCount('components as components_count')
+        ->find($locationId);
+
+        if (!$location) {
             return redirect()->to(route('locations.index'))->with('error', trans('admin/locations/message.does_not_exist'));
         }
 

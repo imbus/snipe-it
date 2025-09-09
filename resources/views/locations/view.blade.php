@@ -498,10 +498,12 @@
                           {{ trans('general.delete') }}
                       </button>
                 @else
-                      <a href="#" class="btn btn-block btn-sm btn-danger btn-social hidden-print disabled" data-tooltip="true"  data-placement="top" data-title="{{ trans('general.cannot_be_deleted') }}">
+                      <span data-placement="top" data-tooltip="true" data-title="{{ trans('admin/locations/message.assoc_users') }}">
+                          <a href="#" class="btn btn-block btn-sm btn-danger btn-social hidden-print disabled" data-tooltip="true">
                           <x-icon type="delete" />
                           {{ trans('general.delete') }}
                       </a>
+                          </span>
                 @endif
 
             @else

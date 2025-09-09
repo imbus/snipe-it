@@ -37,10 +37,14 @@ class LocationsController extends Controller
             'address',
             'address2',
             'assets_count',
-            'assets_count',
+            'assigned_assets_count',
+            'rtd_assets_count',
+            'accessories_count',
             'assigned_accessories_count',
-            'assigned_assets_count',
-            'assigned_assets_count',
+            'components_count',
+            'consumables_count',
+            'users_count',
+            'children_count',
             'city',
             'country',
             'created_at',
@@ -54,7 +58,6 @@ class LocationsController extends Controller
             'rtd_assets_count',
             'state',
             'updated_at',
-            'users_count',
             'zip',
             'notes',
             ];
@@ -231,8 +234,13 @@ class LocationsController extends Controller
             ])
             ->withCount('assignedAssets as assigned_assets_count')
             ->withCount('assets as assets_count')
+            ->withCount('assignedAccessories as assigned_accessories_count')
+            ->withCount('accessories as accessories_count')
             ->withCount('rtd_assets as rtd_assets_count')
+            ->withCount('children as children_count')
             ->withCount('users as users_count')
+            ->withCount('consumables as consumables_count')
+            ->withCount('components as components_count')
             ->findOrFail($id);
 
         return (new LocationsTransformer)->transformLocation($location);
@@ -327,11 +335,15 @@ class LocationsController extends Controller
     {
         $this->authorize('delete', Location::class);
         $location = Location::withCount('assignedAssets as assigned_assets_count')
+            ->withCount('assignedAssets as assigned_assets_count')
             ->withCount('assets as assets_count')
+            ->withCount('assignedAccessories as assigned_accessories_count')
+            ->withCount('accessories as accessories_count')
             ->withCount('rtd_assets as rtd_assets_count')
             ->withCount('children as children_count')
             ->withCount('users as users_count')
-            ->withCount('accessories as accessories_count')
+            ->withCount('consumables as consumables_count')
+            ->withCount('components as components_count')
             ->findOrFail($id);
 
         if (! $location->isDeletable()) {

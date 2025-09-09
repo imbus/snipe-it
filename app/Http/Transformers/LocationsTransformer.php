@@ -53,6 +53,8 @@ class LocationsTransformer
                 'assets_count'    => (int) $location->assets_count,
                 'rtd_assets_count'    => (int) $location->rtd_assets_count,
                 'users_count'    => (int) $location->users_count,
+                'consumables_count'    => (int) $location->consumables_count,
+                'components_count'    => (int) $location->components_count,
                 'currency' =>  ($location->currency) ? e($location->currency) : null,
                 'ldap_ou' =>  ($location->ldap_ou) ? e($location->ldap_ou) : null,
                 'notes' => Helper::parseEscapedMarkedownInline($location->notes),
