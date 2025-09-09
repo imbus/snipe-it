@@ -1290,7 +1290,8 @@ class AssetsController extends Controller
 
     public function assignedAssets(Request $request, Asset $asset) : JsonResponse | array
     {
-        // @todo: authorization
+        $this->authorize('view', Asset::class);
+        $this->authorize('view', $asset);
 
         $query = Asset::where([
             'assigned_to' => $asset->id,
