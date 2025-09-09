@@ -1289,7 +1289,7 @@
 
         btnShowDeleted: {
             text: '{{ (request()->input('status') == "deleted") ?trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
-            icon: 'fa-solid fa-user-slash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-slash' }}',
+            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-trash' }}',
             event () {
                 window.location.href = '{{ (request()->input('status') == "deleted") ? route('users.index') : route('users.index', ['status' => 'deleted']) }}';
             },
@@ -1396,6 +1396,18 @@
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
+            }
+        },
+
+        btnShowDeleted: {
+            text: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
+            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-trash' }}',
+            event () {
+                window.location.href = '{{ (request()->input('status') == "deleted") ? route('locations.index') : route('locations.index', ['status' => 'deleted']) }}';
+            },
+            attributes: {
+                title: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
+
             }
         },
     });
