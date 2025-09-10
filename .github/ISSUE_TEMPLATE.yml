@@ -33,7 +33,7 @@ body:
       - Git install
       - Manual install (downloading zip/tar.gz)
       - Docker
-      - `install.sh`
+      - install.sh
       - Other
   - type: textarea
     id: what-happened
