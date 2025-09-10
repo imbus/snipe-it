@@ -33,7 +33,7 @@ body:
       - Git install
       - Manual install (downloading zip/tar.gz)
       - Docker
-      - install.sh
+      - `install.sh`
       - Other
   - type: textarea
     id: what-happened
@@ -56,16 +56,10 @@ body:
         - Microsoft Edge
         - Other
   - type: textarea
-    id: server-logs
+    id: logs
     attributes:
-      label: Application logs output
+      label: Relevant log output
       description: Please copy and paste any relevant log output from `storage/logs/laravel.log`. This will be automatically formatted into code, so no need for backticks.
-      render: shell
-  - type: textarea
-    id: browser-logs
-    attributes:
-      label: Browser console logs
-      description: Please copy and paste any relevant log output your browser console. This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: checkboxes
     id: common-issues
