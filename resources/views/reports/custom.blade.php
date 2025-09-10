@@ -426,19 +426,19 @@
 
             </div>
 
-          <!-- Purchase Price -->
-          <div class="form-group purchase-range{{ ($errors->has('purchase_price_start') || $errors->has('purchase_price_end')) ? ' has-error' : '' }}">
-              <label for="purchase_price_start" class="col-md-3 control-label">{{ trans('admin/hardware/form.cost') }}</label>
+          <!-- Purchase Cost -->
+          <div class="form-group purchase-range{{ ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end')) ? ' has-error' : '' }}">
+              <label for="purchase_cost_start" class="col-md-3 control-label">{{ trans('admin/hardware/form.cost') }}</label>
               <div class="input-group col-md-7">
-                  <input type="number" min="0" class="form-control" name="purchase_price_start" aria-label="purchase_price_start" value="{{ $template->textValue('purchase_price_start', old('purchase_price_start')) }}">
+                  <input type="number" min="0" class="form-control" name="purchase_cost_start" aria-label="purchase_cost_start" value="{{ $template->textValue('purchase_cost_start', old('purchase_cost_start')) }}">
                   <span class="input-group-addon">{{ strtolower(trans('general.to')) }}</span>
-                  <input type="text" class="form-control" name="purchase_price_end" aria-label="purchase_price_end" value="{{ $template->textValue('purchase_price_end', old('purchase_price_end')) }}">
+                  <input type="text" class="form-control" name="purchase_cost_end" aria-label="purchase_cost_end" value="{{ $template->textValue('purchase_cost_end', old('purchase_cost_end')) }}">
               </div>
 
-              @if ($errors->has('purchase_price_start') || $errors->has('purchase_price_end'))
+              @if ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end'))
                   <div class="col-md-9 col-lg-offset-3">
-                      {!! $errors->first('purchase_price_start', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
-                      {!! $errors->first('purchase_price_end', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+                      {!! $errors->first('purchase_cost_start', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
+                      {!! $errors->first('purchase_cost_end', '<span class="alert-msg" aria-hidden="true"><i class="fas fa-times" aria-hidden="true"></i> :message</span>') !!}
                   </div>
               @endif
 
