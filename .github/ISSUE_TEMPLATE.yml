@@ -82,7 +82,7 @@ body:
          required: true
        - label: My APP_URL is set correctly in my .env file (including http or https and no trailing slash)
          required: true
-       - label: I searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
+       - label: I have searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
          required: true
        - label: I have run database migrations (where applicable).
          required: true
