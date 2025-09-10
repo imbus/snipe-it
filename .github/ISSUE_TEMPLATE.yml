@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to fill out this bug report! Most issues are documented in the [Snipe-IT repository's issues](https://github.com/grokability/snipe-it/issues) or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to `.env` misconfiguration, [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/), or [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations).
   - type: input
     id: version
     attributes:
@@ -70,15 +70,15 @@ body:
     id: common-issues
     attributes:
       label: Common Issues
-      description: Most issues are documented in the [Snipe-IT repository's issues](https://github.com/grokability/snipe-it/issues) or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to `.env` misconfiguration, [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/), or [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations). Please make sure you have done the following before submitting your issue.
+      description: Please make sure you have done the following before submitting your issue.
       options:
-       - label: I have searched this repo for existing issues
+       - label: I have searched this repo for existing issues related to my issue (including closed issues)
          required: true
        - label: My APP_URL is set correctly in my .env file (including http or https and no trailing slash)
          required: true
        - label: I searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
          required: true
-       - label: I have followed the documentation and run database migrations (where applicable).
+       - label: I have run database migrations (where applicable).
          required: true
   - type: checkboxes
     id: terms
