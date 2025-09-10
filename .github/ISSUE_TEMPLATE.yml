@@ -16,6 +16,25 @@ body:
       placeholder: ex. v8.3.1 - build 19577 (master)
     validations:
       required: true
+  - type: input
+    id: db-version
+    attributes:
+      label: MySQL/MariaDB version
+      description: What database are you using, and what version?
+      placeholder: ex. MySQL 5.7
+    validations:
+      required: true
+  - type: dropdown
+    id: install-method
+    attributes:
+    label: How did you install Snipe-IT?
+    multiple: false
+    options:
+      - Git install
+      - Manual install (downloading zip/tar.gz)
+      - Docker
+      - `install.sh`
+      - Other
   - type: textarea
     id: what-happened
     attributes:
@@ -37,18 +56,26 @@ body:
         - Microsoft Edge
         - Other
   - type: textarea
-    id: logs
+    id: server-logs
     attributes:
-      label: Relevant log output
+      label: Application logs output
       description: Please copy and paste any relevant log output from `storage/logs/laravel.log`. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: browser-logs
+    attributes:
+      label: Browser console logs
+      description: Please copy and paste any relevant log output your browser console. This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: checkboxes
     id: common-issues
     attributes:
       label: Common Issues
-      description: Most bugs are documentated here or in the documentation. Please make sure you have done the following before submitting your issue.
+      description: Most bugs are documented here or in the official Snipe-IT documentation. Please make sure you have done the following before submitting your issue.
       options:
        - label: I have searched this repo for existing issues
+         required: true
+       - label: My `APP_URL` is set correctly in my `.env` file (including `http` or `https` and no trailing slash)
          required: true
        - label: I searched the official Snipe-IT documentation and have checked the [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) (where applicable)
          required: true
