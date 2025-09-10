@@ -13,7 +13,7 @@ body:
         - [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/)
         - [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations)
         
-        Please make sure you've checked these resources before submitting a new issue. If you find an existing issue, please add your context to it instead of opening a new issue. 
+        Please make sure you've checked these resources before submitting a new issue. If you find an existing issue, please add your context to it instead of opening a new issue. If your issue is more of a question, consider [opening a new discussion](https://github.com/grokability/snipe-it/discussions) or [pop by our Discord](https://discord.gg/yZFtShAcKk) instead of creating an issue.
         
         Please write your issue in English. You can use tools like [DeepL](https://www.deepl.com) to translate if necessary. 
         
