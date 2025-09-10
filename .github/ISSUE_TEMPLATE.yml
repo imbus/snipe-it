@@ -27,14 +27,13 @@ body:
   - type: dropdown
     id: install-method
     attributes:
-    label: How did you install Snipe-IT?
-    multiple: false
-    options:
-      - Git install
-      - Manual install (downloading zip/tar.gz)
-      - Docker
-      - install.sh
-      - Other
+      label: How did you install Snipe-IT?
+      options:
+        - Git install
+        - Manual install (downloading zip/tar.gz)
+        - Docker
+        - install.sh
+        - Other
   - type: textarea
     id: what-happened
     attributes:
