@@ -41,8 +41,6 @@ body:
         - install.sh
         - Hosted by Grokability
         - Other
-      validations:
-        required: true
   - type: textarea
     id: what-happened
     attributes:
