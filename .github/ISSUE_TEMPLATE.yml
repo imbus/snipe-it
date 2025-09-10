@@ -2,6 +2,7 @@ name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
 projects: ["grokability/snipe-it"]
+type: bug
 body:
   - type: markdown
     attributes:
@@ -56,7 +57,7 @@ body:
   - type: textarea
     id: server-logs
     attributes:
-      label: Application output
+      label: Application log output
       description: Please copy and paste any relevant log output from `storage/logs/laravel.log`. This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: textarea
@@ -69,7 +70,7 @@ body:
     id: common-issues
     attributes:
       label: Common Issues
-      description: Most bugs are documented here or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to `.env` misconfiguration, [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/), or [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations). Please make sure you have done the following before submitting your issue.
+      description: Most issues are documented in the [Snipe-IT repository's issues](https://github.com/grokability/snipe-it/issues) or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to `.env` misconfiguration, [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/), or [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations). Please make sure you have done the following before submitting your issue.
       options:
        - label: I have searched this repo for existing issues
          required: true
