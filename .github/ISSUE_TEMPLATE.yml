@@ -55,10 +55,16 @@ body:
         - Microsoft Edge
         - Other
   - type: textarea
-    id: logs
+    id: server-logs
     attributes:
-      label: Relevant log output
+      label: Application output
       description: Please copy and paste any relevant log output from `storage/logs/laravel.log`. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: textarea
+    id: browser-logs
+    attributes:
+      label: Browser console output
+      description: Please copy and paste any relevant log output from your browser console. This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: checkboxes
     id: common-issues
