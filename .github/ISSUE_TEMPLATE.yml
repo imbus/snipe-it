@@ -45,19 +45,15 @@ body:
   - type: checkboxes
     id: common-issues
     attributes:
-      label: Checked Documentation
-      description: You have checked the [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) (where applicable).
+      label: Common Issues
+      description: Most bugs are documentated here or in the documentation. Please make sure you have done the following before submitting your issue.
       options:
-       - label: I have run database migrations
+       - label: I have searched this repo for existing issues
          required: true
-  - type: checkboxes
-    id: migrations
-    attributes:
-      label: Database Migrations
-      description: You have followed the documenation and run [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations) (where applicable).
-      options:
-        - label: I have run database migrations
-          required: true
+       - label: I searched the official Snipe-IT documentation and have checked the [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) (where applicable)
+         required: true
+       - label: I have followed the documentation and run [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations) (where applicable).
+         required: true
   - type: checkboxes
     id: terms
     attributes:
