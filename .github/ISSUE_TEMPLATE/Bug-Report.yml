@@ -41,8 +41,6 @@ body:
         - install.sh
         - Hosted by Grokability
         - Other
-      validations:
-        required: true
   - type: textarea
     id: what-happened
     attributes:
@@ -81,14 +79,14 @@ body:
       label: Common Issues
       description: Please make sure you have done the following before submitting your issue.
       options:
-       - label: I have searched this repo for existing issues related to my issue (including closed issues)
-         required: true
-       - label: My APP_URL is set correctly in my .env file (including http or https and no trailing slash)
-         required: true
-       - label: I have searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
-         required: true
-       - label: I have run database migrations (where applicable).
-         required: true
+        - label: I have searched this repo for existing issues related to my issue (including closed issues)
+          required: true
+        - label: My APP_URL is set correctly in my .env file (including http or https and no trailing slash)
+          required: true
+        - label: I have searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
+          required: true
+        - label: I have run database migrations (where applicable).
+          required: true
   - type: checkboxes
     id: terms
     attributes:
