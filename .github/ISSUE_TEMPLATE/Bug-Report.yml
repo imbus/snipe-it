@@ -13,7 +13,9 @@ body:
         - [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/)
         - [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations)
         
-        Please make sure you've checked these resources before submitting a new issue.
+        Please make sure you've checked these resources before submitting a new issue. If you find an existing issue, please add your context to it instead of opening a new issue. 
+        
+        **If you choose to upload screenshots or videos (which we always encourage), please make sure they do not contain any sensitive information.**
   - type: input
     id: version
     attributes:
