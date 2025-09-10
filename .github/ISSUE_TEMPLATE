@@ -1,0 +1,68 @@
+name: Bug Report
+description: File a bug report.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+projects: ["grokability/snipe-it"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: version
+    attributes:
+      label: Snipe-IT Version
+      description: What version of Snipe-IT are you seeing this issue on? You can find the version number in the footer of any page in Snipe-IT.
+      placeholder: ex. v8.3.1 - build 19577 (master)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - Other
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output from `storage/logs/laravel.log`. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+  - type: checkboxes
+    id: common-issues
+    attributes:
+      label: Checked Documentation
+      description: You have checked the [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) (where applicable).
+      options:
+       - label: I have run database migrations
+         required: true
+  - type: checkboxes
+    id: migrations
+    attributes:
+      label: Database Migrations
+      description: You have followed the documenation and run [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations) (where applicable).
+      options:
+        - label: I have run database migrations
+          required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/grokability/snipe-it/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
