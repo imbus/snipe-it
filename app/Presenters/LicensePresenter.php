@@ -202,7 +202,7 @@ class LicensePresenter extends Presenter
             'switchable' => false,
             'title' => trans('general.checkin').'/'.trans('general.checkout'),
             'visible' => true,
-            'formatter' => 'licenseSeatInOutFormatter',
+            'formatter' => 'licenseInOutFormatter',
             'printIgnore' => true,
         ];
 
