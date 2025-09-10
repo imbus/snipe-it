@@ -46,8 +46,7 @@ body:
     attributes:
       label: What happened?
       description: Also tell us, what did you expect to happen?
-      placeholder: Tell us what you see!
-      value: ""
+      placeholder: Tell us what you see! (Be nice!)
     validations:
       required: true
   - type: dropdown
@@ -86,6 +85,8 @@ body:
         - label: I have searched the official Snipe-IT documentation and have checked the Common Issues documentation (where applicable)
           required: true
         - label: I have run database migrations (where applicable).
+          required: true
+        - label: I have attached screenshots and/or videos of the issue (where applicable)
           required: true
   - type: checkboxes
     id: terms

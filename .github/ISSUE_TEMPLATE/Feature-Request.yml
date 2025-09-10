@@ -21,8 +21,7 @@ body:
     attributes:
       label: How can we help?
       description: Let us know in detail what feature you'd like to see added. While we can't promise to implement every feature request, we do read every one and take them into consideration when planning future releases.
-      placeholder: Tell us what you want!
-      value: ""
+      placeholder: Tell us what you want! (Be nice!)
     validations:
       required: true
   - type: checkboxes
