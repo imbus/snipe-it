@@ -9,6 +9,8 @@ body:
       value: |
         Thanks for taking the time to fill out this feature request! Please make sure to search the existing issues in this repository to see if your feature has already been requested, and feel free to add your context to any existing requests.
         
+        **Please write your issue in English.** You can use tools like [DeepL](https://www.deepl.com) or [Google Translate](https://translate.google.com/) to translate if necessary. 
+        
          **If you choose to upload screenshots or videos (which we always encourage), please make sure they do not contain any sensitive information.**
   - type: input
     id: version
