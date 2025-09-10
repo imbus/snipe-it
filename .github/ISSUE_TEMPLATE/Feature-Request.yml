@@ -12,7 +12,7 @@ body:
     id: version
     attributes:
       label: Snipe-IT Version
-      description: What version of Snipe-IT are you seeing this issue on? You can find the version number in the footer of any page in Snipe-IT.
+      description: What version of Snipe-IT are you currently running? You can find the version number in the footer of any page in Snipe-IT.
       placeholder: ex. v8.3.1 - build 19577 (master)
     validations:
       required: true
@@ -22,7 +22,7 @@ body:
       label: How can we help?
       description: Let us know in detail what feature you'd like to see added. While we can't promise to implement every feature request, we do read every one and take them into consideration when planning future releases.
       placeholder: Tell us what you want!
-      value: "Something really cool"
+      value: ""
     validations:
       required: true
   - type: checkboxes
