@@ -7,7 +7,13 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report! Most issues are documented in the [Snipe-IT repository's issues](https://github.com/grokability/snipe-it/issues) or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to `.env` misconfiguration, [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/), or [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations).
+        Thanks for taking the time to fill out this bug report! Most issues are documented in the [Snipe-IT repository's issues](https://github.com/grokability/snipe-it/issues) or in the official [Common Issues section of the Documentation](https://snipe-it.readme.io/docs/common-issues#/) and are due to the following:
+        
+        - `.env` misconfiguration
+        - [Server Permissions](https://snipe-it.readme.io/docs/debugging-permissions#/)
+        - [Database Migrations](https://snipe-it.readme.io/docs/database-issues#run-migrations)
+        
+        Please make sure you've checked these resources before submitting a new issue.
   - type: input
     id: version
     attributes:
