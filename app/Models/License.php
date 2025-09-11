@@ -296,6 +296,18 @@ class License extends Depreciable
         }
         $this->attributes['termination_date'] = $value;
     }
+
+    public function isInactive(): bool
+{
+    $day = now()->startOfDay();
+
+    $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+
+    $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+
+
+    return $expired || $terminated;
+}
     /**
      * Sets free_seat_count attribute
      *
