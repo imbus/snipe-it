@@ -83,17 +83,19 @@ class CheckoutAccessoryMail extends Mailable
             ],
         );
     }
+
     private function introductionLine(): string
     {
         if ($this->target instanceof Location) {
-            return trans('mail.new_item_checked_location', ['location' => $this->target->name ]);
+            return trans_choice('mail.new_item_checked_location', $this->checkout_qty, ['location' => $this->target->name]);
         }
+
         if ($this->requiresAcceptance()) {
-            return trans('mail.new_item_checked_with_acceptance');
+            return trans_choice('mail.new_item_checked_with_acceptance', $this->checkout_qty);
         }
 
         if (!$this->requiresAcceptance()) {
-            return trans('mail.new_item_checked');
+            return trans_choice('mail.new_item_checked', $this->checkout_qty);
         }
 
         // we shouldn't get here but let's send a default message just in case
