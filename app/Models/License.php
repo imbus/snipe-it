@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Watson\Validating\ValidatingTrait;
 
+
 class License extends Depreciable
 {
     use HasFactory;
@@ -608,7 +609,7 @@ class License extends Depreciable
     {
         $count = 0;
         if (!$license->reassignable) {
-            $count = licenseSeat::query()->where('unreassignable_seat', '=', true)
+            $count = LicenseSeat::query()->where('unreassignable_seat', '=', true)
                 ->where('license_id', '=', $license->id)
                 ->count();
         }
