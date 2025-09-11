@@ -3,7 +3,7 @@
 return [
 
     'Accessory_Checkin_Notification' => 'Accessory checked in',
-    'Accessory_Checkout_Notification' => 'Accessory checked out',
+    'Accessory_Checkout_Notification' => 'Accessory checked out|:count Accessories checked out',
     'Asset_Checkin_Notification' => 'Asset checked in: :tag',
     'Asset_Checkout_Notification' => 'Asset checked out: :tag',
     'Confirm_Accessory_Checkin' => 'Accessory checkin confirmation',
@@ -75,9 +75,9 @@ return [
     'low_inventory_alert' => 'There is :count item that is below minimum inventory or will soon be low.|There are :count items that are below minimum inventory or will soon be low.',
     'min_QTY' => 'Min QTY',
     'name' => 'Name',
-    'new_item_checked' => 'A new item has been checked out under your name, details are below.',
-    'new_item_checked_with_acceptance' => 'A new item has been checked out under your name that requires acceptance, details are below.',
-    'new_item_checked_location' => 'A new item has been checked out to :location, details are below.',
+    'new_item_checked' => 'A new item has been checked out under your name, details are below.|:count new items have been checked out under your name, details are below.',
+    'new_item_checked_with_acceptance' => 'A new item has been checked out under your name that requires acceptance, details are below.|:count new items have been checked out under your name that requires acceptance, details are below.',
+    'new_item_checked_location' => 'A new item has been checked out to :location, details are below.|:count new items have been checked out to :location, details are below.',
     'recent_item_checked' => 'An item was recently checked out under your name that requires acceptance, details are below.',
     'notes' => 'Notes',
     'password' => 'Password',
