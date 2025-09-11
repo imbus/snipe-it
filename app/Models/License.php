@@ -723,6 +723,7 @@ class License extends Depreciable
             ->whereNull('deleted_at')
             ->whereRaw('DATE_SUB(`expiration_date`,INTERVAL '.$days.' DAY) <= DATE(NOW()) ')
             ->where('expiration_date', '>', date('Y-m-d'))
+            ->where('termination_date', '>', date('Y-m-d'))
             ->orderBy('expiration_date', 'ASC')
             ->get();
     }
