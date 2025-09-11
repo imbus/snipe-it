@@ -313,6 +313,7 @@ return [
     'undeployable'			=> 'Un-deployable',
     'unknown_admin'			=> 'Unknown Admin',
     'unknown_user'          => 'Unknown User',
+    'unit_cost'				=> 'Unit Cost',
     'username'              => 'Username',
     'update'                => 'Update',
     'updating_item' => 'Updating :item',

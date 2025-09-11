@@ -201,7 +201,7 @@
     @endif
 
     @if ($component->purchase_cost)
-    <div class="col-md-12" style="padding-bottom: 5px;"><strong>{{ trans('admin/components/general.cost') }}:</strong>
+    <div class="col-md-12" style="padding-bottom: 5px;"><strong>{{ trans('general.unit_cost') }}:</strong>
     {{ $snipeSettings->default_currency }}
 
     {{ Helper::formatCurrencyOutput($component->purchase_cost) }} </div>
