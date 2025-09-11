@@ -1241,6 +1241,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      */
     Route::group(['prefix' => 'predefinedFilters'], function () {
 
+        Route::get('selectlist',
+            [
+                Api\PredefinedFilterController::class,
+                'selectlist',
+            ]
+        )->name('api.predefined-filters.selectlist');
+
         Route::get('',
             [
                 Api\PredefinedFilterController::class,
