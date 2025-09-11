@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Watson\Validating\ValidatingTrait;
 
+
 class License extends Depreciable
 {
     use HasFactory;
@@ -296,6 +297,18 @@ class License extends Depreciable
         }
         $this->attributes['termination_date'] = $value;
     }
+
+    public function isInactive(): bool
+{
+    $day = now()->startOfDay();
+
+    $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+
+    $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+
+
+    return $expired || $terminated;
+}
     /**
      * Sets free_seat_count attribute
      *
@@ -596,7 +609,7 @@ class License extends Depreciable
     {
         $count = 0;
         if (!$license->reassignable) {
-            $count = licenseSeat::query()->where('unreassignable_seat', '=', true)
+            $count = LicenseSeat::query()->where('unreassignable_seat', '=', true)
                 ->where('license_id', '=', $license->id)
                 ->count();
         }
@@ -711,6 +724,7 @@ class License extends Depreciable
             ->whereNull('deleted_at')
             ->whereRaw('DATE_SUB(`expiration_date`,INTERVAL '.$days.' DAY) <= DATE(NOW()) ')
             ->where('expiration_date', '>', date('Y-m-d'))
+            ->where('termination_date', '>', date('Y-m-d'))
             ->orderBy('expiration_date', 'ASC')
             ->get();
     }

@@ -54,7 +54,7 @@ class LicensesTransformer
             'updated_at' => Helper::getFormattedDateObject($license->updated_at, 'datetime'),
             'deleted_at' => Helper::getFormattedDateObject($license->deleted_at, 'datetime'),
             'user_can_checkout' => (bool) ($license->free_seats_count > 0),
-
+            'disabled' => $license->isInactive(),
         ];
 
         $permissions_array['available_actions'] = [
