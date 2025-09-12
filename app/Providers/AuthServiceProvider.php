@@ -18,6 +18,7 @@ use App\Models\Location;
 use App\Models\Maintenance;
 use App\Models\MaintenanceType;
 use App\Models\Manufacturer;
+use App\Models\PredefinedFilter;
 use App\Models\PredefinedKit;
 use App\Models\Statuslabel;
 use App\Models\Supplier;
@@ -38,6 +39,7 @@ use App\Policies\LocationPolicy;
 use App\Policies\MaintenancePolicy;
 use App\Policies\MaintenanceTypePolicy;
 use App\Policies\ManufacturerPolicy;
+use App\Policies\PredefinedFilterPolicy;
 use App\Policies\PredefinedKitPolicy;
 use App\Policies\StatuslabelPolicy;
 use App\Policies\SupplierPolicy;
@@ -80,6 +82,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Manufacturer::class => ManufacturerPolicy::class,
         Company::class => CompanyPolicy::class,
+        PredefinedFilter::class => PredefinedFilterPolicy::class,
     ];
 
     /**

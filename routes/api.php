@@ -1239,7 +1239,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     /**
      * Predefined filters API routes
      */
-    Route::group(['prefix' => 'predefinedFilters'], function () {
+    Route::group(['prefix' => 'predefinedFilters', 'middleware' => ['auth:api']], function () {
 
         Route::get('selectlist',
             [

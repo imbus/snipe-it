@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
-use Illuminate\Database\Eloquent\Builder;
 
 class PredefinedFilter extends Model
 {
@@ -15,7 +16,7 @@ class PredefinedFilter extends Model
     use ValidatingTrait;
 
     protected $casts = [
-        "filter_data"=> "array",
+        'filter_data' => 'array',
     ];
 
     protected $fillable = [
@@ -25,10 +26,26 @@ class PredefinedFilter extends Model
     ];
 
     protected $rules = [
-        'name'                    => ['required', 'string', 'max:255'],
-        //'created_by'              => ['required', 'integer', 'exists:users,id'],
-        'filter_data'             => ['nullable', 'array']
+        'name' => ['required', 'string', 'max:255'],
+        'created_by' => ['required', 'integer', 'exists:users,id'],
+        'filter_data' => ['nullable', 'array'],
     ];
+
+    public function userHasPermission(User $user, string $permission): bool
+    {
+        $column = "can_$permission";
+
+        if (!in_array($column, ['can_view', 'can_create', 'can_edit', 'can_delete'])) {
+            return false;
+        }
+
+        $permissionGroupIds = $user->groups()->pluck('id');
+
+        return $this->permissions()
+            ->whereIn('permission_group_id', $permissionGroupIds)
+            ->where($column, true)
+            ->exists();
+    }
 
     public function permissions()
     {
@@ -43,10 +60,10 @@ class PredefinedFilter extends Model
         }
     }
 
-        protected function applyLikeFilter(Builder $assets, array $filter, string $key, string $column): void
+    protected function applyLikeFilter(Builder $assets, array $filter, string $key, string $column): void
     {
         if (!empty($filter[$key])) {
-            $assets->where($column, 'LIKE', '%' . $filter[$key] . '%');
+            $assets->where($column, 'LIKE', '%'.$filter[$key].'%');
         }
     }
 
@@ -55,14 +72,16 @@ class PredefinedFilter extends Model
         if (!empty($filter["{$base}_start"])) {
             $assets->whereDate("{$base}", '>=', $filter["{$base}_start"]);
         }
+
         if (!empty($filter["{$base}_end"])) {
             $assets->whereDate("{$base}", '<=', $filter["{$base}_end"]);
         }
     }
 
-    public function filterAssets(Builder $assets) {
+    public function filterAssets(Builder $assets)
+    {
         $filter = $this->filter_data ?? [];
-        
+
         $this->applyArrayOrScalarFilter($assets, $filter, 'company_id', 'assets.company_id');
         $this->applyArrayOrScalarFilter($assets, $filter, 'location_id', 'location_id');
         $this->applyArrayOrScalarFilter($assets, $filter, 'rtd_location_id', 'rtd_location_id');
@@ -90,12 +109,12 @@ class PredefinedFilter extends Model
         $this->applyLikeFilter($assets, $filter, 'asset_tag', 'assets.asset_tag');
         $this->applyLikeFilter($assets, $filter, 'serial', 'assets.serial');
 
-        // Custom fields
         if (!empty($filter['custom_fields']) && is_array($filter['custom_fields'])) {
             foreach ($filter['custom_fields'] as $key => $value) {
                 $assets->where("assets.$key", '=', $value);
             }
         }
+
         return $assets;
     }
 }
