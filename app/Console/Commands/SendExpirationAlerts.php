@@ -73,7 +73,7 @@ class SendExpirationAlerts extends Command
 
                 $this->table(
                     ['ID', 'Name', 'Expires', 'Termination Date'],
-                    $licenses->map(fn($item) => ['ID' => $item->name, 'Name' => $item->name, 'Expires' => $item->expiration_date, 'Termination Date' => $item->termination_date])
+                    $licenses->map(fn($item) => ['ID' => $item->id, 'Name' => $item->name, 'Expires' => $item->expiration_date, 'Termination Date' => $item->termination_date])
                 );
             }
 
