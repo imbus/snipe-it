@@ -130,12 +130,7 @@ class LicenseCheckoutController extends Controller
             throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.not_enough_seats')));
         }
 
-
-        \Log::debug('Seat ID: '.$seatId);
-        \Log::debug('License: '.$license);
-        \Log::debug('$licenseSeat->license: '.$licenseSeat->license);
-         // dd($licenseSeat->license);
-        // dd($license);
+        
         if (! $licenseSeat->license->is($license)) {
             throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.mismatch')));
         }
