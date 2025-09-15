@@ -1322,6 +1322,10 @@ class AssetsController extends Controller
         return (new AssetsTransformer)->transformCheckedoutAccessories($accessory_checkouts, $total);
     }
 
+    public function assignedComponents(Request $request, Asset $asset): JsonResponse
+    {
+        //
+    }
 
     /**
      * Generate asset labels by tag
