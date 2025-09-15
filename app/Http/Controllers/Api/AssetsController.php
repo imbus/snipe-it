@@ -1328,10 +1328,10 @@ class AssetsController extends Controller
         $this->authorize('view', Asset::class);
         $this->authorize('view', $asset);
 
-        $asset->load('components');
+        $asset->loadCount('components');
+        $total = $asset->components_count;
 
-        $components = $asset->components;
-        $total = $asset->components->count();
+        $components = $asset->load(['components' => fn($query) => $query->applyOffsetAndLimit($total)])->components;
 
         return (new ComponentsTransformer)->transformComponents($components, $total);
     }
