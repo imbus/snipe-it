@@ -30,11 +30,12 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Controllers\SettingsController;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use \Illuminate\Contracts\View\View;
 use \Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use TCPDF;
+use App\Helpers\Helper;
 
 class AcceptanceController extends Controller
 {
@@ -225,9 +226,9 @@ class AcceptanceController extends Controller
                 'item_status' => $item->assetstatus?->name,
                 'eula' => $item->getEula(),
                 'note' => $request->input('note'),
-                'check_out_date' => Carbon::parse($acceptance->created_at)->format('Y-m-d'),
-                'accepted_date' => Carbon::parse($acceptance->accepted_at)->format('Y-m-d'),
-                'assigned_to' => $assigned_user->present()->fullName,
+                'check_out_date' => Carbon::parse($acceptance->created_at)->format('Y-m-d H:i:s'),
+                'accepted_date' => Carbon::parse($acceptance->accepted_at)->format('Y-m-d H:i:s'),
+                'assigned_to' => $assigned_user->display_name,
                 'company_name' => $branding_settings->site_name,
                 'signature' => ($sig_filename) ? storage_path() . '/private_uploads/signatures/' . $sig_filename : null,
                 'logo' => $path_logo,
@@ -237,12 +238,96 @@ class AcceptanceController extends Controller
             ];
 
             if ($pdf_view_route!='') {
-                Log::debug($pdf_filename.' is the filename, and the route was specified.');
-                $pdf = Pdf::loadView($pdf_view_route, $data);
-                Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf->output());
+                // set some language dependent data:
+                $lg = Array();
+                $lg['a_meta_charset'] = 'UTF-8';
+                $lg['w_page'] = 'page';
+
+                $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+                // $pdf->SetHeaderData(PDF_HEADER_LOGO, 5, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
+                // $pdf->SetHeaderData('https://snipe-it.test/uploads/snipe-logo.png', '5', $data['company_name'], $item->company?->name);
+                //$pdf->headerText = ('Anything you want ' . date('c'));
+                $pdf->setRTL(false);
+                //$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $data['company_name'], '');
+                $pdf->setLanguageArray($lg);
+                $pdf->SetFontSubsetting(true);
+                $pdf->SetCreator('Snipe-IT');
+                $pdf->SetAuthor($data['assigned_to']);
+                $pdf->SetTitle('Asset Acceptance: '.$data['item_tag']);
+                // $pdf->SetSubject('Document Subject');
+                //$pdf->SetKeywords('keywords, here');
+
+                $pdf->SetFont('dejavusans', '', 8, '', true);
+
+
+               // $pdf->SetFont('dejavusans', '', 14);
+                //
+
+
+                $pdf->SetPrintHeader(false);
+                $pdf->SetPrintFooter(false);
+                $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+                $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+                $pdf->AddPage();
+                $pdf->writeHTML('<img src="'.$path_logo.'" height="30">', true, 0, true, 0, '');
+
+                // $pdf->writeHTML(trans('general.date').': '.date($data['date_settings']), true, 0, true, 0, '');
+                $pdf->writeHTML("<strong>".trans('general.asset_tag').'</strong>: '.$data['item_tag'], true, 0, true, 0, '');
+                $pdf->writeHTML("<strong>".trans('general.asset_model').'</strong>: '.$data['item_model'], true, 0, true, 0, '');
+                $pdf->writeHTML("<strong>".trans('admin/hardware/form.serial').'</strong>: '.$data['item_serial'], true, 0, true, 0, '');
+                $pdf->writeHTML("<strong>".trans('general.assigned_date').'</strong>: '.$data['check_out_date'], true, 0, true, 0, '');
+                $pdf->writeHTML("<strong>".trans('general.assignee').'</strong>: '.$data['assigned_to'], true, 0, true, 0, '');
+                $pdf->Ln();
+                // $html = view($pdf_view_route, $data)->render();
+                // $pdf->writeHTML($html, true, 0, true, 0, '');
+
+                // $eula_lines = explode("\n\n", $item->getEula());
+                $eula_lines = preg_split("/\r\n|\n|\r/", $item->getEula());
+
+                foreach ($eula_lines as $eula_line) {
+                    if (Helper::hasRtl($eula_line)) {
+                        $pdf->setRTL(true);
+                    } else {
+                        $pdf->setRTL(false);
+                    }
+
+                    if (Helper::isCjk($eula_line)) {
+                        $pdf->SetFont('cid0cs', '', 9);
+                    } else {
+                        $pdf->SetFont('dejavusans', '', 8, '', true);
+                    }
+
+                    $pdf->writeHTML(Helper::parseEscapedMarkedown($eula_line), true, 0, true, 0, '');
+                }
+                $pdf->Ln();
+                $pdf->Ln();
+                $pdf->setRTL(false);
+                $pdf->writeHTML('<br><br>', true, 0, true, 0, '');
+
+                if ($data['note'] != null) {
+                    $pdf->writeHTML("<strong>".trans('general.notes') . '</strong>: ' . $data['note'], true, 0, true, 0, '');
+                    $pdf->Ln();
+                }
+
+                if ($data['signature'] != null) {
+
+                    $pdf->writeHTML('<img src="'.$data['signature'].'" style="max-width: 600px;">', true, 0, true, 0, '');
+                    $pdf->writeHTML('<hr>', true, 0, true, 0, '');
+                }
+
+                $pdf->writeHTML("<strong>".trans('general.accepted_date').'</strong>: '.$data['accepted_date'], true, 0, true, 0, '');
+
+
+                $pdf_content = $pdf->Output($pdf_filename, 'S');
+
+
+                //$html = view($pdf_view_route, $data)->render();
+                //$pdf = PDF::writeHTML($html, true, false, true, false, '');
+                Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf_content);
             }
 
-            $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
+            // $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
 
             // Send the PDF to the signing user
             if (($request->input('send_copy') == '1') && ($assigned_user->email !='')) {
