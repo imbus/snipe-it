@@ -236,7 +236,7 @@
               <div class="row">
                   <div class="col-md-3" style="padding-bottom: 10px;">
                       <strong>
-                          {{ trans('general.purchase_cost') }}
+                          {{ trans('general.unit_cost') }}
                       </strong>
                   </div>
                   <div class="col-md-9" style="word-wrap: break-word;">
