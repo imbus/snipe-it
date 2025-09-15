@@ -307,7 +307,26 @@ class License extends Depreciable
         $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
 
 
-        return $expired || $terminated;
+        return $this->isExpired() || $this->isTerminated();
+    }
+
+    public function isExpired(): bool
+    {
+        $day = now()->startOfDay();
+
+        $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+
+        return $expired;
+    }
+
+    public function isTerminated(): bool
+    {
+        $day = now()->startOfDay();
+
+        $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+
+
+        return $terminated;
     }
 
     /**

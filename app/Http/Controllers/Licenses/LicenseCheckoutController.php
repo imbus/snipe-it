@@ -40,7 +40,7 @@ class LicenseCheckoutController extends Controller
             }
 
             // Make sure the license is expired or terminated
-            if ($license->isInactive()){
+            if ($license->isInactive()) {
                 return redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.license_is_inactive'));
             }
 
@@ -130,7 +130,7 @@ class LicenseCheckoutController extends Controller
             throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.not_enough_seats')));
         }
 
-        
+
         if (! $licenseSeat->license->is($license)) {
             throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.mismatch')));
         }
