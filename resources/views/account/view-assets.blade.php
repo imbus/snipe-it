@@ -446,6 +446,9 @@
                       <th class="col-md-2" data-switchable="true" data-visible="false">
                         {{ trans('general.name') }}
                       </th>
+                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                        {{ trans('general.status') }}
+                      </th>
                       <th class="col-md-2" data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/table.asset_model') }}
                       </th>
@@ -461,7 +464,6 @@
                       <th class="col-md-2" data-switchable="true" data-visible="false">
                         {{ trans('general.location') }}
                       </th>
-
                       @can('self.view_purchase_cost')
                         <th class="col-md-6" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">
                           {{ trans('general.purchase_cost') }}
@@ -507,6 +509,11 @@
                         </td>
                         <td>
                           {{ $asset->name }}
+                        </td>
+                        <td>
+                          <x-icon type="circle-solid" class="text-blue" />
+                          {{ $asset->assetstatus->name }}
+                          <label class="label label-default">{{ trans('general.deployed') }}</label>
                         </td>
                         <td>
                             {{ $asset->model->name }}
