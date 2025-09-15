@@ -49,8 +49,8 @@
                     </div>
                     <div class="box-body">
                         @if ($acceptance->checkoutable->getEula())
-                            <div class="col-md-12" style="padding-top: 15px; padding-bottom: 15px;">
-                                <div style="background-color: rgba(211,211,211,0.25); padding: 10px; border: lightgrey 1px solid;">
+                            <div class="col-md-12" style="padding-top: 5px; padding-bottom: 15px;">
+                                <div style="background-color: rgba(211,211,211,0.25); padding: 0px 10px 10px 10px; border: lightgrey 1px solid;">
                                     {!!  str_replace('<p>', '<p dir="auto">', Helper::parseEscapedMarkedown($acceptance->checkoutable->getEula())) !!}
                                 </div>
                             </div>
