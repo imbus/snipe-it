@@ -244,26 +244,15 @@ class AcceptanceController extends Controller
                 $lg['w_page'] = 'page';
 
                 $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
-                // $pdf->SetHeaderData(PDF_HEADER_LOGO, 5, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
-                // $pdf->SetHeaderData('https://snipe-it.test/uploads/snipe-logo.png', '5', $data['company_name'], $item->company?->name);
-                //$pdf->headerText = ('Anything you want ' . date('c'));
                 $pdf->setRTL(false);
-                //$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $data['company_name'], '');
                 $pdf->setLanguageArray($lg);
                 $pdf->SetFontSubsetting(true);
                 $pdf->SetCreator('Snipe-IT');
                 $pdf->SetAuthor($data['assigned_to']);
                 $pdf->SetTitle('Asset Acceptance: '.$data['item_tag']);
-                // $pdf->SetSubject('Document Subject');
-                //$pdf->SetKeywords('keywords, here');
-
+                $pdf->SetSubject('Asset Acceptance: '.$data['item_tag']);
+                $pdf->SetKeywords('Snipe-IT, assets, acceptance, eula', 'tos');
                 $pdf->SetFont('dejavusans', '', 8, '', true);
-
-
-               // $pdf->SetFont('dejavusans', '', 14);
-                //
-
-
                 $pdf->SetPrintHeader(false);
                 $pdf->SetPrintFooter(false);
                 $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -272,7 +261,6 @@ class AcceptanceController extends Controller
                 $pdf->AddPage();
                 $pdf->writeHTML('<img src="'.$path_logo.'" height="30">', true, 0, true, 0, '');
 
-                // $pdf->writeHTML(trans('general.date').': '.date($data['date_settings']), true, 0, true, 0, '');
                 $pdf->writeHTML("<strong>".trans('general.asset_tag').'</strong>: '.$data['item_tag'], true, 0, true, 0, '');
                 $pdf->writeHTML("<strong>".trans('general.asset_model').'</strong>: '.$data['item_model'], true, 0, true, 0, '');
                 $pdf->writeHTML("<strong>".trans('admin/hardware/form.serial').'</strong>: '.$data['item_serial'], true, 0, true, 0, '');
@@ -284,17 +272,9 @@ class AcceptanceController extends Controller
                 $eula_lines = preg_split("/\r\n|\n|\r/", $item->getEula());
 
                 foreach ($eula_lines as $eula_line) {
-                    if (Helper::hasRtl($eula_line)) {
-                        $pdf->setRTL(true);
-                    } else {
-                        $pdf->setRTL(false);
-                    }
+                    Helper::hasRtl($eula_line) ? $pdf->setRTL(true) : $pdf->setRTL(false);
+                    Helper::isCjk($eula_line) ? $pdf->SetFont('cid0cs', '', 9) : $pdf->SetFont('dejavusans', '', 8, '', true);
 
-                    if (Helper::isCjk($eula_line)) {
-                        $pdf->SetFont('cid0cs', '', 9);
-                    } else {
-                        $pdf->SetFont('dejavusans', '', 8, '', true);
-                    }
 
                     $pdf->writeHTML(Helper::parseEscapedMarkedown($eula_line), true, 0, true, 0, '');
                 }
@@ -304,6 +284,7 @@ class AcceptanceController extends Controller
                 $pdf->writeHTML('<br><br>', true, 0, true, 0, '');
 
                 if ($data['note'] != null) {
+                    Helper::isCjk($data['note']) ? $pdf->SetFont('cid0cs', '', 9) : $pdf->SetFont('dejavusans', '', 8, '', true);
                     $pdf->writeHTML("<strong>".trans('general.notes') . '</strong>: ' . $data['note'], true, 0, true, 0, '');
                     $pdf->Ln();
                 }
