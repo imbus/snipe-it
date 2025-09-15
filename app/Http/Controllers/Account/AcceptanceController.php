@@ -279,10 +279,8 @@ class AcceptanceController extends Controller
                 $pdf->writeHTML("<strong>".trans('general.assigned_date').'</strong>: '.$data['check_out_date'], true, 0, true, 0, '');
                 $pdf->writeHTML("<strong>".trans('general.assignee').'</strong>: '.$data['assigned_to'], true, 0, true, 0, '');
                 $pdf->Ln();
-                // $html = view($pdf_view_route, $data)->render();
-                // $pdf->writeHTML($html, true, 0, true, 0, '');
 
-                // $eula_lines = explode("\n\n", $item->getEula());
+                // Break the EULA into lines based on newlines, and check each line for RTL or CJK characters
                 $eula_lines = preg_split("/\r\n|\n|\r/", $item->getEula());
 
                 foreach ($eula_lines as $eula_line) {
@@ -321,13 +319,10 @@ class AcceptanceController extends Controller
 
                 $pdf_content = $pdf->Output($pdf_filename, 'S');
 
-
-                //$html = view($pdf_view_route, $data)->render();
-                //$pdf = PDF::writeHTML($html, true, false, true, false, '');
                 Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf_content);
             }
 
-            // $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
+             $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
 
             // Send the PDF to the signing user
             if (($request->input('send_copy') == '1') && ($assigned_user->email !='')) {
