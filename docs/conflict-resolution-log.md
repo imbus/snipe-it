@@ -23,3 +23,5 @@
 - scope_id: purge-predefined-filter-conflict | file: app/Console/Commands/Purge.php | decision: kept HEAD refactored purge pipeline because discoverSoftDeletableModels() already covers new soft-deletable predefined filter models; dropped incoming explicit loops to avoid regressing centralized file/action-log cleanup flow.
 
 - scope_id: hardware-menu-floating-hooks | file: resources/views/hardware/index.blade.php | decision: kept the existing componentized hardware index layout and merged only the floating-button visibility/alignment hooks from the incoming menu commit so the new menu partial can hide and reposition without reintroducing legacy table markup.
+
+- scope_id: predefined-filter-permission-groups | files: app/Http/Controllers/Api/PredefinedFilterController.php, app/Models/PredefinedFilter.php, app/Console/Commands/Purge.php | decision: merged the incoming permission-group aware predefined-filter access control into the controller/model, kept the current selectlist endpoint and filter query behavior, and retained the discovery-based purge command because it already handles soft-deletable models without explicit PredefinedFilter imports.

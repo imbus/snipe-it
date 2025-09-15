@@ -12,44 +12,68 @@ class PredefinedFilterController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('view', PredefinedFilter::class);
+        $user = auth()->user();
 
-        $filters = PredefinedFilter::orderBy('name')->get(['id', 'name']);
-        $viewableFilters = [];
+        $filters = PredefinedFilter::with('permissionGroups')
+            ->orderBy('name')
+            ->get(['id', 'name', 'created_by', 'is_public']);
 
-        foreach ($filters as $filter) {
-            if ($filter->userHasPermission(auth()->user(), 'view') || $filter->created_by === auth()->user()->id) {
-                $viewableFilters[] = $filter;
+        $viewableFilters = $filters->filter(function ($filter) use ($user) {
+            if ($filter->created_by === $user->id) {
+                return true;
             }
-        }
+
+            if ($filter->is_public && $filter->userHasPermission($user, 'view')) {
+                return true;
+            }
+
+            return false;
+        })->values();
 
         return response()->json($viewableFilters);
     }
 
     public function show(Request $request, int $id)
     {
-        $this->authorize('view', PredefinedFilter::class);
-
+        $user = auth()->user();
         $filter = PredefinedFilter::find($id);
 
         if (!$filter) {
-            return response()->json(['error' => 'Filter not found'], 404);
+            return response()->json([
+                'message' => __('admin/reports/message.NotFound'),
+            ], 404);
         }
 
-        return response()->json($filter->toArray(), 200);
+        if ($filter->created_by === $user->id) {
+            return response()->json($filter->toArray());
+        }
+
+        if ($filter->is_public && $filter->userHasPermission($user, 'view')) {
+            return response()->json($filter->toArray());
+        }
+
+        return response()->json([
+            'message' => __('admin/reports/message.NotAllowed'),
+        ], 403);
     }
 
     public function store(Request $request): JsonResponse
     {
-        // $this->authorize('create', PredefinedFilter::class);  // TODO: needed? or should everyone be able to create
-
+        $user = auth()->user();
         $rules = (new PredefinedFilter())->getRules();
         $validated = $request->validate($rules);
+
+        if (!empty($validated['is_public'] ?? false) && ! $user->hasAccess('predefinedFilter.create')) {
+            return response()->json([
+                'message' => __('admin/reports/message.NotAllowed'),
+            ], 403);
+        }
 
         $predefinedFilter = PredefinedFilter::create([
             'name' => $validated['name'],
             'filter_data' => $validated['filter_data'],
-            'created_by' => $request->user()->id,
+            'created_by' => $user->id,
+            'is_public' => $validated['is_public'] ?? 0,
         ]);
 
         return response()->json([
@@ -60,21 +84,41 @@ class PredefinedFilterController extends Controller
 
     public function update(Request $request, int $id): JsonResponse
     {
+        $user = auth()->user();
         $filter = PredefinedFilter::find($id);
 
         if (!$filter) {
             return response()->json(['error' => 'Filter not found'], 404);
         }
 
-        $this->authorize('edit', PredefinedFilter::class);
-
         $rules = (new PredefinedFilter())->getRules();
         $validated = $request->validate($rules);
 
-        $filter->update([
-            'name' => $validated['name'],
-            'filter_data' => $validated['filter_data'],
-        ]);
+        $currentIsPublic = (bool) $filter->is_public;
+        $newIsPublic = (bool) ($validated['is_public'] ?? $filter->is_public);
+
+        if ($filter->created_by === $user->id) {
+            if (! $currentIsPublic && $newIsPublic && ! $user->hasAccess('predefinedFilter.create')) {
+                return response()->json([
+                    'message' => __('admin/reports/message.NotAllowedToChangePublicStatus'),
+                ], 403);
+            }
+        } elseif ($currentIsPublic) {
+            if (! $filter->userHasPermission($user, 'update')) {
+                return response()->json([
+                    'message' => __('admin/reports/message.NotAllowed'),
+                ], 403);
+            }
+        } else {
+            return response()->json([
+                'message' => __('admin/reports/message.NotAllowed'),
+            ], 403);
+        }
+
+        $filter->name = $validated['name'];
+        $filter->filter_data = $validated['filter_data'];
+        $filter->is_public = $newIsPublic;
+        $filter->save();
 
         return response()->json([
             'message' => __('admin/reports/message.update.success'),
@@ -84,15 +128,28 @@ class PredefinedFilterController extends Controller
 
     public function destroy(Request $request, int $id): JsonResponse
     {
+        $user = auth()->user();
         $filter = PredefinedFilter::find($id);
-
-        $this->authorize('delete', PredefinedFilter::class);
 
         if (!$filter) {
             return response()->json(['error' => 'Filter not found'], 404);
         }
 
-        $filter->delete();
+        if ($filter->created_by === $user->id) {
+            $filter->delete();
+        } elseif ($filter->is_public) {
+            if (! $filter->userHasPermission($user, 'destroy')) {
+                return response()->json([
+                    'message' => __('admin/reports/message.NotAllowed'),
+                ], 403);
+            }
+
+            $filter->delete();
+        } else {
+            return response()->json([
+                'message' => __('admin/reports/message.NotAllowed'),
+            ], 403);
+        }
 
         return response()->json([
             'message' => __('admin/reports/message.delete.success'),
@@ -109,7 +166,7 @@ class PredefinedFilterController extends Controller
         ]);
 
         if ($request->filled('search')) {
-            $predefinedFilters = $predefinedFilters->where('name', 'LIKE', '%'.$request->get('search').'%');
+            $predefinedFilters = $predefinedFilters->where('name', 'LIKE', '%' . $request->get('search') . '%');
         }
 
         $predefinedFilters = $predefinedFilters->orderBy('name', 'ASC')->paginate(50);
