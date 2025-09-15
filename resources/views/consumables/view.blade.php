@@ -272,7 +272,7 @@
                   @if ($consumable->purchase_cost)
                     <div class="row">
                       <div class="col-md-3">
-                        {{ trans('general.purchase_cost') }}
+                        {{ trans('general.unit_cost') }}
                       </div>
                       <div class="col-md-9">
                         {{ $snipeSettings->default_currency }}

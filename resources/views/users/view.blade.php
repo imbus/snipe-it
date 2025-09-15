@@ -927,7 +927,7 @@
                     <th>{{ trans('general.name') }}</th>
                     <th>{{ trans('general.date') }}</th>
                     <th data-fieldname="note">{{ trans('general.notes') }}</th>
-                    <th data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.unit_cost') }}</th>
                     <th class="hidden-print">{{ trans('general.action') }}</th>
                 </tr>
               </thead>
@@ -971,7 +971,7 @@
               <thead>
                 <tr>
                   <th class="col-md-3">{{ trans('general.name') }}</th>
-                  <th class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                  <th class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.unit_cost') }}</th>
                   <th class="col-md-2">{{ trans('general.date') }}</th>
                     <th class="col-md-5">{{ trans('general.notes') }}</th>
                 </tr>
