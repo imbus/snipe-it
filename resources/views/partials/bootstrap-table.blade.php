@@ -557,12 +557,17 @@
     }
 
     function licenseInOutFormatter(value, row) {
-        if(row.disabled || row.user_can_checkout === false) {
-            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin" class="btn btn-sm bg-maroon disabled" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkout') }}</a>';
+
+        // check that checkin is not disabled
+        if (row.user_can_checkout === false) {
+            return '<span class="btn btn-sm bg-maroon disabled" data-tooltip="true" title="{{ trans('admin/licenses/message.checkout.unavailable') }}">{{ trans('general.checkout') }}</span>';
+        } else if (row.disabled === true) {
+            return '<span class="btn btn-sm bg-maroon disabled" data-tooltip="true" title="{{ trans('admin/licenses/message.checkout.license_is_inactive') }}">{{ trans('general.checkout') }}</span>';
+
         } else
             // The user is allowed to check the license seat out and it's available
-        if ((row.available_actions.checkout === true) && (row.user_can_checkout === true)) {
-            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkout/'+row.id+'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+        if ((row.available_actions.checkout === true) && (row.user_can_checkout === true) && (row.disabled === false)) {
+            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkout/" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
         }
     }
     // We need a special formatter for license seats, since they don't work exactly the same
@@ -572,12 +577,17 @@
         if (row.disabled && (row.assigned_user || row.assigned_asset)) {
             return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkin') }}</a>';
         }
-        if(row.disabled) {
+        if (row.disabled) {
             return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin" class="btn btn-sm bg-maroon disabled" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkout') }}</a>';
         }
         // The user is allowed to check the license seat out and it's available
         if ((row.available_actions.checkout === true) && (row.user_can_checkout === true) && ((!row.assigned_asset) && (!row.assigned_user))) {
             return '<a href="{{ config('app.url') }}/licenses/' + row.license_id + '/checkout/'+row.id+'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
+        }
+
+        // The user is allowed to check the license seat in and it's available
+        if ((row.available_actions.checkin === true) && ((row.assigned_asset) || (row.assigned_user))) {
+            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin/" class="btn btn-sm bg-purple" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkin') }}</a>';
         }
 
     }
@@ -1775,7 +1785,19 @@
             attributes: {
                 title: '{{ trans('general.export') }}'
             }
-        }
+        },
+
+        btnShowInactive: {
+            text: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
+            icon: 'fas fa-clock {{ (request()->input('status') == "inactive") ? ' text-danger' : '' }}',
+            event () {
+                window.location.href = '{{ (request()->input('status') == "inactive") ? route('licenses.index') : route('licenses.index', ['status' => 'inactive']) }}';
+            },
+            attributes: {
+                title: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
+
+            }
+        },
     });
 
 
