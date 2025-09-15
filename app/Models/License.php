@@ -299,16 +299,36 @@ class License extends Depreciable
     }
 
     public function isInactive(): bool
-{
-    $day = now()->startOfDay();
+    {
+        $day = now()->startOfDay();
 
-    $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+        $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
 
-    $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+        $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
 
 
-    return $expired || $terminated;
-}
+        return $this->isExpired() || $this->isTerminated();
+    }
+
+    public function isExpired(): bool
+    {
+        $day = now()->startOfDay();
+
+        $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+
+        return $expired;
+    }
+
+    public function isTerminated(): bool
+    {
+        $day = now()->startOfDay();
+
+        $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+
+
+        return $terminated;
+    }
+
     /**
      * Sets free_seat_count attribute
      *
@@ -748,6 +768,38 @@ class License extends Depreciable
             ->orderBy('expiration_date', 'ASC')
             ->orderBy('termination_date', 'ASC')
             ->get();
+    }
+
+    public function scopeActiveLicenses($query)
+    {
+
+        return $query->whereNull('deleted_at')
+
+            // The termination date is null or within range
+            ->where(function ($query)  {
+                $query->whereNull('termination_date')
+                    ->orWhereDate('termination_date', '>', [Carbon::now()]);
+            })
+            ->where(function ($query) {
+                $query->whereNull('expiration_date')
+                    ->orWhereDate('expiration_date', '>', [Carbon::now()]);
+            });
+    }
+
+    public function scopeExpiredLicenses($query)
+    {
+
+        return $query->whereNull('deleted_at')
+
+            // The termination date is null or within range
+            ->where(function ($query)  {
+                $query->whereNull('termination_date')
+                    ->orWhereDate('termination_date', '<=', [Carbon::now()]);
+            })
+            ->orWhere(function ($query) {
+                $query->whereNull('expiration_date')
+                    ->orWhereDate('expiration_date', '<=', [Carbon::now()]);
+            });
     }
 
     /**
