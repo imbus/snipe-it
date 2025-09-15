@@ -270,6 +270,7 @@ class AcceptanceController extends Controller
 
             $return_msg = trans('admin/users/message.accepted');
 
+        // Item was not accepted
         } else {
 
             if (Setting::getSettings()->require_accept_signature == '1') {
@@ -295,7 +296,7 @@ class AcceptanceController extends Controller
 
             $data = [
                 'item_tag' => $item->asset_tag,
-                'item_model' => $item->model ?? '',
+                'item_model' => $item->model ? $item->model->name : $item->display_name,
                 'item_serial' => $item->serial,
                 'item_status' => $item->assetstatus?->name,
                 'note' => $request->input('note'),
