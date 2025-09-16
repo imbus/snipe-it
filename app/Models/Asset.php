@@ -823,9 +823,9 @@ class Asset extends Depreciable
      * @since  [v2.0]
      * @return mixed
      */
-    public static function getExpiringWarranteeOrEol($days = 30)
+    public static function getExpiringWarrantyOrEol($days = 30)
     {
-
+        
         return self::where('archived', '=', '0')
             ->NotArchived()
             ->whereNull('deleted_at')
@@ -838,10 +838,9 @@ class Asset extends Depreciable
                 })->orWhere(function ($query) use ($days) {
                     $query->whereNotNull('purchase_date')
                         ->whereNotNull('warranty_months')
-                        ->whereDate('purchase_date', '<=', Carbon::now()->addMonths('assets.warranty_months')->addDays($days));
+                        ->whereBetween('purchase_date', [Carbon::now(), Carbon::now()->addMonths('assets.warranty_months')->addDays($days)]);
                 });
             })
-
             ->orderBy('asset_eol_date', 'ASC')
             ->orderBy('purchase_date', 'ASC')
             ->get();
