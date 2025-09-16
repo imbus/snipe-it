@@ -94,6 +94,17 @@
           </a>
         </li>
 
+          <li>
+              <a href="#eulas" data-toggle="tab">
+            <span class="hidden-lg hidden-md" aria-hidden="true">
+                <x-icon type="files" class="fa-2x" />
+              </span>
+                  <span class="hidden-xs hidden-sm">{{ trans('general.eula') }}
+                      {!! ($user->eulas->count() > 0 ) ? '<span class="badge badge-secondary">'.number_format($user->eulas->count()).'</span>' : '' !!}
+            </span>
+              </a>
+          </li>
+
         <li>
           <a href="#history" data-toggle="tab">
             <span class="hidden-lg hidden-md">
@@ -1000,6 +1011,35 @@
             </div>
           </div> <!--/ROW-->
         </div><!--/FILES-->
+
+          <div class="tab-pane" id="eulas">
+              <table
+                      data-toolbar="#userEULAToolbar"
+                      data-cookie-id-table="userEULATable"
+                      data-id-table="userEULATable"
+                      id="userEULATable"
+                      data-side-pagination="client"
+                      data-show-footer="true"
+                      data-show-refresh="false"
+                      data-sort-order="asc"
+                      data-sort-name="name"
+                      class="table table-striped snipe-table table-hover"
+                      data-url="{{ route('api.user.eulas', $user) }}"
+                      data-export-options='{
+                    "fileName": "export-eula-{{ str_slug($user->username) }}-{{ date('Y-m-d') }}",
+                    "ignoreColumn": ["actions","image","change","checkbox","checkincheckout","delete","purchasecost", "icon"]
+                    }'>
+                  <thead>
+                  <tr>
+                      <th data-visible="true" data-field="icon" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter">{{ trans('admin/hardware/table.icon') }}</th>
+                      <th data-visible="true" data-field="item.name">{{ trans('general.item') }}</th>
+                      <th data-visible="true" data-field="created_at" data-sortable="true" data-formatter="dateDisplayFormatter">{{ trans('general.accepted_date') }}</th>
+                      <th data-field="note">{{ trans('general.notes') }}</th>
+                      <th data-field="url" data-formatter="fileDownloadButtonsFormatter">{{ trans('general.download') }}</th>
+                  </tr>
+                  </thead>
+              </table>
+          </div><!-- /eulas-tab -->
 
         <div class="tab-pane" id="history">
           <div class="table-responsive">
