@@ -26,7 +26,7 @@ class PredefinedFilterController extends Controller
         return response()->json((new PredefinedFiltersTransformer)->transformPredefinedFilters($filters, $filters->count()));
     }
 
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $filter = $this->service->getFilterById($id);
 
@@ -46,7 +46,7 @@ class PredefinedFilterController extends Controller
         $user = auth()->user();
         $validated = $request->validate((new PredefinedFilter)->getRules());
 
-        if (!empty($validated['is_public']) && ! $user->hasAccess('predefinedFilter.create')) {
+        if (! empty($validated['is_public'] ?? false) && ! $user->hasAccess('predefinedFilter.create')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.create.not_allowed')], 403);
         }
 
@@ -73,7 +73,7 @@ class PredefinedFilterController extends Controller
 
         if ($filter->created_by === $user->id) {
             if (! $currentIsPublic && $newIsPublic && ! $user->hasAccess('predefinedFilter.create')) {
-                return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_is_public')], 403);
+                return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_isPublic')], 403);
             }
         } elseif ($currentIsPublic) {
             if (! $filter->userHasPermission($user, 'update')) {
@@ -88,7 +88,7 @@ class PredefinedFilterController extends Controller
         return response()->json([
             'message' => trans('admin/predefinedFilters/message.update.success'),
             'filter_data' => $updated,
-        ]);
+        ], 200);
     }
 
     public function destroy(Request $request, int $id): JsonResponse
@@ -100,10 +100,7 @@ class PredefinedFilterController extends Controller
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
-        if (
-            $filter->created_by === $user->id ||
-            ($filter->is_public && $filter->userHasPermission($user, 'destroy'))
-        ) {
+        if ($filter->created_by === $user->id || ($filter->is_public && $filter->userHasPermission($user, 'destroy'))) {
             $this->service->deleteFilter($filter);
 
             return response()->json(['message' => trans('admin/predefinedFilters/message.delete.success')]);
