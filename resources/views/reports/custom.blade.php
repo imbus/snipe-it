@@ -430,9 +430,9 @@
           <div class="form-group purchase-range{{ ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end')) ? ' has-error' : '' }}">
               <label for="purchase_cost_start" class="col-md-3 control-label">{{ trans('admin/hardware/form.cost') }}</label>
               <div class="input-group col-md-7">
-                  <input type="text" min="0" class="form-control" name="purchase_cost_start" aria-label="purchase_cost_start" value="{{ $template->textValue('purchase_cost_start', old('purchase_cost_start')) }}">
+                  <input type="number" min="0" step="0.01" class="form-control" name="purchase_cost_start" aria-label="purchase_cost_start" value="{{ $template->textValue('purchase_cost_start', old('purchase_cost_start')) }}">
                   <span class="input-group-addon">{{ strtolower(trans('general.to')) }}</span>
-                  <input type="text" class="form-control" name="purchase_cost_end" aria-label="purchase_cost_end" value="{{ $template->textValue('purchase_cost_end', old('purchase_cost_end')) }}">
+                  <input type="number" min="0" step="0.01" class="form-control" name="purchase_cost_end" aria-label="purchase_cost_end" value="{{ $template->textValue('purchase_cost_end', old('purchase_cost_end')) }}">
               </div>
 
               @if ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end'))

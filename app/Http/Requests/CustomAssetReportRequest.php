@@ -24,6 +24,7 @@ class CustomAssetReportRequest extends Request
         return [
             'purchase_start'        => 'date|date_format:Y-m-d|nullable',
             'purchase_end'          => 'date|date_format:Y-m-d|nullable',
+            'purchase_cost_end'     => 'numeric|nullable|gte:purchase_cost_start',
             'created_start'         => 'date|date_format:Y-m-d|nullable',
             'created_end'           => 'date|date_format:Y-m-d|nullable',
             'checkout_date_start'   => 'date|date_format:Y-m-d|nullable',
