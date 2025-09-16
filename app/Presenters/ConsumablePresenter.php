@@ -68,6 +68,12 @@ class ConsumablePresenter extends Presenter
                 'sortable' => true,
                 'title' => trans('general.model_no'),
             ], [
+                'field' => 'location',
+                'searchable' => true,
+                'sortable' => true,
+                'title' => trans('general.location'),
+                'formatter' => 'locationsLinkObjFormatter',
+            ], [
                 'field' => 'item_no',
                 'searchable' => true,
                 'sortable' => true,
