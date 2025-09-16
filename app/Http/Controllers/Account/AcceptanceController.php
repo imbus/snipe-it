@@ -120,9 +120,8 @@ class AcceptanceController extends Controller
 
 
         $item = $acceptance->checkoutable_type::find($acceptance->checkoutable_id);
-        $display_model = '';
-        $pdf_view_route = '';
-        $pdf_filename = 'accepted-eula-'.date('Y-m-d-h-i-s').'.pdf';
+        $checkout_type_shortname = strtolower(str_replace('App\Models\\', '', $acceptance->checkoutable_type));
+        $pdf_filename = 'accepted-'.$acceptance->checkoutable_id.'-'.$checkout_type_shortname.'-eula-'.date('Y-m-d-h-i-s').'.pdf';
         $sig_filename='';
 
         if ($request->input('asset_acceptance') == 'accepted') {
@@ -164,7 +163,7 @@ class AcceptanceController extends Controller
             
             $data = [
                 'item_tag' => $item->asset_tag,
-                'item_model' => $display_model,
+                'item_model' => $item->model ? $item->model->name : $item->display_name,
                 'item_serial' => $item->serial,
                 'item_status' => $item->assetstatus?->name,
                 'eula' => $item->getEula(),
@@ -203,7 +202,7 @@ class AcceptanceController extends Controller
             $pdf->AddPage();
             $pdf->writeHTML('<img src="'.$path_logo.'" height="30">', true, 0, true, 0, '');
 
-            if ($data['item_serial']) {
+            if ($data['item_tag']) {
                 $pdf->writeHTML("<strong>" . trans('general.asset_tag') . '</strong>: ' . $data['item_tag'], true, 0, true, 0, '');
             }
             $pdf->writeHTML("<strong>".trans('general.asset_model').'</strong>: '.$data['item_model'], true, 0, true, 0, '');
