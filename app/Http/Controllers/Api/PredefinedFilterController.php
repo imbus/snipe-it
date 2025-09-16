@@ -144,7 +144,7 @@ class PredefinedFilterController extends Controller
         } elseif ($filter->is_public) {
             if (! $filter->userHasPermission($user, 'destroy')) {
                 return response()->json([
-                    'message' => trans('admin/predefinedFilters/message.delete.not_allowed_to_delete'),
+                    'message' => trans('admin/predefinedFilters/message.not_allowed_to_delete'),
                 ], 403);
             }
 
