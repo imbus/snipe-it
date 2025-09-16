@@ -180,5 +180,27 @@ class SnipeModel extends Model
         );
     }
 
+    public function getEula()
+    {
+
+        // This is - for now - only for assets, where the asset model is the thing tied to the category
+        if (($this->model) && ($this->model->category)) {
+            if (($this->model->category->eula_text) && ($this->model->category->use_default_eula == 0)) {
+                return $this->model->category->eula_text;
+            } elseif ($this->model->category->use_default_eula == 1) {
+                return Setting::getSettings()->default_eula_text;
+            } else {
+                return false;
+            }
+        // For everything else, just check the category for EULA info
+        } elseif (($this->category) && ($this->category->eula_text)) {
+            return $this->category->eula_text;
+        } elseif ((Setting::getSettings()->default_eula_text) && (($this->category) && ($this->category->use_default_eula == '1'))) {
+            return Setting::getSettings()->default_eula_text;
+        }
+
+        return null;
+    }
+
 
 }

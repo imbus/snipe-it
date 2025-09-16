@@ -56,7 +56,7 @@ class SendExpirationAlerts extends Command
             $assets = Asset::getExpiringWarrantyOrEol($alert_interval);
 
             if ($assets->count() > 0) {
-                $this->info(trans_choice('mail.assets_warrantee_alert', $assets->count(), ['count' => $assets->count(), 'threshold' => $alert_interval]));
+
                 Mail::to($recipients)->send(new ExpiringAssetsMail($assets, $alert_interval));
 
                 $this->table(
@@ -68,7 +68,6 @@ class SendExpirationAlerts extends Command
             // Expiring licenses
             $licenses = License::getExpiringLicenses($alert_interval);
             if ($licenses->count() > 0) {
-                $this->info(trans_choice('mail.license_expiring_alert', $licenses->count(), ['count' => $licenses->count(), 'threshold' => $alert_interval]));
                 Mail::to($recipients)->send(new ExpiringLicenseMail($licenses, $alert_interval));
 
                 $this->table(
@@ -76,6 +75,10 @@ class SendExpirationAlerts extends Command
                     $licenses->map(fn($item) => ['ID' => $item->id, 'Name' => $item->name, 'Expires' => $item->expiration_date, 'Termination Date' => $item->termination_date])
                 );
             }
+
+            // Send a message even if the count is 0
+            $this->info(trans_choice('mail.assets_warrantee_alert', $assets->count(), ['count' => $assets->count(), 'threshold' => $alert_interval]));
+            $this->info(trans_choice('mail.license_expiring_alert', $licenses->count(), ['count' => $licenses->count(), 'threshold' => $alert_interval]));
 
 
 

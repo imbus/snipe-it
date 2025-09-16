@@ -38,20 +38,20 @@
                 <div class="panel box box-default">
                     <div class="box-header with-border">
                         <h2 class="box-title">
-                            <div>
-                                {{ $acceptance->checkoutable->display_name }}
-                                @if ($acceptance->qty > 1)
-                                    <strong>×{{ $acceptance->qty }}</strong>
-                                @endif
-                            </div>
-                            <div>{{ (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? trans('general.serial_number').': '.$acceptance->checkoutable->serial : '' }}</div>
+                            {{ $acceptance->checkoutable->display_name }}
+                            @if ($acceptance->qty > 1)
+                                <strong>×{{ $acceptance->qty }}</strong>
+                            @endif
+
+                            {!!  (($acceptance->checkoutable) && ($acceptance->checkoutable->serial)) ? '<br>'.trans('general.serial_number').': '.e($acceptance->checkoutable->serial) : '' !!}
+
                         </h2>
                     </div>
                     <div class="box-body">
                         @if ($acceptance->checkoutable->getEula())
-                            <div class="col-md-12" style="padding-top: 15px; padding-bottom: 15px;">
-                                <div style="background-color: rgba(211,211,211,0.25); padding: 10px; border: lightgrey 1px solid;">
-                                    {!!  str_replace('<p>', '<p dir="auto">', $acceptance->checkoutable->getEula()) !!}
+                            <div class="col-md-12" style="padding-top: 5px; padding-bottom: 15px;">
+                                <div style="background-color: rgba(211,211,211,0.25); padding: 0px 10px 10px 10px; border: lightgrey 1px solid;">
+                                    {!!  str_replace('<p>', '<p dir="auto">', Helper::parseEscapedMarkedown($acceptance->checkoutable->getEula())) !!}
                                 </div>
                             </div>
                         @endif

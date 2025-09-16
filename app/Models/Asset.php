@@ -1023,31 +1023,6 @@ class Asset extends Depreciable
         return false;
     }
 
-
-    /**
-     * Checks for a category-specific EULA, and if that doesn't exist,
-     * checks for a settings level EULA
-     *
-     * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @since  [v4.0]
-     * @return string | false
-     */
-    public function getEula()
-    {
-
-        if (($this->model) && ($this->model->category)) {
-            if (($this->model->category->eula_text) && ($this->model->category->use_default_eula == 0)) {
-                return Helper::parseEscapedMarkedown($this->model->category->eula_text);
-            } elseif ($this->model->category->use_default_eula == 1) {
-                return Helper::parseEscapedMarkedown(Setting::getSettings()->default_eula_text);
-            } else {
-
-                return false;
-            }
-        }
-
-        return false;
-    }
     public function getComponentCost()
     {
         $cost = 0;

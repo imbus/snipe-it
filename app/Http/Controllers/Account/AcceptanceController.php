@@ -8,8 +8,6 @@ use App\Events\ItemAccepted;
 use App\Events\ItemDeclined;
 use App\Http\Controllers\Controller;
 use App\Mail\CheckoutAcceptanceResponseMail;
-use App\Models\Actionlog;
-use App\Models\Asset;
 use App\Models\CheckoutAcceptance;
 use App\Models\Company;
 use App\Models\Contracts\Acceptable;
@@ -25,16 +23,16 @@ use App\Notifications\AcceptanceAssetAcceptedToUserNotification;
 use App\Notifications\AcceptanceAssetDeclinedNotification;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Http\Controllers\SettingsController;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use \Illuminate\Contracts\View\View;
 use \Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
+use TCPDF;
+use App\Helpers\Helper;
 
 class AcceptanceController extends Controller
 {
@@ -107,35 +105,28 @@ class AcceptanceController extends Controller
         }
 
         /**
-         * Get the signature and save it
+         * Check for the signature directory
          */
         if (! Storage::exists('private_uploads/signatures')) {
             Storage::makeDirectory('private_uploads/signatures', 775);
         }
 
+        /**
+         * Check for the eula-pdfs directory
+         */
+        if (! Storage::exists('private_uploads/eula-pdfs')) {
+            Storage::makeDirectory('private_uploads/eula-pdfs', 775);
+        }
 
 
         $item = $acceptance->checkoutable_type::find($acceptance->checkoutable_id);
-        $display_model = '';
-        $pdf_view_route = '';
-        $pdf_filename = 'accepted-eula-'.date('Y-m-d-h-i-s').'.pdf';
+        $checkout_type_shortname = strtolower(str_replace('App\Models\\', '', $acceptance->checkoutable_type));
+        $pdf_filename = 'accepted-'.$acceptance->checkoutable_id.'-'.$checkout_type_shortname.'-eula-'.date('Y-m-d-h-i-s').'.pdf';
         $sig_filename='';
 
         if ($request->input('asset_acceptance') == 'accepted') {
 
-            /**
-             * Check for the eula-pdfs directory
-             */
-            if (! Storage::exists('private_uploads/eula-pdfs')) {
-                Storage::makeDirectory('private_uploads/eula-pdfs', 775);
-            }
-
             if (Setting::getSettings()->require_accept_signature == '1') {
-                
-                // Check if the signature directory exists, if not create it
-                if (!Storage::exists('private_uploads/signatures')) {
-                    Storage::makeDirectory('private_uploads/signatures', 775);
-                }
 
                 // The item was accepted, check for a signature
                 if ($request->filled('signature_output')) {
@@ -152,56 +143,8 @@ class AcceptanceController extends Controller
                 }
             }
 
-
             $assigned_user = User::find($acceptance->assigned_to_id);
-            // this is horrible
-            switch($acceptance->checkoutable_type){
-                case 'App\Models\Asset':
-                        $pdf_view_route ='account.accept.accept-asset-eula';
-                        $asset_model = AssetModel::find($item->model_id);
-                        if (!$asset_model) {
-                            return redirect()->back()->with('error', trans('admin/models/message.does_not_exist'));
-                        }
-                        $display_model = $asset_model->name;
-                break;
 
-                case 'App\Models\Accessory':
-                        $pdf_view_route ='account.accept.accept-accessory-eula';
-                        $accessory = Accessory::find($item->id);
-                        $display_model = $accessory->name;
-                break;
-
-                case 'App\Models\LicenseSeat':
-                        $pdf_view_route ='account.accept.accept-license-eula';
-                        $license = License::find($item->license_id);
-                        $display_model = $license->name;
-                break;
-
-                case 'App\Models\Component':
-                        $pdf_view_route ='account.accept.accept-component-eula';
-                        $component = Component::find($item->id);
-                        $display_model = $component->name;
-                break;
-
-                case 'App\Models\Consumable':
-                        $pdf_view_route ='account.accept.accept-consumable-eula';
-                        $consumable = Consumable::find($item->id);
-                        $display_model = $consumable->name;
-                break;
-            }
-//            if ($acceptance->checkoutable_type == 'App\Models\Asset') {
-//                $pdf_view_route ='account.accept.accept-asset-eula';
-//                $asset_model = AssetModel::find($item->model_id);
-//                $display_model = $asset_model->name;
-//                $assigned_to = User::find($item->assigned_to)->present()->fullName;
-//
-//            } elseif ($acceptance->checkoutable_type== 'App\Models\Accessory') {
-//                $pdf_view_route ='account.accept.accept-accessory-eula';
-//                $accessory = Accessory::find($item->id);
-//                $display_model = $accessory->name;
-//                $assigned_to = User::find($item->assignedTo);
-//
-//            }
 
             /**
              * Gather the data for the PDF. We fire this whether there is a signature required or not,
@@ -220,14 +163,14 @@ class AcceptanceController extends Controller
             
             $data = [
                 'item_tag' => $item->asset_tag,
-                'item_model' => $display_model,
+                'item_model' => $item->model ? $item->model->name : $item->display_name,
                 'item_serial' => $item->serial,
                 'item_status' => $item->assetstatus?->name,
                 'eula' => $item->getEula(),
                 'note' => $request->input('note'),
-                'check_out_date' => Carbon::parse($acceptance->created_at)->format('Y-m-d'),
-                'accepted_date' => Carbon::parse($acceptance->accepted_at)->format('Y-m-d'),
-                'assigned_to' => $assigned_user->present()->fullName,
+                'check_out_date' => Carbon::parse($acceptance->created_at)->format('Y-m-d H:i:s'),
+                'accepted_date' => Carbon::parse($acceptance->accepted_at)->format('Y-m-d H:i:s'),
+                'assigned_to' => $assigned_user->display_name,
                 'company_name' => $branding_settings->site_name,
                 'signature' => ($sig_filename) ? storage_path() . '/private_uploads/signatures/' . $sig_filename : null,
                 'logo' => $path_logo,
@@ -236,11 +179,73 @@ class AcceptanceController extends Controller
                 'qty' => $acceptance->qty ?? 1,
             ];
 
-            if ($pdf_view_route!='') {
-                Log::debug($pdf_filename.' is the filename, and the route was specified.');
-                $pdf = Pdf::loadView($pdf_view_route, $data);
-                Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf->output());
+            // set some language dependent data:
+            $lg = Array();
+            $lg['a_meta_charset'] = 'UTF-8';
+            $lg['w_page'] = 'page';
+
+            $pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+            $pdf->setRTL(false);
+            $pdf->setLanguageArray($lg);
+            $pdf->SetFontSubsetting(true);
+            $pdf->SetCreator('Snipe-IT');
+            $pdf->SetAuthor($data['assigned_to']);
+            $pdf->SetTitle('Asset Acceptance: '.$data['item_tag']);
+            $pdf->SetSubject('Asset Acceptance: '.$data['item_tag']);
+            $pdf->SetKeywords('Snipe-IT, assets, acceptance, eula', 'tos');
+            $pdf->SetFont('dejavusans', '', 8, '', true);
+            $pdf->SetPrintHeader(false);
+            $pdf->SetPrintFooter(false);
+            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+            $pdf->AddPage();
+            $pdf->writeHTML('<img src="'.$path_logo.'" height="30">', true, 0, true, 0, '');
+
+            if ($data['item_tag']) {
+                $pdf->writeHTML("<strong>" . trans('general.asset_tag') . '</strong>: ' . $data['item_tag'], true, 0, true, 0, '');
             }
+            $pdf->writeHTML("<strong>".trans('general.asset_model').'</strong>: '.$data['item_model'], true, 0, true, 0, '');
+            if ($data['item_serial']) {
+                $pdf->writeHTML("<strong>".trans('admin/hardware/form.serial').'</strong>: '.$data['item_serial'], true, 0, true, 0, '');
+            }
+            $pdf->writeHTML("<strong>".trans('general.assigned_date').'</strong>: '.$data['check_out_date'], true, 0, true, 0, '');
+            $pdf->writeHTML("<strong>".trans('general.assignee').'</strong>: '.$data['assigned_to'], true, 0, true, 0, '');
+            $pdf->Ln();
+
+            // Break the EULA into lines based on newlines, and check each line for RTL or CJK characters
+            $eula_lines = preg_split("/\r\n|\n|\r/", $item->getEula());
+
+            foreach ($eula_lines as $eula_line) {
+                Helper::hasRtl($eula_line) ? $pdf->setRTL(true) : $pdf->setRTL(false);
+                Helper::isCjk($eula_line) ? $pdf->SetFont('cid0cs', '', 9) : $pdf->SetFont('dejavusans', '', 8, '', true);
+
+                $pdf->writeHTML(Helper::parseEscapedMarkedown($eula_line), true, 0, true, 0, '');
+            }
+            $pdf->Ln();
+            $pdf->Ln();
+            $pdf->setRTL(false);
+            $pdf->writeHTML('<br><br>', true, 0, true, 0, '');
+
+            if ($data['note'] != null) {
+                Helper::isCjk($data['note']) ? $pdf->SetFont('cid0cs', '', 9) : $pdf->SetFont('dejavusans', '', 8, '', true);
+                $pdf->writeHTML("<strong>".trans('general.notes') . '</strong>: ' . $data['note'], true, 0, true, 0, '');
+                $pdf->Ln();
+            }
+
+            if ($data['signature'] != null) {
+
+                $pdf->writeHTML('<img src="'.$data['signature'].'" style="max-width: 600px;">', true, 0, true, 0, '');
+                $pdf->writeHTML('<hr>', true, 0, true, 0, '');
+            }
+
+            $pdf->writeHTML("<strong>".trans('general.accepted_date').'</strong>: '.$data['accepted_date'], true, 0, true, 0, '');
+
+
+            $pdf_content = $pdf->Output($pdf_filename, 'S');
+
+            Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf_content);
+
 
             $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
 
@@ -249,9 +254,8 @@ class AcceptanceController extends Controller
 
                 // Add the attachment for the signing user into the $data array
                 $data['file'] = $pdf_filename;
-                $locale = $assigned_user->locale;
                 try {
-                    $assigned_user->notify((new AcceptanceAssetAcceptedToUserNotification($data))->locale($locale));
+                    $assigned_user->notify((new AcceptanceAssetAcceptedToUserNotification($data))->locale($assigned_user->locale));
                 } catch (\Exception $e) {
                     Log::warning($e);
                 }
@@ -265,23 +269,12 @@ class AcceptanceController extends Controller
 
             $return_msg = trans('admin/users/message.accepted');
 
+        // Item was not accepted
         } else {
 
-            /**
-             * Check for the eula-pdfs directory
-             */
-            if (! Storage::exists('private_uploads/eula-pdfs')) {
-                Storage::makeDirectory('private_uploads/eula-pdfs', 775);
-            }
-
             if (Setting::getSettings()->require_accept_signature == '1') {
-                
-                // Check if the signature directory exists, if not create it
-                if (!Storage::exists('private_uploads/signatures')) {
-                    Storage::makeDirectory('private_uploads/signatures', 775);
-                }
 
-                // The item was accepted, check for a signature
+                // The item was declined, check for a signature
                 if ($request->filled('signature_output')) {
                     $sig_filename = 'siglog-' . Str::uuid() . '-' . date('Y-m-d-his') . '.png';
                     $data_uri = $request->input('signature_output');
@@ -298,39 +291,11 @@ class AcceptanceController extends Controller
             
             // Format the data to send the declined notification
             $branding_settings = SettingsController::getPDFBranding();
-
-            // This is the most horriblest
-            switch($acceptance->checkoutable_type){
-                case 'App\Models\Asset':
-                    $asset_model = AssetModel::find($item->model_id);
-                    $display_model = $asset_model->name;
-                    $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
-                    break;
-
-                case 'App\Models\Accessory':
-                    $accessory = Accessory::find($item->id);
-                    $display_model = $accessory->name;
-                    $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
-                    break;
-
-                case 'App\Models\LicenseSeat':
-                    $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
-                    break;
-
-                case 'App\Models\Component':
-                    $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
-                    break;
-
-                case 'App\Models\Consumable':
-                    $consumable = Consumable::find($item->id);
-                    $display_model = $consumable->name;
-                    $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
-                    break;
-            }
+            $assigned_to = User::find($acceptance->assigned_to_id)->present()->fullName;
 
             $data = [
                 'item_tag' => $item->asset_tag,
-                'item_model' => $display_model,
+                'item_model' => $item->model ? $item->model->name : $item->display_name,
                 'item_serial' => $item->serial,
                 'item_status' => $item->assetstatus?->name,
                 'note' => $request->input('note'),
@@ -342,11 +307,6 @@ class AcceptanceController extends Controller
                 'qty' => $acceptance->qty ?? 1,
             ];
 
-            if ($pdf_view_route!='') {
-                Log::debug($pdf_filename.' is the filename, and the route was specified.');
-                $pdf = Pdf::loadView($pdf_view_route, $data);
-                Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf->output());
-            }
 
             for ($i = 0; $i < ($acceptance->qty ?? 1); $i++) {
                 $acceptance->decline($sig_filename, $request->input('note'));
