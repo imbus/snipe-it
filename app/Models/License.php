@@ -299,16 +299,16 @@ class License extends Depreciable
     }
 
     public function isInactive(): bool
-    {
-        $day = now()->startOfDay();
+{
+    $day = now()->startOfDay();
 
-        $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
+    $expired = $this->expiration_date && $this->asDateTime($this->expiration_date)->startofDay()->lessThanOrEqualTo($day);
 
-        $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
+    $terminated = $this->termination_date && $this->asDateTime($this->termination_date)->startofDay()->lessThanOrEqualTo($day);
 
 
         return $this->isExpired() || $this->isTerminated();
-    }
+}
 
     public function isExpired(): bool
     {
@@ -408,27 +408,6 @@ class License extends Depreciable
         return false;
     }
 
-    /**
-     * Checks for a category-specific EULA, and if that doesn't exist,
-     * checks for a settings level EULA
-     *
-     * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @since  [v4.0]
-     * @return string | false
-     */
-    public function getEula()
-    {
-        if ($this->category) {
-            if ($this->category->eula_text) {
-                return Helper::parseEscapedMarkedown($this->category->eula_text);
-            } elseif ($this->category->use_default_eula == '1') {
-                return Helper::parseEscapedMarkedown(Setting::getSettings()->default_eula_text);
-            } 
-        }
-
-        return false;
-        
-    }
 
     /**
      * Establishes the license -> assigned user relationship

@@ -436,6 +436,34 @@ class Helper
     }
 
     /**
+     * Check if a string has any RTL characters
+     * @param $value
+     * @return bool
+     */
+    public static function hasRtl($string) {
+        $rtlChar = '/[\x{0590}-\x{083F}]|[\x{08A0}-\x{08FF}]|[\x{FB1D}-\x{FDFF}]|[\x{FE70}-\x{FEFF}]/u';
+        return preg_match($rtlChar, $string) != 0;
+    }
+
+    // is chinese, japanese or korean language
+    public static function isCjk($string) {
+        return Helper::isChinese($string) || Helper::isJapanese($string) || Helper::isKorean($string);
+    }
+
+    public static function isChinese($string) {
+        return preg_match("/\p{Han}+/u", $string);
+    }
+
+    public static function isJapanese($string) {
+        return preg_match('/[\x{4E00}-\x{9FBF}\x{3040}-\x{309F}\x{30A0}-\x{30FF}]/u', $string);
+    }
+
+    public static function isKorean($string) {
+        return preg_match('/[\x{3130}-\x{318F}\x{AC00}-\x{D7AF}]/u', $string);
+    }
+
+
+    /**
      * Increases or decreases the brightness of a color by a percentage of the current brightness.
      *
      * @param   string  $hexCode        Supported formats: `#FFF`, `#FFFFFF`, `FFF`, `FFFFFF`
