@@ -14,6 +14,15 @@ class CustomAssetReportRequest extends Request
         return true;
     }
 
+
+    public function prepareForValidation()
+    {
+        if($this->filled('purchase_cost_end') && !$this->filled('purchase_cost_start')){
+            $this->merge(['purchase_cost_start' => 0 ]);
+        }
+    }
+
+
     /**
      * Get the validation rules that apply to the request.
      *
