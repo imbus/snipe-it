@@ -53,7 +53,7 @@ class SendExpirationAlerts extends Command
                 ->filter(fn($item) => !empty($item))
                 ->all();
             // Expiring Assets
-            $assets = Asset::getExpiringWarrantee($alert_interval);
+            $assets = Asset::getExpiringWarranteeOrEol($alert_interval);
 
             if ($assets->count() > 0) {
                 $this->info(trans_choice('mail.assets_warrantee_alert', $assets->count(), ['count' => $assets->count(), 'threshold' => $alert_interval]));
