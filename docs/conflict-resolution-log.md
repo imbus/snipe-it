@@ -21,3 +21,5 @@
 - scope_id: predefined-filter-user-company-safe-merge | file: app/Http/Controllers/Assets/AssetsController.php | decision: merged index() by keeping scalar-safe company_id lookup and applying user-scoped PredefinedFilter query (created_by + name order).
 - scope_id: predefined-filter-permissions-config | file: config/permissions.php | decision: additive merge inserted PredefinedFilters immediately before User (Self) Accounts and preserved self section key name unchanged.
 - scope_id: purge-predefined-filter-conflict | file: app/Console/Commands/Purge.php | decision: kept HEAD refactored purge pipeline because discoverSoftDeletableModels() already covers new soft-deletable predefined filter models; dropped incoming explicit loops to avoid regressing centralized file/action-log cleanup flow.
+
+- scope_id: hardware-menu-floating-hooks | file: resources/views/hardware/index.blade.php | decision: kept the existing componentized hardware index layout and merged only the floating-button visibility/alignment hooks from the incoming menu commit so the new menu partial can hide and reposition without reintroducing legacy table markup.
