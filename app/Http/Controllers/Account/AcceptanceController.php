@@ -179,7 +179,7 @@ class AcceptanceController extends Controller
             Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf_content);
 
             // Log the acceptance
-            // $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
+            $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
 
             // Send the PDF to the signing user
             if (($request->input('send_copy') == '1') && ($assigned_user->email !='')) {
