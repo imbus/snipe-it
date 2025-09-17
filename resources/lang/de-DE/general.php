@@ -810,4 +810,12 @@ return [
     'token_unrevoked' => 'API-Token wiederhergestellt',
     'token_revoked' => 'API-Token widerrufen',
 
+    'advanced_search' => \"Erweiterte Suche\",
+    'search_after_filter_field' => 'Geben Sie hier einen Text ein um nach einem Feld zu suchen...',
+    'predefined_filter_name' => 'Filtername',
+    'enter_predefined_filter_name' => 'Bitte geben Sie einen Filternamen ein',
+    'visibility' => 'Sichtbarkeit',
+    'public' => 'Öffentlich',
+    'private' => 'Privat',
+    'validation_required' => 'Bitte geben Sie einen Filternamen ein.',
 ];
