@@ -427,7 +427,7 @@
             </div>
 
           <!-- Purchase Cost -->
-          <div class="form-group purchase-range{{ ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end')) ? ' has-error' : '' }}">
+            <div class="form-group purchase-range{{ ($errors->has('purchase_cost_start') || $errors->has('purchase_cost_end')) ? ' has-error' : '' }}">
               <label for="purchase_cost_start" class="col-md-3 control-label">{{ trans('admin/hardware/form.cost') }}</label>
               <div class="input-group col-md-7">
                   <input type="number" min="0" step="0.01" class="form-control" name="purchase_cost_start" aria-label="purchase_cost_start" value="{{ $template->textValue('purchase_cost_start', old('purchase_cost_start')) }}">
@@ -442,9 +442,9 @@
                   </div>
               @endif
 
-          </div>
+            </div>
 
-              <!-- Created Date -->
+          <!-- Created Date -->
             <div class="form-group created-range{{ ($errors->has('created_start') || $errors->has('created_end')) ? ' has-error' : '' }}">
               <label for="created_start" class="col-md-3 control-label">{{ trans('general.created_at') }} </label>
               <div class="input-daterange input-group col-md-7" id="created-range-datepicker">
