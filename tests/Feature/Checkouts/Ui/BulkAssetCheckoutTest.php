@@ -121,8 +121,8 @@ class BulkAssetCheckoutTest extends TestCase
                 ],
                 'checkout_to_type' => 'user',
                 'assigned_user' => $userInCompanyA->id,
-            ]);
-        // @todo: assert session has error message and redirect back
+            ])
+            ->assertRedirectToRoute('hardware.bulkcheckout.show');
 
         // ensure bulk checkout is blocked
         $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');

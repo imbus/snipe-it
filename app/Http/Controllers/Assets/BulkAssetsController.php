@@ -647,6 +647,21 @@ class BulkAssetsController extends Controller
 
             $assets = Asset::findOrFail($asset_ids);
 
+            if (Setting::getSettings()->full_multiple_companies_support && $target->company_id) {
+                $company_ids = $assets->pluck('company_id')->unique();
+
+                // if there is more than one unique company id or the singular company id does not match
+                // then the checkout is invalid
+                if ($company_ids->count() > 1 || $company_ids->first() != $target->company_id) {
+                    // keep the session data around for the redirect so the assets select is re-populated
+                    session()->reflash();
+
+                    return redirect(route('hardware.bulkcheckout.show'))
+                        // @todo: improve message and translate
+                        ->with('error', 'One or more of the assets has a company mismatch.');
+                }
+            }
+
             if (request('checkout_to_type') == 'asset') {
                 foreach ($asset_ids as $asset_id) {
                     if ($target->id == $asset_id) {
