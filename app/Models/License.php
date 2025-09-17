@@ -724,7 +724,7 @@ class License extends Depreciable
     public static function getExpiringLicenses($days = 60)
     {
 
-        return self::whereNull('deleted_at')
+        return self::whereNull('licenses.deleted_at')
 
             // The termination date is null or within range
             ->where(function ($query) use ($days) {
@@ -752,7 +752,7 @@ class License extends Depreciable
     public function scopeActiveLicenses($query)
     {
 
-        return $query->whereNull('deleted_at')
+        return $query->whereNull('licenses.deleted_at')
 
             // The termination date is null or within range
             ->where(function ($query)  {
@@ -768,7 +768,7 @@ class License extends Depreciable
     public function scopeExpiredLicenses($query)
     {
 
-        return $query->whereNull('deleted_at')
+        return $query->whereNull('licenses.deleted_at')
 
             // The termination date is null or within range
             ->where(function ($query)  {
