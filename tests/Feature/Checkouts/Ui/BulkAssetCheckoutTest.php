@@ -128,4 +128,6 @@ class BulkAssetCheckoutTest extends TestCase
         $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');
         $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
     }
+
+    // @todo: another test for asset to asset and asset to location ❓
 }
