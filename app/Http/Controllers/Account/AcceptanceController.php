@@ -83,7 +83,7 @@ class AcceptanceController extends Controller
     public function store(Request $request, $id) : RedirectResponse
     {
         $acceptance = CheckoutAcceptance::find($id);
-
+        $settings = Setting::getSettings();
         if (is_null($acceptance)) {
             return redirect()->route('account.accept')->with('error', trans('admin/hardware/message.does_not_exist'));
         }
@@ -146,35 +146,31 @@ class AcceptanceController extends Controller
             $assigned_user = User::find($acceptance->assigned_to_id);
 
 
-            /**
-             * Gather the data for the PDF. We fire this whether there is a signature required or not,
-             * since we want the moment-in-time proof of what the EULA was when they accepted it.
-             */
-            $branding_settings = SettingsController::getPDFBranding();
-
             $path_logo = "";
 
             // Check for the PDF logo path and use that, otherwise use the regular logo path
-            if (!is_null($branding_settings->acceptance_pdf_logo)) {
-                $path_logo = public_path() . '/uploads/' . $branding_settings->acceptance_pdf_logo;
-            } elseif (!is_null($branding_settings->logo)) {
-                $path_logo = public_path() . '/uploads/' . $branding_settings->logo;
+            if (!is_null($settings->acceptance_pdf_logo)) {
+                $path_logo = public_path() . '/uploads/' . $settings->acceptance_pdf_logo;
+            } elseif (!is_null($settings->logo)) {
+                $path_logo = public_path() . '/uploads/' . $settings->logo;
             }
             
             $data = [
                 'item_tag' => $item->asset_tag,
-                'item_model' => $item->model ? $item->model->name : $item->display_name,
+                'item_name' => $item->name, // this handles licenses seats, which don't have a 'name' field
+                'item_model' => $item->model?->name,
                 'item_serial' => $item->serial,
                 'item_status' => $item->assetstatus?->name,
                 'eula' => $item->getEula(),
                 'note' => $request->input('note'),
-                'check_out_date' => Carbon::parse($acceptance->created_at)->format('Y-m-d H:i:s'),
-                'accepted_date' => Carbon::parse($acceptance->accepted_at)->format('Y-m-d H:i:s'),
+                'check_out_date' => Helper::getFormattedDateObject($acceptance->created_at, 'datetime', false),
+                'accepted_date' => Helper::getFormattedDateObject(now()->format('Y-m-d H:i:s'), 'datetime', false),
                 'assigned_to' => $assigned_user->display_name,
-                'company_name' => $branding_settings->site_name,
+                'site_name' => $settings->site_name,
+                'company_name' => $item->company?->name?? $settings->site_name,
                 'signature' => ($sig_filename) ? storage_path() . '/private_uploads/signatures/' . $sig_filename : null,
                 'logo' => $path_logo,
-                'date_settings' => $branding_settings->date_display_format,
+                'date_settings' => $settings->date_display_format,
                 'admin' => auth()->user()->present()?->fullName,
                 'qty' => $acceptance->qty ?? 1,
             ];
@@ -192,26 +188,40 @@ class AcceptanceController extends Controller
             $pdf->SetAuthor($data['assigned_to']);
             $pdf->SetTitle('Asset Acceptance: '.$data['item_tag']);
             $pdf->SetSubject('Asset Acceptance: '.$data['item_tag']);
-            $pdf->SetKeywords('Snipe-IT, assets, acceptance, eula', 'tos');
+            $pdf->SetKeywords('Snipe-IT, assets, acceptance, eula, tos');
             $pdf->SetFont('dejavusans', '', 8, '', true);
             $pdf->SetPrintHeader(false);
             $pdf->SetPrintFooter(false);
-            $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
             $pdf->AddPage();
-            $pdf->writeHTML('<img src="'.$path_logo.'" height="30">', true, 0, true, 0, '');
+            if ($data['logo']) {
+                $pdf->writeHTML('<img src="'.$path_logo.'">', true, 0, true, 0, '');
+            }
 
-            if ($data['item_tag']) {
-                $pdf->writeHTML("<strong>" . trans('general.asset_tag') . '</strong>: ' . $data['item_tag'], true, 0, true, 0, '');
+            if ($data['site_name']) {
+                $pdf->writeHTML($data['site_name'], true, 0, true, 0, 'C');
             }
-            $pdf->writeHTML("<strong>".trans('general.asset_model').'</strong>: '.$data['item_model'], true, 0, true, 0, '');
-            if ($data['item_serial']) {
-                $pdf->writeHTML("<strong>".trans('admin/hardware/form.serial').'</strong>: '.$data['item_serial'], true, 0, true, 0, '');
-            }
-            $pdf->writeHTML("<strong>".trans('general.assigned_date').'</strong>: '.$data['check_out_date'], true, 0, true, 0, '');
-            $pdf->writeHTML("<strong>".trans('general.assignee').'</strong>: '.$data['assigned_to'], true, 0, true, 0, '');
             $pdf->Ln();
+            $pdf->writeHTML(trans('general.date') . ': ' . Helper::getFormattedDateObject(now(), 'datetime', false), true, 0, true, 0, '');
+
+            if ($data['company_name'] != null) {
+                $pdf->writeHTML(trans('general.company') . ': ' . e($data['company_name']), true, 0, true, 0, '');
+            }
+            if ($data['item_tag'] != null) {
+                $pdf->writeHTML(trans('general.asset_tag') . ': ' . e($data['item_tag']), true, 0, true, 0, '');
+            }
+            if ($data['item_name'] != null) {
+                $pdf->writeHTML(trans('general.name') . ': ' . e($data['item_name']), true, 0, true, 0, '');
+            }
+            if ($data['item_model'] != null) {
+                $pdf->writeHTML(trans('general.asset_model') . ': ' . e($data['item_model']), true, 0, true, 0, '');
+            }
+            if ($data['item_serial'] != null) {
+                $pdf->writeHTML(trans('admin/hardware/form.serial').': '.e($data['item_serial']), true, 0, true, 0, '');
+            }
+            $pdf->Ln();
+            $pdf->writeHTML('<hr>', true, 0, true, 0, '');
+
 
             // Break the EULA into lines based on newlines, and check each line for RTL or CJK characters
             $eula_lines = preg_split("/\r\n|\n|\r/", $item->getEula());
@@ -229,25 +239,28 @@ class AcceptanceController extends Controller
 
             if ($data['note'] != null) {
                 Helper::isCjk($data['note']) ? $pdf->SetFont('cid0cs', '', 9) : $pdf->SetFont('dejavusans', '', 8, '', true);
-                $pdf->writeHTML("<strong>".trans('general.notes') . '</strong>: ' . $data['note'], true, 0, true, 0, '');
+                $pdf->writeHTML(trans('general.notes') . ': ' . e($data['note']), true, 0, true, 0, '');
                 $pdf->Ln();
             }
 
             if ($data['signature'] != null) {
-
                 $pdf->writeHTML('<img src="'.$data['signature'].'" style="max-width: 600px;">', true, 0, true, 0, '');
                 $pdf->writeHTML('<hr>', true, 0, true, 0, '');
             }
 
-            $pdf->writeHTML("<strong>".trans('general.accepted_date').'</strong>: '.$data['accepted_date'], true, 0, true, 0, '');
+            $pdf->writeHTML(trans('general.assignee').': '.e($data['assigned_to']), true, 0, true, 0, '');
+            $pdf->writeHTML(trans('general.assigned_date').': '.e($data['check_out_date']), true, 0, true, 0, '');
+            $pdf->writeHTML(trans('general.accepted_date').': '.e($data['accepted_date']), true, 0, true, 0, '');
 
+            // close line height div
+            $pdf->writeHTML('</div>', true, 0, true, 0, '');
 
             $pdf_content = $pdf->Output($pdf_filename, 'S');
 
             Storage::put('private_uploads/eula-pdfs/' .$pdf_filename, $pdf_content);
 
 
-            $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
+             $acceptance->accept($sig_filename, $item->getEula(), $pdf_filename, $request->input('note'));
 
             // Send the PDF to the signing user
             if (($request->input('send_copy') == '1') && ($assigned_user->email !='')) {
