@@ -185,13 +185,12 @@ class CheckoutAcceptance extends Model
         $pdf->SetPrintFooter(false);
 
         $pdf->AddPage();
-        if ($data['logo']) {
+        if ($data['logo'] != null) {
             $pdf->writeHTML('<img src="'.$data['logo'].'">', true, 0, true, 0, '');
+        } else {
+            $pdf->writeHTML('<h3>'.$data['site_name'].'</h3><br /><br />', true, 0, true, 0, 'C');
         }
 
-        if ($data['site_name']) {
-            $pdf->writeHTML($data['site_name'], true, 0, true, 0, 'C');
-        }
         $pdf->Ln();
         $pdf->writeHTML(trans('general.date') . ': ' . Helper::getFormattedDateObject(now(), 'datetime', false), true, 0, true, 0, '');
 

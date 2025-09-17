@@ -138,14 +138,6 @@ class AcceptanceController extends Controller
         }
 
 
-        // Check for the PDF logo path and use that, otherwise use the regular logo path
-        if (!is_null($settings->acceptance_pdf_logo)) {
-            $path_logo = public_path() . '/uploads/' . $settings->acceptance_pdf_logo;
-        } elseif (!is_null($settings->logo)) {
-            $path_logo = public_path() . '/uploads/' . $settings->logo;
-        }
-
-
         // Get the data array ready for the notifications and PDF generation
         $data = [
             'item_tag' => $item->asset_tag,
@@ -162,7 +154,7 @@ class AcceptanceController extends Controller
             'site_name' => $settings->site_name,
             'company_name' => $item->company?->name?? $settings->site_name,
             'signature' => ($sig_filename) ? storage_path() . '/private_uploads/signatures/' . $sig_filename : null,
-            'logo' => $path_logo,
+            'logo' => ($settings->acceptance_pdf_logo) ? public_path() . '/uploads/' . $settings->acceptance_pdf_logo : null,
             'date_settings' => $settings->date_display_format,
             'admin' => auth()->user()->present()?->fullName,
             'qty' => $acceptance->qty ?? 1,
