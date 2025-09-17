@@ -89,4 +89,21 @@ class BulkAssetCheckoutTest extends TestCase
             $this->fail('Asset checkout email was sent when the entire checkout failed.');
         }
     }
+
+    public function test_adheres_to_full_multiple_company_support()
+    {
+        $this->markTestIncomplete();
+
+        // create two companies
+
+        // create an asset for each company
+
+        // create a user for one company
+
+        // create a super admin and act as them
+
+        // attempt to bulk checkout both items to the user in the company
+
+        // ensure bulk checkout is blocked
+    }
 }
