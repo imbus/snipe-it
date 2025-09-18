@@ -653,8 +653,8 @@ class BulkAssetsController extends Controller
                 // if there is more than one unique company id or the singular company id does not match
                 // then the checkout is invalid
                 if ($company_ids->count() > 1 || $company_ids->first() != $target->company_id) {
-                    // keep the session data around for the redirect so the assets select is re-populated
-                    session()->reflash();
+                    // re-add the asset ids so the assets select is re-populated
+                    $request->session()->flashInput(['selected_assets' => $asset_ids]);
 
                     return redirect(route('hardware.bulkcheckout.show'))
                         // @todo: improve message and translate
