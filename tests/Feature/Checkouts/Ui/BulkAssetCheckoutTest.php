@@ -8,6 +8,7 @@ use App\Models\Company;
 use App\Models\Location;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 use Tests\TestCase;
 
@@ -92,47 +93,41 @@ class BulkAssetCheckoutTest extends TestCase
         }
     }
 
-    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_user()
+    public static function checkoutTargets()
     {
-        $this->settings->enableMultipleFullCompanySupport();
+        yield 'Checkout to user' => [
+            function () {
+                return [
+                    'type' => 'user',
+                    'target' => User::factory()->forCompany()->create(),
+                ];
+            }
+        ];
 
-        // create two companies
-        [$companyA, $companyB] = Company::factory()->count(2)->create();
+        yield 'Checkout to asset' => [
+            function () {
+                return [
+                    'type' => 'asset',
+                    'target' => Asset::factory()->forCompany()->create(),
+                ];
+            }
+        ];
 
-        // create an asset for each company
-        $assetForCompanyA = Asset::factory()->for($companyA)->create();
-        $assetForCompanyB = Asset::factory()->for($companyB)->create();
-
-        $this->assertNull($assetForCompanyA->assigned_to, 'Asset should not be assigned before attempting this test case.');
-        $this->assertNull($assetForCompanyB->assigned_to, 'Asset should not be assigned before attempting this test case.');
-
-        // create a user for one company
-        $userInCompanyA = User::factory()->for($companyA)->create();
-
-        // create a super admin and act as them
-        $admin = User::factory()->superuser()->create();
-
-        // attempt to bulk checkout both items to the user in the company
-        $response = $this->actingAs($admin)
-            ->post(route('hardware.bulkcheckout.store'), [
-                'selected_assets' => [
-                    $assetForCompanyA->id,
-                    $assetForCompanyB->id,
-                ],
-                'checkout_to_type' => 'user',
-                'assigned_user' => $userInCompanyA->id,
-            ]);
-
-        // ensure bulk checkout is blocked
-        $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');
-        $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
-
-        // ensure redirected back
-        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
+        yield 'Checkout to location' => [
+            function () {
+                return [
+                    'type' => 'location',
+                    'target' => Location::factory()->forCompany()->create(),
+                ];
+            }
+        ];
     }
 
-    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_asset()
+    #[DataProvider('checkoutTargets')]
+    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_user($data)
     {
+        ['type' => $type, 'target' => $target] = $data();
+
         $this->settings->enableMultipleFullCompanySupport();
 
         // create two companies
@@ -145,60 +140,15 @@ class BulkAssetCheckoutTest extends TestCase
         $this->assertNull($assetForCompanyA->assigned_to, 'Asset should not be assigned before attempting this test case.');
         $this->assertNull($assetForCompanyB->assigned_to, 'Asset should not be assigned before attempting this test case.');
 
-        // create an asset for one company
-        $targetAssetForCompanyA = Asset::factory()->for($companyA)->create();
-
-        // create a super admin and act as them
-        $admin = User::factory()->superuser()->create();
-
-        // attempt to bulk checkout both items to the user in the company
-        $response = $this->actingAs($admin)
+        // attempt to bulk checkout both items to the target
+        $response = $this->actingAs(User::factory()->superuser()->create())
             ->post(route('hardware.bulkcheckout.store'), [
                 'selected_assets' => [
                     $assetForCompanyA->id,
                     $assetForCompanyB->id,
                 ],
-                'checkout_to_type' => 'asset',
-                'assigned_asset' => $targetAssetForCompanyA->id,
-            ]);
-
-        // ensure bulk checkout is blocked
-        $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');
-        $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
-
-        // ensure redirected back
-        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
-    }
-
-    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_location()
-    {
-        $this->settings->enableMultipleFullCompanySupport();
-
-        // create two companies
-        [$companyA, $companyB] = Company::factory()->count(2)->create();
-
-        // create an asset for each company
-        $assetForCompanyA = Asset::factory()->for($companyA)->create();
-        $assetForCompanyB = Asset::factory()->for($companyB)->create();
-
-        $this->assertNull($assetForCompanyA->assigned_to, 'Asset should not be assigned before attempting this test case.');
-        $this->assertNull($assetForCompanyB->assigned_to, 'Asset should not be assigned before attempting this test case.');
-
-        // create a location for one company
-        $locationForCompanyA = Location::factory()->for($companyA)->create();
-
-        // create a super admin and act as them
-        $admin = User::factory()->superuser()->create();
-
-        // attempt to bulk checkout both items to the user in the company
-        $response = $this->actingAs($admin)
-            ->post(route('hardware.bulkcheckout.store'), [
-                'selected_assets' => [
-                    $assetForCompanyA->id,
-                    $assetForCompanyB->id,
-                ],
-                'checkout_to_type' => 'location',
-                'assigned_location' => $locationForCompanyA->id,
+                'checkout_to_type' => $type,
+                "assigned_$type" => $target->id,
             ]);
 
         // ensure bulk checkout is blocked
