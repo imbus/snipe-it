@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 namespace App\Http\Controllers\Api;
 
@@ -66,14 +66,13 @@ class PredefinedFilterController extends Controller
         if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
-
         $validated = $request->validate((new PredefinedFilter)->getRules());
         $currentIsPublic = (bool) $filter->is_public;
         $newIsPublic = (bool) ($validated['is_public'] ?? $filter->is_public);
 
         if (empty($validated['filter_data'])){
             return response()->json([
-                    'message' => trans('admin/predefinedFilters/message.update.filterData_required'),// TODO
+                    'message' => trans('admin/predefinedFilters/message.update.filterData_required'),
                 ], 400);
         }
 
