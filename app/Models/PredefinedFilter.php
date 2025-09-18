@@ -12,7 +12,6 @@ use Watson\Validating\ValidatingTrait;
 class PredefinedFilter extends Model
 {
 
-    // Test
     use HasFactory;
     use SoftDeletes;
     use ValidatingTrait;

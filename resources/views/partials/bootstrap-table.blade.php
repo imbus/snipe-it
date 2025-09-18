@@ -2644,6 +2644,7 @@
         'hardware',
         'kits',
         'licenses',
+        'predefinedFilters',
         'locations',
         'maintenances',
         'maintenanceTypes',

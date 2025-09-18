@@ -27,6 +27,7 @@ use App\Http\Controllers\ManufacturersController;
 use App\Http\Controllers\ModalController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PredefinedFilterController;
 use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\Reports\CustomComponentReportController;
 use App\Http\Controllers\ReportsController;
