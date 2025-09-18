@@ -132,8 +132,7 @@ class CheckoutAcceptance extends Model
     /**
      * Filter checkout acceptences by the user
      *
-     * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  User                                 $user
+     * @param  User  $user
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeForUser(Builder $query, User $user)
@@ -144,7 +143,6 @@ class CheckoutAcceptance extends Model
     /**
      * Filter to only get pending acceptances
      *
-     * @param  Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopePending(Builder $query)
@@ -209,6 +207,7 @@ class CheckoutAcceptance extends Model
         if ($data['item_serial'] != null) {
             $pdf->writeHTML(trans('admin/hardware/form.serial').': '.e($data['item_serial']), true, 0, true, 0, '');
         }
+        $pdf->writeHTML(trans('general.assignee').': '.e($data['assigned_to']), true, 0, true, 0, '');
         $pdf->Ln();
         $pdf->writeHTML('<hr>', true, 0, true, 0, '');
 
@@ -228,8 +227,10 @@ class CheckoutAcceptance extends Model
         $pdf->Ln();
 
         if ($data['signature'] != null) {
-            $pdf->writeHTML('<img src="'.$data['signature'].'" style="max-width: 600px;">', true, 0, true, 0, '');
+            $pdf->writeHTML('<img src="'.$data['signature'].'">', true, 0, true, 0, '');
             $pdf->writeHTML('<hr>', true, 0, true, 0, '');
+            $pdf->writeHTML(e($data['assigned_to']), true, 0, true, 0, 'C');
+            $pdf->Ln();
         }
 
         if ($data['note'] != null) {
@@ -238,7 +239,7 @@ class CheckoutAcceptance extends Model
             $pdf->Ln();
         }
 
-        $pdf->writeHTML(trans('general.assignee').': '.e($data['assigned_to']), true, 0, true, 0, '');
+
         $pdf->writeHTML(trans('general.assigned_date').': '.e($data['check_out_date']), true, 0, true, 0, '');
         $pdf->writeHTML(trans('general.accepted_date').': '.e($data['accepted_date']), true, 0, true, 0, '');
 
