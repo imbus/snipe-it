@@ -658,7 +658,7 @@ class BulkAssetsController extends Controller
 
                     return redirect(route('hardware.bulkcheckout.show'))
                         // @todo: improve message and translate
-                        ->with('error', 'One or more of the assets has a company mismatch.');
+                        ->with('error', 'One or more of the checkout target company and asset company do not match');
                 }
             }
 
