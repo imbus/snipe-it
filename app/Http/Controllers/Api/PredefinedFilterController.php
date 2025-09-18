@@ -163,22 +163,39 @@ class PredefinedFilterController extends Controller
     public function selectlist(Request $request)
     {
         $this->authorize('view.selectlists');
+        $user = auth()->user();
 
-        $predefinedFilters = PredefinedFilter::select([
-            'id',
-            'name',
-        ]);
+        $filters = PredefinedFilter::with('permissionGroups')
+            ->orderBy('name')
+            ->get(['id', 'name', 'created_by', 'is_public']);
+
+        $viewableFilters = $filters->filter(function ($filter) use ($user) {
+            if ($filter->created_by === $user->id) {
+                return true;
+            }
+
+            if ($filter->is_public && $filter->userHasPermission($user, 'view')) {
+                return true;
+            }
+
+            return false;
+        })->values();
+
+        $predefinedFiltersQuery = PredefinedFilter::select(['id', 'name']);
 
         if ($request->filled('search')) {
-            $predefinedFilters = $predefinedFilters->where('name', 'LIKE', '%' . $request->get('search') . '%');
+            $predefinedFiltersQuery = $predefinedFiltersQuery->where('name', 'LIKE', '%' . $request->get('search') . '%');
         }
 
-        $predefinedFilters = $predefinedFilters->orderBy('name', 'ASC')->paginate(50);
+        $predefinedFilters = $predefinedFiltersQuery
+            ->whereIn('id', $viewableFilters->pluck('id'))
+            ->orderBy('name', 'ASC')
+            ->paginate(50);
 
         foreach ($predefinedFilters as $predefinedFilter) {
             $predefinedFilter->use_text = $predefinedFilter->name;
         }
 
-        return (new SelectlistTransformer())->transformSelectlist($predefinedFilters);
+        return (new SelectlistTransformer)->transformSelectlist($predefinedFilters);
     }
 }
