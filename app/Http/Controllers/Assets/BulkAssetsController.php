@@ -657,8 +657,7 @@ class BulkAssetsController extends Controller
                     $request->session()->flashInput(['selected_assets' => $asset_ids]);
 
                     return redirect(route('hardware.bulkcheckout.show'))
-                        // @todo: improve message and translate
-                        ->with('error', 'One or more of the checkout target company and asset company do not match');
+                        ->with('error', trans('general.error_user_company_multiple'));
                 }
             }
 
