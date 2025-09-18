@@ -130,7 +130,41 @@ class BulkAssetCheckoutTest extends TestCase
 
     public function test_adheres_to_full_multiple_company_support_when_checking_out_to_asset()
     {
-        $this->markTestIncomplete();
+        $this->settings->enableMultipleFullCompanySupport();
+
+        // create two companies
+        [$companyA, $companyB] = Company::factory()->count(2)->create();
+
+        // create an asset for each company
+        $assetForCompanyA = Asset::factory()->for($companyA)->create();
+        $assetForCompanyB = Asset::factory()->for($companyB)->create();
+
+        $this->assertNull($assetForCompanyA->assigned_to, 'Asset should not be assigned before attempting this test case.');
+        $this->assertNull($assetForCompanyB->assigned_to, 'Asset should not be assigned before attempting this test case.');
+
+        // create an asset for one company
+        $targetAssetForCompanyA = Asset::factory()->for($companyA)->create();
+
+        // create a super admin and act as them
+        $admin = User::factory()->superuser()->create();
+
+        // attempt to bulk checkout both items to the user in the company
+        $response = $this->actingAs($admin)
+            ->post(route('hardware.bulkcheckout.store'), [
+                'selected_assets' => [
+                    $assetForCompanyA->id,
+                    $assetForCompanyB->id,
+                ],
+                'checkout_to_type' => 'asset',
+                'assigned_asset' => $targetAssetForCompanyA->id,
+            ]);
+
+        // ensure bulk checkout is blocked
+        $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');
+        $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
+
+        // ensure redirected back
+        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
     }
 
     public function test_adheres_to_full_multiple_company_support_when_checking_out_to_location()
