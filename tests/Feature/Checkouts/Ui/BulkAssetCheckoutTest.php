@@ -112,7 +112,7 @@ class BulkAssetCheckoutTest extends TestCase
         $admin = User::factory()->superuser()->create();
 
         // attempt to bulk checkout both items to the user in the company
-        $this->actingAs($admin)
+        $response = $this->actingAs($admin)
             ->post(route('hardware.bulkcheckout.store'), [
                 'selected_assets' => [
                     $assetForCompanyA->id,
@@ -120,12 +120,14 @@ class BulkAssetCheckoutTest extends TestCase
                 ],
                 'checkout_to_type' => 'user',
                 'assigned_user' => $userInCompanyA->id,
-            ])
-            ->assertRedirectToRoute('hardware.bulkcheckout.show');
+            ]);
 
         // ensure bulk checkout is blocked
         $this->assertNull($assetForCompanyA->fresh()->assigned_to, 'Asset was checked out across companies.');
         $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
+
+        // ensure redirected back
+        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
     }
 
     public function test_adheres_to_full_multiple_company_support_when_checking_out_to_asset()
