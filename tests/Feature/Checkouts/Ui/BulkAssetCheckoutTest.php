@@ -91,9 +91,8 @@ class BulkAssetCheckoutTest extends TestCase
         }
     }
 
-    public function test_adheres_to_full_multiple_company_support()
+    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_user()
     {
-        // $this->markTestIncomplete();
         $this->settings->enableMultipleFullCompanySupport();
 
         // create two companies
@@ -129,5 +128,14 @@ class BulkAssetCheckoutTest extends TestCase
         $this->assertNull($assetForCompanyB->fresh()->assigned_to, 'Asset was checked out across companies.');
     }
 
-    // @todo: another test for asset to asset and asset to location ❓
+    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_asset()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_location()
+    {
+        $this->markTestIncomplete();
+
+    }
 }
