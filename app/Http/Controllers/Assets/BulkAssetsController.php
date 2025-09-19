@@ -647,6 +647,14 @@ class BulkAssetsController extends Controller
 
             $assets = Asset::findOrFail($asset_ids);
 
+            if ($assets->pluck('assigned_to')->unique()->filter()->isNotEmpty()) {
+                // re-add the asset ids so the assets select is re-populated
+                $request->session()->flashInput(['selected_assets' => $asset_ids]);
+
+                return redirect(route('hardware.bulkcheckout.show'))
+                    ->with('error', trans('general.error_assets_already_checked_out'));
+            }
+
             if (request('checkout_to_type') == 'asset') {
                 foreach ($asset_ids as $asset_id) {
                     if ($target->id == $asset_id) {
