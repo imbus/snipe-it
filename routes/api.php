@@ -826,6 +826,45 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end license API routes
 
+
+    /**
+     * Locations API routes
+     */
+    Route::group(['prefix' => 'locations'], function () {
+
+        Route::get('selectlist',
+            [
+                Api\LocationsController::class,
+                'selectlist',
+            ]
+        )->name('api.locations.selectlist');
+
+        // Get list of assets with a default location
+        Route::get('{location}/assets',
+            [
+                Api\LocationsController::class,
+                'assets',
+            ]
+        )->name('api.locations.viewassets');
+
+        // Add a comment here, you moron
+        /** Begin assigned routes */
+        Route::get('{location}/assigned/assets',
+            [
+                Api\LocationsController::class,
+                'assignedAssets',
+            ]
+        )->name('api.locations.assigned_assets');
+
+        Route::get('{location}/assigned/accessories',
+            [
+                Api\LocationsController::class,
+                'assignedAccessories',
+            ]
+        )->name('api.locations.assigned_accessories');
+    });
+
+
     /**
      * Locations API routes
      */
