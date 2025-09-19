@@ -479,7 +479,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     /**
      * Groups API routes
      */
-    Route::resource('groups',
+    /**
+     * Groups API routes
+     */
+    Route::get('groups/selectlist', [Api\GroupsController::class, 'selectlist'])
+        ->name('api.groups.selectlist');
+    Route::resource(
         Api\GroupsController::class,
         ['names' => [
             'index' => 'api.groups.index',
