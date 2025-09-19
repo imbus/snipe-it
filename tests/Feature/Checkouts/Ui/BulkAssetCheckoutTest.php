@@ -89,4 +89,32 @@ class BulkAssetCheckoutTest extends TestCase
             $this->fail('Asset checkout email was sent when the entire checkout failed.');
         }
     }
+
+    public function test_prevents_checkouts_checked_out_items()
+    {
+        $asset = Asset::factory()->create();
+        $checkedOutAsset = Asset::factory()->assignedToUser()->create();
+        $existingUserId = $checkedOutAsset->assigned_to;
+
+        $target = User::factory()->create();
+
+        $response = $this->actingAs(User::factory()->superuser()->create())
+            ->post(route('hardware.bulkcheckout.store'), [
+                'selected_assets' => [
+                    $asset->id,
+                    $checkedOutAsset->id,
+                ],
+                'checkout_to_type' => 'user',
+                'assigned_user' => $target->id,
+            ]);
+
+        $this->assertEquals(
+            $existingUserId,
+            $checkedOutAsset->fresh()->assigned_to,
+            'Asset was checked out when it should have been prevented.'
+        );
+
+        // ensure redirected back
+        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
+    }
 }
