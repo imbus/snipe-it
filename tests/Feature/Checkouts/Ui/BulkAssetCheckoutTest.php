@@ -4,8 +4,10 @@ namespace Tests\Feature\Checkouts\Ui;
 
 use App\Mail\CheckoutAssetMail;
 use App\Models\Asset;
+use App\Models\Location;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\ExpectationFailedException;
 use Tests\TestCase;
 
@@ -90,13 +92,44 @@ class BulkAssetCheckoutTest extends TestCase
         }
     }
 
-    public function test_prevents_checkouts_checked_out_items()
+    public static function checkoutTargets()
     {
+        yield 'Checkout to user' => [
+            function () {
+                return [
+                    'type' => 'user',
+                    'target' => User::factory()->forCompany()->create(),
+                ];
+            }
+        ];
+
+        yield 'Checkout to asset' => [
+            function () {
+                return [
+                    'type' => 'asset',
+                    'target' => Asset::factory()->forCompany()->create(),
+                ];
+            }
+        ];
+
+        yield 'Checkout to location' => [
+            function () {
+                return [
+                    'type' => 'location',
+                    'target' => Location::factory()->forCompany()->create(),
+                ];
+            }
+        ];
+    }
+
+    #[DataProvider('checkoutTargets')]
+    public function test_prevents_checkouts_checked_out_items($data)
+    {
+        ['type' => $type, 'target' => $target] = $data();
+
         $asset = Asset::factory()->create();
         $checkedOutAsset = Asset::factory()->assignedToUser()->create();
         $existingUserId = $checkedOutAsset->assigned_to;
-
-        $target = User::factory()->create();
 
         $response = $this->actingAs(User::factory()->superuser()->create())
             ->post(route('hardware.bulkcheckout.store'), [
@@ -104,8 +137,8 @@ class BulkAssetCheckoutTest extends TestCase
                     $asset->id,
                     $checkedOutAsset->id,
                 ],
-                'checkout_to_type' => 'user',
-                'assigned_user' => $target->id,
+                'checkout_to_type' => $type,
+                "assigned_$type" => $target->id,
             ]);
 
         $this->assertEquals(

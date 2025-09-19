@@ -647,6 +647,7 @@ class BulkAssetsController extends Controller
 
             $assets = Asset::findOrFail($asset_ids);
 
+            // Prevent checking out assets that are already checked out
             if ($assets->pluck('assigned_to')->unique()->filter()->isNotEmpty()) {
                 // re-add the asset ids so the assets select is re-populated
                 $request->session()->flashInput(['selected_assets' => $asset_ids]);
