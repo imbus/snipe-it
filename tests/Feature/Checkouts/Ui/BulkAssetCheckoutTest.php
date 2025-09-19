@@ -123,7 +123,7 @@ class BulkAssetCheckoutTest extends TestCase
     }
 
     #[DataProvider('checkoutTargets')]
-    public function test_prevents_checkouts_checked_out_items($data)
+    public function test_prevents_checkouts_of_checked_out_items($data)
     {
         ['type' => $type, 'target' => $target] = $data();
 
