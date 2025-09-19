@@ -124,7 +124,7 @@ class BulkAssetCheckoutTest extends TestCase
     }
 
     #[DataProvider('checkoutTargets')]
-    public function test_adheres_to_full_multiple_company_support_when_checking_out_to_user($data)
+    public function test_adheres_to_full_multiple_company_support($data)
     {
         ['type' => $type, 'target' => $target] = $data();
 
