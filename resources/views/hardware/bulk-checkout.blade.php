@@ -27,6 +27,22 @@
         <form class="form-horizontal" method="post" action="" autocomplete="off">
           {{ csrf_field() }}
 
+            @if ($removed_assets->isNotEmpty())
+                <div class="box box-solid box-warning">
+                    <div class="box-header with-border">
+                        <span class="box-title col-xs-12">Warning</span>
+                    </div>
+                    <div class="box-body">
+                        <p>The following were removed from the selected assets because they are already checked out:</p>
+                        <ul>
+                            @foreach($removed_assets as $asset)
+                                <li>{{ $asset->present()->fullName }}</li>
+                          @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             @include ('partials.forms.edit.asset-select', [
            'translated_name' => trans('general.assets'),
            'fieldname' => 'selected_assets[]',

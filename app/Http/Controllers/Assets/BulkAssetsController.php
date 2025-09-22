@@ -621,9 +621,25 @@ class BulkAssetsController extends Controller
     {
         $this->authorize('checkout', Asset::class);
 
+        $alreadyAssigned = collect();
+
+        if (old('selected_assets') && is_array(old('selected_assets'))) {
+            $assets = Asset::findMany(old('selected_assets'));
+
+            [$assignable, $alreadyAssigned] = $assets->partition(function (Asset $asset) {
+                return !$asset->assigned_to;
+            });
+
+            session()->flashInput(['selected_assets' => $assignable->pluck('id')]);
+        }
+
         $do_not_change = ['' => trans('general.do_not_change')];
         $status_label_list = $do_not_change + Helper::deployableStatusLabelList();
-        return view('hardware/bulk-checkout')->with('statusLabel_list', $status_label_list);
+
+        return view('hardware/bulk-checkout', [
+            'statusLabel_list' => $status_label_list,
+            'removed_assets' => $alreadyAssigned,
+        ]);
     }
 
     /**
