@@ -158,4 +158,33 @@ class BulkAssetCheckoutTest extends TestCase
         // ensure redirected back
         $response->assertRedirectToRoute('hardware.bulkcheckout.show');
     }
+
+    #[DataProvider('checkoutTargets')]
+    public function test_prevents_checkouts_of_checked_out_items($data)
+    {
+        ['type' => $type, 'target' => $target] = $data();
+
+        $asset = Asset::factory()->create();
+        $checkedOutAsset = Asset::factory()->assignedToUser()->create();
+        $existingUserId = $checkedOutAsset->assigned_to;
+
+        $response = $this->actingAs(User::factory()->superuser()->create())
+            ->post(route('hardware.bulkcheckout.store'), [
+                'selected_assets' => [
+                    $asset->id,
+                    $checkedOutAsset->id,
+                ],
+                'checkout_to_type' => $type,
+                "assigned_$type" => $target->id,
+            ]);
+
+        $this->assertEquals(
+            $existingUserId,
+            $checkedOutAsset->fresh()->assigned_to,
+            'Asset was checked out when it should have been prevented.'
+        );
+
+        // ensure redirected back
+        $response->assertRedirectToRoute('hardware.bulkcheckout.show');
+    }
 }
