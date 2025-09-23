@@ -82,7 +82,7 @@ body:
     id: fmcs
     attributes:
       label: Do you have full multiple company support enabled?
-      description: You can check this in Admin Settings > General Settings > Scoping.
+      description: You can check this in your Snipe-IT installation at `Admin Settings > General Settings > Scoping`.
       options:
         - 'Yes'
         - 'No'
@@ -92,7 +92,7 @@ body:
     id: fmcs-location
     attributes:
       label: If you have full multiple company support enabled, do you have location scoping to company enabled?
-      description: You can check this in Admin Settings > General Settings > Scoping.
+      description: You can check this in your Snipe-IT installation at `Admin Settings > General Settings > Scoping`.
       options:
         - 'Yes'
         - 'No'
