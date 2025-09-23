@@ -70,7 +70,8 @@ body:
   - type: dropdown
     id: on-demo
     attributes:
-      label: Can you reproduce this on the demo at https://demo.snipeitapp.com?
+      label: Can you reproduce this on the public demo?
+      description: You can check this at https://demo.snipeitapp.com.
       options:
         - 'Yes'
         - 'No'
@@ -96,6 +97,8 @@ body:
         - 'Yes'
         - 'No'
         - I do not have full multiple company support enabled
+    validations:
+      required: true
   - type: textarea
     id: server-logs
     attributes:
