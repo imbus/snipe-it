@@ -31,95 +31,9 @@ class PredefinedFilterController extends Controller
         $filter = $this->service->getFilterById($id);
 
         if (! $filter) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
-        }
-
-        if ($this->service->canUserViewFilter($filter)) {
-            return response()->json($filter->toArray());
-        }
-
-        return response()->json(['message' => trans('admin/predefinedFilters/message.show.not_allowed')], 403);
-    }
-
-    public function store(Request $request): JsonResponse
-    {
-        $user = auth()->user();
-        $validated = $request->validate((new PredefinedFilter)->getRules());
-
-        if (! empty($validated['is_public'] ?? false) && ! $user->hasAccess('predefinedFilter.create')) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.create.not_allowed')], 403);
-        }
-
-        $filter = $this->service->createFilter($validated);
-
-        return response()->json([
-            'message' => trans('admin/predefinedFilters/message.create.success'),
-            'filter_data' => $filter,
-        ], 201);
-    }
-
-    public function update(Request $request, int $id): JsonResponse
-    {
-        $user = auth()->user();
-        $filter = $this->service->getFilterById($id);
-
-        if (! $filter) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
-        }
-        $validated = $request->validate((new PredefinedFilter)->getRules());
-        $currentIsPublic = (bool) $filter->is_public;
-        $newIsPublic = (bool) ($validated['is_public'] ?? $filter->is_public);
-
-        if (empty($validated['filter_data'])){
+        if (empty($validated['filter_data'])) {
             return response()->json([
-                    'message' => trans('admin/predefinedFilters/message.update.filterData_required'),
-                ], 400);
+                'message' => trans('admin/predefinedFilters/message.update.filterData_required'),
+            ], 400);
         }
-
-        if ($filter->created_by === $user->id) {
-            if (! $currentIsPublic && $newIsPublic && ! $user->hasAccess('predefinedFilter.create')) {
-                return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_isPublic')], 403);
-            }
-        } elseif ($currentIsPublic) {
-            if (! $filter->userHasPermission($user, 'update')) {
-                return response()->json(['message' => trans('admin/predefinedFilters/message.not_allowed_to_edit')], 403);
-            }
-        } else {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.not_allowed_to_edit')], 403);
-        }
-
-        $updated = $this->service->updateFilter($filter, $validated);
-
-        return response()->json([
-            'message' => trans('admin/predefinedFilters/message.update.success'),
-            'filter_data' => $updated,
-        ], 200);
-    }
-
-    public function destroy(Request $request, int $id): JsonResponse
-    {
-        $user = auth()->user();
-        $filter = $this->service->getFilterById($id);
-
-        if (! $filter) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
-        }
-
-        if ($filter->created_by === $user->id || ($filter->is_public && $filter->userHasPermission($user, 'destroy'))) {
-            $this->service->deleteFilter($filter);
-
-            return response()->json(['message' => trans('admin/predefinedFilters/message.delete.success')]);
-        }
-
-        return response()->json(['message' => trans('admin/predefinedFilters/message.delete.not_allowed_to_delete')], 403);
-    }
-
-    public function selectlist(Request $request)
-    {
-        $this->authorize('view.selectlists');
-
-        $filters = $this->service->selectList($request);
-
-        return (new SelectlistTransformer)->transformSelectlist($filters);
-    }
 }
