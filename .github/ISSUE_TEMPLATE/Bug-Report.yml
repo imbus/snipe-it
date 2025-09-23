@@ -72,8 +72,8 @@ body:
     attributes:
       label: Can you reproduce this on the demo at https://demo.snipeitapp.com?
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
         - N/A
   - type: dropdown
     id: fmcs
@@ -81,16 +81,16 @@ body:
       label: Do you have full multiple company support enabled?
       description: You can check this in Admin Settings > General Settings > Scoping.
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
   - type: dropdown
     id: fmcs-location
     attributes:
       label: If you have full multiple company support enabled, do you have location scoping to company enabled?
       description: You can check this in Admin Settings > General Settings > Scoping.
       options:
-        - Yes
-        - No
+        - 'Yes'
+        - 'No'
         - I do not have full multiple company support enabled
   - type: textarea
     id: server-logs
