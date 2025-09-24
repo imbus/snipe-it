@@ -23,23 +23,23 @@ class CheckoutAcceptanceFactory extends Factory
             'assigned_to_id' => User::factory(),
         ];
     }
-    protected static bool $skipAutoAssign = false;
+    protected static bool $skipActionLog = false;
 
     public function withoutActionLog(): static
     {
         // turn off for this create() call
-        static::$skipAutoAssign = true;
+        static::$skipActionLog = true;
 
         // ensure it turns back on AFTER creating
         return $this->afterCreating(function () {
-            static::$skipAutoAssign = false;
+            static::$skipActionLog = false;
         });
     }
 
     public function configure(): static
     {
         return $this->afterCreating(function (CheckoutAcceptance $acceptance) {
-            if (static::$skipAutoAssign) {
+            if (static::$skipActionLog) {
                 return; // short-circuit
             }
             if ($acceptance->checkoutable instanceof Asset) {
