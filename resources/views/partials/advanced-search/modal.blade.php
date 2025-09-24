@@ -103,7 +103,7 @@
 
             const onSave = () => {
                 const inputName = $input.val().trim();
-                const permissionInput = groupSelectDropdown.getValue();
+                const permissionInput = groupSelectDropdown.getValue() || [];
 
                 // Validate input
                 if (!inputName) {
