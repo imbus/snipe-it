@@ -630,7 +630,7 @@ class BulkAssetsController extends Controller
                 return !$asset->assigned_to;
             });
 
-            session()->flashInput(['selected_assets' => $assignable->pluck('id')]);
+            session()->flashInput(['selected_assets' => $assignable->pluck('id')->values()->toArray()]);
         }
 
         $do_not_change = ['' => trans('general.do_not_change')];

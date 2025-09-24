@@ -35,9 +35,9 @@
                     <div class="box-body">
                         <p>The following were removed from the selected assets because they are already checked out:</p>
                         <ul>
-                            @foreach($removed_assets as $asset)
-                                <li>{{ $asset->present()->fullName }}</li>
-                          @endforeach
+                            @foreach($removed_assets as $removed_asset)
+                                <li>{{ $removed_asset->present()->fullName }}</li>
+                            @endforeach
                         </ul>
                     </div>
                 </div>
