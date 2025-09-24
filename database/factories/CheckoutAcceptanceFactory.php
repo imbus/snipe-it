@@ -25,7 +25,7 @@ class CheckoutAcceptanceFactory extends Factory
     }
     protected static bool $skipAutoAssign = false;
 
-    public function withoutAutoAssign(): static
+    public function withoutActionLog(): static
     {
         // turn off for this create() call
         static::$skipAutoAssign = true;

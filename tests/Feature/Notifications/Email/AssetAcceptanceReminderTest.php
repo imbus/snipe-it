@@ -86,38 +86,7 @@ class AssetAcceptanceReminderTest extends TestCase
 
     public function testReminderIsSentToUser()
     {
-<<<<<<< Updated upstream
         $checkoutAcceptance = CheckoutAcceptance::factory()->pending()->create();
-=======
-        $checkedOutBy = User::factory()->canViewReports()->create();
-
-        $checkoutTypes = [
-            Asset::class       => CheckoutAssetMail::class,
-            Accessory::class   => CheckoutAccessoryMail::class,
-            LicenseSeat::class => CheckoutLicenseMail::class,
-            Consumable::class  => CheckoutConsumableMail::class,
-            //for the future its setup for components, but we dont send reminders for components at the moment.
-//            Component::class   => CheckoutComponentMail::class,
-        ];
-
-        $assignee = User::factory()->create(['email' => 'test@example.com']);
-        foreach ($checkoutTypes as $modelClass => $mailable) {
-
-            $item = $modelClass::factory()->create();
-            $acceptance = CheckoutAcceptance::factory()->withoutAutoAssign()->pending()->create([
-                'checkoutable_id' => $item->id,
-                'checkoutable_type' => $modelClass,
-                'assigned_to_id' => $assignee->id,
-            ]);
-
-            if ($modelClass === LicenseSeat::class) {
-                $logType = License::class;
-                $logId   = $item->license->id;
-            } else {
-                $logType = $modelClass;
-                $logId   = $item->id;
-            }
->>>>>>> Stashed changes
 
         $this->actingAs(User::factory()->canViewReports()->create())
             ->post($this->routeFor($checkoutAcceptance))
