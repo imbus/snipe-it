@@ -36,7 +36,11 @@
                         <p>The following were removed from the selected assets because they are already checked out:</p>
                         <ul>
                             @foreach($removed_assets as $removed_asset)
-                                <li>{{ $removed_asset->present()->fullName }}</li>
+                                <li>
+                                    <a href="{{ route('hardware.show', $removed_asset->id) }}">
+                                        {{ $removed_asset->present()->fullName }}
+                                    </a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
