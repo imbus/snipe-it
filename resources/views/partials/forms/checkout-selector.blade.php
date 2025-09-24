@@ -4,9 +4,9 @@
 
         <div class="btn-group" data-toggle="buttons">
             @if ((isset($user_select)) && ($user_select!='false'))
-                <label class="btn btn-default{{ (session('checkout_to_type') ?? 'user') == 'user' ? ' active' : '' }}">
+                <label class="btn btn-default{{ (session('checkout_to_type') ?: 'user') == 'user' ? ' active' : '' }}">
                     <input name="checkout_to_type" value="user" aria-label="checkout_to_type"
-                           type="radio" {{ (session('checkout_to_type') ?? 'user') == 'user' ? 'checked' : '' }}>
+                           type="radio" {{ (session('checkout_to_type') ?: 'user') == 'user' ? 'checked' : '' }}>
                 <x-icon type="user" />
                 {{ trans('general.user') }}
             </label>
