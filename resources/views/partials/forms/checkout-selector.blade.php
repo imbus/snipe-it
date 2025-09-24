@@ -21,7 +21,7 @@
             @endif
             @if ((isset($location_select)) && ($location_select!='false'))
                 <label class="btn btn-default{{ session('checkout_to_type') == 'location' ? ' active' : '' }}">
-                    <input name="checkout_to_type" value="location" aria-label="checkout_to_type" class="active"
+                    <input name="checkout_to_type" value="location" aria-label="checkout_to_type"
                            type="radio" {{ session('checkout_to_type') == 'location' ? 'checked' : '' }}>
                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
                 {{ trans('general.location') }}
