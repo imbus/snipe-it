@@ -67,7 +67,7 @@
 
         // Both onLoadError banners (session-expired 401/419 and the generic
         // 500-level failure) share the same DOM shape, insertion point, and
-        // cleanup rules. innerHtml must already be XSS-safe Ã¢â‚¬â€ callers HTML-
+        // cleanup rules. innerHtml must already be XSS-safe ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â callers HTML-
         // encode dynamic pieces before passing them in.
         //
         // aria-live=polite is always emitted. role="alert" alone implies
@@ -124,10 +124,10 @@
             };
 
             // Safely decode HTML entities in a string WITHOUT parsing it as HTML.
-            // `<textarea>` innerHTML is RCDATA Ã¢â‚¬â€ the parser decodes entity
+            // `<textarea>` innerHTML is RCDATA ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â the parser decodes entity
             // references like `&lt;` but does not interpret `<tag>` as an
             // element. Contrast with the naive `$('<div/>').html(value).text()`
-            // pattern, which parses value as HTML into a detached div Ã¢â‚¬â€ an
+            // pattern, which parses value as HTML into a detached div ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â an
             // entity-encoded payload like `&lt;img src=x onerror=alert(1)&gt;`
             // decodes into a real <img>, and browsers fire onerror even for
             // detached images. Using a textarea avoids that DOM instantiation
@@ -385,7 +385,7 @@
                         // custom fields). Decode via a textarea so we get the intended
                         // display string without ever instantiating an <img>/<script>
                         // element, then escape when interpolating into the HTML template
-                        // Ã¢â‚¬â€ the label, name, and placeholder all get untrusted content.
+                        // ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â the label, name, and placeholder all get untrusted content.
                         var title = decodeHtmlEntitiesSafely(column.title).trim();
                         var value = filterColumnsPartial[column.field] || '';
                         var safeTitle = escapeAdvancedSearchValue(title);
@@ -653,7 +653,7 @@
             export_options['htmlContent'] = false; // this is already the default; but let's be explicit about it
             // DejaVuSans is registered into jsPDF's VFS via
             // jspdf-dejavu-fonts.js (bundled into public/js/dist/bootstrap-table.js
-            // right after jspdf.umd.min.js Ã¢â‚¬â€ see webpack.mix.js). Referencing
+            // right after jspdf.umd.min.js ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â see webpack.mix.js). Referencing
             // it here is what actually swaps out the default Helvetica fallback
             // and produces readable output for Cyrillic / Greek / Hebrew / etc.
             // exports. Fixes #19270.
@@ -669,7 +669,7 @@
                 }
             };
             // tableWidth: 'wrap',
-            // Ã¢Å¡Â Ã¯Â¸Â SECURITY: DO NOT change the wrapping of `.text()` inside
+            // ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â SECURITY: DO NOT change the wrapping of `.text()` inside
             //    `htmlEncodeForExport(...)` below without reading this entire
             //    block. The bare `.text()` was the previous shape and it is
             //    an XSS.
@@ -692,7 +692,7 @@
             // Repro before the fix (kept as a regression pin):
             //   1. Create a custom field named `<img src=x onerror=alert(1)>`
             //   2. Visit the assets index (header shows the string as text)
-            //   3. Export Ã¢â€ â€™ CSV (or PDF): alert(1) fires because tableExport
+            //   3. Export ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ CSV (or PDF): alert(1) fires because tableExport
             //      re-injects our returned text via .html() on a scratch div.
             // If a future edit here reintroduces the bug, that exact repro
             // will fire alert(1) again.
@@ -707,7 +707,7 @@
             };
             export_options['onCellHtmlData'] = function (cell, rowIndex, colIndex, htmlData) {
                 if (cell.is('th')) {
-                    // Ã¢Å¡Â Ã¯Â¸Â MUST stay wrapped in htmlEncodeForExport(). See block above.
+                    // ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â MUST stay wrapped in htmlEncodeForExport(). See block above.
                     return htmlEncodeForExport(cell.find('.th-inner').text());
                 }
                 // Convert <br> tags to newlines so that line breaks in notes and
@@ -766,7 +766,7 @@
 
             // Capture the table element for use inside bootstrap-table callbacks.
             // bootstrap-table 1.24 invokes those callbacks with `.apply(options, args)`,
-            // so `this` inside them is the options object, not the DOM element Ã¢â‚¬â€
+            // so `this` inside them is the options object, not the DOM element ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â
             // any $(this).find(...) call silently no-ops. The closure lets the
             // callbacks reach the real table.
             var $bootstrapTableEl = $(this);
@@ -982,7 +982,7 @@
                     updateAriaSort($bootstrapTableEl, sortName, sortOrder);
                 },
                 onPostHeader: function () {
-                    // Initial header render (and any layout re-init) Ã¢â‚¬â€ reflect
+                    // Initial header render (and any layout re-init) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â reflect
                     // whatever sort state the table booted with, so a table
                     // configured with data-sort-name/data-sort-order announces
                     // correctly on first paint too.
@@ -1069,7 +1069,7 @@
             //
             // 1. Snipe's override of applyAdvancedSearch (this file, line ~220)
             //    is a no-op for sidePagination='server' beyond setting state
-            //    and rendering pills Ã¢â‚¬â€ it never refetches, and never fires the
+            //    and rendering pills ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â it never refetches, and never fires the
             //    `column-advanced-search` event. So a `on('column-advanced-search')`
             //    listener won't hear anything when the user applies via the
             //    modal on a server-side table.
@@ -1083,7 +1083,7 @@
             //
             //   - applyAdvancedSearch: after Snipe's version runs, force a
             //     refetch + fire the event on server-side. That triggers the
-            //     addrbar Ã¢â€ â€™ updateHistoryState path, which we've also patched.
+            //     addrbar ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ updateHistoryState path, which we've also patched.
             //
             //   - updateHistoryState: before addrbar's push, strip any stale
             //     `filter[...]`/`filter_operator` from its cached URLSearchParams
@@ -1143,7 +1143,7 @@
                         origApplyAdvancedSearch.apply(this, arguments);
                         if (this.options.sidePagination === 'server') {
                             // Clear basic-search state without going through
-                            // resetSearch()/onSearch() Ã¢â‚¬â€ that path would fire a
+                            // resetSearch()/onSearch() ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â that path would fire a
                             // separate refetch, and would re-enter our own
                             // onSearch override below.
                             var utils = $.fn.bootstrapTable && $.fn.bootstrapTable.utils;
@@ -1165,7 +1165,7 @@
 
                 // --- Patch onSearch: basic search clears advanced filters so the
                 //     two modes stay mutually exclusive. Runs BEFORE the plugin's
-                //     onSearch Ã¢â€ â€™ initSearch Ã¢â€ â€™ server refetch, so the AJAX that
+                //     onSearch ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ initSearch ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ server refetch, so the AJAX that
                 //     ships in the same tick already has an empty filterColumnsPartial.
                 if (typeof bootstrapTableInstance.onSearch === 'function') {
                     var origOnSearch = bootstrapTableInstance.onSearch;
@@ -1213,8 +1213,8 @@
                         bootstrapTableInstance.setAdvancedSearchOperator(initialOp);
                     }
 
-                    // Refetch with the seeded filter. onLoadSuccess Ã¢â€ â€™ patched
-                    // updateHistoryState Ã¢â€ â€™ URL is re-emitted with filter[...] intact.
+                    // Refetch with the seeded filter. onLoadSuccess ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ patched
+                    // updateHistoryState ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ URL is re-emitted with filter[...] intact.
                     bootstrapTableInstance.refresh();
 
                     if (typeof bootstrapTableInstance.renderAdvancedSearchTags === 'function') {
@@ -1966,7 +1966,7 @@
                 id: rawCountId,
                 style: 'display:none; float:left; margin-top:10px; margin-bottom:10px; margin-left:10px; line-height:34px;'
             });
-            $selectedCount.append(document.createTextNode('Ã¢â‚¬â€ '));
+            $selectedCount.append(document.createTextNode('ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â '));
             $selectedCount.append($('<span/>', { 'class': 'badge', text: '0' }));
             $selectedCount.append(document.createTextNode(' {{ trans('general.selected') }}'));
             $paginationDetail.after($selectedCount);
@@ -2643,6 +2643,7 @@
         'groups',
         'hardware',
         'kits',
+        'predefined-filters',
         'licenses',
         'predefinedFilters',
         'locations',
@@ -2945,7 +2946,7 @@
         }
     }
 
-    // Renders a single company tag. `isInherited` is decided by the caller Ã¢â‚¬â€
+    // Renders a single company tag. `isInherited` is decided by the caller ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â
     // it's true only when (a) we're on the companies show page (viewing context
     // is set), (b) the row didn't get included via direct membership, and (c)
     // THIS specific tag is the parent or a child of the viewing company. Other
@@ -2985,7 +2986,7 @@
         var viewing = parseInt(window.viewingCompanyId, 10);
         var tag = parseInt(tagId, 10);
 
-        // Row is direct (some company on the row matches viewing) Ã¢â‚¬â€ nothing
+        // Row is direct (some company on the row matches viewing) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â nothing
         // on this row counts as inherited.
         var rowIsDirect = rowCompanyIds.some(function (id) { return parseInt(id, 10) === viewing; });
         if (rowIsDirect) {
@@ -3491,7 +3492,7 @@
         // wrappers inside a single .bootstrap-table container. Iterating
         // .snipe-table naively then produced one top scrollbar per clone
         // stacked above the same table, and none of them tracked the
-        // primary .fixed-table-body's actual scroll width Ã¢â‚¬â€ visible on
+        // primary .fixed-table-body's actual scroll width ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â visible on
         // /hardware and /locations as two mis-sized top scrollbars.
         var processedWrappers = [];
         $targets.each(function () {
@@ -3555,7 +3556,7 @@
 
             // Sort re-renders can measure momentarily-wrong widths while
             // bootstrap-table is settling the sticky-header clone and
-            // column widths Ã¢â‚¬â€ .remove()-ing the scrollbar during that
+            // column widths ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â .remove()-ing the scrollbar during that
             // window and then relying on a later post-body event to
             // recreate it was fragile (#19484: horizontal scrollbar
             // silently vanishes after a sort). Hide the element instead
