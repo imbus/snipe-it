@@ -1548,6 +1548,4 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     )->name('api.files.destroy')
         ->where(['object_type' => 'assets|hardware|models|users|locations|accessories|consumables|licenses|components']);
-
 }); // end API routes
->>>>>>> c9887d246a (hotfix fixed routes)

@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\PredefinedFilter;
-use App\Services\PredefinedFilterPermissionService;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
@@ -41,13 +40,15 @@ class PredefinedFilterService
             })->values();
     }
 
-    public function getFilterById(int $id, bool $include_predefined_filter_groups = true)
+    public function getFilterById(int $id, bool $includePredefinedFilterGroups = true)
     {
         $predefinedFilter = PredefinedFilter::find($id);
-        if($include_predefined_filter_groups) {
+
+        if ($includePredefinedFilterGroups && $predefinedFilter) {
             $permissions = $this->predefinedFilterPermissionService->getPermissionsByPredefinedFilterId($id);
             $predefinedFilter['permissions'] = $permissions;
         }
+
         return $predefinedFilter;
     }
 
@@ -88,26 +89,19 @@ class PredefinedFilterService
         $filter->save();
 
         if (array_key_exists('permissions', $validated)) {
-<<<<<<< HEAD
-            $currentlySetPermissions = $this->predefinedFilterPermissionService->getPermissionsById($filter->id);
+            $currentlySetPermissions = $this->predefinedFilterPermissionService->getPermissionsByPredefinedFilterId($filter->id);
             $newPermissions = $validated['permissions'];
             $permissionDiff = $this->syncPermissions($currentlySetPermissions->toArray(), $newPermissions);
-=======
-            $currently_set_permssions = $this->predefinedFilterPermissionService->getPermissionsByPredefinedFilterId($filter->id);
-            $new_permissions = $validated['permissions'];
-            $permission_diff = $this->syncPermissions($currently_set_permssions->toArray(), $new_permissions);
-            //dump($permission_diff);
->>>>>>> 5c0ea72d90 (Fixed that the same group can be assigned multiple times to the same filter)
 
             try {
                 DB::transaction(function () use ($permissionDiff, $filter) {
-                    if (!empty($permissionDiff['to_delete'])) {
+                    if (! empty($permissionDiff['to_delete'])) {
                         foreach ($permissionDiff['to_delete'] as $permission) {
                             $this->predefinedFilterPermissionService->deletePermissionByFilterId($permission['predefined_filter_id']);
                         }
                     }
 
-                    if (!empty($permissionDiff['to_add'])) {
+                    if (! empty($permissionDiff['to_add'])) {
                         foreach ($permissionDiff['to_add'] as $permission) {
                             $permission['predefined_filter_id'] = $filter->id;
                             $this->predefinedFilterPermissionService->store($permission);
@@ -168,16 +162,16 @@ class PredefinedFilterService
         $toAdd = array_udiff(
             $newPermissions,
             $currentPermissions,
-            function ($obj_a, $obj_b) {
-                return $obj_a['permission_group_id'] !== $obj_b['permission_group_id'];
+            function ($objA, $objB) {
+                return $objA['permission_group_id'] !== $objB['permission_group_id'];
             }
         );
 
         $toDelete = array_udiff(
             $currentPermissions,
             $newPermissions,
-            function ($obj_a, $obj_b) {
-                return $obj_a['permission_group_id'] !== $obj_b['permission_group_id'];
+            function ($objA, $objB) {
+                return $objA['permission_group_id'] !== $objB['permission_group_id'];
             }
         );
 

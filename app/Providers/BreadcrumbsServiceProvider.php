@@ -477,32 +477,15 @@ class BreadcrumbsServiceProvider extends ServiceProvider
             ->push(trans('general.update'))
         );
 
-<<<<<<< HEAD
-=======
         /**
          * Predefined Filter Breadcrumbs
          */
-        Breadcrumbs::for('predefined-filters.index', fn (Trail $trail) =>
-        $trail->parent('home', route('home'))
+        Breadcrumbs::for('predefined-filters.index', fn (Trail $trail) => $trail->parent('home', route('home'))
             ->push(trans('general.predefined_filter'), route('predefined-filters.index'))
         );
 
-        Breadcrumbs::for('predefined-filters.show', fn (Trail $trail, PredefinedFilter $filter) =>
-        $trail->parent('predefined-filters.index', route('predefined-filters.index'))
+        Breadcrumbs::for('predefined-filters.show', fn (Trail $trail, PredefinedFilter $filter) => $trail->parent('predefined-filters.index', route('predefined-filters.index'))
             ->push($filter->name, route('predefined-filters.show', $filter))
-        );
-
-
->>>>>>> 74cc9ca5b6 (added routes for predefined-filter views)
-        /**
-         * Predefined Filter Breadcrumbs
-         */
-        Breadcrumbs::for(''predefined-filters.index'', fn (Trail $trail) => $trail->parent(''home'', route(''home''))
-            ->push(trans(''general.predefined_filter''), route(''predefined-filters.index''))
-        );
-
-        Breadcrumbs::for(''predefined-filters.show'', fn (Trail $trail, PredefinedFilter $filter) => $trail->parent(''predefined-filters.index'', route(''predefined-filters.index''))
-            ->push($filter->name, route(''predefined-filters.show'', $filter))
         );
         /**
          * Status Labels Breadcrumbs
