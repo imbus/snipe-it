@@ -26,7 +26,7 @@ class PredefinedFilterPermissionService
 
     public function show(int $id): PredefinedFilterPermission
     {
-        return PredefinedFilterPermission::with('filter')->findOrFail($id);
+        return PredefinedFilterPermission::with('filter')->findOrFail($id)->distinct();
     }
 
     public function delete(int $id): void
@@ -43,7 +43,11 @@ class PredefinedFilterPermissionService
         }
     }
 
+<<<<<<< HEAD
     public function getPermissionsById(int $filterId)
+=======
+    public function getPermissionsByPredefinedFilterId(int $filter_id)
+>>>>>>> 5c0ea72d90 (Fixed that the same group can be assigned multiple times to the same filter)
     {
         return PredefinedFilterPermission::where('predefined_filter_id', '=', $filterId)->get();
     }

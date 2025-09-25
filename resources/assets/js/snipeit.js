@@ -25,8 +25,8 @@ require('bootstrap-colorpicker')
 window.moment = require('moment')
 require('eonasdan-bootstrap-datetimepicker')
 require('ekko-lightbox') //TODO - this doesn't seem jquery-ish, we might need to do something weird here
-                         // it *does* require Bootstrap, which requires jquery, so maybe that's OK
-                         // it seems to work...
+// it *does* require Bootstrap, which requires jquery, so maybe that's OK
+// it seems to work...
 require('./extensions/pGenerator.jquery'); //WEIRD, but works
 //require('chart.js') // Weirdly, this seems to "just work." Without this line, the dashboard blows up
 // but it's *HUGE* - and we only use it one place. So we're taking it out of the bundle
@@ -48,34 +48,34 @@ window.ClipboardJS = require('clipboard')
 
 lineOptions = {
 
-        legend: {
-            position: "bottom"
-        },
-        scales: {
-            yAxes: [{
-                ticks: {
-                    fontColor: "rgba(0,0,0,0.5)",
-                    fontStyle: "bold",
-                    beginAtZero: true,
-                    maxTicksLimit: 5,
-                    padding: 20
-                },
-                gridLines: {
-                    drawTicks: false,
-                    display: false
-                }
-            }],
-            xAxes: [{
-                gridLines: {
-                    zeroLineColor: "transparent"
-                },
-                ticks: {
-                    padding: 20,
-                    fontColor: "rgba(0,0,0,0.5)",
-                    fontStyle: "bold"
-                }
-            }]
-        }
+    legend: {
+        position: "bottom"
+    },
+    scales: {
+        yAxes: [{
+            ticks: {
+                fontColor: "rgba(0,0,0,0.5)",
+                fontStyle: "bold",
+                beginAtZero: true,
+                maxTicksLimit: 5,
+                padding: 20
+            },
+            gridLines: {
+                drawTicks: false,
+                display: false
+            }
+        }],
+        xAxes: [{
+            gridLines: {
+                zeroLineColor: "transparent"
+            },
+            ticks: {
+                padding: 20,
+                fontColor: "rgba(0,0,0,0.5)",
+                fontStyle: "bold"
+            }
+        }]
+    }
 
 };
 
@@ -103,8 +103,8 @@ pieOptions = {
 
     //String - A legend template
     legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li>" +
-    "<i class='fas fa-circle-o' style='color: <%=segments[i].fillColor%>'></i>" +
-    "<%if(segments[i].label){%><%=segments[i].label%><%}%> foo</li><%}%></ul>",
+        "<i class='fas fa-circle-o' style='color: <%=segments[i].fillColor%>'></i>" +
+        "<%if(segments[i].label){%><%=segments[i].label%><%}%> foo</li><%}%></ul>",
     //String - A tooltip template
     tooltipTemplate: "<%=value %> <%=label%> "
 };
@@ -229,14 +229,14 @@ $(function () {
         // currency) only make sense when the qty change is a positive
         // addition (a purchase). Zero or negative amounts represent
         // corrections / consumption / losses, not acquisitions, so hide
-        // those fields — and blank their values so a submit from that
+        // those fields â€” and blank their values so a submit from that
         // state doesn't ship stale purchase metadata alongside the log
         // entry. Show them again the moment the operator types a
         // positive number. The date label swaps to a generic "Date"
         // when the event isn't a purchase.
         //
         // On modal open the amount is empty ("we don't know yet"), so
-        // stay in the default acquisition-visible state — prefilled
+        // stay in the default acquisition-visible state â€” prefilled
         // supplier / cost / currency from the last order are preserved
         // and the hint stays visible if it was shown. We only clear
         // when the operator actually commits to a 0/negative value.
@@ -307,15 +307,15 @@ $(function () {
 
 
 
-     /*
-     * Select2
-     */
+    /*
+    * Select2
+    */
 
-        $('select.select2:not(".select2-hidden-accessible")').each(function (i,obj) {
-            {
-                $(obj).select2();
-            }
-        });
+    $('select.select2:not(".select2-hidden-accessible")').each(function (i, obj) {
+        {
+            $(obj).select2();
+        }
+    });
 
 
     // $('.datepicker').datepicker();
@@ -324,7 +324,7 @@ $(function () {
     // $('.datepicker').datepicker();
 
     // Crazy select2 rich dropdowns with images!
-    $('.js-data-ajax').each( function (i,item) {
+    $('.js-data-ajax').each(function (i, item) {
         var link = $(item);
         var endpoint = link.data("endpoint");
         var select = link.data("select");
@@ -339,7 +339,7 @@ $(function () {
             allowClear: true,
             language: $('meta[name="language"]').attr('content'),
             dir: $('meta[name="language-direction"]').attr('content'),
-            
+
             ajax: {
 
                 // the baseUrl includes a trailing slash
@@ -358,7 +358,7 @@ $(function () {
                         companyId: link.data("company-ids") || link.data("company-id"),
                         excludeId: link.data("exclude-id"),
                         // When true, the companies selectlist marks child companies
-                        // (those with a parent of their own) as disabled — used by
+                        // (those with a parent of their own) as disabled â€” used by
                         // the parent-company picker so users can't choose options
                         // that would fail the parent_must_be_top_level validator.
                         onlyTopLevel: link.data("only-top-level"),
@@ -378,6 +378,14 @@ $(function () {
 
                     return answer;
                 }, */
+                processResults: function (data, params) {
+                    console.log(this.$element[0]);
+                    const selectedValues = this.$element.select2('data') || [];
+                    const filteredResults = data.results.filter(item => !selectedValues.includes(item.id));
+                    return {
+                        results: filteredResults
+                    };
+                },
                 cache: true
             },
             //escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
@@ -387,32 +395,15 @@ $(function () {
 
     });
 
-	function getSelect2Value(element) {
-		
-		// if the passed object is not a jquery object, assuming 'element' is a selector
-		if (!(element instanceof jQuery)) element = $(element);
+    function getSelect2Value(element) {
 
-		var select = element.data("select2");
+        // if the passed object is not a jquery object, assuming 'element' is a selector
+        if (!(element instanceof jQuery)) element = $(element);
 
-		// There's two different locations where the select2-generated input element can be. 
-		searchElement = select.dropdown.$search || select.$container.find(".select2-search__field");
+        var select = element.data("select2");
 
-		var value = searchElement.val();
-		return value;
-	}
-	
-	$(".select2-hidden-accessible").on('select2:selecting', function (e) {
-		var data = e.params.args.data;
-		var isMouseUp = false;
-		var element = $(this);
-		var value = getSelect2Value(element);
-		
-		if(e.params.args.originalEvent) isMouseUp = e.params.args.originalEvent.type == "mouseup";
-		
-		// if selected item does not match typed text, do not allow it to pass - force close for ajax.
-		if(!isMouseUp) {
-			if(value.toLowerCase() && data.text.toLowerCase().indexOf(value) < 0) {
-				e.preventDefault();
+        // There's two different locations where the select2-generated input element can be. 
+        searchElement = select.dropdown.$search || select.$container.find(".select2-search__field");
 
 				element.select2('close');
 				
@@ -447,47 +438,47 @@ $(function () {
                 }).filter(function (x) {
                     return x !== 0;
                 });
-				
-				// makes sure we're not selecting the same thing twice for multiples
-				var filteredResponse = response.results.filter(function(item) {
-					return currentlySelected.indexOf(+item.id) < 0;
-				});
 
-				var first = (currentlySelected.length > 0) ? filteredResponse[0] : response.results[0];
-				
-				if(first && first.id) {
-					first.selected = true;
-					
-					if($("option[value='" + first.id + "']", element).length < 1) {
-						var option = new Option(first.text, first.id, true, true);
-						element.append(option);
-					} else {
-						var isMultiple = element.attr("multiple") == "multiple";
-						element.val(isMultiple? element.val().concat(first.id) : element.val(first.id));
-					}
-					element.trigger('change');
+                // makes sure we're not selecting the same thing twice for multiples
+                var filteredResponse = response.results.filter(function (item) {
+                    return currentlySelected.indexOf(+item.id) < 0;
+                });
 
-					element.trigger({
-						type: 'select2:select',
-						params: {
-							data: first
-						}
-					});
-				}
-			});
-		}
-	});
+                var first = (currentlySelected.length > 0) ? filteredResponse[0] : response.results[0];
 
-    function formatDatalist (datalist) {
+                if (first && first.id) {
+                    first.selected = true;
+
+                    if ($("option[value='" + first.id + "']", element).length < 1) {
+                        var option = new Option(first.text, first.id, true, true);
+                        element.append(option);
+                    } else {
+                        var isMultiple = element.attr("multiple") == "multiple";
+                        element.val(isMultiple ? element.val().concat(first.id) : element.val(first.id));
+                    }
+                    element.trigger('change');
+
+                    element.trigger({
+                        type: 'select2:select',
+                        params: {
+                            data: first
+                        }
+                    });
+                }
+            });
+        }
+    });
+
+    function formatDatalist(datalist) {
         var loading_markup = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Loading...';
         if (datalist.loading) {
             return loading_markup;
         }
 
-        var markup = '<div class="clearfix">' ;
+        var markup = '<div class="clearfix">';
         markup += '<div class="pull-left" style="padding-right: 10px;">';
         if (datalist.image) {
-            markup += "<div style='width: 30px;'><img src='" + datalist.image + "' style='max-height: 20px; max-width: 30px;' alt='" +  datalist.text + "'></div>";
+            markup += "<div style='width: 30px;'><img src='" + datalist.image + "' style='max-height: 20px; max-width: 30px;' alt='" + datalist.text + "'></div>";
         } else {
             markup += '<div style="height: 20px; width: 30px;"></div>';
         }
@@ -503,7 +494,7 @@ $(function () {
             return $('<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Loading...');
         }
 
-        var root_div = $("<div class='clearfix'>") ;
+        var root_div = $("<div class='clearfix'>");
         var left_pull = $("<div class='pull-left' style='padding-right: 10px;'>");
         if (datalist.image) {
             var inner_div = $("<div style='width: 20px;'>");
@@ -537,7 +528,7 @@ $(function () {
         root_div.append(name_div)
         var safe_html = root_div.get(0).outerHTML;
         var old_html = formatDatalist(datalist);
-        if(safe_html != old_html) {
+        if (safe_html != old_html) {
             //console.log("HTML MISMATCH: ");
             //console.log("FormatDatalistSafe: ");
             // console.dir(root_div.get(0));
@@ -549,7 +540,7 @@ $(function () {
 
     }
 
-    function formatDataSelection (datalist) {
+    function formatDataSelection(datalist) {
         // This a heinous workaround for a known bug in Select2.
         // Without this, the rich selectlists are vulnerable to XSS.
         // Many thanks to @uberbrady for this fix. It ain't pretty,
@@ -621,7 +612,7 @@ $(function () {
 
         // Expose so pages that reveal #assignto_selector later (asset edit's
         // user_add() flow, etc.) can trigger the sync once the selector is
-        // visible. Standalone checkout pages don't need to call this — the
+        // visible. Standalone checkout pages don't need to call this â€” the
         // initial-render block below handles them.
         window.snipeitSyncCheckoutToTypeUi = syncCheckoutToTypeUi;
 
@@ -631,7 +622,7 @@ $(function () {
         // a deployability AJAX call). Using getAttribute('style') instead of
         // jQuery's :visible avoids false negatives on pages like the standalone
         // /hardware/{id}/checkout, where the selector is visible from the start
-        // but :visible can transiently return false during select2 boot — that
+        // but :visible can transiently return false during select2 boot â€” that
         // was what hid the acceptance-options callout until a radio was toggled.
         var selectorStyle = ($('#assignto_selector').attr('style') || '').toLowerCase();
         if (selectorStyle.indexOf('display:none') === -1 && selectorStyle.indexOf('display: none') === -1) {
@@ -649,9 +640,9 @@ $(function () {
     // ------------------------------------------------
     // This allows linking to a tab on page load via the address bar.
     // So a URL such as, http://snipe-it.local/hardware/2/#my_tab will
-    // cause the tab on that page with an ID of “my_tab” to be active.
-    if (taburl.match('#') ) {
-        $('.nav-tabs a[href="#'+taburl.split('#')[1]+'"]').tab('show');
+    // cause the tab on that page with an ID of â€œmy_tabâ€ to be active.
+    if (taburl.match('#')) {
+        $('.nav-tabs a[href="#' + taburl.split('#')[1] + '"]').tab('show');
     }
 
     // Allow internal page links to activate a tab's ID.
@@ -709,7 +700,7 @@ $(function () {
     function readURL(input, $preview) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 $preview.attr('src', e.target.result);
             };
             reader.readAsDataURL(input.files[0]);
@@ -717,14 +708,14 @@ $(function () {
     }
 
     function formatBytes(bytes) {
-        if(bytes < 1024) return bytes + " Bytes";
-        else if(bytes < 1048576) return(bytes / 1024).toFixed(2) + " KB";
-        else if(bytes < 1073741824) return(bytes / 1048576).toFixed(2) + " MB";
-        else return(bytes / 1073741824).toFixed(2) + " GB";
+        if (bytes < 1024) return bytes + " Bytes";
+        else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + " KB";
+        else if (bytes < 1073741824) return (bytes / 1048576).toFixed(2) + " MB";
+        else return (bytes / 1073741824).toFixed(2) + " GB";
     }
 
-     // File size validation
-    $('.js-uploadFile').bind('change', function() {
+    // File size validation
+    $('.js-uploadFile').bind('change', function () {
         var $this = $(this);
         var id = '#' + $this.attr('id');
         var status = id + '-status';
@@ -753,7 +744,7 @@ $(function () {
             $status.addClass('text-danger').removeClass('help-block').prepend('<i class="badfile fas fa-times"></i> ').append('<span class="previewSize"> Upload is ' + formatBytes(total_size) + '.</span>');
         } else {
             $status.addClass('text-success').removeClass('help-block').prepend('<i class="goodfile fas fa-check"></i> ');
-            var $preview =  $(id + '-imagePreview');
+            var $preview = $(id + '-imagePreview');
             readURL(this, $preview);
             $preview.fadeIn();
             preview_container.fadeIn();
@@ -774,12 +765,12 @@ function htmlEntities(str) {
 /**
  * Toggle disabled
  */
-(function($){
-		
-    $.fn.toggleDisabled = function(callback){
-        return this.each(function(){
+(function ($) {
+
+    $.fn.toggleDisabled = function (callback) {
+        return this.each(function () {
             var disabled, $this = $(this);
-            if($this.attr('disabled')){
+            if ($this.attr('disabled')) {
                 $this.removeAttr('disabled');
                 disabled = false;
             } else {
@@ -787,16 +778,16 @@ function htmlEntities(str) {
                 disabled = true;
             }
 
-            if(callback && typeof callback === 'function'){
+            if (callback && typeof callback === 'function') {
                 callback(this, disabled);
             }
         });
     };
-    
+
 })(jQuery);
 
 $(document).ready(function () {
-    // Password-reveal eye. data-toggle is a jQuery selector — usually one
+    // Password-reveal eye. data-toggle is a jQuery selector â€” usually one
     // input id, but a multi-selector like "#password, #password_confirm"
     // lets a single click flip every matched input at once (the confirm
     // field on the user create/edit form uses this so revealing the
@@ -818,7 +809,7 @@ $(document).ready(function () {
     // Options are read from data-attributes on the wrapper so blade components
     // can tune format/side-by-side without touching this JS.
     //
-    // Icon set is overridden to Font Awesome — the picker defaults to
+    // Icon set is overridden to Font Awesome â€” the picker defaults to
     // Glyphicon classes, which we do not ship, so up/down arrows and clock
     // glyphs would otherwise render as empty boxes.
     // Exposed so callers who insert new [data-provide="datetimepicker"]
@@ -843,7 +834,7 @@ $(document).ready(function () {
 
         var options = {
             format: $wrapper.data('format') || 'YYYY-MM-DD HH:mm:ss',
-            // Default to the compact (collapsed) view — calendar shows first
+            // Default to the compact (collapsed) view â€” calendar shows first
             // and a small clock icon toggles the time view. Callers that want
             // date + time visible side by side can set data-side-by-side="true".
             sideBySide: $wrapper.data('side-by-side') === true,
@@ -976,14 +967,14 @@ document.addEventListener('livewire:init', () => {
 
     $(document).on('select2:select', '.livewire-select2', function (event) {
         var target = $(event.target)
-        if(!event.target.name || !target.data('livewire-component')) {
+        if (!event.target.name || !target.data('livewire-component')) {
             console.error("You need to set both name (which should match a Livewire property) and data-livewire-component on your Livewire-ed select2 elements!")
             console.error("For data-livewire-component, you probably want to use $this->getId() or {{ $this->getId() }}, as appropriate")
             return false
         }
-        // PHP property names cannot start with a digit — skip bare numeric names (e.g. "0") that would cause a 500
+        // PHP property names cannot start with a digit â€” skip bare numeric names (e.g. "0") that would cause a 500
         if (/^\d+$/.test(event.target.name)) {
-            console.error("Livewire select2: name attribute '" + event.target.name + "' is not a valid Livewire property name — skipping")
+            console.error("Livewire select2: name attribute '" + event.target.name + "' is not a valid Livewire property name â€” skipping")
             return false
         }
         Livewire.find(target.data('livewire-component')).set(event.target.name, this.options[this.selectedIndex].value)
@@ -1299,7 +1290,7 @@ $(function () {
         });
     });
 
-    // Master checkbox → target field disabled state. Callers pair a
+    // Master checkbox â†’ target field disabled state. Callers pair a
     // <input type="checkbox" data-toggle="disable-when-unchecked"
     // data-disable-target="#some-field"> with a target rendered
     // server-side with the matching @disabled state (avoids FOUC).
@@ -1321,7 +1312,7 @@ $(function () {
         $(this).find(':input[required]').filter(function () { return !this.value; }).attr('disabled', 'disabled');
     });
 
-    // Master checkbox → toggle every non-disabled checkbox in the closest
+    // Master checkbox â†’ toggle every non-disabled checkbox in the closest
     // form or table (or a caller-specified selector via data-check-scope).
     // Used by bulk-delete confirmation pages to select or deselect the
     // whole list of rows at once.
@@ -1348,7 +1339,7 @@ $(function () {
     // confirmation with `required` only on create (see users/edit.blade.php
     // and modals/user.blade.php). We cache that server-rendered state on
     // the first call so subsequent activated-toggles only ever re-apply
-    // the ORIGINAL server intent — otherwise editing an existing
+    // the ORIGINAL server intent â€” otherwise editing an existing
     // (activated) user would silently flip password to required on page
     // load and jQuery Validate would block Save with the password empty.
     var syncPasswordFields = function ($checkbox) {
@@ -1502,8 +1493,8 @@ $(function () {
     // the element's data attributes so this handler doesn't need to be
     // a Blade-compiled inline script. Guarded on the data-deployable-
     // label attribute (not just the id) because #selected_status_status
-    // also appears in partials/forms/edit/status.blade.php — used by
-    // hardware/edit — which has its own inline user_add() handler and
+    // also appears in partials/forms/edit/status.blade.php â€” used by
+    // hardware/edit â€” which has its own inline user_add() handler and
     // doesn't render the labels, so we'd otherwise double-fire and
     // overwrite that handler's output with an icon-only string.
     var statusStatusEl = document.getElementById('selected_status_status');
@@ -1549,7 +1540,7 @@ $(function () {
     // "make this asset requestable after checkin" checkbox depending on
     // whether the currently-selected status is deployable. Preserve the
     // checkbox state when hiding so a status bounce doesn't blow it
-    // away — the server only applies the value when the status is
+    // away â€” the server only applies the value when the status is
     // deployable anyway.
     var requestableWrapper = document.getElementById('requestable-wrapper');
     if (requestableWrapper) {
@@ -1557,7 +1548,7 @@ $(function () {
         try {
             deployableStatusIds = JSON.parse(requestableWrapper.dataset.deployableStatusIds || '[]');
         } catch (e) {
-            // Malformed data — leave the wrapper in its server-rendered state.
+            // Malformed data â€” leave the wrapper in its server-rendered state.
         }
 
         var statusSelect = document.getElementById('modal-statuslabel_types')
@@ -1584,7 +1575,7 @@ $(function () {
     // Hardware checkin: per-user localStorage preference for the
     // requestable-checkbox default. Namespaced by user id so a shared
     // browser doesn't leak one user's habit to another. Bypassed when
-    // the checkbox was repopulated from a validation-error redirect —
+    // the checkbox was repopulated from a validation-error redirect â€”
     // old() beats the stored preference. On submit, save whatever the
     // user actually chose so the preference tracks their real habit.
     var requestableCheckbox = document.getElementById('requestable');

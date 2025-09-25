@@ -45,7 +45,7 @@ class PredefinedFilterService
     {
         $predefinedFilter = PredefinedFilter::find($id);
         if($include_predefined_filter_groups) {
-            $permissions = $this->predefinedFilterPermissionService->getPermissionsById($id);
+            $permissions = $this->predefinedFilterPermissionService->getPermissionsByPredefinedFilterId($id);
             $predefinedFilter['permissions'] = $permissions;
         }
         return $predefinedFilter;
@@ -88,9 +88,16 @@ class PredefinedFilterService
         $filter->save();
 
         if (array_key_exists('permissions', $validated)) {
+<<<<<<< HEAD
             $currentlySetPermissions = $this->predefinedFilterPermissionService->getPermissionsById($filter->id);
             $newPermissions = $validated['permissions'];
             $permissionDiff = $this->syncPermissions($currentlySetPermissions->toArray(), $newPermissions);
+=======
+            $currently_set_permssions = $this->predefinedFilterPermissionService->getPermissionsByPredefinedFilterId($filter->id);
+            $new_permissions = $validated['permissions'];
+            $permission_diff = $this->syncPermissions($currently_set_permssions->toArray(), $new_permissions);
+            //dump($permission_diff);
+>>>>>>> 5c0ea72d90 (Fixed that the same group can be assigned multiple times to the same filter)
 
             try {
                 DB::transaction(function () use ($permissionDiff, $filter) {
