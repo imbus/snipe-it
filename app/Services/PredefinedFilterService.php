@@ -40,12 +40,7 @@ class PredefinedFilterService
             })->values();
     }
 
-<<<<<<< HEAD
     public function getFilterById(int $id, bool $includePredefinedFilterGroups = true)
-=======
-    //TODO different Naming because it does more than only get a filter by ID
-    public function getFilterById(int $id, bool $include_predefined_filter_groups = true)
->>>>>>> f4217723d1 (Fixed Update to return correct statusCode (422))
     {
         $predefinedFilter = PredefinedFilter::find($id);
 
