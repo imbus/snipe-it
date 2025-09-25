@@ -33,7 +33,7 @@
                         <span class="box-title col-xs-12">Warning</span>
                     </div>
                     <div class="box-body">
-                        <p>The following were removed from the selected assets because they are already checked out:</p>
+                        <p>{{ trans('general.assigned_assets_removed') }}</p>
                         <ul>
                             @foreach($removed_assets as $removed_asset)
                                 <li>
