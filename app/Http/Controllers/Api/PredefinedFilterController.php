@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\PredefinedFiltersTransformer;
 use App\Http\Transformers\SelectlistTransformer;
@@ -9,6 +10,7 @@ use App\Models\PredefinedFilter;
 use App\Services\PredefinedFilterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class PredefinedFilterController extends Controller
 {
@@ -67,15 +69,19 @@ class PredefinedFilterController extends Controller
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
-        $validated = $request->validate((new PredefinedFilter)->getRules());
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'filter_data' => 'required|array',
+            'is_public' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
+        }
+
+        $validated = $validator->validated();
         $currentIsPublic = (bool) $filter->is_public;
         $newIsPublic = (bool) ($validated['is_public'] ?? $filter->is_public);
-
-        if (empty($validated['filter_data'])) {
-            return response()->json([
-                'message' => trans('admin/predefinedFilters/message.update.filterData_required'),
-            ], 400);
-        }
 
         if ($filter->created_by === $user->id) {
             if (! $currentIsPublic && $newIsPublic && ! $user->hasAccess('predefinedFilter.create')) {
