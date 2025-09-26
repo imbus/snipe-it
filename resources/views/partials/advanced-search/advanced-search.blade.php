@@ -94,7 +94,7 @@ updateFilterWithPredefined(event) {
         })
         .catch(err => {
             console.error("Failed to apply predefined filter:", err);
-            alert("Failed to apply predefined filter");
+            Livewire.dispatch('showNotification', { type: 'error', message: 'Failed to apply predefined filter'}); // TODO: i18n
             setAdvancedSearchPanelFilterEnabledState(false);
         });
 }
@@ -116,7 +116,7 @@ updateFilterWithPredefined(event) {
             .then((response) => {
                 if(response.status === 201) {
                     //alert("Filter stored successfully");
-                    Livewire.dispatch('show-message', { message: "Filter stored successfully" });
+                    Livewire.dispatch('showNotification', { type: 'success', message: 'Filter stored successfully' });
                     if(window.triggerConfetti) window.triggerConfetti();
                 } else {
                     console.error(response);
@@ -174,7 +174,7 @@ updateFilterWithPredefined(event) {
                                                 .then((response) => {
                                                     if (response.status === 200) {
                                                         //alert("Filter updated successfully");
-                                                        Livewire.dispatch('show-message', { message: "Filter updated successfully" });
+                                                        Livewire.dispatch('showNotification', { type: 'success', message: 'Filter updated successfully' });
                                                         if (window.triggerConfetti) window.triggerConfetti();
                                                     } else {
                                                         console.error(response);
