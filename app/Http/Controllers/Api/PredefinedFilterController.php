@@ -46,7 +46,18 @@ class PredefinedFilterController extends Controller
     public function store(Request $request): JsonResponse
     {
         $user = auth()->user();
-        $validated = $request->validate((new PredefinedFilter)->getRules());
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'filter_data' => 'required|array',
+            'is_public' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
+        }
+
+        $validated = $validator->validated();
 
         if (! empty($validated['is_public'] ?? false) && ! $user->hasAccess('predefinedFilter.create')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.create.not_allowed')], 403);
