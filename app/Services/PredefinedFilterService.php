@@ -40,6 +40,8 @@ class PredefinedFilterService
             })->values();
     }
 
+    //TODO different Naming because it does more than only get a filter by ID
+    //TODO discuss because there is the built-in with() ['predefinedFilter::with('permissionGroups')->find(id)']
     public function getFilterById(int $id, bool $includePredefinedFilterGroups = true)
     {
         $predefinedFilter = PredefinedFilter::find($id);
