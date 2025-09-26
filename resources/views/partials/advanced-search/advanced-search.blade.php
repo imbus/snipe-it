@@ -114,30 +114,42 @@ updateFilterWithPredefined(event) {
             };
             fetchFromBackend('POST', '{{ route('api.predefined-filters.store') }}', JSON.stringify(payload))
             .then((response) => {
-                if(response.status === 201) {
-                    //alert("Filter stored successfully");
-                    Livewire.dispatch('showNotification', { type: 'success', message: 'Filter stored successfully' });
-                    if(window.triggerConfetti) window.triggerConfetti();
+                if (response.status === 201) {
+                    Livewire.dispatch('showNotification', {
+                        type: 'success',
+                        title: '{{ trans('general.notification_success') }}',
+                        message: 'Filter stored successfully',
+                        tag: 'predefinedFilters'
+                    });
+                    if (window.triggerConfetti) window.triggerConfetti();
                 } else {
-                    console.error(response);
-                    alert("An error has occured. Look in the browser console for more details.");  
+                    Livewire.dispatch('showNotification', {
+                        type: 'error',
+                        title: '{{ trans('general.notification_error') }}',
+                        message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
+                        tag: 'predefinedFilters'
+                    });
                 }
             })
             .catch((error) => {
                 console.error(error);
-                alert("An error has occured: " + error);
+                Livewire.dispatch('showNotification', {
+                    type: 'error',
+                    title: '{{ trans('general.notification_error') }}',
+                    message: String(error),
+                    tag: 'predefinedFilters'
+                });
             })
         });
     }
 
     updatePredefinedFilterInBackend(updateFilterButtonId) {
-        if (document.getElementById(updateFilterButtonId).classList.contains('disabled')) return; // Do nothing when the button is disabled
+        if (document.getElementById(updateFilterButtonId).classList.contains('disabled')) return;
 
-        const selectedFilter = $("#predefinedfilters-select").select2('data')[0]; // Always zero because only one element can be selected at the time
+        const selectedFilter = $("#predefinedfilters-select").select2('data')[0];
         if (!selectedFilter) return;
         const filters = this.collector.collect();
 
-        // Fetch filter from backend to get the permissions
         fetchItemFromBackendById("group_select", selectedFilter.id)
             .then((response) => {
                 response.json()
@@ -147,9 +159,8 @@ updateFilterWithPredefined(event) {
                         responseJson.permissions.forEach(permission => {
                             permissionGroupRequests.push(fetchItemFromBackendById("groups", permission.permission_group_id));
                         });
-                        Promise.all(permissionGroupRequests).
-                        then((permissionGroupResponses) => {
-
+                        Promise.all(permissionGroupRequests)
+                        .then((permissionGroupResponses) => {
                             const permissionGroupResponsePromises = [];
                             permissionGroupResponses.forEach((permissionGroupResponse) => {
                                 permissionGroupResponsePromises.push(permissionGroupResponse.json());
@@ -158,7 +169,6 @@ updateFilterWithPredefined(event) {
                                 .then((permissionGroupResponses) => {
                                     openFilterCreateUpdateModal(false, responseJson.name, permissionGroupResponses)
                                         .then((input) => {
-
                                             const payload = {
                                                 name: input.name,
                                                 filter_data: filters,
@@ -167,18 +177,27 @@ updateFilterWithPredefined(event) {
                                             };
 
                                             const updateUrlTemplate = `{{ route('api.predefined-filters.update', ['id' => '__ID__']) }}`;
-                                            const selectedFilterId = selectedFilter.id; // JS context
+                                            const selectedFilterId = selectedFilter.id;
                                             const finalUrl = updateUrlTemplate.replace('__ID__', selectedFilterId);
 
                                             fetchFromBackend('PUT', finalUrl, JSON.stringify(payload))
                                                 .then((response) => {
                                                     if (response.status === 200) {
-                                                        //alert("Filter updated successfully");
-                                                        Livewire.dispatch('showNotification', { type: 'success', message: 'Filter updated successfully' });
+                                                        Livewire.dispatch('showNotification', {
+                                                            type: 'success',
+                                                            title: '{{ trans('general.notification_success') }}',
+                                                            message: 'Filter updated successfully',
+                                                            tag: 'predefinedFilters'
+                                                        });
                                                         if (window.triggerConfetti) window.triggerConfetti();
                                                     } else {
                                                         console.error(response);
-                                                        alert("An error has occured. Look in the browser console for more details.");
+                                                        Livewire.dispatch('showNotification', {
+                                                            type: 'error',
+                                                            title: '{{ trans('general.notification_error') }}',
+                                                            message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
+                                                            tag: 'predefinedFilters'
+                                                        });
                                                     }
                                                 });
                                         });
@@ -187,15 +206,20 @@ updateFilterWithPredefined(event) {
                     })
                     .catch((error) => {
                         console.error(error);
-                        alert("An error has occured: " + error);
+                        Livewire.dispatch('showNotification', {
+                            type: 'error',
+                            title: '{{ trans('general.notification_error') }}',
+                            message: String(error),
+                            tag: 'predefinedFilters'
+                        });
                     })
             });
     }
 
     deletePredefinedFilterFromBackend(deleteFilterButtonId) {
-        if (document.getElementById(deleteFilterButtonId).classList.contains('disabled')) return; // Do nothing when the button is disabled
+        if (document.getElementById(deleteFilterButtonId).classList.contains('disabled')) return;
 
-        const selectedFilterId = $("#predefinedfilters-select").select2('data')[0].id; // Always zero because only one element can be selected at the time
+        const selectedFilterId = $("#predefinedfilters-select").select2('data')[0].id;
         if (!selectedFilterId) return;
 
         const updateUrlTemplate = `{{ route('api.predefined-filters.destroy', ['id' => '__ID__']) }}`;
@@ -203,17 +227,32 @@ updateFilterWithPredefined(event) {
 
         fetchFromBackend('PUT', finalUrl)
         .then((response) => {
-            if(response.status === 200) {
-                alert("Filter deleted successfully");
-                if(window.triggerConfetti) window.triggerConfetti();
+            if (response.status === 200) {
+                Livewire.dispatch('showNotification', {
+                    type: 'success',
+                    title: '{{ trans('general.notification_success') }}',
+                    message: 'Filter deleted successfully',
+                    tag: 'predefinedFilters'
+                });
+                if (window.triggerConfetti) window.triggerConfetti();
             } else {
                 console.error(response);
-                alert("An error has occured. Look in the browser console for more details.");  
+                Livewire.dispatch('showNotification', {
+                    type: 'error',
+                    title: '{{ trans('general.notification_error') }}',
+                    message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
+                    tag: 'predefinedFilters'
+                });
             }
         })
         .catch((error) => {
             console.error(error);
-            alert("An error has occured: " + error);
+            Livewire.dispatch('showNotification', {
+                type: 'error',
+                title: '{{ trans('general.notification_error') }}',
+                message: String(error),
+                tag: 'predefinedFilters'
+            });
         })
     }
 
