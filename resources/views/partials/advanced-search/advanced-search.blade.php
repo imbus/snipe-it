@@ -54,7 +54,6 @@
 @include('partials.confetti-js', ['autostart' => false])
 
 <script>
-
 class FilterUIController {
     constructor(tableElement) {
         this.$table = tableElement;
@@ -116,7 +115,8 @@ updateFilterWithPredefined(event) {
             fetchFromBackend('POST', '{{ route('api.predefined-filters.store') }}', JSON.stringify(payload))
             .then((response) => {
                 if(response.status === 201) {
-                    alert("Filter stored successfully");
+                    //alert("Filter stored successfully");
+                    Livewire.dispatch('show-message', { message: "Filter stored successfully" });
                     if(window.triggerConfetti) window.triggerConfetti();
                 } else {
                     console.error(response);
@@ -173,7 +173,8 @@ updateFilterWithPredefined(event) {
                                             fetchFromBackend('PUT', finalUrl, JSON.stringify(payload))
                                                 .then((response) => {
                                                     if (response.status === 200) {
-                                                        alert("Filter updated successfully");
+                                                        //alert("Filter updated successfully");
+                                                        Livewire.dispatch('show-message', { message: "Filter updated successfully" });
                                                         if (window.triggerConfetti) window.triggerConfetti();
                                                     } else {
                                                         console.error(response);
@@ -242,6 +243,7 @@ updateFilterWithPredefined(event) {
         const topClearButton = document.getElementById("topClearInputButton");
         if (topClearButton) {
             topClearButton.addEventListener('click', () => this.collector.clearAll());
+            //Livewire.emit('refreshNotifications');
         }
 
         const saveFilterButton = document.getElementById("storeFilterButton");

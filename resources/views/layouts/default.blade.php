@@ -940,7 +940,7 @@
                             </div>
                         @endif
 
-                        <x-notifications />
+                        <livewire:notifications />
                     </div>
 
 
@@ -1198,7 +1198,7 @@
                 // rather than .data() because .data() caches on first access
                 // and can miss late-changing values in select2 / Bootstrap
                 // data-toggle="buttons" environments. Only VISIBLE radios
-                // count — a hidden checkout-selector on asset create/edit
+                // count â€” a hidden checkout-selector on asset create/edit
                 // is inert and shouldn't be pinning required on anything.
                 var groups = {};
                 $('input[type=radio][data-required-select]:visible').each(function () {
@@ -1213,7 +1213,7 @@
                 // radio's target and clear it from every sibling target.
                 // If the target select itself is hidden (e.g., the "user"
                 // form-group is display:none because a non-deployable status
-                // was picked), don't set required on it — the browser would
+                // was picked), don't set required on it â€” the browser would
                 // block form submit on an invisible element.
                 Object.keys(groups).forEach(function (name) {
                     var $checked = $('input[name="' + name + '"]:checked');
@@ -1369,7 +1369,7 @@
             // Anti-double-click on checkout forms. The old implementation did
             //   event.preventDefault(); $btn.prop('disabled', true); this.submit();
             // which submitted the form NATIVELY (without re-firing the submit
-            // event), bypassing jQuery Validate entirely — hence any JS
+            // event), bypassing jQuery Validate entirely â€” hence any JS
             // validation error was visible for a single frame before the form
             // shipped straight to the server.
             //
@@ -1379,7 +1379,7 @@
             // form is invalid, so we skip the disable in that case and the
             // operator can fix + retry). jQuery Validate is bound at .validate()
             // time (line ~2390 above) which runs before this ready() callback,
-            // so its handler is registered — and fires — first.
+            // so its handler is registered â€” and fires â€” first.
             $(document).ready(function () {
                 $('#checkout_form').on('submit', function (event) {
                     if (event.isDefaultPrevented()) {
