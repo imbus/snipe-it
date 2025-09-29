@@ -94,7 +94,7 @@ updateFilterWithPredefined(event) {
         })
         .catch(err => {
             console.error("Failed to apply predefined filter:", err);
-            Livewire.dispatch('showNotification', { type: 'error', message: 'Failed to apply predefined filter'}); // TODO: i18n
+            Livewire.dispatch('showNotification', { type: 'error', message: '{{ trans('general.failed_to_apply_predefined_filter') }}'}); // TODO: i18n
             setAdvancedSearchPanelFilterEnabledState(false);
         });
 }
@@ -116,29 +116,52 @@ updateFilterWithPredefined(event) {
             .then((response) => {
                 if (response.status === 201) {
                     Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                         type: 'success',
                         title: '{{ trans('general.notification_success') }}',
                         message: 'Filter stored successfully',
                         tag: 'predefinedFilters'
+=======
+                      type: 'success',
+                      title: '{{ trans('general.notification_success') }}',
+                      message: '{{ trans('general.predefined_filter_saved_successfully') }}',
+                      tag: 'prefindedFilters'
+>>>>>>> 5e25e86856 (Added translations for messages)
                     });
                     if (window.triggerConfetti) window.triggerConfetti();
                 } else {
                     Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                         type: 'error',
                         title: '{{ trans('general.notification_error') }}',
                         message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
                         tag: 'predefinedFilters'
                     });
+=======
+                      type: 'error',
+                      title: '{{ trans('general.notification_error') }}',
+                      message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                      tag: 'prefindedFilters'
+                    });  
+>>>>>>> 5e25e86856 (Added translations for messages)
                 }
             })
             .catch((error) => {
                 console.error(error);
                 Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                     type: 'error',
                     title: '{{ trans('general.notification_error') }}',
                     message: String(error),
                     tag: 'predefinedFilters'
                 });
+=======
+                  type: 'error',
+                  title: '{{ trans('general.notification_error') }}',
+                  message: '{{ trans('general.notification_error') }}' + error,
+                  tag: 'prefindedFilters'
+                }); 
+>>>>>>> 5e25e86856 (Added translations for messages)
             })
         });
     }
@@ -184,20 +207,35 @@ updateFilterWithPredefined(event) {
                                                 .then((response) => {
                                                     if (response.status === 200) {
                                                         Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                                                             type: 'success',
                                                             title: '{{ trans('general.notification_success') }}',
                                                             message: 'Filter updated successfully',
                                                             tag: 'predefinedFilters'
+=======
+                                                          type: 'success',
+                                                          title: '{{ trans('general.notification_success') }}',
+                                                          message: '{{ trans('general.predefined_filter_updated_successfully') }}',
+                                                          tag: 'prefindedFilters'
+>>>>>>> 5e25e86856 (Added translations for messages)
                                                         });
                                                         if (window.triggerConfetti) window.triggerConfetti();
                                                     } else {
                                                         console.error(response);
                                                         Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                                                             type: 'error',
                                                             title: '{{ trans('general.notification_error') }}',
                                                             message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
                                                             tag: 'predefinedFilters'
                                                         });
+=======
+                                                          type: 'error',
+                                                          title: '{{ trans('general.notification_error') }}',
+                                                          message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                                                          tag: 'prefindedFilters'
+                                                        }); 
+>>>>>>> 5e25e86856 (Added translations for messages)
                                                     }
                                                 });
                                         });
@@ -207,11 +245,19 @@ updateFilterWithPredefined(event) {
                     .catch((error) => {
                         console.error(error);
                         Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                             type: 'error',
                             title: '{{ trans('general.notification_error') }}',
                             message: String(error),
                             tag: 'predefinedFilters'
                         });
+=======
+                          type: 'error',
+                          title: '{{ trans('general.notification_error') }}',
+                          message: '{{ trans('general.notification_error') }}' + error,
+                          tag: 'prefindedFilters'
+                        }); 
+>>>>>>> 5e25e86856 (Added translations for messages)
                     })
             });
     }
@@ -229,30 +275,53 @@ updateFilterWithPredefined(event) {
         .then((response) => {
             if (response.status === 200) {
                 Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                     type: 'success',
                     title: '{{ trans('general.notification_success') }}',
                     message: 'Filter deleted successfully',
                     tag: 'predefinedFilters'
+=======
+                  type: 'success',
+                  title: '{{ trans('general.notification_success') }}',
+                  message: '{{ trans('general.predefined_filter_deleted_successfully') }}',
+                  tag: 'prefindedFilters'
+>>>>>>> 5e25e86856 (Added translations for messages)
                 });
                 if (window.triggerConfetti) window.triggerConfetti();
             } else {
                 console.error(response);
                 Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                     type: 'error',
                     title: '{{ trans('general.notification_error') }}',
                     message: 'The backend responded with ' + response.status + ' - ' + response.statusText,
                     tag: 'predefinedFilters'
                 });
+=======
+                  type: 'error',
+                  title: '{{ trans('general.notification_error') }}',
+                  message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                  tag: 'prefindedFilters'
+                });  
+>>>>>>> 5e25e86856 (Added translations for messages)
             }
         })
         .catch((error) => {
             console.error(error);
             Livewire.dispatch('showNotification', {
+<<<<<<< HEAD
                 type: 'error',
                 title: '{{ trans('general.notification_error') }}',
                 message: String(error),
                 tag: 'predefinedFilters'
             });
+=======
+              type: 'error',
+              title: '{{ trans('general.notification_error') }}',
+              message: '{{ trans('general.notification_error') }}' + error,
+              tag: 'prefindedFilters'
+            }); 
+>>>>>>> 5e25e86856 (Added translations for messages)
         })
     }
 
