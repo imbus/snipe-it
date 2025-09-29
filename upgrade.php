@@ -62,6 +62,7 @@ if ($argc > 1){
                 break;
             case '--no-interactive':
                 $no_interactive = true;
+                putenv("COMPOSER_NO_INTERACTION=1"); //put composer in non-interactive mode aswell
                 break;
             default: // for legacy support from before we started using --branch
                 $branch = $argv[$arg];
@@ -443,7 +444,8 @@ if ((strpos('git version', $git_version)) === false) {
     echo $git_fetch;
     echo '-- '.$git_stash;
     echo '-- '.$git_checkout;
-    echo '-- '.$git_pull."\n";
+    echo '-- '.$git_pull;
+    echo "\n";
 } else {
     echo "Git is NOT installed. You can still use this upgrade script to run common \n";
     echo "migration commands, but you will have to manually download the updated files. \n\n";
