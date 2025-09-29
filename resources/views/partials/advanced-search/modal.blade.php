@@ -26,7 +26,7 @@
                     <label>{{ trans('general.visibility') }}</label>
                     <div class="radio modal-radio">
                         <label>
-                            <input type="radio" name="visibility" value="public" checked>
+                            <input type="radio" class="modal-radiobutton-label" name="visibility" value="public" checked>
                             <span class="modal-radiobutton-label">
                                 {{ trans('general.public') }}
                             </span>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="radio modal-radio">
                         <label>
-                            <input type="radio" name="visibility" value="private">
+                            <input type="radio" class="modal-radiobutton-label" name="visibility" value="private">
                             <span class="modal-radiobutton-label">
                                 {{ trans('general.private') }}
                             </span>
@@ -42,13 +42,8 @@
                     </div>
                 </div>
                 @include ('partials.select.dropdowns.group-select', [
-                @include ('partials.select.dropdowns.group-select', [
                     'translated_name' => trans('general.select_group'),
                     'select_id' => "group_select",
-                    'fieldname' => "groupSelect",
-                    'required' => 'false',
-                    'multiple' => 'true',
-                ])
                     'fieldname' => "groupSelect",
                     'required' => 'false',
                     'multiple' => 'true',
@@ -80,25 +75,21 @@
             const $saveBtn = $('#modalSaveBtn');
             const $errorMsg = $('<p class="text-danger" id="nameError" style="display:none;"></p>');
 
-            // Insert error message if not already present
             if ($('#nameError').length === 0) {
                 $input.closest('.form-group').append($errorMsg);
             }
 
-            // Reset input fields and UI
             $input.val(name || '').removeClass('is-invalid').css('border-color', '');
             $('#nameError').hide().text('');
             $('input[name="visibility"][value="public"]').prop('checked', true);
 
-            // Set modal title and button text
             $title.text(createNew ? '{{ trans('general.create') }}' : '{{ trans('general.edit') }}');
             $saveBtn.text(createNew ? '{{ trans('general.save') }}' : '{{ trans('general.update') }}');
 
             const currentlySetFilterGroupIDs = permissionGroupResponses.map(group => group.id);
             groupSelectDropdown.clear();
-            groupSelectDropdown.setValue(currentlySetFilterGroupIDs, "groups");
+            groupSelectDropdown.setValue(currentlySetFilterGroupIDs, 'groups');
 
-            // Show the modal
             $modal.modal('show');
 
             const onCancel = () => {
@@ -110,13 +101,11 @@
                 const inputName = $input.val().trim();
                 const permissionInput = groupSelectDropdown.getValue();
 
-                // Validate input
                 if (!inputName) {
-                                    $input.addClass('is-invalid').css('border-color', '#d9534f');
-                                      $('#nameError').text('{{ trans('general.validation_required') }}').show();
-                                    return;
+                    $input.addClass('is-invalid').css('border-color', '#d9534f');
+                    $('#nameError').text('{{ trans('general.validation_required') }}').show();
+                    return;
                 }
-
 
                 const permissions = permissionInput.map(id => ({
                     permission_group_id: id
@@ -127,13 +116,9 @@
                     visibility: $('input[name="visibility"]:checked').val(),
                     permissions: permissions,
                 };
-                console.log("onsave");
-                console.log(inputData);
 
-                // Close modal before resolving
                 $modal.modal('hide');
 
-                // Delay resolve slightly to allow modal animation to complete
                 setTimeout(() => {
                     cleanup();
                     resolve(inputData);
@@ -161,9 +146,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        groupSelectDropdown = new SelectFilterInput(document.getElementById("group_select"));
-    }
-);
+        groupSelectDropdown = new SelectFilterInput(document.getElementById('group_select'));
+    });
 </script>
 
 <style>
