@@ -571,6 +571,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                   'assignedAccessories'
               ]
           )->name('api.assets.assigned_accessories');
+
+          Route::get('{asset}/assigned/components',
+              [
+                  Api\AssetsController::class,
+                  'assignedComponents'
+              ]
+          )->name('api.assets.assigned_components');
           /** End assigned routes */
 
       });
