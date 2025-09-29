@@ -167,7 +167,6 @@
             return true; // ensure form still submits
         });
 
-        $('#assigned_assets_select').select2('open');
         setTimeout(function () {
             const $searchField = $('.select2-search__field');
             const $results = $('.select2-results');
