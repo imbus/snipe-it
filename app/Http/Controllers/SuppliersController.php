@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Suppliers\DestroySupplierAction;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
 use App\Exceptions\ItemStillHasMaintenances;
 use App\Exceptions\ItemStillHasAssets;
 use App\Exceptions\ItemStillHasLicenses;
@@ -139,6 +142,18 @@ class SuppliersController extends Controller
         } catch (ItemStillHasLicenses $e) {
             return redirect()->route('suppliers.index')->with('error', trans('general.bulk_delete_associations.assoc_licenses', [
                 'licenses_count' => (int) $supplier->licenses_count, 'item' => trans('general.supplier')
+            ]));
+        } catch (ItemStillHasAccessories $e) {
+            return redirect()->route('suppliers.index')->with('error', trans('general.bulk_delete_associations.assoc_accessories', [
+                'accessories_count' => (int) $supplier->accessories_count, 'item' => trans('general.supplier')
+            ]));
+        } catch (ItemStillHasConsumables $e) {
+            return redirect()->route('suppliers.index')->with('error', trans('general.bulk_delete_associations.assoc_consumables', [
+                'consumables_count' => (int) $supplier->consumables_count, 'item' => trans('general.supplier')
+            ]));
+        } catch (ItemStillHasComponents $e) {
+            return redirect()->route('suppliers.index')->with('error', trans('general.bulk_delete_associations.assoc_components', [
+                'components_count' => (int) $supplier->components_count, 'item' => trans('general.supplier')
             ]));
         } catch (\Exception $e) {
             report($e);

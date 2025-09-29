@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Suppliers\DestroySupplierAction;
+use App\Exceptions\ItemStillHasAccessories;
+use App\Exceptions\ItemStillHasComponents;
+use App\Exceptions\ItemStillHasConsumables;
 use App\Exceptions\ItemStillHasMaintenances;
 use App\Exceptions\ItemStillHasAssets;
 use App\Exceptions\ItemStillHasLicenses;
@@ -30,6 +33,12 @@ class BulkSuppliersController extends Controller
                 $errors[] = trans('general.bulk_delete_associations.assoc_maintenances', ['asset_maintenances_count' => $supplier->asset_maintenances_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
             } catch (ItemStillHasLicenses $e) {
                 $errors[] = trans('general.bulk_delete_associations.assoc_licenses', ['licenses_count' => (int) $supplier->licenses_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
+            } catch (ItemStillHasAccessories $e) {
+                $errors[] = trans('general.bulk_delete_associations.assoc_accessories', ['accessories_count' => (int) $supplier->accessories_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
+            } catch (ItemStillHasConsumables $e) {
+                $errors[] = trans('general.bulk_delete_associations.assoc_consumables', ['consumables_count' => (int) $supplier->consumables_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
+            } catch (ItemStillHasComponents $e) {
+                $errors[] = trans('general.bulk_delete_associations.assoc_components', ['components_count' => (int) $supplier->components_count, 'item' => trans('general.supplier'), 'item_name' => $supplier->name]);
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');
