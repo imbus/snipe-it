@@ -46,6 +46,7 @@ class AssetModelsController extends Controller
                 'manufacturer',
                 'requestable',
                 'assets_count',
+                'available_assets_count',
                 'category',
                 'fieldset',
                 'deleted_at',
