@@ -46,7 +46,7 @@ class AssetModelsController extends Controller
                 'manufacturer',
                 'requestable',
                 'assets_count',
-                'available_assets_count',
+                'remaining',
                 'category',
                 'fieldset',
                 'deleted_at',
@@ -75,7 +75,7 @@ class AssetModelsController extends Controller
          ])
             ->with('category', 'depreciation', 'manufacturer', 'fieldset.fields.defaultValues', 'adminuser')
             ->withCount('assets as assets_count')
-            ->withCount('availableAssets as available_assets_count');
+            ->withCount('availableAssets as remaining');
 
         if ($request->input('status')=='deleted') {
             $assetmodels->onlyTrashed();

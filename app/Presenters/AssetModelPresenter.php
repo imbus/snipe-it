@@ -91,7 +91,7 @@ class AssetModelPresenter extends Presenter
             ],
 
             [
-                'field' => 'available_assets_count',
+                'field' => 'remaining',
                 'searchable' => false,
                 'sortable' => true,
                 'switchable' => true,
