@@ -440,6 +440,8 @@ class ReportsController extends Controller
             if ($request->filled('use_bom')) {
                 fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
             }
+            //this means: ï»¿ in utf-8
+            //i think this might be where we can start digging. tho, we always use utf-8 encoding on exports?
 
             $header = [];
 
