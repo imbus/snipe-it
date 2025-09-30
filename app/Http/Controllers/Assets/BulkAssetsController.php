@@ -470,7 +470,7 @@ class BulkAssetsController extends Controller
                  */
 
                 // Does the model have a fieldset?
-                if ($asset->model->fieldset) {
+                if ($asset->model?->fieldset) {
                     foreach ($asset->model->fieldset->fields as $field) {
 
                         // null custom fields
