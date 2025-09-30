@@ -27,6 +27,22 @@ body:
     validations:
       required: true
   - type: input
+    id: php-version
+    attributes:
+      label: PHP Version
+      description: What version of PHP are you seeing this issue on? You can find the version number in the `Admin Settings` section in the footer.
+      placeholder: ex. v8.3.1
+    validations:
+      required: true
+  - type: input
+    id: composer-version
+    attributes:
+      label: Composer Version
+      description: What version of composer are you running? You can find the version number by running `composer --version`.
+      placeholder: ex. 2.8.10
+    validations:
+      required: true
+  - type: input
     id: db-version
     attributes:
       label: MySQL/MariaDB version
@@ -46,6 +62,16 @@ body:
         - Hosted by Grokability
         - Other
         - Not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: upgrade-or-fresh
+    attributes:
+      label: Is this a fresh install or an upgrade?
+      options:
+        - Fresh install
+        - Upgrade
+        - NA
     validations:
       required: true
   - type: textarea
