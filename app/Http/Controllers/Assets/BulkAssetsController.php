@@ -163,7 +163,7 @@ class BulkAssetsController extends Controller
         $modelNames = [];
 
         foreach($models as $model) {
-            $modelNames[] = $model->model->name;
+            $modelNames[] = $model->model?->name;
         }
 
         if ($request->filled('bulk_actions')) {
