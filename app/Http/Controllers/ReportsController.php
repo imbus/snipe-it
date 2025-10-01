@@ -443,6 +443,8 @@ class ReportsController extends Controller
             //this means: ï»¿ in utf-8
             //i think this might be where we can start digging. tho, we always use utf-8 encoding on exports?
 
+            //should we just always use_bom? when would we not want to. use_bom is a fix i found on stack overflow
+
             $header = [];
 
             if ($request->filled('id')) {
