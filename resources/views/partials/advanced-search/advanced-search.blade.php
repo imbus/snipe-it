@@ -139,6 +139,7 @@ updateFilterWithPredefined(event) {
                 }); 
             })
         });
+
     }
 
     updatePredefinedFilterInBackend(updateFilterButtonId) {
