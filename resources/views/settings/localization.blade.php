@@ -72,7 +72,7 @@
                                 <label for="time_display_format">{{ trans('general.time_and_date_display') }}</label>
                             </div>
                             <div class="col-md-5 col-xs-12">
-                                {!! Form::date_display_format('date_display_format', old('date_display_format', $setting->date_display_format), 'select2') !!}
+                                <x-input.date-display-format name="date_display_format" :selected="old('date_display_format', $setting->date_display_format)" style="min-width:100%" />
                             </div>
                             <div class="col-md-3 col-xs-12">
                                 {!! Form::time_display_format('time_display_format', old('time_display_format', $setting->time_display_format), 'select2') !!}
