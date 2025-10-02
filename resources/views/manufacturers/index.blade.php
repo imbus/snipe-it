@@ -38,7 +38,7 @@
                         model_name="manufacturer"
                 >
                     @can('delete', App\Models\Manufacturer::class)
-                        <option>Delete</option>
+                        <option>{{trans('general.delete')}}</option>
                     @endcan
                 </x-tables.bulk-actions>
 
