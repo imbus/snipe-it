@@ -88,7 +88,6 @@ class PredefinedFilterService
             'filter_data' => $validated['filter_data'],
             'is_public' => $validated['is_public'] ?? $filter->is_public,
         ]);
-
         $filter->save();
 
         if (array_key_exists('permissions', $validated)) {
@@ -119,7 +118,7 @@ class PredefinedFilterService
         return $filter;
     }
 
-    public function deleteFilter(PredefinedFilter $filter): ?bool
+    public function deleteFilter(PredefinedFilter $filter): bool
     {
         return $filter->delete();
     }
