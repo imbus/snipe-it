@@ -46,9 +46,7 @@
 
     </div>
     @include ('partials.advanced-search.floating-button')
-    @include ('partials.advanced-search.modal', [
-        'createNew' => false,
-    ])
+
 </div>
 
 @include('partials.confetti-js', ['autostart' => false])

@@ -118,7 +118,7 @@ class PredefinedFilterService
         return $filter;
     }
 
-    public function deleteFilter(PredefinedFilter $filter): bool
+    public function deleteFilter(PredefinedFilter $filter): ?bool
     {
         return $filter->delete();
     }
