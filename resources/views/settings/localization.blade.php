@@ -75,7 +75,7 @@
                                 <x-input.date-display-format name="date_display_format" :selected="old('date_display_format', $setting->date_display_format)" style="min-width:100%" />
                             </div>
                             <div class="col-md-3 col-xs-12">
-                                {!! Form::time_display_format('time_display_format', old('time_display_format', $setting->time_display_format), 'select2') !!}
+                                <x-input.time-display-format name="time_display_format" :selected="old('time_display_format', $setting->time_display_format)" style="min-width:150px" />
                             </div>
                             
                             {!! $errors->first('time_display_format', '<div class="col-md-9 col-md-offset-3"><span class="alert-msg" aria-hidden="true">:message</span> </div>') !!}
