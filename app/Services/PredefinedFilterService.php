@@ -118,9 +118,9 @@ class PredefinedFilterService
         return $filter;
     }
 
-    public function deleteFilter(PredefinedFilter $filter): void
+    public function deleteFilter(PredefinedFilter $filter): bool
     {
-        $filter->delete();
+        return $filter->delete();
     }
 
     public function selectList(Request $request): LengthAwarePaginator
