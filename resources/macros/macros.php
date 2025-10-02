@@ -86,25 +86,6 @@ Form::macro('time_display_format', function ($name = 'time_display_format', $sel
     return $select;
 });
 
-Form::macro('digit_separator', function ($name = 'digit_separator', $selected = null, $class = null) {
-    $formats = [
-        '1,234.56',
-        '1.234,56',
-    ];
-
-    foreach ($formats as $format) {
-    }
-    $select = '<select name="'.$name.'" class="'.$class.'" style="min-width:120px">';
-    foreach ($formats as $format_inner) {
-        $select .= '<option value="'.$format_inner.'"'.($selected == $format_inner ? ' selected="selected"' : '').'>'.$format_inner.'</option> ';
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});
-
-
 Form::macro('name_display_format', function ($name = 'name_display_format', $selected = null, $class = null) {
     $formats = [
         'first_last' => trans('general.firstname_lastname_display'),
