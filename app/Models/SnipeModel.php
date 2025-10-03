@@ -12,15 +12,14 @@ use Illuminate\Support\Facades\Request;
 class SnipeModel extends Model
 {
     // Setters that are appropriate across multiple models.
-
-
-    protected function purchaseDate(): Attribute
+    public function setPurchaseDateAttribute($value)
     {
-        return Attribute:: make(
-            set: fn(mixed $value) => $value ?: null,
-            get: fn(mixed $value) => $value,
-        );
+        if ($value == '') {
+            $value = null;
+        }
+        $this->attributes['purchase_date'] = $value;
     }
+
 
     protected function purchaseDateFormatted(): Attribute
     {
