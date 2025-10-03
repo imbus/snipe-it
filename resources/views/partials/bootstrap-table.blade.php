@@ -68,6 +68,8 @@
                     }
                 },
                 classes: 'table table-responsive table-striped snipe-table table-no-bordered',
+                //buttonsPrefix: "btn",
+                buttonsClass: " tableButton",
                 // reorderableColumns: true,
                 stickyHeader: true,
                 stickyHeaderOffsetLeft: parseInt($('body').css('padding-left'), 10),
@@ -136,6 +138,8 @@
                     var lookup = {};
                     var lookup_initialized = false;
                     var ths = $('th');
+                    var toolbar_buttons = $('.tableButton');
+
                     ths.each(function (index, element) {
                         th = $(element);
                         //only populate the lookup table once; don't need to keep doing it.
@@ -143,22 +147,40 @@
                             // th -> tr -> thead -> table
                             var table = th.parent().parent().parent()
                             var column_data = table.data('columns')
+
                             for (var column in column_data) {
                                 lookup[column_data[column].field] = column_data[column].titleTooltip;
                             }
+
                             lookup_initialized = true
                         }
 
                         field = th.data('field'); // find fieldname this column refers to
                         title = lookup[field];
+
                         if (title) {
                             th.attr('data-toggle', 'tooltip');
                             th.attr('data-tooltip', 'true');
                             th.attr('data-placement', 'top');
                             // th.attr('title', title) //this causes 'double-titles' which looks gross
                             th.tooltip({container: 'body', title: title});
+
                         }
                     });
+
+                    // Add tooltips to the toolbar buttons too
+                    toolbar_buttons.each(function (index, element) {
+                        tableButton = $(element);
+                        title = tableButton.attr('title');
+
+                        if (title) {
+                            tableButton.attr('data-toggle', 'tooltip');
+                            tableButton.attr('data-tooltip', 'true');
+                            tableButton.attr('data-placement', 'top');
+                            tableButton.tooltip({container: 'body', title: title});
+                        }
+                    });
+
                     
                 },
                 formatNoMatches: function () {
@@ -1278,7 +1300,6 @@
             attributes: {
                 title: '{{ trans('general.create') }}',
                 class: 'btn btn-primary',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1287,14 +1308,13 @@
         @endcan
 
         btnExport: {
-            text: '{{ trans('general.export') }}',
+            text: '{{ trans('general.export_all_to_csv') }}',
             icon: 'fa-solid fa-file-csv',
             event () {
                 window.location.href = '{{ route('users.export') }}';
             },
             attributes: {
-                title: '{{ trans('general.export') }}',
-                'data-tooltip': true,
+                title: '{{ trans('general.export_all_to_csv') }}',
             }
         },
 
@@ -1306,8 +1326,6 @@
             },
             attributes: {
                 title: '{{ trans('general.show_admins') }}',
-                'data-tooltip': true,
-
             }
         },
 
@@ -1319,7 +1337,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
-                'data-tooltip': true,
 
             }
         },
@@ -1339,7 +1356,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1362,7 +1378,6 @@
             attributes: {
                 title: '{{ trans('general.create') }}',
                 class: 'btn btn-primary',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1379,7 +1394,6 @@
             },
             attributes: {
                 title: '{{ trans('button.add_maintenance') }}',
-                'data-tooltip': true,
             }
         },
         @endcan
@@ -1393,7 +1407,6 @@
             },
             attributes: {
                 title: '{{ trans('admin/hardware/general.custom_export') }}',
-                'data-tooltip': true,
             }
         },
 
@@ -1405,7 +1418,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-                'data-tooltip': true,
 
             }
         },
@@ -1423,7 +1435,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1438,7 +1449,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
-                'data-tooltip': true,
 
             }
         },
@@ -1457,7 +1467,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                     accesskey: 'n'
                 @endif
@@ -1478,7 +1487,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1499,7 +1507,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1541,7 +1548,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1562,7 +1568,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1596,7 +1601,6 @@
                 },
                 attributes: {
                     title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-                    'data-tooltip': true,
 
                 }
             },
@@ -1616,7 +1620,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1637,7 +1640,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1658,7 +1660,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1679,7 +1680,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1700,7 +1700,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1721,7 +1720,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1735,7 +1733,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-                'data-tooltip': true,
 
             }
         },
@@ -1754,7 +1751,6 @@
             attributes: {
                 class: 'btn btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1774,9 +1770,8 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-primary',
                 title: '{{ trans('general.create') }}',
-                'data-tooltip': true,
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -1785,14 +1780,14 @@
         @endcan
 
         btnExport: {
-            text: '{{ trans('general.export') }}',
+            text: '{{ trans('general.export_all_to_csv') }}',
             icon: 'fa-solid fa-file-csv',
             event () {
                 window.location.href = '{{ route('licenses.export', ['category_id' => (isset($category)) ? $category->id :'' ]) }}';
             },
             attributes: {
-                title: '{{ trans('general.export') }}',
-                'data-tooltip': true,
+                class: 'btn-primary',
+                title: '{{ trans('general.export_all_to_csv') }}',
             }
         },
 
@@ -1804,7 +1799,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "expiring") ? trans('general.list_all') : trans('general.show_expiring') }}',
-                'data-tooltip': true,
 
             }
         },
@@ -1817,7 +1811,6 @@
             },
             attributes: {
                 title: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
-                'data-tooltip': true,
 
             }
         },
