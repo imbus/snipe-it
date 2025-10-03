@@ -398,6 +398,7 @@ return [
     'permissions'           => 'Permissions',
     'managed_ldap'          => '(Managed via LDAP)',
     'export'                => 'Export',
+    'export_all_to_csv'     => 'Export all to CSV',
     'ldap_sync'             => 'LDAP Sync',
     'ldap_user_sync'        => 'LDAP User Sync',
     'synchronize'           => 'Synchronize',
