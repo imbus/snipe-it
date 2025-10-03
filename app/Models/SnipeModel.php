@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Helper;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -11,12 +12,43 @@ use Illuminate\Support\Facades\Request;
 class SnipeModel extends Model
 {
     // Setters that are appropriate across multiple models.
-    public function setPurchaseDateAttribute($value)
+
+
+    protected function purchaseDate(): Attribute
     {
-        if ($value == '') {
-            $value = null;
-        }
-        $this->attributes['purchase_date'] = $value;
+        return Attribute:: make(
+            set: fn(mixed $value) => $value ?: null,
+            get: fn(mixed $value) => $value,
+        );
+    }
+
+    protected function purchaseDateFormatted(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['purchase_date']  ? Helper::getFormattedDateObject(Carbon::parse($attributes['purchase_date']), 'date', false) : null,
+        );
+    }
+
+
+    protected function expiresDiff(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['expiration_date'] ? round((Carbon::now()->diffInDays(Carbon::parse($attributes['expiration_date']), false,  1))) : null,
+        );
+    }
+
+    protected function expiresDiffForHumans(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['expiration_date'] ? Carbon::parse($attributes['expiration_date'])->diffForHumans() : null,
+        );
+    }
+
+    protected function expiresFormattedDate(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['expiration_date'] ? Helper::getFormattedDateObject($attributes['expiration_date'], 'date', false) : null,
+        );
     }
 
     /**
@@ -179,6 +211,7 @@ class SnipeModel extends Model
             get: fn(mixed $value) => $this->name,
         );
     }
+
 
     public function getEula()
     {
