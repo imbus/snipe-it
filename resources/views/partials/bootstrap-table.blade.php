@@ -1605,26 +1605,6 @@
     });
     @endcan
 
-    @can('create', \App\Models\Component::class)
-    // License table buttons
-    window.licenseButtons = () => ({
-        btnAdd: {
-            text: '{{ trans('general.create') }}',
-            icon: 'fa fa-plus',
-            event () {
-                window.location.href = '{{ route('licenses.create') }}';
-            },
-            attributes: {
-                class: 'btn btn-primary',
-                title: '{{ trans('general.create') }}',
-                @if ($snipeSettings->shortcuts_enabled == 1)
-                accesskey: 'n'
-                @endif
-            }
-        },
-    });
-    @endcan
-
     @can('create', \App\Models\Department::class)
     // Department table buttons
     window.departmentButtons = () => ({
@@ -1787,9 +1767,21 @@
             }
         },
 
+        btnShowExpiring: {
+            text: '{{ (request()->input('status') == "expiring") ? trans('general.list_all') : trans('general.show_expiring') }}',
+                icon: 'fas fa-clock {{ (request()->input('status') == "expiring") ? ' text-danger' : '' }}',
+                event () {
+                window.location.href = '{{ (request()->input('status') == "expiring") ? route('licenses.index') : route('licenses.index', ['status' => 'expiring']) }}';
+            },
+            attributes: {
+                title: '{{ (request()->input('status') == "expiring") ? trans('general.list_all') : trans('general.show_expiring') }}',
+
+            }
+        },
+
         btnShowInactive: {
             text: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
-            icon: 'fas fa-clock {{ (request()->input('status') == "inactive") ? ' text-danger' : '' }}',
+            icon: 'fas fa-history {{ (request()->input('status') == "inactive") ? ' text-danger' : '' }}',
             event () {
                 window.location.href = '{{ (request()->input('status') == "inactive") ? route('licenses.index') : route('licenses.index', ['status' => 'inactive']) }}';
             },
