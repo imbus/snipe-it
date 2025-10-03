@@ -85,7 +85,10 @@ class SendExpirationAlerts extends Command
             }
 
             // Expiring licenses
-            $licenses = License::query()->ExpiredLicenses($alert_interval)->get();
+            $licenses = License::query()->ExpiringLicenses($alert_interval)
+                ->orderBy('expiration_date', 'ASC')
+                ->orderBy('termination_date', 'ASC')
+                ->get();
             if ($licenses->count() > 0) {
                 Mail::to($recipients)->send(new ExpiringLicenseMail($licenses, $alert_interval));
 
