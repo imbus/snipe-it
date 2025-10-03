@@ -69,7 +69,7 @@
                 },
                 classes: 'table table-responsive table-striped snipe-table table-no-bordered',
                 //buttonsPrefix: "btn",
-                buttonsClass: " tableButton",
+                buttonsClass: "tableButton btn-primary",
                 // reorderableColumns: true,
                 stickyHeader: true,
                 stickyHeaderOffsetLeft: parseInt($('body').css('padding-left'), 10),
