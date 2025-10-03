@@ -595,6 +595,7 @@ return [
     ],
 
     'show_inactive' => 'Expired or Terminated',
+    'show_expiring' => 'Expiring or Terminating Soon',
     'more_info' => 'More Info',
     'quickscan_bulk_help' => 'Checking this box will edit the asset record to reflect this new location. Leaving it unchecked will simply note the location in the audit log. Note that if this asset is checked out, it will not change the location of the person, asset or location it is checked out to.',
     'whoops' => 'Whoops!',
