@@ -251,12 +251,13 @@
         },
 
         btnShowDeleted: {
-            text: '{{ (request()->input('status') == "deleted") ?trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
-            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-trash' }}',
+            text: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
+            icon: 'fa-solid fa-trash',
             event () {
                 window.location.href = '{{ (request()->input('status') == "deleted") ? route('users.index') : route('users.index', ['status' => 'deleted']) }}';
             },
             attributes: {
+                class: '{{ (request()->input('status') == "deleted") ? ' btn-danger' : '' }}',
                 title: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
 
             }
@@ -306,7 +307,7 @@
         },
         @endcan
 
-                @can('update', \App\Models\Asset::class)
+        @can('update', \App\Models\Asset::class)
         btnAddMaintenance: {
             text: '{{ trans('button.add_maintenance') }}',
             icon: 'fa-solid fa-screwdriver-wrench',
@@ -334,11 +335,12 @@
 
         btnShowDeleted: {
             text: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-            icon: 'fa-solid fa-trash {{ (request()->input('status') == "Deleted") ? ' text-danger' : '' }}',
+            icon: 'fa-solid fa-trash',
             event () {
                 window.location.href = '{{ (request()->input('status') == "Deleted") ? route('hardware.index') : route('hardware.index', ['status' => 'Deleted']) }}';
             },
             attributes: {
+                class: '{{ (request()->input('status') == "Deleted") ? ' btn-danger' : '' }}',
                 title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
 
             }
@@ -365,7 +367,7 @@
 
         btnShowDeleted: {
             text: '{{ (request()->input('status') == "deleted") ? trans('admin/users/table.show_current') : trans('admin/users/table.show_deleted') }}',
-            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : ' fa-user-trash' }}',
+            icon: 'fa-solid fa-trash',
             event () {
                 window.location.href = '{{ (request()->input('status') == "deleted") ? route('locations.index') : route('locations.index', ['status' => 'deleted']) }}';
             },
@@ -517,11 +519,12 @@
 
             btnShowDeleted: {
                 text: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-                icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : '' }}',
+                icon: 'fa-solid fa-trash',
                 event () {
                     window.location.href = '{{ (request()->input('status') == "deleted") ? route('manufacturers.index') : route('manufacturers.index', ['status' => 'deleted']) }}';
                 },
                 attributes: {
+                    class: '{{ (request()->input('status') == "Deleted") ? ' btn-danger' : '' }}',
                     title: '{{ (request()->input('status') == "Deleted") ? trans('general.list_all') : trans('general.deleted') }}',
 
                 }
@@ -570,7 +573,7 @@
     });
     @endcan
 
-    @can('create', \App\Models\CustomField::class)
+    @can('create', \App\Models\Department::class)
     // Custom Field table buttons
     window.departmentButtons = () => ({
         btnAdd: {
@@ -640,7 +643,7 @@
                 window.location.href = '{{ route('models.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -649,11 +652,12 @@
         },
         btnShowDeleted: {
             text: '{{ (request()->input('status') == "deleted") ? trans('general.list_all') : trans('general.deleted') }}',
-            icon: 'fa-solid fa-trash {{ (request()->input('status') == "deleted") ? ' text-danger' : '' }}',
+            icon: 'fa-solid fa-trash',
             event () {
                 window.location.href = '{{ (request()->input('status') == "deleted") ? route('models.index') : route('models.index', ['status' => 'deleted']) }}';
             },
             attributes: {
+                class: '{{ (request()->input('status') == "deleted") ? ' btn-danger' : '' }}',
                 title: '{{ (request()->input('status') == "deleted") ? trans('general.list_all') : trans('general.deleted') }}',
 
             }
