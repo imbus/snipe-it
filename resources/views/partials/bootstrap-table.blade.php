@@ -68,11 +68,21 @@
                     }
                 },
                 // reorderableColumns: true,
-                //buttonsPrefix: "btn",
+                // buttonsPrefix: "btn",
                 addrbar: {{ (config('session.bs_table_addrbar') == 'true') ? 'true' : 'false'}}, // deeplink search phrases, sorting, etc
                 advancedSearch: data_with_default('advanced-search', true),
-                buttonsClass: "tableButton tableButton btn-primary",
-                buttonsOrder: ['refresh', 'export', 'print', 'fullscreen', 'columns'],
+                buttonsClass: "tableButton tableButton btn-primary hidden-print",
+                buttonsOrder: [
+                    'columns',
+                    'btnAdd',
+                    'btnShowDeleted',
+                    'btnShowAdmins',
+                    'btnExport',
+                    'export',
+                    'print',
+                    'fullscreen',
+                    'refresh',
+                ],
                 classes: 'table table-responsive table-striped snipe-table table-no-bordered',
                 clickToSelect: data_with_default('click-to-select', true),
                 cookie: true,
@@ -172,18 +182,21 @@
                     toolbar_buttons.each(function (index, element) {
                         tableButton = $(element);
                         title = tableButton.attr('title');
+                        override_class = tableButton.attr('class');
 
                         if (title) {
-                            console.log(title)
-                            // Keep this commented out so that we don't interfere with the dropdown toggle for
-                            // the dropdown toggle
-                            // tableButton.attr('data-toggle', 'tooltip');
+                            // console.log(title)
+                            // tableButton.attr('data-toggle', 'tooltip'); // Keep this commented out so that we don't interfere with the dropdown toggle for
                             tableButton.attr('data-tooltip', 'true');
-                            tableButton.attr('data-placement', 'top');
-                            tableButton.tooltip({container: 'body', title: title});
+                            tableButton.attr('data-placement', 'auto');
+
+                            // This handles the case where we want a different color button than the default
+                            if ((override_class) && ((override_class.indexOf('btn-info') >= 0)) || (override_class.indexOf('btn-danger') >= 0)) {
+                                tableButton.removeClass('btn-primary');
+                            }
                         }
                     });
-                    $('[data-tooltip="true"]').tooltip();
+                    // $('[data-tooltip="true"]').tooltip();
                     
                 },
                 formatNoMatches: function () {
@@ -207,7 +220,7 @@
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -262,7 +275,7 @@
                 window.location.href = '{{ route('companies.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -285,7 +298,7 @@
             },
             attributes: {
                 title: '{{ trans('general.create') }}',
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
@@ -301,6 +314,7 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
+                class: 'btn-info',
                 title: '{{ trans('button.add_maintenance') }}',
             }
         },
@@ -341,7 +355,7 @@
                 window.location.href = '{{ route('locations.create') }}';
             },
             attributes: {
-                class: 'btn btn-default',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -373,7 +387,7 @@
                 window.location.href = '{{ route('accessories.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -393,7 +407,7 @@
                 window.location.href = '{{ route('depreciations.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -413,7 +427,7 @@
                 window.location.href = '{{ route('fields.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -434,7 +448,7 @@
                 window.location.href = '{{ route('fieldsets.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -454,7 +468,7 @@
                 window.location.href = '{{ route('components.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -474,7 +488,7 @@
                 window.location.href = '{{ route('consumables.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -494,7 +508,7 @@
                 window.location.href = '{{ route('manufacturers.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -526,7 +540,7 @@
                 window.location.href = '{{ route('suppliers.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -546,7 +560,7 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -566,7 +580,7 @@
                 window.location.href = '{{ route('departments.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -586,7 +600,7 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -606,7 +620,7 @@
                 window.location.href = '{{ route('categories.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -657,7 +671,7 @@
                 window.location.href = '{{ route('statuslabels.create') }}';
             },
             attributes: {
-                class: 'btn btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
@@ -678,7 +692,7 @@
                 window.location.href = '{{ route('licenses.create') }}';
             },
             attributes: {
-                class: 'btn-primary',
+                class: 'btn-info',
                 title: '{{ trans('general.create') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
