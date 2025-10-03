@@ -157,6 +157,21 @@ class License extends Depreciable
         );
     }
 
+
+    protected function terminatesFormattedDate(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['termination_date'] ? Helper::getFormattedDateObject($attributes['termination_date'], 'date', false) : null,
+        );
+    }
+
+    protected function terminatesDiffForHumans(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['termination_date'] ? Carbon::parse($attributes['termination_date'])->diffForHumans() : null,
+        );
+    }
+
     public function prepareLimitChangeRule($parameters, $field)
     {
         $actual_seat_count = $this->licenseseats()->count(); //we use the *actual* seat count here, in case your license has gone wonky
@@ -707,49 +722,6 @@ class License extends Depreciable
         return $this->hasMany(\App\Models\LicenseSeat::class)->whereNull('assigned_to')->whereNull('deleted_at')->whereNull('asset_id');
     }
 
-    /**
-     * Returns expiring licenses.
-     *
-     * This checks if:
-     *
-     * 1) The license has not been deleted
-     * 2) The expiration date is between now and the number of days specified
-     * 3) There is an expiration date set and the termination date has not passed
-     * 4) The license termination date is null or has not passed
-     *
-     * @author A. Gianotto <snipe@snipe.net>
-     * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     * @see \App\Console\Commands\SendExpiringLicenseNotifications
-     */
-    public static function getExpiringLicenses($days = 60)
-    {
-
-        return self::whereNull('licenses.deleted_at')
-
-            // The termination date is null or within range
-            ->where(function ($query) use ($days) {
-                $query->whereNull('termination_date')
-                    ->orWhereBetween('termination_date', [Carbon::now(), Carbon::now()->addDays($days)]);
-            })
-            ->where(function ($query) use ($days) {
-                $query->whereNotNull('expiration_date')
-                    // Handle expired licenses without termination dates
-                    ->where(function ($query) use ($days) {
-                        $query->whereNull('termination_date')
-                            ->whereBetween('expiration_date', [Carbon::now(), Carbon::now()->addDays($days)]);
-                    })
-
-                    // Handle expired licenses with termination dates in the future
-                    ->orWhere(function ($query) use ($days) {
-                        $query->whereBetween('termination_date', [Carbon::now(), Carbon::now()->addDays($days)]);
-                    });
-            })
-            ->orderBy('expiration_date', 'ASC')
-            ->orderBy('termination_date', 'ASC')
-            ->get();
-    }
-
     public function scopeActiveLicenses($query)
     {
 
@@ -766,20 +738,43 @@ class License extends Depreciable
             });
     }
 
-    public function scopeExpiredLicenses($query)
+    /**
+     * Expiring/terminating licenses scope
+     *
+     * This checks if:
+     *
+     * 1) The license has not been deleted
+     * 2) The expiration date is between now and the number of days specified
+     * 3) There is an expiration date set and the termination date has not passed
+     * 4) The license termination date is null or has not passed
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since  [v1.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     * @see \App\Console\Commands\SendExpiringLicenseNotifications
+     */
+    public function scopeExpiredLicenses($query, $days = 60)
     {
+        return $query// The termination date is null or within range
+        ->where(function ($query) use ($days) {
+            $query->whereNull('termination_date')
+                ->orWhereBetween('termination_date', [Carbon::now(), Carbon::now()->addDays($days)]);
+        })
+            ->where(function ($query) use ($days) {
+                $query->whereNotNull('expiration_date')
+                    // Handle expired licenses without termination dates
+                    ->where(function ($query) use ($days) {
+                        $query->whereNull('termination_date')
+                            ->whereBetween('expiration_date', [Carbon::now(), Carbon::now()->addDays($days)]);
+                    })
 
-        return $query->whereNull('licenses.deleted_at')
-
-            // The termination date is null or within range
-            ->where(function ($query)  {
-                $query->whereNull('termination_date')
-                    ->orWhereDate('termination_date', '<=', [Carbon::now()]);
+                    // Handle expired licenses with termination dates in the future
+                    ->orWhere(function ($query) use ($days) {
+                        $query->whereBetween('termination_date', [Carbon::now(), Carbon::now()->addDays($days)]);
+                    });
             })
-            ->orWhere(function ($query) {
-                $query->whereNull('expiration_date')
-                    ->orWhereDate('expiration_date', '<=', [Carbon::now()]);
-            });
+            ->orderBy('expiration_date', 'ASC')
+            ->orderBy('termination_date', 'ASC');
     }
 
     /**
