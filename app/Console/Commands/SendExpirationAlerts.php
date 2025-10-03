@@ -86,6 +86,7 @@ class SendExpirationAlerts extends Command
 
             // Expiring licenses
             $licenses = License::query()->ExpiringLicenses($alert_interval)
+                ->with('manufacturer','category')
                 ->orderBy('expiration_date', 'ASC')
                 ->orderBy('termination_date', 'ASC')
                 ->get();
