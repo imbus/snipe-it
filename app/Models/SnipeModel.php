@@ -32,7 +32,7 @@ class SnipeModel extends Model
     protected function expiresDiffInDays(): Attribute
     {
         return Attribute:: make(
-            get: fn(mixed $value, array $attributes) => $attributes['expiration_date'] ? Carbon::parse($attributes['expiration_date'])->diffInDays() : null,
+            get: fn(mixed $value, array $attributes) => $attributes['expiration_date'] ? Carbon::now()->diffInDays($attributes['expiration_date']) : null,
         );
     }
 
