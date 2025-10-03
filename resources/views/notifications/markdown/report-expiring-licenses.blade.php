@@ -6,7 +6,7 @@
 |        | {{ trans('mail.name') }} | {{ trans('mail.expires') }} | {{ trans('mail.terminates') }} |
 | :------------- | :------------- | :------------- | :------------- |
 @foreach ($licenses as $license)
-| {{ ($license->expires_diff_for_humans <= ($threshold / 2)) ? '🚨' : (($license->expires_diff_for_humans <= $threshold) ? '⚠️' : ' ') }} | <a href="{{ route('licenses.show', $license->id) }}">{{ $license->name }}</a> | {{ $license->expires_formatted_date }} {!! $license->expires_diff_for_humans ? ' ('.$license->expires_diff_for_humans .')' : '' !!} | {{ $license->terminates_formatted_date }} {!! $license->terminates_diff_for_humans ? ' ('.$license->terminates_diff_for_humans .')' : '' !!} |
+| {{ (($license->isExpired()) || ($license->isTerminated())) ? '🚨' : (($license->expires_diff_in_days <= $threshold) ? '⚠️' : 'ℹ️ ') }} | <a href="{{ route('licenses.show', $license->id) }}">{{ $license->name }}</a> | {{ $license->expires_formatted_date }} {!! $license->expires_diff_for_humans ? ' ('.$license->expires_diff_for_humans .')' : '' !!} | {{ $license->terminates_formatted_date }} {!! $license->terminates_diff_for_humans ? ' ('.$license->terminates_diff_for_humans .')' : '' !!} |
 | <hr> | <hr> | <hr> | <hr> |
 @endforeach
 </x-mail::table>

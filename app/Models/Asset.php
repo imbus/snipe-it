@@ -333,7 +333,7 @@ class Asset extends Depreciable
         );
     }
 
-    protected function eolDiff(): Attribute
+    protected function eolDiffInDays(): Attribute
     {
         return Attribute:: make(
             get: fn(mixed $value, array $attributes) => $this->eolDate ? round((Carbon::now()->diffInDays(Carbon::parse($this->eolDate), false,  1))) : null,

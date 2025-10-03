@@ -5,7 +5,7 @@
 |        |        |          |
 | ------------- | ------------- | ------------- |
 @foreach ($assets as $asset)
-| {{ ($asset->eol_diff_for_humans <= ($threshold / 2)) ? '🚨' : (($asset->eol_diff_for_humans <= $threshold) ? '⚠️' : ' ') }} **{{ trans('mail.name') }}** | <a href="{{ route('hardware.show', $asset->id) }}">{{ $asset->display_name }}</a> |
+| {{ ($asset->eol_diff_in_days <= ($threshold / 2)) ? '🚨' : (($asset->eol_diff_in_days <= $threshold) ? '⚠️' : 'ℹ️ ') }} **{{ trans('mail.name') }}** | <a href="{{ route('hardware.show', $asset->id) }}">{{ $asset->display_name }}</a> |
 @if ($asset->serial)
 | **{{ trans('general.serial_number') }}** | {{ $asset->serial }} |
 @endif

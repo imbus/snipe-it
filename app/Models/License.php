@@ -165,12 +165,20 @@ class License extends Depreciable
         );
     }
 
+    protected function terminatesDiffInDays(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['termination_date'] ? Carbon::parse($attributes['termination_date'])->diffInDays() : null,
+        );
+    }
+
     protected function terminatesDiffForHumans(): Attribute
     {
         return Attribute:: make(
             get: fn(mixed $value, array $attributes) => $attributes['termination_date'] ? Carbon::parse($attributes['termination_date'])->diffForHumans() : null,
         );
     }
+
 
     public function prepareLimitChangeRule($parameters, $field)
     {
