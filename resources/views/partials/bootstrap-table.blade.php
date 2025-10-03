@@ -67,41 +67,42 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 },
-                classes: 'table table-responsive table-striped snipe-table table-no-bordered',
-                //buttonsPrefix: "btn",
-                buttonsClass: "tableButton btn-primary",
                 // reorderableColumns: true,
+                //buttonsPrefix: "btn",
+                addrbar: {{ (config('session.bs_table_addrbar') == 'true') ? 'true' : 'false'}}, // deeplink search phrases, sorting, etc
+                advancedSearch: data_with_default('advanced-search', true),
+                buttonsClass: "tableButton tableButton btn-primary",
+                buttonsOrder: ['refresh', 'export', 'print', 'fullscreen', 'columns'],
+                classes: 'table table-responsive table-striped snipe-table table-no-bordered',
+                clickToSelect: data_with_default('click-to-select', true),
+                cookie: true,
+                cookieExpire: '2y',
+                cookieStorage: '{{ config('session.bs_table_storage') }}',
+                iconsPrefix: 'fa',
+                maintainSelected: data_with_default('maintain-selected', true),
+                minimumCountColumns: data_with_default('minimum-count-columns', 2),
+                mobileResponsive: data_with_default('mobile-responsive', true),
+                pagination: data_with_default('pagination', true),
+                paginationFirstText: "{{ trans('general.first') }}",
+                paginationLastText: "{{ trans('general.last') }}",
+                paginationNextText: "{{ trans('general.next') }}",
+                paginationPreText: "{{ trans('general.previous') }}",
+                search: data_with_default('search', true),
+                searchHighlight: data_with_default('search-highlight', true),
+                showColumns: data_with_default('show-columns', true),
+                showColumnsToggleAll: data_with_default('show-columns-toggle-all', true),
+                showExport: data_with_default('show-export', true),
+                showFullscreen: data_with_default('show-fullscreen', true),
+                showPrint: data_with_default('show-print', true),
+                showRefresh: data_with_default('show-refresh', true),
+                showSearchClearButton: data_with_default('show-search-clear-button', true),
+                sortName: data_with_default('sort-name', 'created_at'),
+                sortOrder: data_with_default('sort-order', 'desc'),
                 stickyHeader: true,
                 stickyHeaderOffsetLeft: parseInt($('body').css('padding-left'), 10),
                 stickyHeaderOffsetRight: parseInt($('body').css('padding-right'), 10),
-                undefinedText: '',
-                iconsPrefix: 'fa',
-                cookieStorage: '{{ config('session.bs_table_storage') }}',
-                cookie: true,
-                cookieExpire: '2y',
-                search: data_with_default('search', true),
-                advancedSearch: data_with_default('advanced-search', true),
-                searchHighlight: data_with_default('search-highlight', true),
-                clickToSelect: data_with_default('click-to-select', true),
-                showPrint: data_with_default('show-print', true),
-                showFullscreen: data_with_default('show-fullscreen', true),
-                showColumns: data_with_default('show-columns', true),
-                showExport: data_with_default('show-export', true),
-                showColumnsToggleAll: data_with_default('show-columns-toggle-all', true),
-                showRefresh: data_with_default('show-refresh', true),
-                pagination: data_with_default('pagination', true),
-                sortOrder: data_with_default('sort-order', 'desc'),
-                sortName: data_with_default('sort-name', 'created_at'),
-                minimumCountColumns: data_with_default('minimum-count-columns', 2),
-                mobileResponsive: data_with_default('mobile-responsive', true),
-                maintainSelected: data_with_default('maintain-selected', true),
                 trimOnSearch: false,
-                showSearchClearButton: data_with_default('show-search-clear-button', true),
-                addrbar: {{ (config('session.bs_table_addrbar') == 'true') ? 'true' : 'false'}}, // deeplink search phrases, sorting, etc
-                paginationFirstText: "{{ trans('general.first') }}",
-                paginationLastText: "{{ trans('general.last') }}",
-                paginationPreText: "{{ trans('general.previous') }}",
-                paginationNextText: "{{ trans('general.next') }}",
+                undefinedText: '',
                 pageList: ['10', '20', '30', '50', '100', '150', '200'{!! ((config('app.max_results') > 200) ? ",'500'" : '') !!}{!! ((config('app.max_results') > 500) ? ",'".config('app.max_results')."'" : '') !!}],
                 pageSize: {{  (($snipeSettings->per_page!='') && ($snipeSettings->per_page > 0)) ? $snipeSettings->per_page : 20 }},
                 paginationVAlign: 'both',
@@ -162,7 +163,6 @@
                             th.attr('data-toggle', 'tooltip');
                             th.attr('data-tooltip', 'true');
                             th.attr('data-placement', 'top');
-                            // th.attr('title', title) //this causes 'double-titles' which looks gross
                             th.tooltip({container: 'body', title: title});
 
                         }
@@ -174,13 +174,16 @@
                         title = tableButton.attr('title');
 
                         if (title) {
-                            tableButton.attr('data-toggle', 'tooltip');
+                            console.log(title)
+                            // Keep this commented out so that we don't interfere with the dropdown toggle for
+                            // the dropdown toggle
+                            // tableButton.attr('data-toggle', 'tooltip');
                             tableButton.attr('data-tooltip', 'true');
                             tableButton.attr('data-placement', 'top');
                             tableButton.tooltip({container: 'body', title: title});
                         }
                     });
-
+                    $('[data-tooltip="true"]').tooltip();
                     
                 },
                 formatNoMatches: function () {
