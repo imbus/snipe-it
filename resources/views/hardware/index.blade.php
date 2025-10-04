@@ -63,7 +63,6 @@
                 data-columns="{{ \App\Presenters\AssetPresenter::dataTableLayout() }}"
                 data-cookie-id-table="{{ request()->has('status') ? e(request()->input('status')) : ''  }}assetsListingTable"
                 data-id-table="{{ request()->has('status') ? e(request()->input('status')) : ''  }}assetsListingTable"
-                data-search-text="{{ e(Session::get('search')) }}"
                 data-side-pagination="server"
                 data-show-footer="true"
                 data-sort-order="asc"
