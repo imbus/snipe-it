@@ -77,11 +77,12 @@
                     'btnAdd',
                     'btnShowDeleted',
                     'btnShowAdmins',
+                    'refresh',
                     'btnExport',
                     'export',
                     'print',
                     'fullscreen',
-                    'refresh',
+                    'advancedSearch',
                 ],
                 classes: 'table table-responsive table-striped snipe-table table-no-bordered',
                 clickToSelect: data_with_default('click-to-select', true),
@@ -185,10 +186,13 @@
                         override_class = tableButton.attr('class');
 
                         if (title) {
-                            // console.log(title)
-                            // tableButton.attr('data-toggle', 'tooltip'); // Keep this commented out so that we don't interfere with the dropdown toggle for
+                            // Keep this commented out so that we don't interfere with the dropdown toggle for columns, etc
+                            // tableButton.attr('data-toggle', 'tooltip');
                             tableButton.attr('data-tooltip', 'true');
                             tableButton.attr('data-placement', 'auto');
+
+                            // This prevents the slight button jitter on the mouseovees on the dashboard
+                            tableButton.tooltip({container: 'body', title: title});
 
                             // This handles the case where we want a different color button than the default
                             if ((override_class) && ((override_class.indexOf('btn-info') >= 0)) || (override_class.indexOf('btn-danger') >= 0)) {
@@ -196,8 +200,7 @@
                             }
                         }
                     });
-                    // $('[data-tooltip="true"]').tooltip();
-                    
+
                 },
                 formatNoMatches: function () {
                     return '{{ trans('table.no_matching_records') }}';
@@ -315,7 +318,6 @@
                 window.location.href = '{{ route('maintenances.create', ['asset_id' => (isset($asset)) ? $asset->id :'' ]) }}';
             },
             attributes: {
-                class: 'btn-info',
                 title: '{{ trans('button.add_maintenance') }}',
             }
         },
