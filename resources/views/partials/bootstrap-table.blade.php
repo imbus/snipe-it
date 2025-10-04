@@ -77,6 +77,8 @@
                     'btnAdd',
                     'btnShowDeleted',
                     'btnShowAdmins',
+                    'btnShowExpiring',
+                    'btnShowInactive',
                     'refresh',
                     'btnExport',
                     'export',
