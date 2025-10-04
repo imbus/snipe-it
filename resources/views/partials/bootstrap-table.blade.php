@@ -721,11 +721,12 @@
 
         btnShowExpiring: {
             text: '{{ (request()->input('status') == "expiring") ? trans('general.list_all') : trans('general.show_expiring') }}',
-            icon: 'fas fa-clock {{ (request()->input('status') == "expiring") ? ' text-danger' : '' }}',
+            icon: 'fas fa-clock',
             event () {
                 window.location.href = '{{ (request()->input('status') == "expiring") ? route('licenses.index') : route('licenses.index', ['status' => 'expiring']) }}';
             },
             attributes: {
+                class: "{{ (request()->input('status') == "expiring") ? ' btn-warning' : '' }}",
                 title: '{{ (request()->input('status') == "expiring") ? trans('general.list_all') : trans('general.show_expiring') }}',
 
             }
@@ -733,11 +734,12 @@
 
         btnShowInactive: {
             text: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
-            icon: 'fas fa-history {{ (request()->input('status') == "inactive") ? ' text-danger' : '' }}',
+            icon: 'fas fa-history',
             event () {
                 window.location.href = '{{ (request()->input('status') == "inactive") ? route('licenses.index') : route('licenses.index', ['status' => 'inactive']) }}';
             },
             attributes: {
+                class: "{{ (request()->input('status') == "inactive") ? ' btn-warning' : '' }}",
                 title: '{{ (request()->input('status') == "inactive") ? trans('general.list_all') : trans('general.show_inactive') }}',
 
             }
