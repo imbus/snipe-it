@@ -29,13 +29,26 @@ class RemoveInvalidUploadDeleteActionLogItems extends Command
         $invalidLogs = Actionlog::query()
             ->where('action_type', 'upload deleted')
             ->whereNull('filename')
+            ->withTrashed()
             ->get();
 
         $this->info("{$invalidLogs->count()} invalid log items found.");
 
+        if ($invalidLogs->count() === 0) {
+            return 0;
+        }
 
-        if ($invalidLogs->count() > 0 && $this->confirm("Do you wish to remove {$invalidLogs->count()} log items?")) {
-            $invalidLogs->each(fn($log) => $log->delete());
+        $this->table(['ID', 'Action Type', 'Item Type', 'Item ID', 'Created At', 'Deleted At'], $invalidLogs->map(fn($log) => [
+            $log->id,
+            $log->action_type,
+            $log->item_type,
+            $log->item_id,
+            $log->created_at,
+            $log->deleted_at,
+        ])->toArray());
+
+        if ($this->confirm("Do you wish to remove {$invalidLogs->count()} log items?")) {
+            $invalidLogs->each(fn($log) => $log->forceDelete());
         }
 
         return 0;
