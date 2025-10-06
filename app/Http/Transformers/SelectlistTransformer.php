@@ -38,7 +38,6 @@ class SelectlistTransformer
             $items_array[] = $item;
         }
 
-
         $results = [
             'results' => $items_array,
             'pagination' => [
