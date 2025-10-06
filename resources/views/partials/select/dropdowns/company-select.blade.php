@@ -2,6 +2,7 @@
     class="js-data-ajax" 
     data-endpoint="companies" 
     data-placeholder="{{ trans('general.select_company') }}" 
+    data-tags="{{ isset($allow_tags) && $allow_tags ? 'true' : 'false' }}"
     @isset($only_top_level) data-only-top-level="{{ $only_top_level ? 'true' : '' }}" @endisset
     @isset($exclude_id) data-exclude-id="{{ $exclude_id }}" @endisset
     name="{{ $fieldname }}{{ (isset($multiple) && ($multiple=='true')) ? '[]' : '' }}" 
