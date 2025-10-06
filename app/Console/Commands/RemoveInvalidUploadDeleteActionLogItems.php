@@ -19,7 +19,7 @@ class RemoveInvalidUploadDeleteActionLogItems extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Permanently remove invalid "upload deleted" action log items that have a null filename. This command can potentially result in deleted files being "resurrected" in the UI.';
 
     /**
      * Execute the console command.
