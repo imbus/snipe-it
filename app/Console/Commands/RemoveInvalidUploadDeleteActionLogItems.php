@@ -31,6 +31,13 @@ class RemoveInvalidUploadDeleteActionLogItems extends Command
             ->whereNull('filename')
             ->get();
 
-        
+        $this->info("{$invalidLogs->count()} invalid log items found.");
+
+
+        if ($invalidLogs->count() > 0 && $this->confirm("Do you wish to remove {$invalidLogs->count()} log items?")) {
+            $invalidLogs->each(fn($log) => $log->delete());
+        }
+
+        return 0;
     }
 }
