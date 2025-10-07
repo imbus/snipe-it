@@ -79,7 +79,6 @@
                     'btnShowAdmins',
                     'btnShowExpiring',
                     'btnShowInactive',
-                    'maintenanceButtons',
                     'refresh',
                     'btnExport',
                     'export',
