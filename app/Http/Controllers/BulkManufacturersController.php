@@ -23,7 +23,7 @@ class BulkManufacturersController extends Controller
         foreach ($request->ids as $id) {
             $manufacturer = Manufacturer::find($id);
             if (is_null($manufacturer)) {
-                $errors[] = trans('admin/manufacturers/message.delete.not_found');
+                $errors[] = trans('admin/manufacturers/message.does_not_exist');
                 continue;
             }
             try {

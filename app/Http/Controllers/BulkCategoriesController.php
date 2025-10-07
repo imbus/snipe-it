@@ -22,7 +22,7 @@ class BulkCategoriesController extends Controller
         foreach ($request->ids as $id) {
             $category = Category::find($id);
             if (is_null($category)) {
-                $errors[] = trans('admin/categories/message.delete.not_found');
+                $errors[] = trans('admin/categories/message.does_not_exist');
                 continue;
             }
             try {
