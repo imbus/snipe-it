@@ -25,6 +25,9 @@
 @if ($asset->assignedTo)
 | **{{ trans('mail.assigned_to') }}** | {{ e($asset->assignedTo->present()->display_name) }} |
 @endif
+@if ($asset->notes)
+| **{{ trans('general.notes') }}** | {{ e($asset->notes) }} |
+@endif
 | <hr> | <hr> |
 @endforeach
 </x-mail::table>
