@@ -79,6 +79,7 @@
                     'btnShowAdmins',
                     'btnShowExpiring',
                     'btnShowInactive',
+                    'maintenanceButtons',
                     'refresh',
                     'btnExport',
                     'export',
@@ -608,7 +609,7 @@
             },
             attributes: {
                 class: 'btn-info',
-                title: '{{ trans('general.create') }}',
+                title: '{{ trans('button.add_maintenance') }}',
                 @if ($snipeSettings->shortcuts_enabled == 1)
                 accesskey: 'n'
                 @endif
