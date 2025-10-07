@@ -1,0 +1,62 @@
+#Stage 1
+FROM php:8.3-cli AS vendor
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git unzip pkg-config \
+    libzip-dev zlib1g-dev libsodium-dev libicu-dev libonig-dev \
+    libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev libldap2-dev \
+    libmagickwand-dev \
+ && pecl install imagick \
+ && docker-php-ext-enable imagick \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-configure zip \
+ && docker-php-ext-install -j"$(nproc)" bcmath zip sodium mbstring intl gd ldap \
+ && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+COPY composer.json composer.lock ./
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install \
+  --no-dev --prefer-dist --no-interaction --no-progress --no-scripts
+
+COPY . .
+RUN composer dump-autoload --optimize --no-dev
+
+#Stage 2
+FROM php:8.3-apache
+
+RUN set -eux; \
+  apt-get update && apt-get install -y --no-install-recommends \
+    git unzip pkg-config build-essential autoconf \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libxml2-dev libzip-dev zlib1g-dev \
+    libicu-dev libsodium-dev \
+    libldap2-dev \
+    imagemagick libmagickwand-dev \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-configure zip \
+  && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+  && docker-php-ext-install -j"$(nproc)" \
+       pdo_mysql mysqli mbstring zip bcmath intl xml sodium exif gd ldap opcache \
+  && pecl install imagick \
+  && docker-php-ext-enable imagick \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN a2enmod rewrite
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
+ && sed -ri 's!DocumentRoot .*!DocumentRoot /var/www/html/public!g' /etc/apache2/sites-available/000-default.conf || true
+
+WORKDIR /var/www/html
+COPY . .
+COPY --from=vendor /app/vendor ./vendor
+
+RUN chown -R www-data:www-data storage bootstrap/cache
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 \
+  CMD php -r "exit(is_dir('storage/logs')?0:1);"
+
+RUN printf '#!/bin/sh\nset -e\nphp artisan storage:link 2>/dev/null || true\nexec apache2-foreground\n' > /usr/local/bin/entry \
+ && chmod +x /usr/local/bin/entry
+ENTRYPOINT ["entry"]

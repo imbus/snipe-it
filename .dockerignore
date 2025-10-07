@@ -10,4 +10,4 @@ storage/framework/cache/*
 node_modules
 .vagrant
 .idea
-
+.env
