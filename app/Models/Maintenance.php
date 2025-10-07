@@ -58,6 +58,7 @@ class Maintenance extends SnipeModel implements ICompanyableChild
         'asset_maintenance_time',
         'notes',
         'cost',
+        'url',
     ];
 
     use Searchable;
