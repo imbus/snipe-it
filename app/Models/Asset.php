@@ -308,6 +308,54 @@ class Asset extends Depreciable
 
     }
 
+
+    protected function lastAuditFormattedDate(): Attribute
+    {
+
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => Helper::getFormattedDateObject($this->last_audit_date, 'datetime', false)
+        );
+    }
+
+    protected function lastAuditDiff(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $this->warrantyExpires ? round((Carbon::now()->diffInDays($this->warrantyExpires))) : null,
+        );
+
+    }
+
+    protected function lastAuditDiffForHumans(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) =>  $attributes['last_audit_date'] ? Carbon::parse($attributes['last_audit_date'])->diffForHumans() : null,
+        );
+
+    }
+
+    protected function nextAuditFormattedDate(): Attribute
+    {
+
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => Helper::getFormattedDateObject($this->next_audit_date, 'date', false)
+        );
+    }
+
+    protected function nextAuditDiffInDays(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['next_audit_date'] ? Carbon::now()->diffInDays($attributes['next_audit_date']) : null,
+        );
+    }
+
+    protected function nextAuditDiffForHumans(): Attribute
+    {
+        return Attribute:: make(
+            get: fn(mixed $value, array $attributes) => $attributes['next_audit_date'] ? Carbon::parse($attributes['next_audit_date'])->diffForHumans() : null,
+        );
+
+    }
+
     protected function eolDate(): Attribute
     {
 
@@ -324,6 +372,7 @@ class Asset extends Depreciable
         );
 
     }
+
 
 
     protected function eolFormattedDate(): Attribute
