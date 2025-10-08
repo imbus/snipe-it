@@ -760,7 +760,7 @@ class License extends Depreciable
         ->orWhere(function ($query) {
                     $query->whereDate('expiration_date', '<=', Carbon::now());
         })
-        ->whereNull('deleted_at');
+        ->whereNull('licenses.deleted_at');
     }
 
     /**
