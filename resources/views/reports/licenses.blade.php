@@ -18,6 +18,7 @@
                             data-side-pagination="client"
                             data-sort-order="asc"
                             id="licensesReport"
+                            data-advanced-search="false"
                             class="table table-striped snipe-table"
                             data-export-options='{
                         "fileName": "license-report-{{ date('Y-m-d') }}",
@@ -54,8 +55,8 @@
                                 </td>
                                 <td>{{ $license->seats }}</td>
                                 <td>{{ $license->remaincount() }}</td>
-                                <td>{{ $license->expiration_date }}</td>
-                                <td>{{ $license->termination_date }}
+                                <td>{{ $license->expires_formatted_date }}</td>
+                                <td>{{ $license->terminates_formatted_date }}
                                     @if ($license->isTerminated())
                                         <span class="text-danger">
                                         <x-icon type="warning" class="text-warning" />
