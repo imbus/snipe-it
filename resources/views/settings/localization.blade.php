@@ -103,7 +103,12 @@
                                     id="default_currency"
                                 >
 
-                                {!! Form::digit_separator('digit_separator', old('digit_separator', $setting->digit_separator), 'select2') !!}
+                                <x-input.select
+                                    name="digit_separator"
+                                    :options="['1,234.56', '1.234,56']"
+                                    :selected="old('digit_separator', $setting->digit_separator)"
+                                    style="min-width:120px"
+                                />
 
                                 {!! $errors->first('default_currency', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
                             </div>
