@@ -436,14 +436,12 @@ class ReportsController extends Controller
             // Open output stream
             $handle = fopen('php://output', 'w');
             stream_set_timeout($handle, 2000);
-            
-            if ($request->filled('use_bom')) {
-                fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-            }
-            //this means: ï»¿ in utf-8
-            //i think this might be where we can start digging. tho, we always use utf-8 encoding on exports?
 
-            //should we just always use_bom? when would we not want to. use_bom is a fix i found on stack overflow
+            //this is handling emdash encoding, and is preventing that character from becoming something like ‚Äî
+            fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+            //U+00EC is accent grave in model number
+            //U+00EE is circumflex in model name
 
             $header = [];
 
