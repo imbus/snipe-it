@@ -444,7 +444,7 @@ class ReportsController extends Controller
             //U+00EE is circumflex in model name
             //why is the same character a value of 2 off of each other?
             //why are we all getting different outputs for this emdash?
-            //holy shit, exporting and opening with a text editor doesn't fuck it up? so its NOT on export. It's an Excel problem.
+            //exporting and opening with a text editor doesn't fuck it up? so its NOT on export. It's an Excel problem.
 
             $header = [];
 
