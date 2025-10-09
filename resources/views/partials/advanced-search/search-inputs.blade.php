@@ -200,11 +200,18 @@ class FilterInput {
         }
 
         const field = this.key;
-        const filterOptionSelect = document.querySelector(`.filter-option[data-field="${field}"]`)
 
-        // only temporarly to skip error with dates
+        const basefield = field
+            .replace("_start", "")
+            .replace("_end", "");
+
+        const filterOptionSelect = document.querySelector(`.filter-option[data-field="${basefield}"]`)
+
         if (!filterOptionSelect) {
+            const isDateRange = field.endsWith('_start') || field.endsWith('_end');
+            if (!isDateRange){
                 console.warn(`No filter option select found for field: ${field}`);
+            }
             return; 
         }
 
