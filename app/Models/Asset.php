@@ -1946,51 +1946,44 @@ class Asset extends Depreciable
                     }
 
                     if ($fieldname == 'model') {
-                        $query->where(
-                            function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'model', function ($query) use ($search_val) {
-                                        $query->where('models.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
-                            }
+                        $query->whereHas(
+                            'model', function ($query) use ($search_val) {
+                            $query->where('models.name', 'LIKE', '%'.$search_val.'%');
+                        }
                         );
                     }
 
+
                     if ($fieldname == 'model_number') {
-                        $query->where(
-                            function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'model', function ($query) use ($search_val) {
-                                        $query->where('models.model_number', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
-                            }
+                        $query->whereHas(
+                            'model', function ($query) use ($search_val) {
+                            $query->where('models.model_number', 'LIKE', '%'.$search_val.'%');
+                        }
                         );
                     }
 
 
                     if ($fieldname == 'company') {
-                        $query->where(
-                            function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'company', function ($query) use ($search_val) {
-                                        $query->where('companies.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
-                            }
+                        $query->whereHas(
+                            'company', function ($query) use ($search_val) {
+                            $query->where('companies.name', 'LIKE', '%'.$search_val.'%');
+                        }
                         );
                     }
 
                     if ($fieldname == 'supplier') {
-                        $query->where(
-                            function ($query) use ($search_val) {
-                                $query->whereHas(
-                                    'supplier', function ($query) use ($search_val) {
-                                        $query->where('suppliers.name', 'LIKE', '%'.$search_val.'%');
-                                    }
-                                );
-                            }
+                        $query->whereHas(
+                            'supplier', function ($query) use ($search_val) {
+                            $query->where('suppliers.name', 'LIKE', '%'.$search_val.'%');
+                        }
+                        );
+                    }
+                    
+                    if ($fieldname == 'status_label') {
+                        $query->whereHas(
+                            'assetstatus', function ($query) use ($search_val) {
+                            $query->where('status_labels.name', 'LIKE', '%'.$search_val.'%');
+                        }
                         );
                     }
 
