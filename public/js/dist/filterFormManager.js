@@ -56,9 +56,7 @@ export default class FilterFormManager {
         this.clearAll();
 
         const promises = [];
-        console.log(response);
         for (const [field, value] of Object.entries(response)) {
-            console.log("filter");
 
             const input = this.inputs.find(input => input.key === field);
             if (!input) {
