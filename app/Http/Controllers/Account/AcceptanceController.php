@@ -157,6 +157,8 @@ class AcceptanceController extends Controller
             'accepted_date' => Helper::getFormattedDateObject(now()->format('Y-m-d H:i:s'), 'datetime', false),
             'declined_date' => Helper::getFormattedDateObject(now()->format('Y-m-d H:i:s'), 'datetime', false),
             'assigned_to' => $assigned_user->display_name,
+            'email' => $assigned_user->email,
+            'employee_num' => $assigned_user->employee_num,
             'site_name' => $settings->site_name,
             'company_name' => $item->company?->name?? $settings->site_name,
             'signature' => (($sig_filename && array_key_exists('1', $encoded_image))) ? $encoded_image[1] : null,
