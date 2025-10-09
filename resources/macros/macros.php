@@ -39,53 +39,6 @@ Form::macro('countries', function ($name = 'country', $selected = null, $class =
     return $select;
 });
 
-Form::macro('date_display_format', function ($name = 'date_display_format', $selected = null, $class = null) {
-    $formats = [
-        'Y-m-d',
-        'D M d, Y',
-        'M j, Y',
-        'd M, Y',
-        'm/d/Y',
-        'n/d/y',
-        'd/m/Y',
-        'd.m.Y',
-        'Y.m.d.',
-    ];
-
-    foreach ($formats as $format) {
-        $date_display_formats[$format] = Carbon::parse(date('Y-m-d'))->format($format);
-    }
-    $select = '<select name="'.$name.'" class="'.$class.'" style="min-width:100%" aria-label="'.$name.'">';
-    foreach ($date_display_formats as $format => $date_display_format) {
-        $select .= '<option value="'.$format.'"'.($selected == $format ? ' selected="selected" role="option" aria-selected="true"' : ' aria-selected="false"').'">'.$date_display_format.'</option> ';
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});
-
-Form::macro('time_display_format', function ($name = 'time_display_format', $selected = null, $class = null) {
-    $formats = [
-        'g:iA',
-        'h:iA',
-        'H:i',
-    ];
-
-    $datetime = date("y-m-d").' 14:00:00';
-    foreach ($formats as $format) {
-        $time_display_formats[$format] = Carbon::parse($datetime)->format($format);
-    }
-    $select = '<select name="'.$name.'" class="'.$class.'" style="min-width:150px" aria-label="'.$name.'">';
-    foreach ($time_display_formats as $format => $time_display_format) {
-        $select .= '<option value="'.$format.'"'.($selected == $format ? ' selected="selected" role="option" aria-selected="true"' : ' aria-selected="false"').'>'.$time_display_format.'</option> ';
-    }
-
-    $select .= '</select>';
-
-    return $select;
-});
-
 /**
  * Barcode macro
  * Generates the dropdown menu of available 1D barcodes
