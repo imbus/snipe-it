@@ -60,6 +60,7 @@
             }
 
 
+
             $(this).bootstrapTable({
 
                 ajaxOptions: {
