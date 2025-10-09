@@ -94,8 +94,9 @@ updateFilterWithPredefined(event, selectedId = null) {
         return;
     }
 
+    const filterFormManager = container.resolve("filterFormManager");
     floatingButtons.enableEditDeleteButtons();
-    //setAdvancedSearchPanelFilterEnabledState(true);
+    filterFormManager.setAdvancedSearchPanelFilterEnabledState(true);
 
     this.apiService.fetchPredefinedFilterData(selectedId)
         .then(response => {
@@ -113,7 +114,7 @@ updateFilterWithPredefined(event, selectedId = null) {
         .catch(err => {
             console.error("Failed to apply predefined filter:", err);
             Livewire.dispatch('showNotification', { type: 'error', message: '{{ trans('general.failed_to_apply_predefined_filter') }}'});
-            //setAdvancedSearchPanelFilterEnabledState(false);
+            filterFormManager.setAdvancedSearchPanelFilterEnabledState(false);
         });
 }
 

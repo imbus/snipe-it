@@ -57,29 +57,31 @@ export default class FilterFormManager {
 
         const promises = [];
 
-        for (const key in response) {
-            const value = response[key];
+        for (const filter of response) {
+            const {field, value} = filter;
 
-            const field = this.inputs.find(input => input.key === key);
-            if (!field) {
-                console.warn(`No input found for key: ${key}`);
+            const input = this.inputs.find(input => input.key === field);
+            if (!input) {
+                console.warn(`No input found for key: ${field}`);
+                Livewire.dispatch('showNotification', { type: 'error', message: '{{ trans('general.failed_to_apply_predefined_filter') }}'});
                 continue;
             }
 
             try {
-                const result = field.setValue(value);
+                const result = input.setValue(value);
                 // If the method returns a promise, store it
                 if (result instanceof Promise) {
                     promises.push(result);
                 }
             } catch (err) {
-                console.error(`Failed to set value for "${key}":`, err);
+                console.error(`Failed to set value for "${field}":`, err);
+                Livewire.dispatch('showNotification', { type: 'error', message: '{{ trans('general.failed_to_apply_predefined_filter') }}'});
             }
         }
 
         // Wait for all async setValue calls to complete
         await Promise.all(promises);
-        this.setAdvancedSearchPanelFilterEnabledState(false);
+        setAdvancedSearchPanelFilterEnabledState(false);
     }
 
     setAdvancedSearchPanelFilterEnabledState(state) {
