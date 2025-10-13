@@ -15,6 +15,11 @@ class CategoryPresenter extends Presenter
     {
         $layout = [
             [
+                'field'        => 'checkbox',
+                'checkbox'     => true,
+                'titleTooltip' => trans('general.select_all_none'),
+            ],
+            [
                 'field' => 'id',
                 'searchable' => false,
                 'sortable' => true,

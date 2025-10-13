@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Categories\DestroyCategoryAction;
+use App\Exceptions\ItemStillHasChildren;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\CategoriesTransformer;
@@ -224,17 +226,21 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) : JsonResponse
+    public function destroy(Category $category): JsonResponse
     {
         $this->authorize('delete', Category::class);
-        $category = Category::withCount('assets as assets_count', 'accessories as accessories_count', 'consumables as consumables_count', 'components as components_count', 'licenses as licenses_count', 'models as models_count')->findOrFail($id);
-
-        if (! $category->isDeletable()) {
+        try {
+            DestroyCategoryAction::run(category: $category);
+        } catch (ItemStillHasChildren $e) {
             return response()->json(
-                Helper::formatStandardApiResponse('error', null, trans('admin/categories/message.assoc_items', ['asset_type'=>$category->category_type]))
+                Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.general_assoc_warning', ['asset_type' => $category->category_type]))
+            );
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json(
+                Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong'))
             );
         }
-        $category->delete();
 
         return response()->json(Helper::formatStandardApiResponse('success', null, trans('admin/categories/message.delete.success')));
     }

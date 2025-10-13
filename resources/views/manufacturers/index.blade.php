@@ -30,7 +30,17 @@
             </form>
 
       @else
-
+                <x-tables.bulk-actions
+                        id_divname='manufacturersBulkEditToolbar'
+                        action_route="{{route('manufacturers.bulk.delete')}}"
+                        id_formname="manufacturersBulkForm"
+                        id_button="bulkManufacturerEditButton"
+                        model_name="manufacturer"
+                >
+                    @can('delete', App\Models\Manufacturer::class)
+                        <option>{{trans('general.delete')}}</option>
+                    @endcan
+                </x-tables.bulk-actions>
 
             <table
               data-columns="{{ \App\Presenters\ManufacturerPresenter::dataTableLayout() }}"
@@ -40,6 +50,11 @@
               data-side-pagination="server"
               data-sort-order="asc"
               id="manufacturersTable"
+              {{-- begin stuff for bulk dropdown --}}
+              data-toolbar="#manufacturersBulkEditToolbar"
+              data-bulk-button-id="#bulkManufacturerEditButton"
+              data-bulk-form-id="#manufacturersBulkForm"
+              {{-- end stuff for bulk dropdown --}}
               data-buttons="manufacturerButtons"
               class="table table-striped snipe-table"
               data-url="{{route('api.manufacturers.index', ['deleted' => (request('deleted')=='true') ? 'true' : 'false' ]) }}"
@@ -49,8 +64,7 @@
                 }'>
             </table>
 
-
-  @endif
+            @endif
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div>
