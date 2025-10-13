@@ -1,8 +1,8 @@
 <?php
 
     return [
-        'title'         => 'Entretien d\'actifs',
-        'asset_name'    => 'Désignation de l\'item',
+        'title'         => 'Gestion des actifs',
+        'asset_name'    => 'Nom de l\'actif',
         'is_warranty'   => 'Garantie',
         'dl_csv'        => 'Télécharger en CSV',
     ];

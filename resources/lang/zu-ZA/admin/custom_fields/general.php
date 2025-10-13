@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Insimu Engokwezifiso Entsha',
     'create_field_title' => 'Create a new custom field',
-    'value_encrypted'      	        => 'Inani lale nsimu libethelwe kwi-database. Abasebenzisi kuphela abasebenzisi bazokwazi ukubuka inani elimisiwe',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Include the value of this field in checkout emails sent to the user? Encrypted fields cannot be included in emails',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Help Text',

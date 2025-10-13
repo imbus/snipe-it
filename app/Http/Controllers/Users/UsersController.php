@@ -13,7 +13,9 @@ use App\Models\Company;
 use App\Models\Group;
 use App\Models\Setting;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Notifications\CurrentInventory;
@@ -88,6 +90,7 @@ class UsersController extends Controller
         //Username, email, and password need to be handled specially because the need to respect config values on an edit.
         $user->email = trim($request->input('email'));
         $user->username = trim($request->input('username'));
+        $user->display_name = $request->input('display_name');
         if ($request->filled('password')) {
             $user->password = bcrypt($request->input('password'));
         }
@@ -127,7 +130,7 @@ class UsersController extends Controller
         // we have to invoke the form request here to handle image uploads
         app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
 
-        if($request->get('redirect_option') === 'back'){
+        if ($request->get('redirect_option') === 'back'){
             session()->put(['redirect_option' => 'index']);
         } else {
             session()->put(['redirect_option' => $request->get('redirect_option')]);
@@ -135,6 +138,18 @@ class UsersController extends Controller
 
 
         if ($user->save()) {
+
+            if (($user->activated == '1') && ($user->email != '') && ($request->input('send_welcome') == '1')) {
+
+                try {
+                    $user->notify(new WelcomeNotification($user));
+                } catch (\Exception $e) {
+                    Log::warning('Could not send welcome notification for user: ' . $e->getMessage());
+                }
+
+
+            }
+
             if ($request->filled('groups')) {
                 $user->groups()->sync($request->input('groups'));
             } else {
@@ -240,6 +255,7 @@ class UsersController extends Controller
 
         $user->first_name = $request->input('first_name');
         $user->last_name = $request->input('last_name');
+        $user->display_name = $request->input('display_name');
         $user->two_factor_optin = $request->input('two_factor_optin') ?: 0;
         $user->locale = $request->input('locale');
         $user->employee_num = $request->input('employee_num');
@@ -562,10 +578,10 @@ class UsersController extends Controller
                             $user->employee_num,
                             $user->first_name,
                             $user->last_name,
-                            $user->present()->fullName(),
+                            $user->display_name,
                             $user->username,
                             $user->email,
-                            ($user->manager) ? $user->manager->present()->fullName() : '',
+                            ($user->manager) ? $user->manager->display_name : '',
                             ($user->userloc) ? $user->userloc->name : '',
                             ($user->department) ? $user->department->name : '',
                             $user->assets->count(),

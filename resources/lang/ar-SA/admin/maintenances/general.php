@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'صيانة الاُصل',
+        'asset_maintenances' => 'صيانة الأصول', // not used anymore
+        'maintenances'       => 'الصيانة',
         'edit'               => 'تعديل صيانة الأصل',
         'delete'             => 'حذف صيانة الأصل',
         'view'               => 'عرض تفاصيل صيانة الأصل',

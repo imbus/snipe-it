@@ -40,6 +40,8 @@ class CategoriesController extends Controller
             'consumables_count',
             'components_count',
             'licenses_count',
+            'created_at',
+            'updated_at',
             'image',
             'notes',
         ];
@@ -61,6 +63,23 @@ class CategoriesController extends Controller
             ->withCount('accessories as accessories_count', 'consumables as consumables_count', 'components as components_count', 'licenses as licenses_count', 'models as models_count');
 
 
+        $filter = [];
+
+        if ($request->filled('filter')) {
+            $filter = json_decode($request->input('filter'), true);
+
+            $filter = array_filter($filter, function ($key) use ($allowed_columns) {
+                return in_array($key, $allowed_columns);
+            }, ARRAY_FILTER_USE_KEY);
+
+        }
+
+        if ((! is_null($filter)) && (count($filter)) > 0) {
+            $categories->ByFilter($filter);
+        } elseif ($request->filled('search')) {
+            $categories->TextSearch($request->input('search'));
+        }
+
         /*
          * This checks to see if we should override the Admin Setting to show archived assets in list.
          * We don't currently use it within the Snipe-IT GUI, but will be useful for API integrations where they
@@ -72,10 +91,6 @@ class CategoriesController extends Controller
             $categories = $categories->withCount('assets as assets_count');
         } else {
             $categories = $categories->withCount('showableAssets as assets_count');
-        }
-
-        if ($request->filled('search')) {
-            $categories = $categories->TextSearch($request->input('search'));
         }
 
         if ($request->filled('name')) {

@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Laitteen huolto',
+        'asset_maintenances' => 'Laitteiden huollot', // not used anymore
+        'maintenances'       => 'Huollot',
         'edit'               => 'Muokkaa laitteen huoltoa',
         'delete'             => 'Poista laitteen huolto',
         'view'               => 'Näytä laitteen huoltotiedot',

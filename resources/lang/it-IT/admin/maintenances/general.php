@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Manutenzione Prodotto',
+        'asset_maintenances' => 'Manutenzioni Beni', // not used anymore
+        'maintenances'       => 'Manutenzioni',
         'edit'               => 'Modifica Manutenzione Prodotto',
         'delete'             => 'Elimina Manutenzione Prodotto',
         'view'               => 'Controlla Dettagli Manutenzione Prodotto',

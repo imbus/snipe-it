@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Novi prilagođeni polje',
     'create_field_title' => 'Create a new custom field',
-    'value_encrypted'      	        => 'Vrijednost ovog polja je šifrirana u bazi podataka. Samo administratori administratora moći će vidjeti dešifriranu vrijednost',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Prikazati vrijednost ovog polja u checkout e-mailovima koji se šalju korisnicima? Enkriptirana polja se ne mogu prikazati u e-mailovima',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Help Text',

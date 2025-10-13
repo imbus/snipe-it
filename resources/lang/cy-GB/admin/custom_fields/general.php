@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Maes Addasedig newydd',
     'create_field_title' => 'Create a new custom field',
-    'value_encrypted'      	        => 'Mae gwerth y maes hwn wedi\'i amgryptio yn y gronfa ddata. Dim ond defnyddwyr gweinyddol fydd yn gallu gweld y gwerth wedi\'i ddadgryptio',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Cynnwys gwerth y maes hwn mewn e-byst talu a anfonir at y defnyddiwr? Ni ellir cynnwys meysydd wedi\'u hamgryptio mewn e-byst',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Help Text',

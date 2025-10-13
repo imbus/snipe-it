@@ -3,7 +3,7 @@
     return [
         'select_type'            => 'Select Maintenance Type',
         'asset_maintenance_type' => 'Tipo de mantenimiento del activo',
-        'title'                  => 'Título',
+        'title'                  => 'Cargo',
         'start_date'             => 'Fecha de inicio',
         'completion_date'        => 'Fecha de finalización',
         'cost'                   => 'Costo',

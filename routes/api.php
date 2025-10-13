@@ -137,7 +137,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
 
      
      /**
-      * Categpries API routes
+      * Categories API routes
       */
       Route::group(['prefix' => 'categories'], function () {
         
@@ -571,6 +571,13 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                   'assignedAccessories'
               ]
           )->name('api.assets.assigned_accessories');
+
+          Route::get('{asset}/assigned/components',
+              [
+                  Api\AssetsController::class,
+                  'assignedComponents'
+              ]
+          )->name('api.assets.assigned_components');
           /** End assigned routes */
 
       });
@@ -583,9 +590,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     // the model name to be the parameter - and i think it's a good differentiation in the code while we convert the others.
     Route::patch('/hardware/{asset}', [Api\AssetsController::class, 'update'])->name('api.assets.update');
     Route::put('/hardware/{asset}', [Api\AssetsController::class, 'update'])->name('api.assets.put-update');
-
-    Route::put('/hardware/{asset}', [Api\AssetsController::class, 'update'])->name('api.assets.put-update');
-
+    
     Route::resource('hardware',
         Api\AssetsController::class,
         ['names' => [
@@ -841,6 +846,28 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ); // end asset models API routes
 
 
+        /**
+         * Asset notes API routes
+         */
+        Route::group(['prefix' => 'notes'], function () {
+
+            Route::post(
+                '{asset}/store',
+                [
+                    Api\NotesController::class,
+                    'store'
+                ]
+            )->name('api.notes.store');
+
+            Route::get(
+                '{asset}/index',
+                [
+                    Api\NotesController::class,
+                    'index'
+                ]
+            )->name('api.notes.index');
+        }
+        ); // end asset notes API routes
 
         /**
         * Settings API routes

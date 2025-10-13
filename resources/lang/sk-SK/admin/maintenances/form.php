@@ -3,7 +3,7 @@
     return [
         'select_type'            => 'Select Maintenance Type',
         'asset_maintenance_type' => 'Typ údržby majetku',
-        'title'                  => 'Názov',
+        'title'                  => 'Titul',
         'start_date'             => 'Dátum začiatku',
         'completion_date'        => 'Dátum ukončenia',
         'cost'                   => 'Cena',

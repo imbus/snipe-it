@@ -20,6 +20,7 @@ use App\Models\Consumable;
 use App\Models\License;
 use App\Models\User;
 use App\Notifications\CurrentInventory;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,6 +65,7 @@ class UsersController extends Controller
             'users.jobtitle',
             'users.last_login',
             'users.last_name',
+            'users.display_name',
             'users.locale',
             'users.location_id',
             'users.manager_id',
@@ -101,9 +103,75 @@ class UsersController extends Controller
                 'managedLocations as manages_locations_count'
             ]);
 
+        $allowed_columns =
+            [
+                'last_name',
+                'first_name',
+                'display_name',
+                'email',
+                'jobtitle',
+                'username',
+                'employee_num',
+                'groups',
+                'activated',
+                'created_at',
+                'updated_at',
+                'two_factor_enrolled',
+                'two_factor_optin',
+                'last_login',
+                'assets_count',
+                'licenses_count',
+                'consumables_count',
+                'accessories_count',
+                'manages_users_count',
+                'manages_locations_count',
+                'phone',
+                'mobile',
+                'address',
+                'city',
+                'state',
+                'country',
+                'zip',
+                'id',
+                'ldap_import',
+                'two_factor_optin',
+                'two_factor_enrolled',
+                'remote',
+                'vip',
+                'start_date',
+                'end_date',
+                'autoassign_licenses',
+                'website',
+                'locale',
+                'notes',
+                'employee_num',
 
-        if ($request->filled('search') != '') {
-            $users = $users->TextSearch($request->input('search'));
+                // These are *relationships* so we wouldn't normally include them in this array,
+                // since they would normally create a `column not found` error,
+                // BUT we account for them in the ordering switch down at the end of this method
+                // DO NOT ADD ANYTHING TO THIS LIST WITHOUT CHECKING THE ORDERING SWITCH BELOW!
+                'company',
+                'location',
+                'department',
+                'manager',
+                'created_by',
+
+            ];
+
+        $filter = [];
+
+        if ($request->filled('filter')) {
+            $filter = json_decode($request->input('filter'), true);
+            $filter = array_filter($filter, function ($key) use ($allowed_columns) {
+                return in_array($key, $allowed_columns);
+            }, ARRAY_FILTER_USE_KEY);
+
+        }
+
+        if ((! is_null($filter)) && (count($filter)) > 0) {
+            $users->ByFilter($filter);
+        } elseif ($request->filled('search')) {
+            $users->TextSearch($request->input('search'));
         }
 
         if ($request->filled('activated')) {
@@ -152,6 +220,10 @@ class UsersController extends Controller
 
         if ($request->filled('last_name')) {
             $users = $users->where('users.last_name', '=', $request->input('last_name'));
+        }
+
+        if ($request->filled('display_name')) {
+            $users = $users->where('users.display_name', '=', $request->input('display_name'));
         }
 
         if ($request->filled('employee_num')) {
@@ -280,48 +352,6 @@ class UsersController extends Controller
                 $users->orderBy('first_name', $order);
                 break;
             default:
-                $allowed_columns =
-                    [
-                        'last_name',
-                        'first_name',
-                        'email',
-                        'jobtitle',
-                        'username',
-                        'employee_num',
-                        'groups',
-                        'activated',
-                        'created_at',
-                        'updated_at',
-                        'two_factor_enrolled',
-                        'two_factor_optin',
-                        'last_login',
-                        'assets_count',
-                        'licenses_count',
-                        'consumables_count',
-                        'accessories_count',
-                        'manages_users_count',
-                        'manages_locations_count',
-                        'phone',
-                        'mobile',
-                        'address',
-                        'city',
-                        'state',
-                        'country',
-                        'zip',
-                        'id',
-                        'ldap_import',
-                        'two_factor_optin',
-                        'two_factor_enrolled',
-                        'remote',
-                        'vip',
-                        'start_date',
-                        'end_date',
-                        'autoassign_licenses',
-                        'website',
-                        'locale',
-                        'notes',
-                    ];
-
                 $sort = in_array($request->input('sort'), $allowed_columns) ? $request->input('sort') : 'first_name';
                 $users = $users->orderBy($sort, $order);
                 break;
@@ -355,6 +385,7 @@ class UsersController extends Controller
                 'users.employee_num',
                 'users.first_name',
                 'users.last_name',
+                'users.display_name',
                 'users.gravatar',
                 'users.avatar',
                 'users.email',
@@ -365,20 +396,17 @@ class UsersController extends Controller
             $users = $users->where(function ($query) use ($request) {
                 $query->SimpleNameSearch($request->get('search'))
                     ->orWhere('username', 'LIKE', '%'.$request->get('search').'%')
+                    ->orWhere('display_name', 'LIKE', '%'.$request->get('search').'%')
                     ->orWhere('email', 'LIKE', '%'.$request->get('search').'%')
                     ->orWhere('employee_num', 'LIKE', '%'.$request->get('search').'%');
             });
         }
 
-        $users = $users->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
+        $users = $users->orderBy('display_name', 'asc')->orderBy('last_name', 'asc')->orderBy('first_name', 'asc');
         $users = $users->paginate(50);
 
         foreach ($users as $user) {
-            $name_str = '';
-            if ($user->last_name != '') {
-                $name_str .= $user->last_name.', ';
-            }
-            $name_str .= $user->first_name;
+            $name_str = $user->display_name;
 
             if ($user->username != '') {
                 $name_str .= ' ('.$user->username.')';
@@ -430,9 +458,20 @@ class UsersController extends Controller
             $user->password = $user->noPassword();
         }
 
-        app('App\Http\Requests\ImageUploadRequest')->handleImages($user, 600, 'image', 'avatars', 'avatar');
+        app('App\Http\Requests\ImageUploadRequest')->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
         
         if ($user->save()) {
+
+            if (($user->activated == '1') && ($user->email != '') && ($request->input('send_welcome') == '1')) {
+
+                try {
+                    $user->notify(new WelcomeNotification($user));
+                } catch (\Exception $e) {
+                    Log::warning('Could not send welcome notification for user: ' . $e->getMessage());
+                }
+
+            }
+
             if ($request->filled('groups')) {
                 $user->groups()->sync($request->input('groups'));
             } else {
@@ -511,6 +550,10 @@ class UsersController extends Controller
                     $user->username = $request->input('username');
                 }
 
+                if ($request->filled('display_name')) {
+                    $user->display_name = $request->input('display_name');
+                }
+
                 if ($request->filled('email')) {
                     $user->email = $request->input('email');
                 }
@@ -540,7 +583,7 @@ class UsersController extends Controller
                 Asset::where('assigned_type', User::class)
                     ->where('assigned_to', $user->id)->update(['location_id' => $request->input('location_id', null)]);
             }
-            app('App\Http\Requests\ImageUploadRequest')->handleImages($user, 600, 'image', 'avatars', 'avatar');
+            app('App\Http\Requests\ImageUploadRequest')->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
 
             if ($user->save()) {
                 // Check if the request has groups passed and has a value, AND that the user us a superuser

@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Opret et nyt feltsæt',
     'create_field'            => 'Nyt Brugerdefinerede Felt',
     'create_field_title' => 'Opret et nyt brugerdefineret felt',
-    'value_encrypted'      	        => 'Værdien af dette felt er krypteret i databasen. Kun admins vil være i stand til at se den krypteret værdi',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Inkludér værdien af ​​dette felt i tjekud-e-mail til brugeren? Krypterede felter kan ikke medtages i e-mails',
     'show_in_email_short' => 'Inkluder i e-mails',
     'help_text' => 'Hjælp Tekst',

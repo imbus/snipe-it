@@ -16,6 +16,6 @@
             'success' => 'تعمیر و نگهداری دارایی با موفقیت ویرایش شد',
         ],
         'asset_maintenance_incomplete' => 'هنوز تکمیل نشده',
-        'warranty'                     => 'ضمانت',
+        'warranty'                     => 'گارانتی',
         'not_warranty'                 => 'بدون ضمانت',
     ];

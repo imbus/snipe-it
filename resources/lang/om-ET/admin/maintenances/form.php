@@ -9,7 +9,7 @@
         'cost'                   => 'Cost',
         'is_warranty'            => 'Warranty Improvement',
         'asset_maintenance_time' => 'Asset Maintenance Time (in days)',
-        'notes'                  => 'Notes',
+        'notes'                  => 'Yaada dabalataa',
         'update'                 => 'Update Asset Maintenance',
         'create'                 => 'Create Asset Maintenance'
     ];

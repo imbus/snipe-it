@@ -32,7 +32,7 @@ class UploadedFilesController extends Controller
     {
 
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('view', $object);
 
         if (!$object) {
@@ -51,11 +51,7 @@ class UploadedFilesController extends Controller
             ];
 
 
-        $uploads = Actionlog::select('action_logs.*')
-            ->whereNotNull('filename')
-            ->where('item_type', self::$map_object_type[$object_type])
-            ->where('item_id', $object->id)
-            ->where('action_type', '=', 'uploaded')
+        $uploads = self::$map_object_type[$object_type]::withTrashed()->find($id)->uploads()
             ->with('adminuser');
 
         $offset = ($request->input('offset') > $uploads->count()) ? $uploads->count() : abs($request->input('offset'));
@@ -96,7 +92,7 @@ class UploadedFilesController extends Controller
     {
 
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('view', $object);
 
         if (!$object) {
@@ -144,7 +140,7 @@ class UploadedFilesController extends Controller
     public function show($object_type, $id, $file_id) : JsonResponse | StreamedResponse | Storage | StorageHelper | BinaryFileResponse
     {
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('view', $object);
 
         if (!$object) {
@@ -188,7 +184,7 @@ class UploadedFilesController extends Controller
     {
 
         // Check the permissions to make sure the user can view the object
-        $object = self::$map_object_type[$object_type]::find($id);
+        $object = self::$map_object_type[$object_type]::withTrashed()->find($id);
         $this->authorize('update', self::$map_object_type[$object_type]);
 
         if (!$object) {
@@ -197,8 +193,12 @@ class UploadedFilesController extends Controller
 
 
         // Check for the file
-        $log = Actionlog::find($file_id)->where('item_type', self::$map_object_type[$object_type])
-            ->where('item_id', $object->id)->first();
+        $log = Actionlog::query()
+            ->where('id', $file_id)
+            ->where('action_type', 'uploaded')
+            ->where('item_type', self::$map_object_type[$object_type])
+            ->where('item_id', $object->id)
+            ->first();
 
         if ($log) {
             // Check the file actually exists, and delete it
@@ -206,7 +206,7 @@ class UploadedFilesController extends Controller
                 Storage::delete(self::$map_storage_path[$object_type].'/'.$log->filename);
             }
             // Delete the record of the file
-            if ($log->delete()) {
+            if ($log->logUploadDelete($object, $log->filename)) {
                 return response()->json(Helper::formatStandardApiResponse('success', null, trans_choice('general.file_upload_status.delete.success', 1)), 200);
             }
 

@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Samee goob cusub',
     'create_field'            => 'Garoonka Cusub ee Custom',
     'create_field_title' => 'Samee goob cusub oo caado ah',
-    'value_encrypted'      	        => 'Qiimaha goobtan waxa lagu sir ah kaydka xogta. Kaliya isticmaalayaasha maamulka ayaa awoodi doona inay arkaan qiimaha la furay',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Ku dar qiimaha goobtan fariimaha hubinta ee loo soo diray isticmaalaha? Goobaha sirta ah laguma dari karo iimaylada',
     'show_in_email_short' => 'Ku dar emails',
     'help_text' => 'Qoraalka Caawinta',

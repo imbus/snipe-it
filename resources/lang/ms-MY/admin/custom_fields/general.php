@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Padang Tersuai Baru',
     'create_field_title' => 'Create a new custom field',
-    'value_encrypted'      	        => 'Nilai medan ini disulitkan dalam pangkalan data. Hanya pengguna admin sahaja yang dapat melihat nilai yang disahkrit',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Sertakan nilai medan ini dalam e-mel semak keluar yang dihantar kepada pengguna? Medan yang disulitkan tidak boleh dimasukkan ke dalam e-mel',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Help Text',

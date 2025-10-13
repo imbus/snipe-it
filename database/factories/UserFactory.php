@@ -28,8 +28,9 @@ class UserFactory extends Factory
             'email' => $this->faker->safeEmail(),
             'employee_num' => $this->faker->numberBetween(3500, 35050),
             'first_name' => $this->faker->firstName(),
-            'jobtitle' => $this->faker->jobTitle(),
             'last_name' => $this->faker->lastName(),
+            'display_name' => null,
+            'jobtitle' => $this->faker->jobTitle(),
             'locale' => 'en-US',
             'notes' => 'Created by DB seeder',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
@@ -350,6 +351,17 @@ class UserFactory extends Factory
     {
         return $this->appendPermission(['import' => '1']);
     }
+
+    public function createCustomFields()
+    {
+        return $this->appendPermission(['customfields.create' => '1']);
+    }
+
+    public function viewCustomFields()
+    {
+        return $this->appendPermission(['customfields.view' => '1']);
+    }
+
 
     public function deleteCustomFields()
     {

@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Создать новый набор полей',
     'create_field'            => 'Новое настраиваемое поле',
     'create_field_title' => 'Создать новое настраиваемое поле',
-    'value_encrypted'      	        => 'Значение этого поля зашифровано в базе данных. Только администраторы смогут просматривать расшифрованное значение',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Включить значение этого поля в письма о выдаче, отправляемые пользователю? Зашифрованные поля не могут быть включены в письма',
     'show_in_email_short' => 'Включить в письма',
     'help_text' => 'Текст справки',

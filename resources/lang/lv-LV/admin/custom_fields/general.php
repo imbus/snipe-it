@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Jauna pielāgota lauks',
     'create_field_title' => 'Izveidot jaunu pielāgoto lauku',
-    'value_encrypted'      	        => 'Šī lauka vērtība ir šifrēta datu bāzē. Tikai admin lietotāji varēs apskatīt atšifrēto vērtību',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Vai iekļaut šī lauka vērtību lietotājiem nosūtītajos e-pasta paziņojumos? Šifrētie lauki nevar būt iekļauti e-pasta ziņojumos',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Palīdzības teksts',

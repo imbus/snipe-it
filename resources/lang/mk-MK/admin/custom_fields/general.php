@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => ' Креирај нова група на полиња',
     'create_field'            => 'Ново прилагодено поле',
     'create_field_title' => 'Креирај ново прилагодено поле',
-    'value_encrypted'      	        => 'Вредноста на ова поле е емкриптирана во базата на податоци. Само административните корисници ќе можат да ја видат декриптираната вредност',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Вклучете ја вредноста на ова поле во е-поштата испратена до корисникот? Шифрираните полиња не можат да бидат вклучени во е-пошта',
     'show_in_email_short' => 'Вклучи во е-пошта',
     'help_text' => 'Текст за помош',

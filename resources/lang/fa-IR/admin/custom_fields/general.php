@@ -36,7 +36,7 @@ return [
     'create_field'            => 'فیلد سفارشی جدید',
     'create_field_title' => 'یک فیلد سفارشی جدید ایجاد کنید
 ',
-    'value_encrypted'      	        => 'ارزش این فیلد در پایگاه داده رمزگذاری شده است. فقط کاربران مدیریت قادر به مشاهده مقدار رمزگشایی خواهند شد',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Include the value of this field in checkout emails sent to the user? Encrypted fields cannot be included in emails',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'متن راهنما',

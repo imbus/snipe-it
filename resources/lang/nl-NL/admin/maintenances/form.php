@@ -9,7 +9,7 @@
         'cost'                   => 'Kostprijs',
         'is_warranty'            => 'Garantieverbetering',
         'asset_maintenance_time' => 'Hersteltermijn (aantal dagen)',
-        'notes'                  => 'Notities',
+        'notes'                  => 'Opmerkingen',
         'update'                 => 'Object onderhoud bijwerken',
         'create'                 => 'Object onderhoud aanmaken'
     ];

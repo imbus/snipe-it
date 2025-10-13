@@ -1,16 +1,17 @@
 <?php
 
     return [
-        'asset_maintenances' => 'crwdns1363:0crwdne1363:0',
-        'edit'               => 'crwdns1364:0crwdne1364:0',
-        'delete'             => 'crwdns1365:0crwdne1365:0',
-        'view'               => 'crwdns1366:0crwdne1366:0',
-        'repair'             => 'crwdns1367:0crwdne1367:0',
-        'maintenance'        => 'crwdns1368:0crwdne1368:0',
-        'upgrade'            => 'crwdns1369:0crwdne1369:0',
-        'calibration'        => 'crwdns5812:0crwdne5812:0',
-        'software_support'   => 'crwdns5814:0crwdne5814:0',
-        'hardware_support'   => 'crwdns5816:0crwdne5816:0',
-        'configuration_change'   => 'crwdns10530:0crwdne10530:0',
-        'pat_test'           => 'crwdns10532:0crwdne10532:0',
+        'asset_maintenances' => 'crwdns13558:0crwdne13558:0', // not used anymore
+        'maintenances'       => 'crwdns13614:0crwdne13614:0',
+        'edit'               => 'crwdns13560:0crwdne13560:0',
+        'delete'             => 'crwdns13562:0crwdne13562:0',
+        'view'               => 'crwdns13564:0crwdne13564:0',
+        'repair'             => 'crwdns13566:0crwdne13566:0',
+        'maintenance'        => 'crwdns13568:0crwdne13568:0',
+        'upgrade'            => 'crwdns13570:0crwdne13570:0',
+        'calibration'        => 'crwdns13572:0crwdne13572:0',
+        'software_support'   => 'crwdns13574:0crwdne13574:0',
+        'hardware_support'   => 'crwdns13576:0crwdne13576:0',
+        'configuration_change'   => 'crwdns13578:0crwdne13578:0',
+        'pat_test'           => 'crwdns13580:0crwdne13580:0',
     ];

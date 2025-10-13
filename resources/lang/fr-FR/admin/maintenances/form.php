@@ -9,7 +9,7 @@
         'cost'                   => 'Coût',
         'is_warranty'            => 'Garantie sur amélioration',
         'asset_maintenance_time' => 'Durée de la maintenance de la ressource (en jours)',
-        'notes'                  => 'Notes',
+        'notes'                  => 'Remarques',
         'update'                 => 'Mettre à jour maintenance de la ressource',
         'create'                 => 'Création de maintenance de la ressource'
     ];

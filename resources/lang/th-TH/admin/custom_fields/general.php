@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'สร้างชุดฟิวด์ใหม่',
     'create_field'            => 'ฟิลด์ที่กำหนดเองใหม่',
     'create_field_title' => 'สร้างฟิลด์ที่กำหนดเองใหม่',
-    'value_encrypted'      	        => 'ค่าของฟิลด์นี้ถูกเข้ารหัสในฐานข้อมูล เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถดูค่าที่ถอดรหัสได้',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Include the value of this field in checkout emails sent to the user? Encrypted fields cannot be included in emails',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'ช่วยเหลือ',

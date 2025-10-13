@@ -4,7 +4,7 @@
         'select_type'            => 'Zvolte typ údržby',
         'asset_maintenance_type' => 'Druh údržby majetku',
         'title'                  => 'Název',
-        'start_date'             => 'Počáteční datum',
+        'start_date'             => 'Od',
         'completion_date'        => 'Datum dokončení',
         'cost'                   => 'Cena',
         'is_warranty'            => 'Rozšíření záruky',

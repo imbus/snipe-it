@@ -41,6 +41,7 @@
             data-bulk-button-id="#bulkSupplierEditButton"
             data-bulk-form-id="#suppliersBulkForm"
             {{-- end stuff for bulk dropdown --}}
+            data-advanced-search="false"
             data-buttons="supplierButtons"
             class="table table-striped snipe-table"
             data-url="{{ route('api.suppliers.index') }}"

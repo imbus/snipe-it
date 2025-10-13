@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => '建立新的欄位集',
     'create_field'            => '新增欄位',
     'create_field_title' => '建立新的客製化欄位',
-    'value_encrypted'      	        => '此欄位的值已被加密。只有管理員能夠查看原始資料。',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => '在發送給用戶的借出通知信中包含此欄位的值？加密的欄位不能包含在電子郵件中。',
     'show_in_email_short' => 'Include in emails',
     'help_text' => '幫助內文',

@@ -1,7 +1,8 @@
 <?php
 
     return [
-        'asset_maintenances' => 'Bagay na may halaga sa Kabuhayan',
+        'asset_maintenances' => 'Bagay na may halaga sa Kabuhayan', // not used anymore
+        'maintenances'       => 'Maintenances',
         'edit'               => 'I-edit ang Bagay na may halaga sa Kabuhayan',
         'delete'             => 'Tanggalin ang Bagay na may halaga sa Kabuhayan',
         'view'               => 'Tignan ang mga Detalye sa Bagay na may halaga sa Kabuhayan',

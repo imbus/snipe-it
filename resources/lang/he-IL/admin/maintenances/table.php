@@ -1,8 +1,8 @@
 <?php
 
     return [
-        'title'         => 'תחזוקת נכס',
+        'title'         => 'אחזקת נכסים',
         'asset_name'    => 'שם הנכס',
-        'is_warranty'   => 'אחריות',
-        'dl_csv'        => 'להוריד CSV',
+        'is_warranty'   => 'אַחֲרָיוּת',
+        'dl_csv'        => 'הורד CSV',
     ];

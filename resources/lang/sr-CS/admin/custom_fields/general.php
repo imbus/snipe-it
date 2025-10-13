@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Kreirajte novu grupu polja',
     'create_field'            => 'Novo prilagodjeno polje',
     'create_field_title' => 'Kreirajte prilagođeno polje',
-    'value_encrypted'      	        => 'Vrednost ovog polja je šifrovana u bazi podataka. Samo administratori će moći da vide dešifrovanu vrednost',
+    'value_encrypted'      	        => 'Vrednost ovog polja je enkriptovana u bazi podataka. Samo korisnici sa ovlašćenjem da pregledaju enkriptovana prilagođena polja će moći da vide dekriptovanu vrednost',
     'show_in_email'     => 'Uvrsti vrednost ovog polja u e-porukama zaduženja koja se šalju korisnicima? Enkriptovana polja se ne mogu uvrstiti u e-porukama',
     'show_in_email_short' => 'Uvrsti u e-poruke',
     'help_text' => 'Pomoćni tekst',

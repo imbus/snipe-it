@@ -110,17 +110,35 @@ class AssetsController extends Controller
         // This is only necessary on create, not update, since bulk editing is handled
         // differently
         $asset_tags = $request->input('asset_tags');
+        $model = AssetModel::find($request->input('model_id'));
+        $serial_errors = [];
+        $serials = $request->input('serials');
 
         $settings = Setting::getSettings();
 
+        //Validate required serial based on model setting
+        for ($a = 1, $aMax = count($asset_tags); $a <= $aMax; $a++) {
+            if ($model && $model->require_serial === 1 && empty($serials[$a])) {
+                $serial_errors["serials.$a"] = trans('admin/hardware/form.serial_required', ['number' => $a]);
+            }
+
+        }
+
+        if (!empty($serial_errors)) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors($serial_errors);
+        }
+
+        $asset = null;
+        $companyId = Company::getIdForCurrentUser($request->input('company_id'));
         $successes = [];
         $failures = [];
-        $serials = $request->input('serials');
-        $asset = null;
 
-        for ($a = 1; $a <= count($asset_tags); $a++) {
+        for ($a = 1, $aMax = count($asset_tags); $a <= $aMax; $a++) {
             $asset = new Asset();
-            $asset->model()->associate(AssetModel::find($request->input('model_id')));
+
+            $asset->model()->associate($model);
             $asset->name = $request->input('name');
 
             // Check for a corresponding serial
@@ -132,7 +150,7 @@ class AssetsController extends Controller
                 $asset->asset_tag = $asset_tags[$a];
             }
 
-            $asset->company_id              = Company::getIdForCurrentUser($request->input('company_id'));
+            $asset->company_id              = $companyId;
             $asset->model_id                = $request->input('model_id');
             $asset->order_number            = $request->input('order_number');
             $asset->notes                   = $request->input('notes');
@@ -172,7 +190,6 @@ class AssetsController extends Controller
 
             // Update custom fields in the database.
             // Validation for these fields is handled through the AssetRequest form request
-            $model = AssetModel::find($request->get('model_id'));
 
             if (($model) && ($model->fieldset)) {
                 foreach ($model->fieldset->fields as $field) {
@@ -346,7 +363,7 @@ class AssetsController extends Controller
         $asset->purchase_cost = $request->input('purchase_cost', null);
         $asset->purchase_date = $request->input('purchase_date', null);
         $asset->next_audit_date = $request->input('next_audit_date', null);
-        if ($request->filled('purchase_date') && !$request->filled('asset_eol_date') && ($asset->model->eol > 0)) {
+        if ($request->filled('purchase_date') && !$request->filled('asset_eol_date') && ($asset->model?->eol > 0)) {
             $asset->purchase_date = $request->input('purchase_date', null); 
             $asset->asset_eol_date = Carbon::parse($request->input('purchase_date'))->addMonths($asset->model->eol)->format('Y-m-d');
             $asset->eol_explicit = false;
@@ -362,7 +379,7 @@ class AssetsController extends Controller
            } else {
                $asset->eol_explicit = true;
            }
-        } elseif (!$request->filled('asset_eol_date') && (($asset->model->eol) == 0)) {
+        } elseif (!$request->filled('asset_eol_date') && (($asset->model?->eol) == 0)) {
            $asset->asset_eol_date = null;
 		   $asset->eol_explicit = false;
         }
@@ -381,6 +398,7 @@ class AssetsController extends Controller
             $asset->assigned_to = null;
             $asset->assigned_type = null;
             $asset->accepted = null;
+            $asset->last_checkin = now();
             event(new CheckoutableCheckedIn($asset, $target, auth()->user(), 'Checkin on asset update with '.$status->getStatuslabelType().' status', date('Y-m-d H:i:s'), $originalValues));
         }
 
@@ -424,6 +442,9 @@ class AssetsController extends Controller
         $model = AssetModel::find($request->get('model_id'));
         if (($model) && ($model->fieldset)) {
             foreach ($model->fieldset->fields as $field) {
+                if ($field->element == 'checkbox' && !$request->has($field->db_column)) {
+                    $asset->{$field->db_column} = null;
+                }
                 if ($request->has($field->db_column)) {
                     if ($field->field_encrypted == '1') {
                         if (Gate::allows('assets.view.encrypted_custom_fields')) {
@@ -450,6 +471,13 @@ class AssetsController extends Controller
         ]);
 
 
+        //Validate required serial based on model setting
+        if ($model && $model->require_serial === 1 && empty($serial[1])) {
+            return redirect()->to(Helper::getRedirectOption($request, $asset->id, 'Assets'))
+                ->with('warning', trans('admin/hardware/form.serial_required_post_model_update', [
+                    'asset_model' => $model->name
+                ]));
+        }
         if ($asset->save()) {
             return Helper::getRedirectOption($request, $asset->id, 'Assets')
                 ->with('success', trans('admin/hardware/message.update.success'));
@@ -794,7 +822,7 @@ class AssetsController extends Controller
                             'item_id' => $asset->id,
                             'item_type' => Asset::class,
                             'created_by' =>  auth()->id(),
-                            'note' => 'Checkout imported by '.auth()->user()->present()->fullName().' from history importer',
+                            'note' => 'Checkout imported by '.auth()->user()->display_name.' from history importer',
                             'target_id' => $item[$asset_tag][$batch_counter]['user_id'],
                             'target_type' => User::class,
                             'created_at' =>  $item[$asset_tag][$batch_counter]['checkout_date'],
@@ -822,7 +850,7 @@ class AssetsController extends Controller
                                 'item_id' => $item[$asset_tag][$batch_counter]['asset_id'],
                                 'item_type' => Asset::class,
                                 'created_by' => auth()->id(),
-                                'note' => 'Checkin imported by '.auth()->user()->present()->fullName().' from history importer',
+                                'note' => 'Checkin imported by '.auth()->user()->display_name.' from history importer',
                                 'target_id' => null,
                                 'created_at' => $checkin_date,
                                 'action_type' => 'checkin',

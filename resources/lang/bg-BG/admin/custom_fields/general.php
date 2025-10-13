@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Създай нова група от полета',
     'create_field'            => 'Ново персонализирано поле',
     'create_field_title' => 'Създай ново персонализирано поле',
-    'value_encrypted'      	        => 'Стойността на това поле е криптирана в базата данни. Само администратор потребители ще бъде в състояние да видят дешифрираната стойност',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Да се включи ли стойността на това поле в електронната поща, изпращана към потребителите? Криптираните полета не могат да бъдат включвани в изпращаните електронни пощи',
     'show_in_email_short' => 'Включи в е-майлите',
     'help_text' => 'Помощен текст',

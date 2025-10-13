@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Create a new fieldset',
     'create_field'            => 'Шинэ Гаалийн талбар',
     'create_field_title' => 'Create a new custom field',
-    'value_encrypted'      	        => 'Энэ талбарын үнэ цэнийг мэдээллийн санд шифрлэдэг. Зөвхөн админ хэрэглэгч нар нь буцаагдсан утгыг харах боломжтой байна',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Хэрэглэгчид илгээсэн олголтын имэйлд энэ талбарын утгыг оруулах уу? Шифрлэгдсэн талбаруудыг имэйлд оруулах боломжгүй',
     'show_in_email_short' => 'Include in emails',
     'help_text' => 'Help Text',

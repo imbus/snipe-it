@@ -33,7 +33,7 @@ return [
     'create_fieldset_title' => 'Skapa ny fältuppsättning',
     'create_field'            => 'Nytt anpassat fält',
     'create_field_title' => 'Skapa ett nytt anpassat fält',
-    'value_encrypted'      	        => 'Värdet på det här fältet är krypterat i databasen. Endast adminanvändare kan se det dekrypterade värdet',
+    'value_encrypted'      	        => 'The value of this field is encrypted in the database. Only users with permission to view encrypted custom fields will be able to view the decrypted value',
     'show_in_email'     => 'Inkludera värdet på det här fältet i utcheckningsmejlen som skickas till användarna? Krypterade fält inkluderas inte i e-postmeddelanden',
     'show_in_email_short' => 'Inkludera i e-post',
     'help_text' => 'Hjälptext',

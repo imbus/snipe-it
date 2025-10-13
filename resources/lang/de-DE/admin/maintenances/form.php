@@ -3,13 +3,13 @@
     return [
         'select_type'            => 'Wartungsart auswählen',
         'asset_maintenance_type' => 'Wartungsart',
-        'title'                  => 'Bezeichnung',
+        'title'                  => 'Titel',
         'start_date'             => 'Startdatum',
         'completion_date'        => 'Abschlussdatum',
         'cost'                   => 'Kosten',
         'is_warranty'            => 'Nachbesserungsarbeiten',
         'asset_maintenance_time' => 'Wartungszeit (in Tagen)',
-        'notes'                  => 'Anmerkungen',
+        'notes'                  => 'Notizen',
         'update'                 => 'Wartung bearbeiten',
         'create'                 => 'Wartung erstellen'
     ];

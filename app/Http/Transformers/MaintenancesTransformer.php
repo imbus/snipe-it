@@ -66,6 +66,7 @@ class MaintenancesTransformer
                     'id' => $assetmaintenance->supplier->id,
                     'name'=> e($assetmaintenance->supplier->name)
                     ] : null,
+            'url'         => ($assetmaintenance->url) ? e($assetmaintenance->url) : null,
             'cost'          => Helper::formatCurrencyOutput($assetmaintenance->cost),
             'asset_maintenance_type'          => e($assetmaintenance->asset_maintenance_type),
             'start_date'         => Helper::getFormattedDateObject($assetmaintenance->start_date, 'date'),
@@ -73,11 +74,11 @@ class MaintenancesTransformer
             'completion_date'     => Helper::getFormattedDateObject($assetmaintenance->completion_date, 'date'),
             'user_id'    => ($assetmaintenance->adminuser) ? [
                 'id' => $assetmaintenance->adminuser->id,
-                'name'=> e($assetmaintenance->adminuser->present()->fullName())
+                'name'=> e($assetmaintenance->adminuser->display_name)
             ] : null, // legacy to not change the shape of the API
             'created_by' => ($assetmaintenance->adminuser) ? [
                 'id' => (int) $assetmaintenance->adminuser->id,
-                'name'=> e($assetmaintenance->adminuser->present()->fullName()),
+                'name'=> e($assetmaintenance->adminuser->display_name),
             ] : null,
             'created_at' => Helper::getFormattedDateObject($assetmaintenance->created_at, 'datetime'),
             'updated_at' => Helper::getFormattedDateObject($assetmaintenance->updated_at, 'datetime'),
