@@ -149,22 +149,22 @@
 
 @if ($messages = session()->get('multi_error_messages'))
     <div class="col-md-12">
-        <div class="alert alert alert-danger fade in">
+        <div class="alert alert alert-warning fade in">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <i class="fas fa-exclamation-triangle faa-pulse animated"></i>
             <strong>{{ trans('general.notification_error') }}: </strong>
-            @foreach(array_splice($messages, 0,3) as $key => $message)
-                <ul>
+            <ul>
+                @foreach(array_splice($messages, 0,3) as $key => $message)
                     <li>{{ $message }}</li>
-                </ul>
-            @endforeach
+                @endforeach
+            </ul>
             <details>
                 <summary>{{ trans('general.show_all') }}</summary>
+                <ul>
                 @foreach(array_splice($messages, 3) as $key => $message)
-                    <ul>
-                        <li>{{ $message }}</li>
-                    </ul>
+                  <li>{{ $message }}</li>
                 @endforeach
+                </ul>
             </details>
         </div>
     </div>
