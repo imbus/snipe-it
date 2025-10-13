@@ -22,9 +22,10 @@ return array(
     ),
 
     'delete' => array(
-        'confirm'   => 'Are you sure you wish to delete this manufacturer?',
+        'confirm' => 'Are you sure you wish to delete this manufacturer?',
         'error'   => 'There was an issue deleting the manufacturer. Please try again.',
-        'success' => 'The Manufacturer was deleted successfully.'
+        'success'                => 'The Manufacturer was deleted successfully.',
+        'bulk_success'           => 'The Manufacturers were deleted successfully.',
     )
 
 );
