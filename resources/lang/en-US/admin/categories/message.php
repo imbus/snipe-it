@@ -20,8 +20,9 @@ return array(
     'delete' => array(
         'confirm'                => 'Are you sure you wish to delete this category?',
         'error'                  => 'There was an issue deleting the category. Please try again.',
-        'success'                => 'The category was deleted successfully.',
-        'bulk_success'           => 'The Categories were deleted successfully.',
+        'success'                => 'Category was deleted successfully.',
+        'bulk_success'           => 'Categories were deleted successfully.',
+        'partial_success'        => 'Category deleted successfully. See additional information below. | :count categories were deleted successfully. See additional information below.',
     )
 
 );

@@ -19,6 +19,8 @@ class BulkSuppliersController extends Controller
         $this->authorize('delete', Supplier::class);
 
         $errors = [];
+        $success_count = 0;
+
         foreach ($request->ids as $id) {
             $supplier = Supplier::find($id);
             if (is_null($supplier)) {
@@ -45,6 +47,9 @@ class BulkSuppliersController extends Controller
             }
         }
         if (count($errors) > 0) {
+            if ($success_count > 0) {
+                return redirect()->route('suppliers.index')->with('success', trans_choice('admin/suppliers/message.delete.partial_success', $success_count, ['count' => $success_count]))->with('multi_error_messages', $errors);
+            }
             return redirect()->route('suppliers.index')->with('multi_error_messages', $errors);
         } else {
             return redirect()->route('suppliers.index')->with('success', trans('admin/suppliers/message.delete.bulk_success'));
