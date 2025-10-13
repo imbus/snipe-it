@@ -24,8 +24,9 @@ return array(
     'delete' => array(
         'confirm' => 'Are you sure you wish to delete this manufacturer?',
         'error'   => 'There was an issue deleting the manufacturer. Please try again.',
-        'success'                => 'The Manufacturer was deleted successfully.',
-        'bulk_success'           => 'The Manufacturers were deleted successfully.',
+        'success'                => 'Manufacturer deleted successfully.',
+        'bulk_success'           => 'Manufacturers deleted successfully.',
+        'partial_success'        => 'Manufacturer deleted successfully. See additional information below. | :count manufacturers were deleted successfully. See additional information below.',
     )
 
 );

@@ -20,6 +20,7 @@ class BulkManufacturersController extends Controller
         $this->authorize('delete', Manufacturer::class);
 
         $errors = [];
+        $success_count = 0;
         foreach ($request->ids as $id) {
             $manufacturer = Manufacturer::find($id);
             if (is_null($manufacturer)) {
@@ -28,6 +29,7 @@ class BulkManufacturersController extends Controller
             }
             try {
                 DeleteManufacturerAction::run(manufacturer: $manufacturer);
+                $success_count++;
             } catch (ItemStillHasAssets $e) {
                 $errors[] = trans('general.bulk_delete_associations.assoc_assets_no_count', ['item_name' => $manufacturer->name, 'item' => trans('general.manufacturer')]);
             } catch (ItemStillHasAccessories $e) {
@@ -44,6 +46,9 @@ class BulkManufacturersController extends Controller
             }
         }
         if (count($errors) > 0) {
+            if ($success_count > 0) {
+                return redirect()->route('manufacturers.index')->with('success', trans_choice('admin/manufacturers/message.delete.partial_success', $success_count, ['count' => $success_count]))->with('multi_error_messages', $errors);
+            }
             return redirect()->route('manufacturers.index')->with('multi_error_messages', $errors);
         } else {
             return redirect()->route('manufacturers.index')->with('success', trans('admin/manufacturers/message.delete.bulk_success'));
