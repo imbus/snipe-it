@@ -19,7 +19,6 @@ class CreateModelsTable extends Migration
             $table->integer('category_id')->nullable();
             $table->timestamps();
             $table->engine = 'InnoDB';
-            //making a note here. Interestingly we state the model and modelno cloumns as strings. Tableplus stores as a var_string.
         });
     }
 

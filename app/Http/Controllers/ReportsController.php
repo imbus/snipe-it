@@ -437,14 +437,7 @@ class ReportsController extends Controller
             $handle = fopen('php://output', 'w');
             stream_set_timeout($handle, 2000);
 
-            //this is handling emdash encoding, and is preventing that character from becoming something like ‚Äî
             fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-
-            //U+00EC is accent grave in model number
-            //U+00EE is circumflex in model name
-            //why is the same character a value of 2 off of each other?
-            //why are we all getting different outputs for this emdash?
-            //exporting and opening with a text editor doesn't fuck it up? so its NOT on export. It's an Excel problem.
 
             $header = [];
 
