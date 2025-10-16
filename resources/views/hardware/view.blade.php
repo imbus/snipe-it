@@ -322,7 +322,7 @@
                                         @else
                                             <form method="POST" action="{{ route('restore/hardware', [$asset]) }}">
                                                 @csrf
-                                                <button class="btn btn-sm btn-block btn-warning btn-social delete-asset">
+                                                <button class="btn btn-sm btn-block btn-warning btn-social">
                                                     <x-icon type="restore" />
                                                     {{ trans('general.restore') }}
                                                 </button>
