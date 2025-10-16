@@ -61,12 +61,20 @@
 .btn, .btn:hover {
 
 
+  &.btn-default, .btn-default:link {
+    &:hover {
+      color: darken(@navy, 10%)
+    }
+    &:visited {
+      color: darken(@navy, 10%)
+    }
+  }
+
   &.btn-primary, .btn-primary:link {
     background-color: darken(@navy, 10%);
     border-color: darken(@navy, 20%);
     color: #fff;
   }
-
 
   &a.btn-primary:hover {
     background-color: darken(@navy, 20%);
@@ -112,6 +120,7 @@ a.btn {
   &:visited {
     color: #fff;
     text-decoration: none;
+
   }
 }
 
