@@ -1334,7 +1334,7 @@ dir="{{ Helper::determineLanguageDirection() }}">
 
         </script>
 
-        @if ((Session::get('topsearch')=='true') || (request()->is('/')))
+        @if ((session()->get('topsearch')=='true') || (request()->is('/')))
             <script nonce="{{ csrf_token() }}">
                 $("#tagSearch").focus();
             </script>

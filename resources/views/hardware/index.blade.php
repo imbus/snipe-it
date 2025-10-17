@@ -67,6 +67,7 @@
                 data-show-footer="true"
                 data-sort-order="asc"
                 data-sort-name="name"
+                data-search-text="{{ session()->get('search') }}"
                 data-show-columns-search="true"
                 data-toolbar="#assetsBulkEditToolbar"
                 data-bulk-button-id="#bulkAssetEditButton"
