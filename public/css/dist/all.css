@@ -22840,6 +22840,28 @@ caption.tableCaption {
 input[name="columnsSearch"] {
   width: 120px;
 }
+.callout.callout-legend {
+  background-color: #f4f4f4;
+  border-left: 5px solid #959495;
+  padding: 15px 30px 15px 15px;
+  font-size: 100%;
+  border-radius: 0px;
+}
+.callout.callout-legend h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+p.callout-subtext {
+  margin-top: 5px;
+}
+p.callout-subtext a:hover,
+p.callout-subtext a:visited,
+p.callout-subtext a:link {
+  color: #31708f;
+  text-decoration: none;
+}
 
 
 /*# sourceMappingURL=app.css.map*/
@@ -24454,6 +24476,28 @@ caption.tableCaption {
 }
 input[name="columnsSearch"] {
   width: 120px;
+}
+.callout.callout-legend {
+  background-color: #f4f4f4;
+  border-left: 5px solid #959495;
+  padding: 15px 30px 15px 15px;
+  font-size: 100%;
+  border-radius: 0px;
+}
+.callout.callout-legend h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+p.callout-subtext {
+  margin-top: 5px;
+}
+p.callout-subtext a:hover,
+p.callout-subtext a:visited,
+p.callout-subtext a:link {
+  color: #31708f;
+  text-decoration: none;
 }
 
 
