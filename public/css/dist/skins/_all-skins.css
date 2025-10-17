@@ -1775,7 +1775,7 @@ a.btn:visited {
   background-color: #001F3F;
   color: #FFF !important;
 }
-btn-success {
+.btn-success {
   background-color: #000d07;
 }
 input::-webkit-input-placeholder {
