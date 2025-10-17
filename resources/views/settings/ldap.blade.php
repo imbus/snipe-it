@@ -82,7 +82,6 @@
                         <fieldset>
                             <x-form-legend>
                                 {{ trans('admin/settings/general.legends.server') }}
-                            </legend>
                             </x-form-legend>
                                 <!-- Enable LDAP -->
                                 <div class="form-group {{ $errors->has('ldap_integration') ? 'error' : '' }}">
@@ -902,7 +901,7 @@
                                             <div class="col-md-4">
                                                 <input type="password" name="ldaptest_password" id="ldaptest_password" class="form-control" placeholder="{{trans('admin/settings/general.ldap_password_placeholder')}}" autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-3 text-right">
                                                 <a class="btn btn-default btn-sm" id="ldaptestlogin" style="margin-right: 10px;">{{ trans('admin/settings/general.ldap_test') }}</a>
                                             </div>
 
@@ -946,11 +945,10 @@
 
 
                         <fieldset>
-                            <legend class="callout callout-legend">
-                                <h4>
-                                    {{ trans('admin/settings/general.legends.misc') }}
-                                </h4>
-                            </legend>
+                            <x-form-legend>
+                                {{ trans('admin/settings/general.legends.misc') }}
+                            </x-form-legend>
+
                                 <!-- LDAP Forgotten password -->
                                 <div class="form-group {{ $errors->has('custom_forgot_pass_url') ? 'error' : '' }}">
                                     <div class="col-md-3 text-right">
