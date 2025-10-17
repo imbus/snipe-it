@@ -18,7 +18,7 @@ return [
     'alert_email'				=> 'Send alerts to',
     'alert_email_help'          => 'Email addresses or distribution lists you want alerts to be sent to, comma separated.',
     'alerts_enabled'			=> 'Email Alerts Enabled',
-    'alert_interval'			=> 'Expiring Alerts Threshold (in days)',
+    'alert_interval'			=> 'Expiring Alerts Threshold',
     'alert_inv_threshold'		=> 'Inventory Alert Threshold',
     'allow_user_skin'           => 'Allow User Skin',
     'allow_user_skin_help_text' => 'Checking this box will allow a user to override the UI skin with a different one.',
@@ -489,6 +489,7 @@ return [
         'server' => 'Server Settings',
         'scoping' => 'Scoping',
         'security' => 'Security Preferences',
+        'passwords' => 'Password Security Preferences',
     ],
 
 

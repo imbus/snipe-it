@@ -1141,6 +1141,11 @@ input[name="columnsSearch"] {
   margin-top: 5px;
   margin-bottom: 0px;
 }
+.callout.callout-legend a {
+  color: #333333;
+  text-decoration: none;
+  cursor: pointer;
+}
 p.callout-subtext {
   margin-top: 5px;
 }
