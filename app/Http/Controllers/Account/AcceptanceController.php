@@ -165,7 +165,7 @@ class AcceptanceController extends Controller
             'signature' => (($sig_filename && array_key_exists('1', $encoded_image))) ? $encoded_image[1] : null,
             'logo' => ($encoded_logo) ?? null,
             'date_settings' => $settings->date_display_format,
-            'admin' => $admin?->present()?->fullName,
+            'admin' => $admin?->present()->fullName,
             'qty' => $acceptance->qty ?? 1,
         ];
 
