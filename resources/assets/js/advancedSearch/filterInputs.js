@@ -97,7 +97,7 @@ class FilterInput {
 
     clear() {
         // Reset filter options
-        const data = this.element.id.replace("advancedSearch_", "").replace("_start", "").replace("_end", "");
+        const data = this.element.id.replace("advancedSearch_", "").replace("_input", "").replace("_start", "").replace("_end", "");
         const filterOptionsDropdown = document.querySelector('[data-field="' + data + '"]');
 
         if (filterOptionsDropdown && filterOptionsDropdown.value) {
@@ -106,8 +106,6 @@ class FilterInput {
             console.warn("No filterOptionsDropdown found with datafield " + data);
         }
 
-        console.log(data);
-        //console.log(filterOptionsDropdown);
     }
 }
 
