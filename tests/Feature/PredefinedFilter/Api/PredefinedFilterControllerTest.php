@@ -609,4 +609,80 @@ public function test_destroy_non_owner_public_requires_destroy_permission()
         $this->assertArrayHasKey('deleted_at', $result);
     }
 
+    //------SELECTLIST TESTS------
+
+    public function test_selectlist_excludes_private_filters_from_non_owners(): void
+    {
+        $owner = User::factory()->create();
+        $user  = User::factory()->create();
+        $g = $this->grant($user, ['predefinedFilter.view' => '1']);
+
+        // Create a public filter that user should see
+        $publicFilter = PredefinedFilter::factory()->create([
+            'name'       => 'Public Filter',
+            'created_by' => $owner->id,
+            'is_public'  => 1,
+        ]);
+        $this->linkGroupFilter($publicFilter, $g);
+
+        // Create a private filter owned by someone else - user should NOT see this
+        $privateFilter = PredefinedFilter::factory()->create([
+            'name'       => 'Private Filter',
+            'created_by' => $owner->id,
+            'is_public'  => 0,
+        ]);
+
+        // Create user's own private filter - user SHOULD see this
+        $ownPrivateFilter = PredefinedFilter::factory()->create([
+            'name'       => 'My Private Filter',
+            'created_by' => $user->id,
+            'is_public'  => 0,
+        ]);
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson('/api/v1/predefinedFilters/selectlist')
+            ->assertOk();
+
+        $results = collect($response->json('results'));
+        $names = $results->pluck('text')->toArray();
+
+        // Should include public filter and own private filter
+        $this->assertContains('Public Filter', $names);
+        $this->assertContains('My Private Filter', $names);
+        
+        // Should NOT include other user's private filter
+        $this->assertNotContains('Private Filter', $names);
+    }
+
+    public function test_selectlist_shows_only_owned_private_filters(): void
+    {
+        $owner = User::factory()->create();
+        $user  = User::factory()->create();
+
+        // Create a private filter owned by someone else
+        $otherPrivateFilter = PredefinedFilter::factory()->create([
+            'name'       => 'Other Private',
+            'created_by' => $owner->id,
+            'is_public'  => 0,
+        ]);
+
+        // Create user's own private filter
+        $myPrivateFilter = PredefinedFilter::factory()->create([
+            'name'       => 'My Private',
+            'created_by' => $user->id,
+            'is_public'  => 0,
+        ]);
+
+        $response = $this->actingAs($user, 'api')
+            ->getJson('/api/v1/predefinedFilters/selectlist')
+            ->assertOk();
+
+        $results = collect($response->json('results'));
+        $names = $results->pluck('text')->toArray();
+
+        // Should only see own private filter
+        $this->assertContains('My Private', $names);
+        $this->assertNotContains('Other Private', $names);
+    }
+
 }

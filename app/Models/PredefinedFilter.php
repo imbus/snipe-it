@@ -69,6 +69,12 @@ class PredefinedFilter extends Model
             case 'create':
                 return $user->hasAccess('predefinedFilter.create');
             case 'view':
+                // Private filters should only be viewable by their owner (already handled above)
+                // Public filters can be viewed based on group permissions
+                if (!$this->is_public) {
+                    return false;
+                }
+                
                 if ($this->checkPermissions($user, 'view')) {
                     return true;
                 }
