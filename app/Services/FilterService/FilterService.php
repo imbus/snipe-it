@@ -183,7 +183,7 @@ class FilterService
                                         $morphQ->where(function($query) use ($names, $type) {
 
                                             foreach ($names as $name) {
-                                                if ($type === \App\Models\User::class) {
+                                                if ($type === User::class) {
                                                 
                                                     $query->orWhere(function($sq) use ($name) {
                                                         $sq->where('first_name', 'LIKE', '%' . $name . '%')
@@ -218,15 +218,23 @@ class FilterService
                             } else {
                                 if ($type === User::class) {
                                     //this part should definitely be part of applyWhereWithOperator but here are two columns
+
+
+                                    // TODO All Tests pass | additional Tests are necessary
                                     $morphQ->where(function ($sq) use ($value, $operator) {
-                                    if ($operator === 'equals') {
-                                        $sq->where('first_name', '=', $value)
-                                            ->orWhere('last_name', '=', $value);
-                                    } else {
-                                        $sq->where('first_name', 'LIKE', '%' . $value . '%')
-                                            ->orWhere('last_name', 'LIKE', '%' . $value . '%');
-                                    }
-                                });
+                                        if ($operator === 'equals') {
+                                            $sq->whereRaw('first_name = ?', [$value])
+                                                ->orWhereRaw('last_name = ?',  [$value])
+                                                ->orWhereRaw('display_name = ?', [ $value])
+                                                ->orWhereRaw('TRIM(CONCAT(first_name, " ", last_name)) = ?',  [$value])
+                                                ->orWhereRaw('TRIM(CONCAT(last_name, " ", first_name)) = ?',  [$value]);
+                                            
+                                        } else {
+                                            $sq->where('first_name', 'LIKE', '%' . $value . '%')
+                                                ->orWhere('last_name', 'LIKE', '%' . $value . '%');
+                                        }
+                                    });
+
                                 } else {
                                     if ($operator === 'equals') {
                                     $morphQ->where('name', '=', $value);
