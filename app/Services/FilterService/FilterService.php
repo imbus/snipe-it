@@ -217,12 +217,22 @@ class FilterService
                                 }
                             } else {
                                 if ($type === User::class) {
-                                    $morphQ->where(function ($sq) use ($value) {
+                                    //this part should definitely be part of applyWhereWithOperator but here are two columns
+                                    $morphQ->where(function ($sq) use ($value, $operator) {
+                                    if ($operator === 'equals') {
+                                        $sq->where('first_name', '=', $value)
+                                            ->orWhere('last_name', '=', $value);
+                                    } else {
                                         $sq->where('first_name', 'LIKE', '%' . $value . '%')
-                                           ->orWhere('last_name', 'LIKE', '%' . $value . '%');
-                                    });
+                                            ->orWhere('last_name', 'LIKE', '%' . $value . '%');
+                                    }
+                                });
                                 } else {
-                                    $morphQ->where('name', 'LIKE', '%' . $value . '%');
+                                    if ($operator === 'equals') {
+                                    $morphQ->where('name', '=', $value);
+                                    } else {
+                                        $morphQ->where('name', 'LIKE', '%' . $value . '%');
+                                    }
                                 }
                             }
                         });
