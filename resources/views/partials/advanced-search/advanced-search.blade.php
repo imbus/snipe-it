@@ -378,6 +378,12 @@ document.getElementById('filterSearch').addEventListener('input', function(e) {
             item.style.display = 'none';
         }
     });
+
+    // reset panel height if cleared
+    const panel = document.getElementById('advancedSearchPanel');
+    if (panel){
+        panel.style.height = '';
+    }
 });
 
 
