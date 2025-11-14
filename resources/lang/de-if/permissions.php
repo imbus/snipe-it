@@ -254,6 +254,22 @@ return [
         'name' => 'Benutzer',
         'note' => 'Gewährt Zugriff auf den Bereich "Benutzer" in der Anwendung.',
     ],
+    'predefinedfilters'   => [
+        'name' => 'Vordefinierte Filter',
+        'note'       => 'Gewährt Zugriff auf Vordefinierte Filter in der App.',
+    ],
+    'predefinedfiltercreate' => [
+        'name' => 'Öffentliche vordefinierte Filter erstellen',
+    ],
+    'predefinedfilterview' => [
+        'name' => 'Öffentliche vordefinierte Filter anzeigen',
+    ],
+    'predefinedfilteredit' => [
+        'name' => 'Öffentliche vordefinierte Filter bearbeiten',
+    ],
+    'predefinedfilterdelete' => [
+        'name' => 'Öffentliche vordefinierte Filter löschen',
+    ],
     'usersview' => [
         'name' => 'Benutzer anzeigen',
     ],
