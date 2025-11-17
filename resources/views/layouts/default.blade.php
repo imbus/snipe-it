@@ -38,6 +38,12 @@
     <link rel="stylesheet" href="{{ url(mix('css/dist/all.css')) }}">
 
     {{-- page level css --}}
+
+    <style>
+        .treeview-menu {
+            z-index: 10000 !important;
+        }
+    </style>
     @stack('css')
 
 
