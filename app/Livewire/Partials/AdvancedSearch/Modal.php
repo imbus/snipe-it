@@ -10,6 +10,7 @@ use App\Models\PredefinedFilter;
 use App\Services\PredefinedFilterService;
 use App\Models\PermissionGroup;
 
+// TODO static code analysis suggests own files for enums
 enum FilterVisibility: string
 {
     case Private = "private";

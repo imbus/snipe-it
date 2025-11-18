@@ -16,7 +16,7 @@ class FilterService
 
     public function searchByFilter($query, $filters)
     {
-        $q = $query->where(function (Builder $query) use ($filters) {
+        return $query->where(function (Builder $query) use ($filters) {
 
             $this->applyDateRangeFilter($query, 'assets.purchase_date', $filters, /* isDateTime */ false);
             $this->applyDateRangeFilter($query, 'assets.asset_eol_date', $filters, /* isDateTime */ false);
@@ -46,15 +46,14 @@ class FilterService
             }
         });
 
-        return $q;
     }
 
     /**
      * Apply a single filter object into the query builder, using operator & logic.
-     *
      * @param Builder $q
-     * @param array $filterObj  keys: field, value, operator, logic
-     * @return void
+     * @param string $qualifiedField
+     * @param array $filters
+     * @param bool $isDateTime
      */
 
     protected function applySingleFilter(Builder &$q, array $filterObj)
@@ -427,8 +426,6 @@ class FilterService
     }
 
     /**
-     * 
-     *
      * @param Builder $query
      * @param string  $qualifiedField 
      * @param array   $filters
@@ -437,6 +434,7 @@ class FilterService
 
     public function applyDateRangeFilter($query, $qualifiedField, $filters, bool $isDateTime = false)
     {
+        // TODO static CODE analysis suggests refactoring - complexity
         $start = null;
         $end = null;
 

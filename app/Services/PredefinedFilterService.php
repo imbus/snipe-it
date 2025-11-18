@@ -6,7 +6,6 @@ use DB;
 use Exception;
 use Throwable;
 use App\Models\PredefinedFilter;
-use App\Services\PredefinedFilterPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
