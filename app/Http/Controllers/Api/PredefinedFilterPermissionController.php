@@ -29,7 +29,7 @@ class PredefinedFilterPermissionController extends Controller
         $this->authorize('update', $filter);
 
         // Granular Permission
-        if (!$filter->userHasPermission($request->user(), 'edit')) {
+        if (! $filter->userHasPermission($request->user(), 'edit')) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -49,7 +49,7 @@ class PredefinedFilterPermissionController extends Controller
 
         $filter = $permission->filter;
 
-        if (!$filter) {
+        if (! $filter) {
             return response()->json(['message' => trans('NotFound')], 404);
         }
 

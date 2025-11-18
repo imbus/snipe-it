@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use App\Models\PredefinedFilter;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PredefinedFilterController extends Controller
 {
@@ -25,26 +24,24 @@ class PredefinedFilterController extends Controller
         return view('predefined-filters.index', compact('filters'));
     }
 
-
     /**
-    * Show the given Predefined Filter.
-    *
-    * @param PredefinedFilter
-    */
-    public function view(PredefinedFilter $filter) : View|RedirectResponse
+     * Show the given Predefined Filter.
+     *
+     * @param PredefinedFilter
+     */
+    public function view(PredefinedFilter $filter): View|RedirectResponse
     {
         $user = auth()->user();
 
         $filter = PredefinedFilter::find($filter->id);
 
-        if (!$filter) {
+        if (! $filter) {
             return redirect()->back()->withErrors([
                 'message' => trans('admin/predefinedFilters/message.does_not_exist'),
             ]);
         }
 
         if ($filter->userHasPermission($user, 'view')) {
-
             return view('predefined-filters.view', compact('filter'));
         }
 
@@ -53,17 +50,17 @@ class PredefinedFilterController extends Controller
     }
 
     /**
-    * Delete the given Predefined Filter.
-    *
-    * @param  int $Id
-    */
-    public function destroy($Id) : RedirectResponse
+     * Delete the given Predefined Filter.
+     *
+     * @param  int $Id
+     */
+    public function destroy($Id): RedirectResponse
     {
         $user = auth()->user();
 
         $filter = PredefinedFilter::find($Id);
 
-        if (!$filter) {
+        if (! $filter) {
             return redirect()->route('predefined-filters.index')
                 ->with('error', trans('admin/predefinedFilters/message.does_not_exist'));
         }
@@ -76,14 +73,14 @@ class PredefinedFilterController extends Controller
 
         // It's public, so check permission logic
         if ($filter->is_public) {
-            if (!$filter->userHasPermission($user, 'delete')) {
+            if (! $filter->userHasPermission($user, 'delete')) {
                 return redirect()->route('predefined-filters.index')
                     ->with('error', trans('general.insufficient_permissions'));
             }
 
             $filter->delete();
-                return redirect()->route('predefined-filters.index')
-                    ->with('success', trans('admin/predefinedFilters/message.delete.success'));
+            return redirect()->route('predefined-filters.index')
+                ->with('success', trans('admin/predefinedFilters/message.delete.success'));
         }
 
         return redirect()->route('predefined-filters.index')

@@ -94,7 +94,7 @@ class PredefinedFilterPresenter extends Presenter
                 'title' => trans('table.actions'),
                 'formatter' => 'predefined-filtersActionsFormatter',
                 'printIgnore' => true,
-            ]
+            ],
         ];
 
         return json_encode($layout);

@@ -13,7 +13,6 @@ class LivewireServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**

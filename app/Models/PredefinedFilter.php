@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
 use Watson\Validating\ValidatingTrait;
-
 
 class PredefinedFilter extends Model
 {
@@ -16,8 +15,8 @@ class PredefinedFilter extends Model
     use ValidatingTrait;
 
     protected $casts = [
-        "filter_data" => "array",
-        "is_public" => "boolean"
+        'filter_data' => 'array',
+        'is_public' => 'boolean',
     ];
 
     protected $fillable = [
@@ -32,7 +31,7 @@ class PredefinedFilter extends Model
         'name' => ['required', 'string', 'max:255'],
         'filter_data' => ['required', 'array'],
         'permissions' => ['sometimes', 'array'],
-        'is_public' => 'sometimes|boolean'
+        'is_public' => 'sometimes|boolean',
     ];
 
     public function permissionGroups()
@@ -59,8 +58,8 @@ class PredefinedFilter extends Model
 
         // If filter is private AND is_owner AND action != create he can do everything
         // such as create private, edit and delete
-        // note the 'create' permission is only for creating public filters. 
-        if ($user->id == $this->created_by && !$this->is_public && $action != 'create') {
+        // note the 'create' permission is only for creating public filters.
+        if ($user->id === $this->created_by && ! $this->is_public && $action !== 'create') {
             return true;
         }
 
@@ -77,8 +76,8 @@ class PredefinedFilter extends Model
             case 'delete':
                 // If filter is private AND is_owner AND action != create he can do everything
                 // such as create private, edit and delete
-                // note the 'create' permission is only for creating public filters. 
-                if ($user->id == $this->created_by && !$this->is_public && $action != 'create') {
+                // note the 'create' permission is only for creating public filters.
+                if ($user->id === $this->created_by && ! $this->is_public && $action !== 'create') {
                     return true;
                 }
 
@@ -86,51 +85,6 @@ class PredefinedFilter extends Model
         }
 
         return false;
-    }
-
-    private function checkPermissions(User $user, $action): bool
-    {
-        $userGroupIds = $user->groups()->pluck('id')->toArray();
-
-        if (!$user->relationLoaded('groups')) {
-            $user->load('groups');
-        }
-
-        foreach ($this->permissionGroups as $group) {
-            if (in_array($group->id, $userGroupIds)) {
-                $permissions = json_decode($group->permissions, true);
-                if ((isset($permissions["predefinedFilter.$action"]) && $permissions["predefinedFilter.$action"] == '1')) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    protected function applyArrayOrScalarFilter(Builder $assets, array $filter, string $key, string $column): void
-    {
-        if (!empty($filter[$key])) {
-            $values = is_array($filter[$key]) ? $filter[$key] : [$filter[$key]];
-            $assets->whereIn($column, $values);
-        }
-    }
-
-    protected function applyLikeFilter(Builder $assets, array $filter, string $key, string $column): void
-    {
-        if (!empty($filter[$key])) {
-            $assets->where($column, 'LIKE', '%' . $filter[$key] . '%');
-        }
-    }
-
-    protected function applyDateRangeFilter(Builder $assets, array $filter, string $base): void
-    {
-        if (!empty($filter["{$base}_start"])) {
-            $assets->whereDate("{$base}", '>=', $filter["{$base}_start"]);
-        }
-        if (!empty($filter["{$base}_end"])) {
-            $assets->whereDate("{$base}", '<=', $filter["{$base}_end"]);
-        }
     }
 
     public function filterAssets(Builder $assets)
@@ -144,7 +98,7 @@ class PredefinedFilter extends Model
         $this->applyArrayOrScalarFilter($assets, $filter, 'model_id', 'model_id');
         $this->applyArrayOrScalarFilter($assets, $filter, 'status_id', 'status_id');
 
-        if (!empty($filter['category_id']) || !empty($filter['manufacturer_id'])) {
+        if (! empty($filter['category_id']) || ! empty($filter['manufacturer_id'])) {
             $assets->leftJoin('models', 'assets.model_id', '=', 'models.id');
             $this->applyArrayOrScalarFilter($assets, $filter, 'category_id', 'models.category_id');
             $this->applyArrayOrScalarFilter($assets, $filter, 'manufacturer_id', 'models.manufacturer_id');
@@ -165,15 +119,15 @@ class PredefinedFilter extends Model
         $this->applyLikeFilter($assets, $filter, 'serial', 'assets.serial');
 
         // Custom fields
-        if (!empty($filter['custom_fields']) && is_array($filter['custom_fields'])) {
+        if (! empty($filter['custom_fields']) && is_array($filter['custom_fields'])) {
             foreach ($filter['custom_fields'] as $key => $value) {
-                $assets->where("assets.$key", '=', $value);
+                $assets->where("assets.{$key}", '=', $value);
             }
         }
         return $assets;
     }
 
-    public function checkIfNameAlreadyExists(string $name, int $id = null): bool
+    public function checkIfNameAlreadyExists(string $name, ?int $id = null): bool
     {
         if ($id === null) {
             $query = $this->where('name', '=', $name);
@@ -183,6 +137,50 @@ class PredefinedFilter extends Model
         $query = $this->where('name', '=', $name);
         $query->where('id', '<>', $id);
         return sizeof($query->get()->toArray()) > 1;
+    }
 
+    protected function applyArrayOrScalarFilter(Builder $assets, array $filter, string $key, string $column): void
+    {
+        if (! empty($filter[$key])) {
+            $values = is_array($filter[$key]) ? $filter[$key] : [$filter[$key]];
+            $assets->whereIn($column, $values);
+        }
+    }
+
+    protected function applyLikeFilter(Builder $assets, array $filter, string $key, string $column): void
+    {
+        if (! empty($filter[$key])) {
+            $assets->where($column, 'LIKE', '%' . $filter[$key] . '%');
+        }
+    }
+
+    protected function applyDateRangeFilter(Builder $assets, array $filter, string $base): void
+    {
+        if (! empty($filter["{$base}_start"])) {
+            $assets->whereDate("{$base}", '>=', $filter["{$base}_start"]);
+        }
+        if (! empty($filter["{$base}_end"])) {
+            $assets->whereDate("{$base}", '<=', $filter["{$base}_end"]);
+        }
+    }
+
+    private function checkPermissions(User $user, $action): bool
+    {
+        $userGroupIds = $user->groups()->pluck('id')->toArray();
+
+        if (! $user->relationLoaded('groups')) {
+            $user->load('groups');
+        }
+
+        foreach ($this->permissionGroups as $group) {
+            if (in_array($group->id, $userGroupIds)) {
+                $permissions = json_decode($group->permissions, true);
+                if ((isset($permissions["predefinedFilter.{$action}"]) && $permissions["predefinedFilter.{$action}"] === '1')) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

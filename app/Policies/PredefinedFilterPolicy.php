@@ -2,17 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\PredefinedFilter;
+use App\Models\User;
 
 class PredefinedFilterPolicy extends SnipePermissionsPolicy
 {
-    protected function columnName()
-    {
-        return 'predefinedFilter';
-    }
 
-    
     public function view(User $user, $filter = null)
     {
         // Global permission
@@ -22,8 +17,8 @@ class PredefinedFilterPolicy extends SnipePermissionsPolicy
 
         //Controller
         if (is_string($filter) && $filter === PredefinedFilter::class) {
-        return true; 
-    }
+            return true;
+        }
 
         // Record-level permissions
         if ($filter instanceof PredefinedFilter) {
@@ -62,6 +57,10 @@ class PredefinedFilterPolicy extends SnipePermissionsPolicy
     public function create(User $user)
     {
         // Allow via global create permission
-        return parent::create($user) || true; 
+        return parent::create($user) || true;
+    }
+    protected function columnName()
+    {
+        return 'predefinedFilter';
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\PredefinedFiltersTransformer;
 use App\Http\Transformers\SelectlistTransformer;
@@ -11,7 +12,6 @@ use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Helpers\Helper;
 
 class PredefinedFilterController extends Controller
 {
@@ -22,14 +22,14 @@ class PredefinedFilterController extends Controller
         $this->service = $service;
     }
 
-    public function index(Request $request) : JsonResponse | array
+    public function index(Request $request): JsonResponse | array
     {
         $filters = $this->service->getAllViewableFilters();
 
         if ($request->filled('search')) {
             $search = strtolower($request->get('search'));
-            $filters = $filters->filter(fn($filter) =>
-                str_contains(strtolower($filter->name), $search)
+            $filters = $filters->filter(
+                fn ($filter) => str_contains(strtolower($filter->name), $search)
             );
         }
 
@@ -38,15 +38,15 @@ class PredefinedFilterController extends Controller
         $order = $request->input('order', 'asc');
 
         $allowed_columns = ['id', 'name', 'is_public', 'created_by'];
-        
-        if (!in_array($sort, $allowed_columns)) {
+
+        if (! in_array($sort, $allowed_columns)) {
             $sort = 'name';
         }
 
         $filters = $order === 'desc'
-            ? $filters->sortByDesc(fn($f) => strtolower(data_get($f, $sort, '')))
-            : $filters->sortBy(fn($f) => strtolower(data_get($f, $sort, '')));
-        
+            ? $filters->sortByDesc(fn ($f) => strtolower(data_get($f, $sort, '')))
+            : $filters->sortBy(fn ($f) => strtolower(data_get($f, $sort, '')));
+
         // --- Pagination ---
         $total = $filters->count();
         $offset = (int) $request->input('offset', 0);
@@ -54,20 +54,18 @@ class PredefinedFilterController extends Controller
 
         $filters = $filters->slice($offset, $limit)->values();
 
-        return (new PredefinedFiltersTransformer)->transformPredefinedFilters($filters, $total);
+        return (new PredefinedFiltersTransformer())->transformPredefinedFilters($filters, $total);
     }
-
-
 
     public function show(int $id)
     {
         $filter = $this->service->getFilterById($id);
-        
-        if (!$filter) {
+
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
-        if ($filter->userHasPermission(Auth::user(), 'view')){
+        if ($filter->userHasPermission(Auth::user(), 'view')) {
             return response()->json($filter->toArray());
         }
 
@@ -76,22 +74,21 @@ class PredefinedFilterController extends Controller
 
     public function store(Request $request): JsonResponse | array
     {
-
         $user = auth()->user();
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'filter_data' => 'required|array',
-            'is_public' => 'sometimes|boolean'
+            'is_public' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()),422);
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
         }
-        
+
         $validated = $validator->validated();
 
-        if (!empty($validated['is_public']) && !$user->hasAccess('predefinedFilter.create')) {
+        if (! empty($validated['is_public']) && ! $user->hasAccess('predefinedFilter.create')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.create.not_allowed')], 403);
         }
 
@@ -108,31 +105,31 @@ class PredefinedFilterController extends Controller
         $user = auth()->user();
         $filter = PredefinedFilter::find($id);
 
-        if (!$filter) {
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'filter_data' => 'required|array',
-            'is_public' => 'sometimes|boolean'
+            'is_public' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()),422);
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
         }
-        
+
         $validated = $validator->validated();
-        
+
         $newIsPublic = $validated['is_public'] ?? $filter->is_public;
         $currentIsPublic = $filter->is_public;
 
-        if (!$filter->userHasPermission($user, 'edit')){
+        if (! $filter->userHasPermission($user, 'edit')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.not_allowed_to_edit')], 403);
         }
 
         //create permission
-        if ((!$currentIsPublic && $newIsPublic) && !$filter->userHasPermission($user, 'create')){
+        if ((! $currentIsPublic && $newIsPublic) && ! $filter->userHasPermission($user, 'create')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_isPublic')], 403);
         }
 
@@ -148,7 +145,7 @@ class PredefinedFilterController extends Controller
         $user = auth()->user();
         $filter = PredefinedFilter::find($id);
 
-        if (!$filter) {
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
@@ -163,7 +160,7 @@ class PredefinedFilterController extends Controller
     public function selectlist(Request $request)
     {
         $filters = $this->service->selectList($request, true);
-        return (new SelectlistTransformer)->transformSelectlist($filters);
+        return (new SelectlistTransformer())->transformSelectlist($filters);
     }
 
     // Optional: You can refactor the permission syncing methods similarly

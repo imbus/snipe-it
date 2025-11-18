@@ -3,10 +3,10 @@
 namespace App\Http\Transformers;
 
 use App\Helpers\Helper;
-use Illuminate\Support\Collection;
 use App\Models\Setting;
+use Illuminate\Support\Collection;
 
-class PredefinedFiltersTransformer 
+class PredefinedFiltersTransformer
 {
     public function transformPredefinedFilters(Collection $filters, $total)
     {
@@ -15,7 +15,7 @@ class PredefinedFiltersTransformer
             $array[] = self::transformPredefinedFilter($filter);
         }
 
-        return (new DatatablesTransformer)->transformDatatables($array, $total);
+        return (new DatatablesTransformer())->transformDatatables($array, $total);
     }
 
     public function transformPredefinedFilter($filter)
@@ -24,9 +24,9 @@ class PredefinedFiltersTransformer
 
         $array = [
             'id' => (int) $filter->id,
-            'name'=> e($filter->name),
+            'name' => e($filter->name),
             'filter_data' => json_decode($filter->filter_data),
-            'is_public' => (bool)$filter->is_public,
+            'is_public' => (bool) $filter->is_public,
             'object_type' => e($filter->object_type),
             'created_by' => $filter->createdBy ? [
                 'id' => (int) $filter->createdBy->id,
@@ -38,31 +38,28 @@ class PredefinedFiltersTransformer
         ];
 
         if ($filter->relationLoaded('permissionGroups')) {
-
             $permissionGroups = $filter->permissionGroups;
 
             $groups = [
                 'total' => $permissionGroups->count(),
-                'rows' => []
+                'rows' => [],
             ];
 
-            foreach ($permissionGroups as $group){
+            foreach ($permissionGroups as $group) {
                 $groups['rows'][] = [
                     'id' => $group->id,
-                    'name' => $group->name
+                    'name' => $group->name,
                 ];
             }
             $array['groups'] = $groups;
         } else {
-
             $array['groups'] = null;
         }
 
         $permissions_array['available_actions'] = [
             'update' => $filter->created_by === auth()->id() || $filter->userHasPermission(auth()->user(), 'edit'),
-            'delete' => $filter->created_by === auth()->id() || $filter->userHasPermission(auth()->user(), 'delete')
+            'delete' => $filter->created_by === auth()->id() || $filter->userHasPermission(auth()->user(), 'delete'),
         ];
-        $array += $permissions_array;
-        return $array;
+        return $array + $permissions_array;
     }
 }

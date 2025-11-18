@@ -4,9 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
-use Illuminate\Database\Eloquent\Builder;
 
 class PredefinedFilterPermission extends Model
 {
@@ -23,9 +21,9 @@ class PredefinedFilterPermission extends Model
     ];
 
     protected $rules = [
-        'created_by'                => ['required', 'integer', 'exists:users,id'],
-        'predefined_filter_id'      => ['required', 'integer', 'exists:predefined_filters,id'],
-        'permission_group_id'       => ['required', 'integer', 'exists:permission_groups,id'],
+        'created_by' => ['required', 'integer', 'exists:users,id'],
+        'predefined_filter_id' => ['required', 'integer', 'exists:predefined_filters,id'],
+        'permission_group_id' => ['required', 'integer', 'exists:permission_groups,id'],
     ];
 
     /*

@@ -28,6 +28,9 @@ class AssetModel extends SnipeModel
     use Loggable, Requestable, Presentable;
     use TwoColumnUniqueUndeletedTrait;
     use HasUploads;
+    use ValidatingTrait;
+
+    use Searchable;
 
     /**
      * Whether the model should inject its identifier to the unique
@@ -38,23 +41,19 @@ class AssetModel extends SnipeModel
      */
 
     protected $injectUniqueIdentifier = true;
-    use ValidatingTrait;
     protected $table = 'models';
     protected $presenter = AssetModelPresenter::class;
 
     // Declare the rules for the model validation
 
-
     protected $rules = [
-        'name'              => 'string|required|min:1|max:255|two_column_unique_undeleted:model_number',
-        'model_number'      => 'string|max:255|nullable|two_column_unique_undeleted:name',
-        'min_amt'           => 'integer|min:0|nullable',
-        'category_id'       => 'required|integer|exists:categories,id',
-        'manufacturer_id'   => 'integer|exists:manufacturers,id|nullable',
-        'eol'               => 'integer:min:0|max:240|nullable',
+        'name' => 'string|required|min:1|max:255|two_column_unique_undeleted:model_number',
+        'model_number' => 'string|max:255|nullable|two_column_unique_undeleted:name',
+        'min_amt' => 'integer|min:0|nullable',
+        'category_id' => 'required|integer|exists:categories,id',
+        'manufacturer_id' => 'integer|exists:manufacturers,id|nullable',
+        'eol' => 'integer:min:0|max:240|nullable',
     ];
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -73,10 +72,8 @@ class AssetModel extends SnipeModel
         'name',
         'notes',
         'requestable',
-        'require_serial'
+        'require_serial',
     ];
-
-    use Searchable;
 
     /**
      * The attributes that should be included when searching the model.
@@ -87,7 +84,7 @@ class AssetModel extends SnipeModel
         'name',
         'model_number',
         'notes',
-        'eol'
+        'eol',
     ];
 
     /**
@@ -97,33 +94,23 @@ class AssetModel extends SnipeModel
      */
     protected $searchableRelations = [
         'depreciation' => ['name'],
-        'category'     => ['name'],
+        'category' => ['name'],
         'manufacturer' => ['name'],
     ];
-
-    protected static function booted(): void
-    {
-        static::forceDeleted(function (AssetModel $assetModel) {
-            $assetModel->requests()->forceDelete();
-        });
-
-        static::softDeleted(function (AssetModel $assetModel) {
-            $assetModel->requests()->delete();
-        });
-    }
 
     /**
      * Establishes the model -> assets relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function assets()
     {
         return $this->hasMany(\App\Models\Asset::class, 'model_id');
     }
-
 
     public function availableAssets()
     {
@@ -144,7 +131,9 @@ class AssetModel extends SnipeModel
      * Establishes the model -> category relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function category()
@@ -156,7 +145,9 @@ class AssetModel extends SnipeModel
      * Establishes the model -> depreciation relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function depreciation()
@@ -168,7 +159,9 @@ class AssetModel extends SnipeModel
      * Establishes the model -> manufacturer relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function manufacturer()
@@ -180,24 +173,28 @@ class AssetModel extends SnipeModel
      * Establishes the model -> fieldset relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v2.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function fieldset()
     {
         return $this->belongsTo(\App\Models\CustomFieldset::class, 'fieldset_id');
     }
-   
+
     public function customFields()
     {
-        return $this->fieldset()->first()->fields(); 
+        return $this->fieldset()->first()->fields();
     }
 
     /**
      * Establishes the model -> custom field default values relationship
      *
      * @author hannah tinkler
+     *
      * @since  [v4.3]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function defaultValues()
@@ -211,7 +208,9 @@ class AssetModel extends SnipeModel
      * @todo this should probably be moved
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v2.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function getImageUrl()
@@ -223,27 +222,29 @@ class AssetModel extends SnipeModel
         return false;
     }
 
-
     /**
      * Checks if the model is deletable
      *
      * @author A. Gianotto <snipe@snipe.net>
+     *
      * @since  [v6.3.4]
+     *
      * @return bool
      */
     public function isDeletable()
     {
         return Gate::allows('delete', $this)
-            && ($this->assets_count == 0)
-            && ($this->deleted_at == '');
+            && ($this->assets_count === 0)
+            && ($this->deleted_at === '');
     }
-
 
     /**
      * Get user who created the item
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
+     *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function adminuser()
@@ -251,12 +252,11 @@ class AssetModel extends SnipeModel
         return $this->belongsTo(\App\Models\User::class, 'created_by')->withTrashed();
     }
 
-
     /**
      * -----------------------------------------------
      * BEGIN QUERY SCOPES
      * -----------------------------------------------
-     **/
+     */
 
     /**
      * Query builder scope to search on text filters for complex Bootstrap Tables API
@@ -271,40 +271,36 @@ class AssetModel extends SnipeModel
         return $query->where(
             function ($query) use ($filter) {
                 foreach ($filter as $fieldname => $search_val) {
-
-                    if ($fieldname == 'name') {
+                    if ($fieldname === 'name') {
                         $query->where('models.name', 'LIKE', '%' . $search_val . '%');
                     }
 
-                    if ($fieldname == 'notes') {
+                    if ($fieldname === 'notes') {
                         $query->where('models.notes', 'LIKE', '%' . $search_val . '%');
                     }
 
-                    if ($fieldname == 'model_number') {
+                    if ($fieldname === 'model_number') {
                         $query->where('models.model_number', 'LIKE', '%' . $search_val . '%');
                     }
 
-                    if ($fieldname == 'category') {
+                    if ($fieldname === 'category') {
                         $query->whereHas(
-                            'category', function ($query) use ($search_val) {
-                            $query->where('categories.name', 'LIKE', '%'.$search_val.'%');
-                        }
+                            'category',
+                            function ($query) use ($search_val) {
+                                $query->where('categories.name', 'LIKE', '%'.$search_val.'%');
+                            }
                         );
                     }
 
-                    if ($fieldname == 'manufacturer') {
+                    if ($fieldname === 'manufacturer') {
                         $query->whereHas(
-                            'manufacturer', function ($query) use ($search_val) {
-                            $query->where('manufacturers.name', 'LIKE', '%'.$search_val.'%');
-                        }
+                            'manufacturer',
+                            function ($query) use ($search_val) {
+                                $query->where('manufacturers.name', 'LIKE', '%'.$search_val.'%');
+                            }
                         );
                     }
-
-
-
                 }
-
-
             }
         );
     }
@@ -317,7 +313,9 @@ class AssetModel extends SnipeModel
      * @param array $categoryIdListing
      *
      * @return  mixed
+     *
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
+     *
      * @version v1.0
      */
     public function scopeInCategory($query, array $categoryIdListing)
@@ -332,7 +330,9 @@ class AssetModel extends SnipeModel
      * @param $query
      *
      * @return  $query
+     *
      * @author  Daniel Meltzer <dmeltzer.devel@gmail.com>
+     *
      * @version v3.5
      */
     public function scopeRequestableModels($query)
@@ -350,12 +350,13 @@ class AssetModel extends SnipeModel
      */
     public function scopeSearchByManufacturerOrCat($query, $search)
     {
-        return $query->where('models.name', 'LIKE', "%$search%")
-            ->orWhere('model_number', 'LIKE', "%$search%")
+        return $query->where('models.name', 'LIKE', "%{$search}%")
+            ->orWhere('model_number', 'LIKE', "%{$search}%")
             ->orWhere(
                 function ($query) use ($search) {
                     $query->whereHas(
-                        'category', function ($query) use ($search) {
+                        'category',
+                        function ($query) use ($search) {
                             $query->where('categories.name', 'LIKE', '%'.$search.'%');
                         }
                     );
@@ -364,7 +365,8 @@ class AssetModel extends SnipeModel
             ->orWhere(
                 function ($query) use ($search) {
                     $query->whereHas(
-                        'manufacturer', function ($query) use ($search) {
+                        'manufacturer',
+                        function ($query) use ($search) {
                             $query->where('manufacturers.name', 'LIKE', '%'.$search.'%');
                         }
                     );
@@ -411,4 +413,14 @@ class AssetModel extends SnipeModel
         return $query->leftJoin('users as admin_sort', 'models.created_by', '=', 'admin_sort.id')->select('models.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 
+    protected static function booted(): void
+    {
+        static::forceDeleted(function (AssetModel $assetModel) {
+            $assetModel->requests()->forceDelete();
+        });
+
+        static::softDeleted(function (AssetModel $assetModel) {
+            $assetModel->requests()->delete();
+        });
+    }
 }

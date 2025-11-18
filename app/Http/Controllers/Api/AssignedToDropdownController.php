@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\SelectlistTransformer;
 use App\Models\Asset;
 use App\Models\Company;
 use App\Models\Location;
-use App\Models\User;
 use App\Models\Setting;
-use Illuminate\Http\JsonResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AssignedToDropdownController extends Controller
@@ -36,7 +33,7 @@ class AssignedToDropdownController extends Controller
         }
 
         if ($search) {
-            $locationQuery->where('name', 'LIKE', "%$search%");
+            $locationQuery->where('name', 'LIKE', "%{$search}%");
         }
 
         $locations = $locationQuery->get()->map(function ($location) {
@@ -52,14 +49,14 @@ class AssignedToDropdownController extends Controller
         $assetQuery = Asset::select(['id', 'name', 'asset_tag', 'image']);
 
         if ($search) {
-            $assetQuery->where('name', 'LIKE', "%$search%");
+            $assetQuery->where('name', 'LIKE', "%{$search}%");
         }
 
         $assets = $assetQuery->get()->map(function ($asset) {
-            if (!empty($asset->name)) {
-                $name = $asset->name . " (#" . $asset->asset_tag . ")";
+            if (! empty($asset->name)) {
+                $name = $asset->name . ' (#' . $asset->asset_tag . ')';
             } else {
-                $name = "#" . $asset->asset_tag;
+                $name = '#' . $asset->asset_tag;
             }
             return (object) [
                 'id' => $asset->id,
@@ -73,7 +70,7 @@ class AssignedToDropdownController extends Controller
         $userQuery = User::select(['id', 'first_name', 'last_name']);
 
         if ($search) {
-            $userQuery->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%$search%");
+            $userQuery->where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%{$search}%");
         }
 
         $users = $userQuery->get()->map(function ($user) {
@@ -86,7 +83,6 @@ class AssignedToDropdownController extends Controller
             ];
         });
 
-
         $combined = $locations->merge($assets)->merge($users)->sortBy('name')->values();
 
         // ---- PAGINATE ----
@@ -98,7 +94,6 @@ class AssignedToDropdownController extends Controller
             []
         );
 
-        return (new SelectlistTransformer)->transformSelectlist($paginated);
+        return (new SelectlistTransformer())->transformSelectlist($paginated);
     }
-
 }

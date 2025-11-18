@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
+use App\Models\PredefinedFilter;
 use DB;
 use Exception;
-use Throwable;
-use App\Models\PredefinedFilter;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class PredefinedFilterService
 {
-
     protected PredefinedFilterPermissionService $predefinedFilterPermissionService;
 
     public function __construct(PredefinedFilterPermissionService $predefinedFilterPermissionService)
@@ -29,7 +28,6 @@ class PredefinedFilterService
             ->orderBy('name')
             ->get(['id', 'name', 'created_by', 'is_public'])
             ->filter(function ($filter) use ($user) {
-
                 if ($filter->userHasPermission($user, 'view')) {
                     return true;
                 }
@@ -88,13 +86,13 @@ class PredefinedFilterService
 
             try {
                 DB::transaction(function () use ($permission_diff, $filter) {
-                    if (!empty($permission_diff['to_delete'])) {
+                    if (! empty($permission_diff['to_delete'])) {
                         foreach ($permission_diff['to_delete'] as $permission) {
                             $this->predefinedFilterPermissionService->deletePermissionByFilterId($permission['predefined_filter_id']);
                         }
                     }
 
-                    if (!empty($permission_diff['to_add'])) {
+                    if (! empty($permission_diff['to_add'])) {
                         foreach ($permission_diff['to_add'] as $permission) {
                             $permission['predefined_filter_id'] = $filter->id;
                             $this->predefinedFilterPermissionService->store($permission);
@@ -120,7 +118,7 @@ class PredefinedFilterService
     {
         $user = Auth::user();
 
-        $filters = PredefinedFilter::with("permissionGroups")
+        $filters = PredefinedFilter::with('permissionGroups')
             ->orderBy('name')
             ->get(['id', 'name', 'created_by', 'is_public']);
 
@@ -152,8 +150,6 @@ class PredefinedFilterService
 
             $query->where('name', 'LIKE', '%' . trim($search) . '%');
         }
-
-
 
         $paginated = $query->orderBy('name')->paginate(50);
 
@@ -188,12 +184,12 @@ class PredefinedFilterService
 
         return [
             'to_add' => $toAdd,
-            'to_delete' => $toDelete
+            'to_delete' => $toDelete,
         ];
     }
 
     private function getVisibilityAsLocalizedString(bool $isPublic): string
     {
-        return $isPublic == true ? trans('general.public') : trans('general.private');
+        return $isPublic === true ? trans('general.public') : trans('general.private');
     }
 }

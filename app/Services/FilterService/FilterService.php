@@ -2,22 +2,18 @@
 
 namespace App\Services\FilterService;
 
+use App\Models\Asset;
+use App\Models\Location;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use App\Models\User;
-use App\Models\Location;
-use App\Models\Asset;
-use Log;
 
 class FilterService
 {
-
     public function searchByFilter($query, $filters)
     {
-        $q = $query->where(function (Builder $query) use ($filters) {
-
+        return $query->where(function (Builder $query) use ($filters) {
             $this->applyDateRangeFilter($query, 'assets.purchase_date', $filters, /* isDateTime */ false);
             $this->applyDateRangeFilter($query, 'assets.asset_eol_date', $filters, /* isDateTime */ false);
 
@@ -32,7 +28,7 @@ class FilterService
             ];
 
             foreach ($filters as $filterItem) {
-                if (!isset($filterItem['field'], $filterItem['operator'], $filterItem['logic'], $filterItem['value'])) {
+                if (! isset($filterItem['field'], $filterItem['operator'], $filterItem['logic'], $filterItem['value'])) {
                     continue;
                 }
                 if ($filterItem['value'] === ['']) {
@@ -45,8 +41,66 @@ class FilterService
                 $this->applySingleFilter($query, $filterItem);
             }
         });
+    }
 
-        return $q;
+    /**
+     * @param Builder $query
+     * @param string  $qualifiedField
+     * @param array   $filters
+     * @param bool    $isDateTime
+     */
+
+    public function applyDateRangeFilter($query, $qualifiedField, $filters, bool $isDateTime = false)
+    {
+        $start = null;
+        $end = null;
+
+        $fieldNameOnly = \Illuminate\Support\Str::afterLast($qualifiedField, '.');
+
+        foreach ($filters as $filter) {
+            if (! isset($filter['field'], $filter['value']) || ! is_array($filter['value'])) {
+                continue;
+            }
+            if ($filter['field'] !== $fieldNameOnly) {
+                continue;
+            }
+            if (array_key_exists('startDate', $filter['value'])) {
+                $start = $filter['value']['startDate'];
+            }
+            if (array_key_exists('endDate', $filter['value'])) {
+                $end = $filter['value']['endDate'];
+            }
+        }
+
+        if (! $start && ! $end) {
+            return $query;
+        }
+
+        if ($isDateTime) {
+            if ($start && $end) {
+                $query->whereBetween($qualifiedField, [
+                    \Carbon\Carbon::parse($start)->startOfDay(),
+                    \Carbon\Carbon::parse($end)->endOfDay(),
+                ]);
+            } elseif ($start) {
+                $query->where($qualifiedField, '>=', \Carbon\Carbon::parse($start)->startOfDay());
+            } elseif ($end) {
+                $query->where($qualifiedField, '<=', \Carbon\Carbon::parse($end)->endOfDay());
+            }
+        } else {
+            if ($start && $end) {
+                $query->whereBetween($qualifiedField, [
+                    \Carbon\Carbon::parse($start)->toDateString(),
+                    \Carbon\Carbon::parse($end)->toDateString(),
+                ]);
+            } elseif ($start) {
+                $query->whereDate($qualifiedField, '>=', \Carbon\Carbon::parse($start)->toDateString());
+            } elseif ($end) {
+                $query->whereDate($qualifiedField, '<=', \Carbon\Carbon::parse($end)->toDateString());
+            }
+        }
+
+        return $query;
     }
 
     /**
@@ -54,6 +108,7 @@ class FilterService
      *
      * @param Builder $q
      * @param array $filterObj  keys: field, value, operator, logic
+     *
      * @return void
      */
 
@@ -68,7 +123,6 @@ class FilterService
         $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator) {
             // === 1. Custom Field Support ===
 
-          
             /*if (Str::startsWith($fieldname, ['_snipeit_'])) {
                 //Log::error("fieldName: {$fieldname}");
                 //Log::error("value: {$value}");
@@ -156,15 +210,15 @@ class FilterService
                 $meta = $relationMap[$fieldname];
 
                 // --- Morph Relation ---
-                if (!empty($meta['morph'])) {
+                if (! empty($meta['morph'])) {
                     if (is_array($value) && isset($value[0]['assignedType'])) {
                         $grouped = collect($value)->groupBy('assignedType');
 
                         $inner->where(function ($q2) use ($grouped, $meta) {
                             foreach ($grouped as $type => $items) {
                                 $q2->orWhereHasMorph($meta['relation'], [$type], function ($morphQ) use ($items, $type) {
-                                    $ids = collect($items)->pluck('assigned_to')->filter((fn($v) => is_numeric($v)));
-                                    $names = collect($items)->pluck('assigned_to')->filter(fn($v) => is_string($v));
+                                    $ids = collect($items)->pluck('assigned_to')->filter((fn ($v) => is_numeric($v)));
+                                    $names = collect($items)->pluck('assigned_to')->filter(fn ($v) => is_string($v));
 
                                     if ($ids->isNotEmpty()) {
                                         $morphQ->whereIn('id', $ids);
@@ -172,15 +226,12 @@ class FilterService
 
                                     if ($names->isNotEmpty()) {
                                         $morphQ->where(function ($query) use ($names, $type) {
-
                                             foreach ($names as $name) {
                                                 if ($type === \App\Models\User::class) {
-
                                                     $query->orWhere(function ($sq) use ($name) {
                                                         $sq->where('first_name', 'LIKE', '%' . $name . '%')
                                                             ->orWhere('last_name', 'LIKE', '%' . $name . '%');
                                                     });
-
                                                 } else {
                                                     $query->orWhere('name', 'LIKE', '%' . $name . '%');
                                                 }
@@ -243,15 +294,13 @@ class FilterService
 
             // === 5. Handle assignedTo ===
             if ($fieldname === 'assigned_to') {
-
-                
                 // Check if type is valid
                 $validTypes = [Asset::class, Location::class, User::class];
-                if (!in_array($value['type'], $validTypes)) {
+                if (! in_array($value['type'], $validTypes)) {
                     throw new \UnexpectedValueException('You\'ve provided an invalid type');
                 }
-                
-                if ($value['value'] == '') {
+
+                if ($value['value'] === '') {
                     return;
                 }
 
@@ -265,7 +314,7 @@ class FilterService
                 }
 
                 // === 5b. Handle assignedTo asset ===
-                else if ($value['type'] === Asset::class) {
+                elseif ($value['type'] === Asset::class) {
                     $assignedValue = $value['value'];
 
                     // Ensure parent asset has an assigned asset and the assigned type is Asset.
@@ -290,7 +339,7 @@ class FilterService
                     });
                 }
                 // === 5c. Handle assignedTo user ===
-                else if ($value['type'] === User::class) {
+                elseif ($value['type'] === User::class) {
                     $assignedValue = trim((string) ($value['value'] ?? ''));
                     $isNotLogic = (isset($logic) && strtoupper($logic) === 'NOT');
 
@@ -322,7 +371,6 @@ class FilterService
                                 $this->applyRelationalValue($r, $last, $operator, ['column' => 'users.last_name']);
                             });
                         });
-
                     });
                 }
 
@@ -332,7 +380,7 @@ class FilterService
             // === 6. Fallback: Direct column ===
             $column = 'assets.' . $fieldname;
 
-            if (!Schema::hasColumn('assets', $fieldname)) {
+            if (! Schema::hasColumn('assets', $fieldname)) {
                 return;
             }
 
@@ -346,7 +394,7 @@ class FilterService
                     $outer->whereNot($callback);
 
                     // Only add "OR IS NULL" for direct columns (not relationships)
-                    if (!Str::contains($fieldname, '.')) {
+                    if (! Str::contains($fieldname, '.')) {
                         // Also double-check column existence
                         if (Schema::hasColumn('assets', $fieldname)) {
                             $outer->orWhereNull('assets.' . $fieldname);
@@ -368,7 +416,7 @@ class FilterService
 
         $column = $fieldname;
 
-        if (!$column || !Schema::hasColumn('assets', $column)) {
+        if (! $column || ! Schema::hasColumn('assets', $column)) {
             return;
         }
 
@@ -389,7 +437,7 @@ class FilterService
         }
 
         // Fallback safety check
-        if (!$idField && !$nameField) {
+        if (! $idField && ! $nameField) {
             return;
         }
         $values = is_array($value) ? $value : [$value];
@@ -401,7 +449,7 @@ class FilterService
             $first = true;
 
             // IDs only
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 if ($first) {
                     $subQ->whereIn($idField, $ids);
                     $first = false;
@@ -437,68 +485,5 @@ class FilterService
                 }
             });
         }
-    }
-
-    /**
-     * 
-     *
-     * @param Builder $query
-     * @param string  $qualifiedField 
-     * @param array   $filters
-     * @param bool    $isDateTime      
-     */
-
-    public function applyDateRangeFilter($query, $qualifiedField, $filters, bool $isDateTime = false)
-    {
-        $start = null;
-        $end = null;
-
-        $fieldNameOnly = \Illuminate\Support\Str::afterLast($qualifiedField, '.');
-
-        foreach ($filters as $filter) {
-            if (!isset($filter['field'], $filter['value']) || !is_array($filter['value'])) {
-                continue;
-            }
-            if ($filter['field'] !== $fieldNameOnly) {
-                continue;
-            }
-            if (array_key_exists('startDate', $filter['value'])) {
-                $start = $filter['value']['startDate'];
-            }
-            if (array_key_exists('endDate', $filter['value'])) {
-                $end = $filter['value']['endDate'];
-            }
-        }
-
-        if (!$start && !$end) {
-            return $query;
-        }
-
-        if ($isDateTime) {
-
-            if ($start && $end) {
-                $query->whereBetween($qualifiedField, [
-                    \Carbon\Carbon::parse($start)->startOfDay(),
-                    \Carbon\Carbon::parse($end)->endOfDay(),
-                ]);
-            } elseif ($start) {
-                $query->where($qualifiedField, '>=', \Carbon\Carbon::parse($start)->startOfDay());
-            } elseif ($end) {
-                $query->where($qualifiedField, '<=', \Carbon\Carbon::parse($end)->endOfDay());
-            }
-        } else {
-            if ($start && $end) {
-                $query->whereBetween($qualifiedField, [
-                    \Carbon\Carbon::parse($start)->toDateString(),
-                    \Carbon\Carbon::parse($end)->toDateString(),
-                ]);
-            } elseif ($start) {
-                $query->whereDate($qualifiedField, '>=', \Carbon\Carbon::parse($start)->toDateString());
-            } elseif ($end) {
-                $query->whereDate($qualifiedField, '<=', \Carbon\Carbon::parse($end)->toDateString());
-            }
-        }
-
-        return $query;
     }
 }
