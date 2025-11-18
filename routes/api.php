@@ -4,6 +4,7 @@ use App\Http\Controllers\Api;
 use App\Http\Controllers\Api\PredefinedFilterController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], function () {
+
+
     Route::get('/', function () {
         return response()->json(
             [
@@ -27,15 +30,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         );
     });
 
+
     /**
      * Account routes
      */
     Route::group(['prefix' => 'account'], function () {
+
         Route::get(
             'requests',
             [
                 Api\ProfileController::class,
-                'requestedAssets',
+                'requestedAssets'
             ]
         )->name('api.assets.requested');
 
@@ -43,7 +48,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'eulas',
             [
                 Api\ProfileController::class,
-                'eulas',
+                'eulas'
             ]
         )->name('api.self.eulas');
 
@@ -54,7 +59,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'requestable/hardware',
             [
                 Api\AssetsController::class,
-                'requestable',
+                'requestable'
             ]
         )->name('api.assets.requestable');
 
@@ -62,7 +67,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'personal-access-tokens',
             [
                 Api\ProfileController::class,
-                'createApiToken',
+                'createApiToken'
             ]
         )->name('api.personal-access-token.create');
 
@@ -70,7 +75,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'personal-access-tokens',
             [
                 Api\ProfileController::class,
-                'showApiTokens',
+                'showApiTokens'
             ]
         )->name('api.personal-access-token.index');
 
@@ -78,20 +83,25 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'personal-access-tokens/{tokenId}',
             [
                 Api\ProfileController::class,
-                'deleteApiToken',
+                'deleteApiToken'
             ]
         )->name('api.personal-access-token.delete');
+
+
+
     }); // end account group
+
 
     /**
      * Accessories routes
      */
     Route::group(['prefix' => 'accessories'], function () {
+
         Route::get(
             '{accessory}/checkedout',
             [
                 Api\AccessoriesController::class,
-                'checkedout',
+                'checkedout'
             ]
         )->name('api.accessories.checkedout');
 
@@ -99,15 +109,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{accessory}/checkout',
             [
                 Api\AccessoriesController::class,
-                'checkout',
+                'checkout'
             ]
         )->name('api.accessories.checkout');
+
 
         Route::post(
             '{accessory}/checkin',
             [
                 Api\AccessoriesController::class,
-                'checkin',
+                'checkin'
             ]
         )->name('api.accessories.checkin');
 
@@ -115,9 +126,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'selectlist',
             [
                 Api\AccessoriesController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.accessories.selectlist');
+
+
+
     }); // end accessories group
 
     Route::resource(
@@ -136,27 +150,32 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     );
 
+
     Route::group(['prefix' => 'assignedTo'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\AssignedToDropdownController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.assignedTo.selectlist');
+
     }); // end Assigned to dropdown selectlist routes group
 
     /**
      * Categpries API routes
      */
     Route::group(['prefix' => 'categories'], function () {
+
         Route::get(
             '{item_type}/selectlist',
             [
                 Api\CategoriesController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.categories.selectlist');
+
     });
 
     Route::resource(
@@ -179,13 +198,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      * Companies API routes
      */
     Route::group(['prefix' => 'companies'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\CompaniesController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.companies.selectlist');
+
     });
 
     Route::resource(
@@ -204,17 +225,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end companies API routes
 
+
     /**
      * Departments API routes
      */
     Route::group(['prefix' => 'departments'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\DepartmentsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.departments.selectlist');
+
     });
 
     Route::resource(
@@ -233,15 +257,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end departments API routes
 
+
     /**
      * Components API routes
      */
     Route::group(['prefix' => 'components'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\ComponentsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.components.selectlist');
 
@@ -249,15 +275,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{component}/assets',
             [
                 Api\ComponentsController::class,
-                'getAssets',
+                'getAssets'
             ]
         )->name('api.components.assets');
+
     });
     Route::post(
         'components/{id}/checkin',
         [
             Api\ComponentsController::class,
-            'checkin',
+            'checkin'
         ]
     )->name('api.components.checkin');
 
@@ -265,9 +292,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         'components/{id}/checkout',
         [
             Api\ComponentsController::class,
-            'checkout',
+            'checkout'
         ]
     )->name('api.components.checkout');
+
 
     Route::resource(
         'components',
@@ -285,15 +313,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end components API routes
 
+
     /**
      * Consumables API routes
      */
     Route::group(['prefix' => 'consumables'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\ConsumablesController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.consumables.selectlist');
 
@@ -301,18 +331,21 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/users',
             [
                 Api\ConsumablesController::class,
-                'getDataView',
+                'getDataView'
             ]
         )->name('api.consumables.show.users');
+
 
         Route::post(
             '{consumable}/checkout',
             [
                 Api\ConsumablesController::class,
-                'checkout',
+                'checkout'
             ]
         )->name('api.consumables.checkout');
+
     });
+
 
     Route::resource(
         'consumables',
@@ -329,6 +362,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'parameters' => ['consumable' => 'consumable_id'],
         ]
     ); // end consumables API routes
+
+
 
     /**
      * Depreciations API routes
@@ -349,23 +384,27 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end depreciations API routes
 
+
     Route::get(
         'reports/depreciation',
         [
             Api\AssetsController::class,
-            'index',
+            'index'
         ]
     )->name('api.depreciation-report.index');
+
+
 
     /**
      * Fields API routes
      */
     Route::group(['prefix' => 'fields'], function () {
+
         Route::post(
             'fieldsets/{id}/order',
             [
                 Api\CustomFieldsController::class,
-                'postReorder',
+                'postReorder'
             ]
         )->name('api.customfields.order');
 
@@ -373,7 +412,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{field}/associate',
             [
                 Api\CustomFieldsController::class,
-                'associate',
+                'associate'
             ]
         )->name('api.customfields.associate');
 
@@ -381,7 +420,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{field}/disassociate',
             [
                 Api\CustomFieldsController::class,
-                'disassociate',
+                'disassociate'
             ]
         )->name('api.customfields.disassociate');
     });
@@ -390,13 +429,14 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         'fields',
         Api\CustomFieldsController::class,
         [
-            'names' => [
-                'index' => 'api.customfields.index',
-                'show' => 'api.customfields.show',
-                'update' => 'api.customfields.update',
-                'store' => 'api.customfields.store',
-                'destroy' => 'api.customfields.destroy',
-            ],
+            'names' =>
+                [
+                    'index' => 'api.customfields.index',
+                    'show' => 'api.customfields.show',
+                    'update' => 'api.customfields.update',
+                    'store' => 'api.customfields.store',
+                    'destroy' => 'api.customfields.destroy',
+                ],
             'except' => ['create', 'edit'],
             'parameters' => ['field' => 'field_id'],
         ]
@@ -406,11 +446,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      * Fieldsets API routes
      */
     Route::group(['prefix' => 'fieldsets'], function () {
+
         Route::post(
             '{fieldset}/fields',
             [
                 Api\CustomFieldsetsController::class,
-                'fields',
+                'fields'
             ]
         )->name('api.fieldsets.fields');
 
@@ -418,9 +459,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{fieldset}/fields/{model}',
             [
                 Api\CustomFieldsetsController::class,
-                'fieldsWithDefaultValues',
+                'fieldsWithDefaultValues'
             ]
         )->name('api.fieldsets.fields-with-default-value');
+
     });
 
     Route::resource(
@@ -438,6 +480,8 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'parameters' => ['fieldset' => 'fieldset_id'],
         ]
     ); // end custom fieldsets API routes
+
+
 
     /**
      * Groups API routes
@@ -460,15 +504,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end groups API routes
 
+
     /**
      * Assets API routes
      */
     Route::group(['prefix' => 'hardware'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\AssetsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('assets.selectlist');
 
@@ -476,7 +522,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{asset_id}/licenses',
             [
                 Api\AssetsController::class,
-                'licenses',
+                'licenses'
             ]
         )->name('api.assets.licenselist');
 
@@ -484,7 +530,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'bytag/{tag}',
             [
                 Api\AssetsController::class,
-                'showByTag',
+                'showByTag'
             ]
         )->name('assets.show.bytag');
 
@@ -492,7 +538,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'bytag/{any}',
             [
                 Api\AssetsController::class,
-                'showByTag',
+                'showByTag'
             ]
         )->name('api.assets.show.bytag')
             ->where('any', '.*');
@@ -501,7 +547,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'bytag/{any}/checkout',
             [
                 Api\AssetsController::class,
-                'checkoutByTag',
+                'checkoutByTag'
             ]
         )->name('api.assets.checkout.bytag');
 
@@ -509,7 +555,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'bytag/{any}/checkin',
             [
                 Api\AssetsController::class,
-                'checkinbytag',
+                'checkinbytag'
             ]
         )->name('api.asset.checkinbytagPath');
 
@@ -517,7 +563,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'checkinbytag',
             [
                 Api\AssetsController::class,
-                'checkinbytag',
+                'checkinbytag'
             ]
         )->name('api.asset.checkinbytag');
 
@@ -525,36 +571,41 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'byserial/{any}',
             [
                 Api\AssetsController::class,
-                'showBySerial',
+                'showBySerial'
             ]
         )->name('api.assets.show.byserial')
             ->where('any', '.*');
+
+
+
 
         // This gets the "due or overdue" API endpoints for audit/audits and checkins
         Route::get(
             '{action}/{upcoming_status}',
             [
                 Api\AssetsController::class,
-                'index',
+                'index'
             ]
         )->name('api.assets.list-upcoming')
             ->where(['action' => 'audit|audits|checkins', 'upcoming_status' => 'due|overdue|due-or-overdue']);
+
 
         // Legacy URL for audit
         Route::post(
             'audit',
             [
                 Api\AssetsController::class,
-                'audit',
+                'audit'
             ]
         )->name('api.asset.audit.legacy');
+
 
         // Newer url for audit
         Route::post(
             '{asset}/audit',
             [
                 Api\AssetsController::class,
-                'audit',
+                'audit'
             ]
         )->name('api.asset.audit');
 
@@ -562,7 +613,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/checkin',
             [
                 Api\AssetsController::class,
-                'checkin',
+                'checkin'
             ]
         )->name('api.asset.checkin');
 
@@ -570,7 +621,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/checkout',
             [
                 Api\AssetsController::class,
-                'checkout',
+                'checkout'
             ]
         )->name('api.asset.checkout');
 
@@ -578,16 +629,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{asset_id}/restore',
             [
                 Api\AssetsController::class,
-                'restore',
+                'restore'
             ]
         )->name('api.assets.restore');
+
 
         /** Begin assigned routes */
         Route::get(
             '{asset}/assigned/assets',
             [
                 Api\AssetsController::class,
-                'assignedAssets',
+                'assignedAssets'
             ]
         )->name('api.assets.assigned_assets');
 
@@ -595,7 +647,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{asset}/assigned/accessories',
             [
                 Api\AssetsController::class,
-                'assignedAccessories',
+                'assignedAccessories'
             ]
         )->name('api.assets.assigned_accessories');
 
@@ -603,11 +655,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{asset}/assigned/components',
             [
                 Api\AssetsController::class,
-                'assignedComponents',
+                'assignedComponents'
             ]
         )->name('api.assets.assigned_components');
         /** End assigned routes */
+
     });
+
+
+
 
     // pulling this out of resource route group to begin normalizing for route-model binding.
     // this would probably keep working with the resource route group, but the general practice is for
@@ -649,17 +705,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end assets API routes
 
+
     /**
      * Imports API routes
      */
     Route::group(['prefix' => 'imports'], function () {
+
         Route::post(
             'process/{import}',
             [
                 Api\ImportController::class,
-                'process',
+                'process'
             ]
         )->name('api.imports.importFile');
+
     });
 
     Route::resource(
@@ -678,6 +737,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end imports API routes
 
+
     /**
      * Labels API routes
      */
@@ -693,13 +753,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      * Licenses API routes
      */
     Route::group(['prefix' => 'licenses'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\LicensesController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.licenses.selectlist');
+
     });
 
     Route::resource(
@@ -718,6 +780,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     );
 
+
     Route::resource(
         'licenses.seats',
         Api\LicenseSeatsController::class,
@@ -732,15 +795,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end license API routes
 
+
     /**
      * Locations API routes
      */
     Route::group(['prefix' => 'locations'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\LocationsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.locations.selectlist');
 
@@ -749,18 +814,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{location}/users',
             [
                 Api\LocationsController::class,
-                'getDataViewUsers',
+                'getDataViewUsers'
             ]
         )->name('api.locations.viewusers');
+
 
         // Get list of assets with a default location
         Route::get(
             '{location}/assets',
             [
                 Api\LocationsController::class,
-                'assets',
+                'assets'
             ]
         )->name('api.locations.viewassets');
+
 
         // Add a comment here, you moron
         /** Begin assigned routes */
@@ -768,7 +835,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{location}/assigned/assets',
             [
                 Api\LocationsController::class,
-                'assignedAssets',
+                'assignedAssets'
             ]
         )->name('api.locations.assigned_assets');
 
@@ -776,7 +843,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{location}/assigned/accessories',
             [
                 Api\LocationsController::class,
-                'assignedAccessories',
+                'assignedAccessories'
             ]
         )->name('api.locations.assigned_accessories');
         /** End assigned routes */
@@ -798,15 +865,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end locations API routes
 
+
     /**
      * Manufacturers API routes
      */
     Route::group(['prefix' => 'manufacturers'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\ManufacturersController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.manufacturers.selectlist');
 
@@ -814,9 +883,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/restore',
             [
                 Api\ManufacturersController::class,
-                'restore',
+                'restore'
             ]
         )->name('api.manufacturers.restore');
+
     });
 
     Route::resource(
@@ -835,15 +905,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end  manufacturers API routes
 
+
     /**
      * Asset models API routes
      */
     Route::group(['prefix' => 'models'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\AssetModelsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.models.selectlist');
 
@@ -851,7 +923,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'assets',
             [
                 Api\AssetModelsController::class,
-                'assets',
+                'assets'
             ]
         )->name('api.models.assets');
 
@@ -859,9 +931,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/restore',
             [
                 Api\AssetModelsController::class,
-                'restore',
+                'restore'
             ]
         )->name('api.models.restore');
+
     });
 
     Route::resource(
@@ -888,11 +961,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     Route::group(
         ['prefix' => 'notes'],
         function () {
+
             Route::post(
                 '{asset}/store',
                 [
                     Api\NotesController::class,
-                    'store',
+                    'store'
                 ]
             )->name('api.notes.store');
 
@@ -900,7 +974,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                 '{asset}/index',
                 [
                     Api\NotesController::class,
-                    'index',
+                    'index'
                 ]
             )->name('api.notes.index');
         }
@@ -938,11 +1012,12 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      * Settings API routes
      */
     Route::group(['middleware' => ['auth', 'authorize:superuser'], 'prefix' => 'settings'], function () {
+
         Route::get(
             'ldaptest',
             [
                 Api\SettingsController::class,
-                'ldaptest',
+                'ldaptest'
             ]
         )->name('api.settings.ldaptest');
 
@@ -950,7 +1025,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'purge_barcodes',
             [
                 Api\SettingsController::class,
-                'purgeBarcodes',
+                'purgeBarcodes'
             ]
         )->name('api.settings.purgebarcodes');
 
@@ -958,7 +1033,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'login-attempts',
             [
                 Api\SettingsController::class,
-                'showLoginAttempts',
+                'showLoginAttempts'
             ]
         )->name('api.settings.login_attempts');
 
@@ -966,7 +1041,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'ldaptestlogin',
             [
                 Api\SettingsController::class,
-                'ldaptestlogin',
+                'ldaptestlogin'
             ]
         )->name('api.settings.ldaptestlogin');
 
@@ -974,7 +1049,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'slacktest',
             [
                 Api\SettingsController::class,
-                'slacktest',
+                'slacktest'
             ]
         )->name('api.settings.slacktest');
 
@@ -982,7 +1057,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'mailtest',
             [
                 Api\SettingsController::class,
-                'ajaxTestEmail',
+                'ajaxTestEmail'
             ]
         )->name('api.settings.mailtest');
 
@@ -990,7 +1065,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'backups',
             [
                 Api\SettingsController::class,
-                'listBackups',
+                'listBackups'
             ]
         )->name('api.settings.backups.index');
 
@@ -998,7 +1073,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'backups/download/latest',
             [
                 Api\SettingsController::class,
-                'downloadLatestBackup',
+                'downloadLatestBackup'
             ]
         )->name('api.settings.backups.latest');
 
@@ -1006,9 +1081,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'backups/download/{file}',
             [
                 Api\SettingsController::class,
-                'downloadBackup',
+                'downloadBackup'
             ]
         )->name('api.settings.backups.download');
+
     });
 
     Route::resource(
@@ -1025,15 +1101,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end settings API
 
+
     /**
      * Status labels API routes
      */
     Route::group(['prefix' => 'statuslabels'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\StatuslabelsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.statuslabels.selectlist');
 
@@ -1041,7 +1119,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'assets/name',
             [
                 Api\StatuslabelsController::class,
-                'getAssetCountByStatuslabel',
+                'getAssetCountByStatuslabel'
             ]
         )->name('api.statuslabels.assets.byname');
 
@@ -1049,7 +1127,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'assets/type',
             [
                 Api\StatuslabelsController::class,
-                'getAssetCountByMetaStatus',
+                'getAssetCountByMetaStatus'
             ]
         )->name('api.statuslabels.assets.bytype');
 
@@ -1057,7 +1135,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{id}/assetlist',
             [
                 Api\StatuslabelsController::class,
-                'assets',
+                'assets'
             ]
         )->name('api.statuslabels.assets');
 
@@ -1065,7 +1143,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{statuslabel}/deployable',
             [
                 Api\StatuslabelsController::class,
-                'checkIfDeployable',
+                'checkIfDeployable'
             ]
         )->name('api.statuslabels.deployable');
 
@@ -1073,9 +1151,10 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'selectlist',
             [
                 Api\StatuslabelsController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.statuslabels.selectlist');
+
     });
 
     Route::resource(
@@ -1094,17 +1173,20 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end status labels API routes
 
+
     /**
      * Suppliers API routes
      */
     Route::group(['prefix' => 'suppliers'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\SuppliersController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.suppliers.selectlist');
+
     });
 
     Route::resource(
@@ -1123,15 +1205,18 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end suppliers API routes
 
+
+
     /**
      * Users API routes
      */
     Route::group(['prefix' => 'users'], function () {
+
         Route::get(
             'selectlist',
             [
                 Api\UsersController::class,
-                'selectlist',
+                'selectlist'
             ]
         )->name('api.users.selectlist');
 
@@ -1139,7 +1224,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'two_factor_reset',
             [
                 Api\UsersController::class,
-                'postTwoFactorReset',
+                'postTwoFactorReset'
             ]
         )->name('api.users.two_factor_reset');
 
@@ -1147,7 +1232,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'me',
             [
                 Api\UsersController::class,
-                'getCurrentUserInfo',
+                'getCurrentUserInfo'
             ]
         )->name('api.users.me');
 
@@ -1155,15 +1240,16 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{user}/eulas',
             [
                 Api\UsersController::class,
-                'eulas',
+                'eulas'
             ]
         )->name('api.user.eulas');
+
 
         Route::get(
             'list/{status?}',
             [
                 Api\UsersController::class,
-                'getDatatable',
+                'getDatatable'
             ]
         )->name('api.users.list');
 
@@ -1171,7 +1257,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{user}/assets',
             [
                 Api\UsersController::class,
-                'assets',
+                'assets'
             ]
         )->name('api.users.assetlist');
 
@@ -1179,7 +1265,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{user}/email',
             [
                 Api\UsersController::class,
-                'emailAssetList',
+                'emailAssetList'
             ]
         )->name('api.users.email_assets');
 
@@ -1187,7 +1273,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{user}/accessories',
             [
                 Api\UsersController::class,
-                'accessories',
+                'accessories'
             ]
         )->name('api.users.accessorieslist');
 
@@ -1195,17 +1281,19 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             '{user}/licenses',
             [
                 Api\UsersController::class,
-                'licenses',
+                'licenses'
             ]
         )->name('api.users.licenselist');
+
 
         Route::post(
             '{user}/restore',
             [
                 Api\UsersController::class,
-                'restore',
+                'restore'
             ]
         )->name('api.users.restore');
+
     });
 
     Route::resource(
@@ -1223,6 +1311,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'parameters' => ['user' => 'user_id'],
         ]
     ); // end users API routes
+
 
     /**
      * Kits API routes
@@ -1243,13 +1332,15 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     ); // end kits API routes
 
+
     Route::group(['prefix' => 'kits/{kit_id}'], function () {
+
         // kit licenses
         Route::get(
             'licenses',
             [
                 Api\PredefinedKitsController::class,
-                'indexLicenses',
+                'indexLicenses'
             ]
         )->name('api.kits.licenses.index');
 
@@ -1257,7 +1348,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'licenses',
             [
                 Api\PredefinedKitsController::class,
-                'storeLicense',
+                'storeLicense'
             ]
         )->name('api.kits.licenses.store');
 
@@ -1265,7 +1356,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'licenses/{license_id}',
             [
                 Api\PredefinedKitsController::class,
-                'updateLicense',
+                'updateLicense'
             ]
         )->name('api.kits.licenses.update');
 
@@ -1273,16 +1364,17 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'licenses/{license_id}',
             [
                 Api\PredefinedKitsController::class,
-                'detachLicense',
+                'detachLicense'
             ]
         )->name('api.kits.licenses.destroy');
+
 
         // kit models
         Route::get(
             'models',
             [
                 Api\PredefinedKitsController::class,
-                'indexModels',
+                'indexModels'
             ]
         )->name('api.kits.models.index');
 
@@ -1290,7 +1382,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'models',
             [
                 Api\PredefinedKitsController::class,
-                'storeModel',
+                'storeModel'
             ]
         )->name('api.kits.models.store');
 
@@ -1298,7 +1390,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'models/{model_id}',
             [
                 Api\PredefinedKitsController::class,
-                'updateModels',
+                'updateModels'
             ]
         )->name('api.kits.models.update');
 
@@ -1306,7 +1398,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'models/{model_id}',
             [
                 Api\PredefinedKitsController::class,
-                'detachModels',
+                'detachModels'
             ]
         )->name('api.kits.models.destroy');
 
@@ -1315,7 +1407,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'accessories',
             [
                 Api\PredefinedKitsController::class,
-                'indexAccessories',
+                'indexAccessories'
             ]
         )->name('api.kits.accessories.index');
 
@@ -1323,7 +1415,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'accessories',
             [
                 Api\PredefinedKitsController::class,
-                'storeAccessory',
+                'storeAccessory'
             ]
         )->name('api.kits.accessories.store');
 
@@ -1331,7 +1423,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'accessories/{accessory_id}',
             [
                 Api\PredefinedKitsController::class,
-                'updateAccessory',
+                'updateAccessory'
             ]
         )->name('api.kits.accessories.update');
 
@@ -1339,7 +1431,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'accessories/{accessory_id}',
             [
                 Api\PredefinedKitsController::class,
-                'detachAccessory',
+                'detachAccessory'
             ]
         )->name('api.kits.accessories.destroy');
 
@@ -1348,7 +1440,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'consumables',
             [
                 Api\PredefinedKitsController::class,
-                'indexConsumables',
+                'indexConsumables'
             ]
         )->name('api.kits.consumables.index');
 
@@ -1356,7 +1448,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'consumables',
             [
                 Api\PredefinedKitsController::class,
-                'storeConsumable',
+                'storeConsumable'
             ]
         )->name('api.kits.consumables.store');
 
@@ -1364,7 +1456,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'consumables/{consumable_id}',
             [
                 Api\PredefinedKitsController::class,
-                'updateConsumable',
+                'updateConsumable'
             ]
         )->name('api.kits.consumables.update');
 
@@ -1372,24 +1464,29 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'consumables/{consumable_id}',
             [
                 Api\PredefinedKitsController::class,
-                'detachConsumable',
+                'detachConsumable'
             ]
         )->name('api.kits.consumables.destroy');
+
     }); // end consumable routes
+
 
     /**
      * Reports API routes
      */
 
     Route::group(['prefix' => 'reports'], function () {
+
         Route::get(
             'activity',
             [
                 Api\ReportsController::class,
-                'index',
+                'index'
             ]
         )->name('api.activity.index');
     }); // end reports api routes
+
+
 
     /**
      * Version API routes
@@ -1401,10 +1498,11 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
                 'version' => config('version.app_version'),
                 'build_version' => config('version.build_version'),
                 'hash_version' => config('version.hash_version'),
-                'full_version' => config('version.full_app_version'),
+                'full_version' => config('version.full_app_version')
             ]
         );
     }); // end version api routes
+
 
     Route::fallback(function () {
         return response()->json(
@@ -1422,7 +1520,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
      */
     Route::post('hardware/labels', [
         Api\AssetsController::class,
-        'getLabels',
+        'getLabels'
     ])->name('api.assets.labels');
     // end generate label routes
 
@@ -1435,7 +1533,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         '{object_type}/{id}/files',
         [
             Api\UploadedFilesController::class,
-            'index',
+            'index'
         ]
     )->name('api.files.index')
         ->where(['object_type' => 'accessories|audits|assets|components|consumables|hardware|licenses|locations|maintenances|models|suppliers|users']);
@@ -1445,7 +1543,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         '{object_type}/{id}/files/{file_id}',
         [
             Api\UploadedFilesController::class,
-            'show',
+            'show'
         ]
     )->name('api.files.show')
         ->where(['object_type' => 'accessories|audits|assets|components|consumables|hardware|licenses|locations|maintenances|models|suppliers|users']);
@@ -1455,7 +1553,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         '{object_type}/{id}/files',
         [
             Api\UploadedFilesController::class,
-            'store',
+            'store'
         ]
     )->name('api.files.store')
         ->where(['object_type' => 'accessories|audits|assets|components|consumables|hardware|licenses|locations|maintenances|models|suppliers|users']);
@@ -1465,8 +1563,9 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         '{object_type}/{id}/files/{file_id}/delete',
         [
             Api\UploadedFilesController::class,
-            'destroy',
+            'destroy'
         ]
     )->name('api.files.destroy')
         ->where(['object_type' => 'accessories|assets|components|consumables|hardware|licenses|locations|maintenances|models|suppliers|users']);
+
 }); // end API routes
