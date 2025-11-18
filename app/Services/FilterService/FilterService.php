@@ -59,27 +59,14 @@ class FilterService
 
     protected function applySingleFilter(Builder &$q, array $filterObj)
     {
-        //dump($filterObj);
         $fieldname = $filterObj['field'];
         $value = $filterObj['value'];
         $operator = strtolower($filterObj['operator'] ?? 'equals'); // "equals" or "contains"
-        $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "OR", "NOT"
+        $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "NOT"
 
-        $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator, $filterObj) {
-            // === 1. Custom Field Support ===
+        $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator) {
 
-          
-            /*if (Str::startsWith($fieldname, ['_snipeit_'])) {
-                //Log::error("fieldName: {$fieldname}");
-                //Log::error("value: {$value}");
-                 $fieldLabel = Str::after($fieldname, '_snipeit_');
-
-                $this->applyCustomFieldFilter($inner, $filterObj);
-                return;
-            }
-            */
-
-            // === 2. Field Mapping for Relational Fields ===
+            // === 1. Field Mapping for Relational Fields ===
             $simpleFields = [
                 'asset_tag' => 'assets.asset_tag',
                 'name' => 'assets.name',
@@ -143,7 +130,7 @@ class FilterService
                 ],
             ];
 
-            // === 3. Simple Fields ===
+            // === 2. Simple Fields ===
             if (array_key_exists($fieldname, $simpleFields)) {
                 $column = $simpleFields[$fieldname];
 
@@ -151,7 +138,7 @@ class FilterService
                 return;
             }
 
-            // === 4. Relational or Morph ===
+            // === 3. Relational or Morph ===
             if (isset($relationMap[$fieldname])) {
                 $meta = $relationMap[$fieldname];
 
@@ -241,7 +228,7 @@ class FilterService
                 return;
             }
 
-            // === 5. Handle assignedTo ===
+            // === 4. Handle assignedTo ===
             if ($fieldname === 'assigned_to') {
 
                 
@@ -255,16 +242,16 @@ class FilterService
                     return;
                 }
 
-                // === 5a. Handle assignedTo location ===
+                // === 4a. Handle assignedTo location ===
                 if ($value['type'] === Location::class) {
-                    $inner->where(function ($query) use ($value, $logic, $operator) {
+                    $inner->where(function ($query) use ($value, $operator) {
                         $query->whereHas('assignedToLocation', function ($q) use ($value, $operator) {
                             $this->applyRelationalValue($q, $value['value'], $operator, ['column' => 'locations.name']);
                         });
                     });
                 }
 
-                // === 5b. Handle assignedTo asset ===
+                // === 4b. Handle assignedTo asset ===
                 else if ($value['type'] === Asset::class) {
                     $assignedValue = $value['value'];
 
@@ -289,7 +276,7 @@ class FilterService
                             });
                     });
                 }
-                // === 5c. Handle assignedTo user ===
+                // === 4c. Handle assignedTo user ===
                 else if ($value['type'] === User::class) {
                     $assignedValue = trim((string) ($value['value'] ?? ''));
                     $isNotLogic = (isset($logic) && strtoupper($logic) === 'NOT');
@@ -297,7 +284,7 @@ class FilterService
                     // Non-empty search: split into tokens
                     $tokens = preg_split('/\s+/', $assignedValue, -1, PREG_SPLIT_NO_EMPTY);
 
-                    $inner->where(function ($q) use ($tokens, $operator, $isNotLogic) {
+                    $inner->where(function ($q) use ($tokens, $operator) {
                         $q->whereHas('assignedToUser', function ($qq) use ($tokens, $operator) {
                             if (count($tokens) === 1) {
                                 $term = $tokens[0];
@@ -329,7 +316,7 @@ class FilterService
                 return;
             }
 
-            // === 6. Fallback: Direct column ===
+            // === 5. Fallback: Direct column and CustomFields ===
             $column = 'assets.' . $fieldname;
 
             if (!Schema::hasColumn('assets', $fieldname)) {

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Builder;
 
-use App\Models\User;
 
 class PredefinedFilter extends Model
 {

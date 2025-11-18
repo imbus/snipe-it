@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\User;
 use App\Models\PredefinedFilter;
-use App\Policies\SnipePermissionsPolicy; 
 
 class PredefinedFilterPolicy extends SnipePermissionsPolicy
 {
