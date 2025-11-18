@@ -14,11 +14,11 @@ class FilterService
     public function searchByFilter($query, $filters)
     {
         return $query->where(function (Builder $query) use ($filters) {
-            $this->applyDateRangeFilter($query, 'assets.purchase_date', $filters, /* isDateTime */ false);
-            $this->applyDateRangeFilter($query, 'assets.asset_eol_date', $filters, /* isDateTime */ false);
+            $this->applyDateRangeFilter($query, 'assets.purchase_date', $filters, false);
+            $this->applyDateRangeFilter($query, 'assets.asset_eol_date', $filters, false);
 
-            $this->applyDateRangeFilter($query, 'assets.created_at', $filters, /* isDateTime */ true);
-            $this->applyDateRangeFilter($query, 'assets.updated_at', $filters, /* isDateTime */ true);
+            $this->applyDateRangeFilter($query, 'assets.created_at', $filters, true);
+            $this->applyDateRangeFilter($query, 'assets.updated_at', $filters, true);
 
             $skipFields = [
                 'purchase_date',
@@ -121,19 +121,8 @@ class FilterService
         $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "OR", "NOT"
 
         $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator) {
-            // === 1. Custom Field Support ===
 
-            /*if (Str::startsWith($fieldname, ['_snipeit_'])) {
-                //Log::error("fieldName: {$fieldname}");
-                //Log::error("value: {$value}");
-                 $fieldLabel = Str::after($fieldname, '_snipeit_');
-
-                $this->applyCustomFieldFilter($inner, $filterObj);
-                return;
-            }
-            */
-
-            // === 2. Field Mapping for Relational Fields ===
+            // === 1. Field Mapping for Relational Fields ===
             $simpleFields = [
                 'asset_tag' => 'assets.asset_tag',
                 'name' => 'assets.name',
@@ -197,7 +186,7 @@ class FilterService
                 ],
             ];
 
-            // === 3. Simple Fields ===
+            // === 2. Simple Fields ===
             if (array_key_exists($fieldname, $simpleFields)) {
                 $column = $simpleFields[$fieldname];
 
@@ -205,7 +194,7 @@ class FilterService
                 return;
             }
 
-            // === 4. Relational or Morph ===
+            // === 3. Relational or Morph ===
             if (isset($relationMap[$fieldname])) {
                 $meta = $relationMap[$fieldname];
 
@@ -292,7 +281,7 @@ class FilterService
                 return;
             }
 
-            // === 5. Handle assignedTo ===
+            // === 4. Handle assignedTo ===
             if ($fieldname === 'assigned_to') {
                 // Check if type is valid
                 $validTypes = [Asset::class, Location::class, User::class];
@@ -304,7 +293,7 @@ class FilterService
                     return;
                 }
 
-                // === 5a. Handle assignedTo location ===
+                // === 4a. Handle assignedTo location ===
                 if ($value['type'] === Location::class) {
                     $inner->where(function ($query) use ($value, $operator) {
                         $query->whereHas('assignedToLocation', function ($q) use ($value, $operator) {
@@ -313,7 +302,7 @@ class FilterService
                     });
                 }
 
-                // === 5b. Handle assignedTo asset ===
+                // === 4b. Handle assignedTo asset ===
                 elseif ($value['type'] === Asset::class) {
                     $assignedValue = $value['value'];
 
@@ -338,7 +327,7 @@ class FilterService
                             });
                     });
                 }
-                // === 5c. Handle assignedTo user ===
+                // === 4c. Handle assignedTo user ===
                 elseif ($value['type'] === User::class) {
                     $assignedValue = trim((string) ($value['value'] ?? ''));
                     $isNotLogic = (isset($logic) && strtoupper($logic) === 'NOT');
@@ -377,7 +366,7 @@ class FilterService
                 return;
             }
 
-            // === 6. Fallback: Direct column ===
+            // === 5. Custom fields ===
             $column = 'assets.' . $fieldname;
 
             if (! Schema::hasColumn('assets', $fieldname)) {

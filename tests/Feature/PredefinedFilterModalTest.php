@@ -95,7 +95,7 @@ class PredefinedFilterModalTest extends TestCase
         $this->loginUser();
 
         $service = $this->makeServiceMock([
-            'getFilterById' => [
+            'getFilterWithOptionalPermissionsById' => [
                 'name' => 'Existing Filter',
                 'is_public' => 0,
                 'permissions' => collect([]),
