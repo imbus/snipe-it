@@ -41,7 +41,7 @@ class BulkCategoriesController extends Controller
             } catch (ItemStillHasConsumables) {
                 $errors[] = trans('general.bulk_delete_associations.assoc_consumables_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (ItemStillHasLicenses) {
-                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);;
+                $errors[] = trans('general.bulk_delete_associations.assoc_licenses_no_count', ['item_name' => $category->name, 'item' => trans('general.category')]);
             } catch (\Exception $e) {
                 report($e);
                 $errors[] = trans('general.something_went_wrong');

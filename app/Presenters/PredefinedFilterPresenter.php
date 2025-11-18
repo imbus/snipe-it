@@ -8,7 +8,7 @@ namespace App\Presenters;
 
 class PredefinedFilterPresenter extends Presenter
 {
-    /**
+    /*
     * Json Column Layout for bootstrap table
     * @return string
     */

@@ -15,7 +15,7 @@ class PredefinedFiltersTransformer
             $array[] = self::transformPredefinedFilter($filter);
         }
 
-        return (new DatatablesTransformer) -> transformDatatables($array, $total);
+        return (new DatatablesTransformer)->transformDatatables($array, $total);
     }
 
     public function transformPredefinedFilter($filter)
@@ -29,7 +29,7 @@ class PredefinedFiltersTransformer
             'is_public' => (bool)$filter->is_public,
             'object_type' => e($filter->object_type),
             'created_by' => $filter->createdBy ? [
-                'id' => (int) $filter-> createdBy ->id,
+                'id' => (int) $filter->createdBy->id,
                 'name' => $filter->createdBy->present()->nameUrl(),
             ] : null,
             'created_at' => Helper::getFormattedDateObject($filter->created_at, 'datetime'),

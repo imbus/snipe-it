@@ -65,7 +65,7 @@ class FilterService
         $operator = strtolower($filterObj['operator'] ?? 'equals'); // "equals" or "contains"
         $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "OR", "NOT"
 
-        $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator, $filterObj) {
+        $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator) {
             // === 1. Custom Field Support ===
 
           
@@ -257,7 +257,7 @@ class FilterService
 
                 // === 5a. Handle assignedTo location ===
                 if ($value['type'] === Location::class) {
-                    $inner->where(function ($query) use ($value, $logic, $operator) {
+                    $inner->where(function ($query) use ($value, $operator) {
                         $query->whereHas('assignedToLocation', function ($q) use ($value, $operator) {
                             $this->applyRelationalValue($q, $value['value'], $operator, ['column' => 'locations.name']);
                         });
@@ -297,7 +297,7 @@ class FilterService
                     // Non-empty search: split into tokens
                     $tokens = preg_split('/\s+/', $assignedValue, -1, PREG_SPLIT_NO_EMPTY);
 
-                    $inner->where(function ($q) use ($tokens, $operator, $isNotLogic) {
+                    $inner->where(function ($q) use ($tokens, $operator) {
                         $q->whereHas('assignedToUser', function ($qq) use ($tokens, $operator) {
                             if (count($tokens) === 1) {
                                 $term = $tokens[0];

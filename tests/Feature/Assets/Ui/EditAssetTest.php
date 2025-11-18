@@ -92,7 +92,7 @@ class EditAssetTest extends TestCase
                 ],
             )
             ->assertStatus(302);
-            //->assertRedirect(route('hardware.show', ['hardware' => $asset->id]));;
+            //->assertRedirect(route('hardware.show', ['hardware' => $asset->id]));
 
         // $asset->refresh();
         $asset = Asset::find($asset->id);

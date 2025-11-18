@@ -233,7 +233,7 @@ class BulkAssetsController extends Controller
         $null_custom_fields_inputs = array_filter($request->all(), function ($key) {
             // filter out all keys that start with 'null_'
             return (strpos($key, 'null_') === 0);
-        }, ARRAY_FILTER_USE_KEY);;
+        }, ARRAY_FILTER_USE_KEY);
         // remove 'null' from the keys
         $custom_fields_to_null = [];
         foreach ($null_custom_fields_inputs as $key => $value) {

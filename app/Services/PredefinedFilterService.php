@@ -6,7 +6,6 @@ use DB;
 use Exception;
 use Throwable;
 use App\Models\PredefinedFilter;
-use App\Services\PredefinedFilterPermissionService;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -26,7 +25,7 @@ class PredefinedFilterService
     {
         $user = Auth::user();
 
-        $response = PredefinedFilter::with('permissionGroups')
+        return PredefinedFilter::with('permissionGroups')
             ->orderBy('name')
             ->get(['id', 'name', 'created_by', 'is_public'])
             ->filter(function ($filter) use ($user) {
@@ -37,8 +36,6 @@ class PredefinedFilterService
 
                 return false;
             })->values();
-
-        return $response;
     }
 
     // TODO different Naming because it does more than only get a filter by ID

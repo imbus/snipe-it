@@ -47,7 +47,6 @@ class PredefinedFilterPermissionService
 
     public function getPermissionsByPredefinedFilterId(int $filter_id)
     {
-        $permissions = PredefinedFilterPermission::where('predefined_filter_id', '=', $filter_id)->get();
-        return $permissions;
+        return PredefinedFilterPermission::where('predefined_filter_id', '=', $filter_id)->get();
     }
 }

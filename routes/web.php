@@ -68,8 +68,8 @@ Route::group(['middleware' => 'auth'], function () {
     */
 
     Route::group(['prefix' => 'manufacturers', 'middleware' => ['auth']], function () {
-        Route::post('{manufacturers_id}/restore', [ManufacturersController::class, 'restore'] )->name('restore/manufacturer');
-        Route::post('seed', [ManufacturersController::class, 'seed'] )->name('manufacturers.seed');
+        Route::post('{manufacturers_id}/restore', [ManufacturersController::class, 'restore'])->name('restore/manufacturer');
+        Route::post('seed', [ManufacturersController::class, 'seed'])->name('manufacturers.seed');
 
 
     });

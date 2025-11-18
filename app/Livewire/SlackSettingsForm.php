@@ -101,7 +101,7 @@ class SlackSettingsForm extends Component
 
     public function updatedWebhookSelected() {
         $this->webhook_name = $this->webhook_text[$this->webhook_selected]['name'];
-        $this->webhook_icon = $this->webhook_text[$this->webhook_selected]["icon"]; ;
+        $this->webhook_icon = $this->webhook_text[$this->webhook_selected]["icon"];
         $this->webhook_placeholder = $this->webhook_text[$this->webhook_selected]["placeholder"];
         $this->webhook_endpoint = null;
         $this->webhook_link = $this->webhook_text[$this->webhook_selected]["link"];

@@ -122,7 +122,7 @@ class Modal extends Component
     ) {
         $this->validate();
 
-        $filter = new PredefinedFilter();;
+        $filter = new PredefinedFilter();
 
         // Enforce: only allow creation if private or groups selected
         if (

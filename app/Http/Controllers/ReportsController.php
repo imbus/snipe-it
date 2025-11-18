@@ -1264,7 +1264,7 @@ class ReportsController extends Controller
     public function postAssetAcceptanceReport($deleted = false) : Response
     {
         $this->authorize('reports.view');
-        $showDeleted = request('deleted') === 'deleted';;
+        $showDeleted = request('deleted') === 'deleted';
 
         /**
          * Get all assets with pending checkout acceptances

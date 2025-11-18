@@ -17,7 +17,7 @@ Route::group(['prefix' => 'users', 'middleware' => ['auth']], function () {
     )->name('ldap/user')
         ->breadcrumbs(fn (Trail $trail) =>
         $trail->parent('users.index')
-            ->push(trans('general.ldap_user_sync'), route('ldap/user')));;
+            ->push(trans('general.ldap_user_sync'), route('ldap/user')));
 
     Route::post(
         'ldap',
