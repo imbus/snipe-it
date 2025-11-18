@@ -114,11 +114,10 @@ class FilterService
 
     protected function applySingleFilter(Builder &$q, array $filterObj)
     {
-        //dump($filterObj);
         $fieldname = $filterObj['field'];
         $value = $filterObj['value'];
         $operator = strtolower($filterObj['operator'] ?? 'equals'); // "equals" or "contains"
-        $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "OR", "NOT"
+        $logic = strtoupper($filterObj['logic'] ?? 'AND');       // "AND", "NOT"
 
         $callback = function (Builder $inner) use ($fieldname, $value, $logic, $operator) {
 
@@ -330,7 +329,6 @@ class FilterService
                 // === 4c. Handle assignedTo user ===
                 elseif ($value['type'] === User::class) {
                     $assignedValue = trim((string) ($value['value'] ?? ''));
-                    $isNotLogic = (isset($logic) && strtoupper($logic) === 'NOT');
 
                     // Non-empty search: split into tokens
                     $tokens = preg_split('/\s+/', $assignedValue, -1, PREG_SPLIT_NO_EMPTY);
