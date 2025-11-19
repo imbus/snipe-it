@@ -48,35 +48,44 @@ mix
   .minify("./public/js/dist/simpleDIContainer.js");
 
 /**
- * Copy, minify and version the required files for the advanced search (advanced-search, floating buttons, modal)
+ * Copy, minify and version the required CSS files for the advanced search
  */
 mix
   .copy("./resources/assets/css/components/advancedSearch/floating-buttons.css", "./public/css/dist")
   .minify("./public/css/dist/floating-buttons.css");
-  mix
+mix
   .copy("./resources/assets/css/components/advancedSearch/advanced-search.css", "./public/css/dist")
   .minify("./public/css/dist/advanced-search.css");
-  mix
+mix
   .copy("./resources/assets/css/components/advancedSearch/modal.css", "./public/css/dist")
   .minify("./public/css/dist/modal.css");
-  mix
+mix
   .copy("./resources/assets/css/components/advancedSearch/filterInputs.css", "./public/css/dist")
   .minify("./public/css/dist/filterInputs.css");
-  mix
-    .copy("resources/assets/js/advancedSearch/floating-buttons.js", "./public/js/dist")
-    .minify("./public/js/dist/floating-buttons.js");
-  mix
-  .copy("resources/assets/js/advancedSearch/apiService.js", "./public/js/dist")
-  .minify("./public/js/dist/apiService.js");
-  mix
-  .copy("resources/assets/js/advancedSearch/filterInputs.js", "./public/js/dist")
-  .minify("./public/js/dist/filterInputs.js");
-  mix
-  .copy("resources/assets/js/advancedSearch/filterFormManager.js", "./public/js/dist")
-  .minify("./public/js/dist/filterFormManager.js");
-  mix
-  .copy("resources/assets/js/advancedSearch/filterUiController.js", "./public/js/dist")
-  .minify("./public/js/dist/filterUiController.js");
+
+/**
+ * Bundle advanced search JavaScript files
+ * Grouped by purpose for better organization and maintainability
+ */
+
+// Core UI and interaction logic
+mix
+  .js("resources/assets/js/advancedSearch/core-bundle.js", "./public/js/dist/advanced-search-core.js")
+  .sourceMaps(true, 'source-map')
+  .version();
+
+// Filter-related functionality
+mix
+  .js("resources/assets/js/advancedSearch/filters-bundle.js", "./public/js/dist/advanced-search-filters.js")
+  .sourceMaps(true, 'source-map')
+  .version();
+
+// API and services
+mix
+  .js("resources/assets/js/advancedSearch/services-bundle.js", "./public/js/dist/advanced-search-services.js")
+  .sourceMaps(true, 'source-map')
+  .version();
+
 /**
  * Copy and version select2
  */

@@ -1,10 +1,10 @@
-import {
+/*import {
     FilterInput,
     SelectFilterInput,
     AssignedEntityFilterInput,
     DateFilterInput,
     TextFilterInput
-} from '/js/dist/filterInputs.min.js';
+} from '/js/dist/filterInputs.min.js';*/
 import { container } from '/js/dist/simpleDIContainer.min.js';
 
 export default class FilterFormManager {
