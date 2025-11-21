@@ -44,7 +44,7 @@ mix
  * Copy and minifiy the di container implementation
  */
 mix
-  .copy("resources/assets/js/simpleDIContainer.js", "./public/js/dist")
+  .babel("resources/assets/js/simpleDIContainer.js", "./public/js/dist/simpleDIContainer.js")
   .minify("./public/js/dist/simpleDIContainer.js");
 
 /**
@@ -67,11 +67,11 @@ mix
   .minify("./public/css/dist/advanced-search-index.css");
 
 mix
-  .copy("resources/assets/js/advancedSearch/floating-buttons.js", "./public/js/dist")
+  .babel("resources/assets/js/advancedSearch/floating-buttons.js", "./public/js/dist/floating-buttons.js")
   .minify("./public/js/dist/floating-buttons.js");
 
 mix
-  .copy("resources/assets/js/advancedSearch/apiService.js", "./public/js/dist")
+  .babel("resources/assets/js/advancedSearch/apiService.js", "./public/js/dist/apiService.js")
   .minify("./public/js/dist/apiService.js");
 
 mix
