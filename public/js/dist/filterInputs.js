@@ -125,7 +125,7 @@ class SelectFilterInput extends FilterInput {
         const selections = $(this.element).select2('data');
 
         const selectedValues = selections.map(item => {
-            const parseId = parseInt(item.id, 10);
+            const parseId = parseInt(item.id);
             return isNaN(parseId) ? item.id : parseId;
         })
 
@@ -136,7 +136,7 @@ class SelectFilterInput extends FilterInput {
         return selectedValues;
     }
 
-    setValue(newValues, logic, operator) {
+    setValue(newValues, logic, operator, type = this.getType()) {
         const requestPromises = newValues.map((newValue) => {
             return Promise.resolve().then(() => {
                 this.setSearchOperator(logic, operator);
@@ -298,7 +298,7 @@ class AssignedEntityFilterInput extends TextFilterInput {
         const type = document.getElementById(this.element.id + "_type").value;
 
         if (!value || !type) {
-            return null;
+            return;
         }
 
         return {
