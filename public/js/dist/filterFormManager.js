@@ -14,31 +14,51 @@ export default class FilterFormManager {
         this.apiService = container.resolve("apiService");;
     }
 
-    collectFilterInputs() {
+    async collectFilterInputs() {
         this.inputs = [];
 
+        const tasks = [];
+
         // Select2
-        document.querySelectorAll('select[id^="advancedSearch_"]').forEach(el => {
-            queueMicrotask(() => {
-                this.inputs.push(new SelectFilterInput(el, this.apiService));
-            });
+        document.querySelectorAll('select[id^="advancedSearch_"]:not(.no-select2)').forEach(el => {
+            tasks.push(new Promise(resolve => {
+                setTimeout(() => {
+                    this.inputs.push(new SelectFilterInput(el, this.apiService));
+                    resolve();
+                },0);
+            }));
         });
 
         // Dates
-        document.querySelectorAll('input[id^="advancedSearch_"][id$="_start"][type="date"], input[id^="advancedSearch_"][id$="_end"][type="date"]').forEach(el => {
-            queueMicrotask(() => {
-                this.inputs.push(new DateFilterInput(el, this.apiService));
-            });
+        document.querySelectorAll(
+            '.input-daterange.input-group.date-range-input'
+        ).forEach(el => {
+            this.inputs.push(new DateFilterInput(el, this.apiService));
         });
 
         // Text
         document.querySelectorAll('input[id^="advancedSearch_"][type="text"]').forEach(el => {
-            queueMicrotask(() => {
-                this.inputs.push(new TextFilterInput(el, this.apiService));
-            });
+            tasks.push(new Promise(resolve => {
+                queueMicrotask(() => {
+
+                    // Skip daterangefields
+                    if(el.classList.contains("input-daterange-field")) {
+                        return resolve();
+                    }
+
+                    // AssignedTo / CheckedOutTo-fields
+                    if(el.classList.contains("advancedSearch_polymorphicItemFormatter")) {
+                        this.inputs.push(new AssignedEntityFilterInput(el, this.apiService));
+                        return resolve();
+                    }
+                
+                    this.inputs.push(new TextFilterInput(el, this.apiService));
+                    resolve();
+                });
+            
+            }));
         });
-
-
+        await Promise.all(tasks);
         return this.inputs;
     }
 
@@ -56,9 +76,7 @@ export default class FilterFormManager {
     clearAll() {
         //this.collectFilterData();
         this.inputs.forEach(field => {
-            queueMicrotask(() => {
                 field.clear();
-            })
         });
     }
 
