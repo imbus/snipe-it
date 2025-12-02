@@ -138,7 +138,7 @@ class SelectFilterInput extends FilterInput {
         return selectedValues;
     }
 
-    setValue(newValues, logic, operator, type = this.getType()) {
+    setValue(newValues, logic, operator) {
         const requestPromises = newValues.map((newValue) => {
             // If it's a number, fetch from backend
             if (typeof newValue === "number") {
