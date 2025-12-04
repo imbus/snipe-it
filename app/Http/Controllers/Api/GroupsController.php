@@ -124,7 +124,7 @@ class GroupsController extends Controller
      *
      * @param  int  $id
      */
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, $id) : JsonResponse
     {
         $this->authorize('superadmin');
         $group = Group::findOrFail($id);
@@ -158,7 +158,7 @@ class GroupsController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id): JsonResponse
+    public function destroy($id) : JsonResponse
     {
         $this->authorize('superadmin');
         $group = Group::findOrFail($id);
