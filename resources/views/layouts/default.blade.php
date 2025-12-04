@@ -55,8 +55,9 @@
             --btn-theme-hover: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
             --sidenav-text-hover-color: #fff;
             --sidenav-text-nohover-color: #b8c7ce;
+            --sidenav-hover-color-bg: #4c4b4b;
             --search-highlight: #e9d15b;
-            --color-fg: light-dark(#000000, #ffffff);
+            --color-fg: light-dark(#373636, #ffffff);
             --text-danger: light-dark(#a94442,#dd4b39);
             --text-success: light-dark(#039516,#4ced61);
             --text-warning: light-dark(#da9113,#f3a51f);
@@ -64,6 +65,7 @@
             --text-help: light-dark(#605e5e,#a6a4a4);
             --nav-primary-text-color: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
             --nav-hover-text-color: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
+
 
         }
 
@@ -92,6 +94,8 @@
             --text-blue: var(--text-legend-help);
             --text-legend-help: var(--text-help);
             --text-warning: #da9113;
+            --input-group-bg: hsl(from var(--box-bg) h s calc(l - 5));
+            --input-group-fg: hsl(from var(--input-group-bg) h s calc(l - 50));
 
         }
 
@@ -119,6 +123,9 @@
             --table-stripe-bg: #494747;
             --text-blue: var(--text-legend-help);
             --text-legend-help: #d6d6d6;
+            --input-group-bg: hsl(from var(--box-bg) h s calc(l + 10));
+            --input-group-fg: hsl(from var(--input-group-bg) h s calc(l + 50));
+
         }
 
 
@@ -153,18 +160,8 @@
             border: 1px solid hsl(from var(--btn-theme-base) h s calc(l - 15)) !important;
         }
 
-        .btn-danger {
-            color: white !important;
-            background-color: var(--text-danger) !important;
-        }
-
-        .btn-warning {
-            color: white !important;
-            background-color: var(--text-warning) !important;
-        }
 
         .dropdown-wrapper,
-        .input-group-addon,
         .js-data-ajax,
         .option,
         .select2 .select2-container .select2-container--default,
@@ -183,6 +180,7 @@
         input[type="number"],
         input[type="text"],
         input[type="url"],
+        input[type="email"],
         option:active,
         option[active],
         option[selected],
@@ -193,6 +191,11 @@
             background-color: var(--table-stripe-bg) !important;
             color: var(--color-fg) !important;
 
+        }
+
+        .input-group-addon {
+            background-color: var(--input-group-bg) !important;
+            color: var(--input-group-fg) !important;
         }
 
         .select2-container--default.select2-container--focus .select2-selection--multiple,
@@ -244,6 +247,7 @@
         input[type="text"]:focus,
         input[type="url"]:focus,
         input[type="date"]:focus,
+        input[type="email"]:focus,
         input[type="number"]:focus,
         textarea:focus
         {
@@ -275,6 +279,19 @@
             color: var(--color-fg);
         }
 
+        .btn-danger,
+        .btn-danger:hover,
+        .btn-warning,
+        .btn-warning:hover,
+        .modal-danger,
+        .modal-danger h2,
+        .modal-header h2,
+        .modal-warning h2
+        {
+            color: white !important;
+        }
+
+
         body {
             color: var(--color-bg);
         }
@@ -295,18 +312,8 @@
             color: var(--color-fg);
         }
 
-        .modal-content,
-        .popover.help-popover,
-        .popover.help-popover .popover-content,
-        .popover.help-popover .popover-body,
-        .popover.help-popover .popover-title,
-        .popover.help-popover .popover-header
-        {
-            background-color: var(--box-bg) !important;
-            /*color: var(--color-fg) !important;*/
-            color: contrast-color(var(--box-bg)) !important;
 
-        }
+
 
         .popover.right .arrow:after
         {
@@ -591,8 +598,8 @@
             color: var(--sidenav-text-nohover-color) !important;
         }
 
-        .sidebar-menu>li.active > a,
-        .sidebar-menu>li:hover > a
+        .sidebar-menu > li.active > a,
+        .sidebar-menu > li:hover > a
         {
             background-color: #1e282c;
             border-left-color: var(--main-theme-color);
@@ -601,19 +608,6 @@
             color: var(--sidenav-text-hover-color) !important;
         }
 
-
-        .treeview-menu>li {
-            background-color: #2c3b41;
-            color: var(--sidenav-text-nohover-color) !important;
-        }
-
-        .treeview-menu>li>a:hover,
-        .treeview-menu>li.active > a
-        {
-            color: var(--sidenav-text-hover-color) !important;
-        }
-
-
         thead,
         tbody,
         .table > thead > tr > th,
@@ -621,11 +615,13 @@
         .table > tfoot > tr > th,
         .table > thead > tr > td,
         .table > tbody > tr > td,
-        .table > tfoot > tr > td
+        .table > tfoot > tr > td,
+
         {
             border-top-color: var(--box-header-bottom-border-color) !important;
             border-bottom-color: var(--box-header-bottom-border-color) !important;
         }
+
 
 
         .help-block {
@@ -635,7 +631,11 @@
         .alert-msg,
         .has-error
         {
-            color: var(--text-danger);
+            color: var(--text-danger) !important;
+        }
+
+        .alert a {
+            color: white !important;
         }
 
 
@@ -711,6 +711,64 @@
         th,
         .fix-sticky table thead {
             background-color: var(--box-bg);
+            color: var(--color-fg) !important;
+        }
+
+        .datepicker.dropdown-menu th, .datepicker.datepicker-inline th,
+        .datepicker.dropdown-menu td,
+        .datepicker.datepicker-inline td
+
+        {
+            color: var(--color-fg);
+            border-color: var(--color-fg);
+            background-color: var(--box-bg) !important;
+        }
+
+        .datepicker.dropdown-menu th:hover,
+        .datepicker.datepicker-inline th:hover,
+        .datepicker.dropdown-menu td:hover,
+        .datepicker.datepicker-inline td:hover,
+        .datepicker table tr td span:hover,
+        .datepicker table tr td span.focused
+        {
+            background-color: var(--main-theme-color) !important;
+            color: var(--nav-primary-text-color) !important;
+        }
+
+        .datepicker.dropdown-menu,
+        .modal-content,
+        .popover.help-popover,
+        .popover.help-popover .popover-content,
+        .popover.help-popover .popover-body,
+        .popover.help-popover .popover-title,
+        .popover.help-popover .popover-header
+        {
+            background-color: var(--box-bg) !important;
+            /*color: var(--color-fg) !important;*/
+            color: contrast-color(var(--box-bg)) !important;
+        }
+
+        .treeview-menu > li {
+            background-color: #2c3b41;
+            color: var(--sidenav-text-nohover-color) !important;
+        }
+
+        .treeview-menu > li >a:hover,
+        .treeview-menu > li:hover,
+        .treeview-menu > li.active > a
+        {
+            color: white !important;
+            background-color: var(--sidenav-hover-color-bg) !important;
+            /*color: var(--sidenav-text-hover-color) !important;*/
+        }
+
+        .sidebar-toggle.btn,
+        .sidebar-toggle.btn:hover
+        {
+            color: white !important;
+        }
+
+        .chart-responsive {
             color: var(--color-fg) !important;
         }
 
