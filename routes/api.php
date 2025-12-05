@@ -164,19 +164,6 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
         ]
     );
 
-
-    Route::group(['prefix' => 'assignedTo'], function () {
-
-        Route::get(
-            'selectlist',
-            [
-                Api\AssignedToDropdownController::class,
-                'selectlist'
-            ]
-        )->name('api.assignedTo.selectlist');
-
-    }); // end Assigned to dropdown selectlist routes group
-
     /**
      * Categpries API routes
      */
