@@ -47,7 +47,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ActionlogSeeder::class);
         $this->call(PredefinedFilterSeeder::class);
         $this->call(PredefinedFilterPermissionSeeder::class);
-        
+        $this->call(MaintenanceSeeder::class);
+
         Artisan::call('snipeit:sync-asset-locations', ['--output' => 'all']);
         $output = Artisan::output();
         Log::info($output);
@@ -55,7 +56,6 @@ class DatabaseSeeder extends Seeder
         Model::reguard();
 
         DB::table('imports')->truncate();
-        DB::table('maintenances')->truncate();
         DB::table('requested_assets')->truncate();
     }
 }

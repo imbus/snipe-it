@@ -47,6 +47,7 @@
 
     <style>
 
+
         :root {
             color-scheme: light dark;
             --btn-theme-hover-text-color: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
@@ -56,19 +57,24 @@
             --main-footer-bg-color: light-dark(#ffffff,#3d4144);
             --main-footer-text-color: light-dark(#605e5e, #d2d6de);
             --main-footer-top-border-color: light-dark(#d2d6de,#605e5e);
-            --main-theme-color: {{ $snipeSettings->header_color ?? '#5fa4cc' }};
-            --nav-hover-text-color: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
-            --nav-primary-text-color: {{ $nav_link_color ?? 'light-dark(hsl(from var(--main-theme-color) h s calc(l - 10)),hsl(from var(--main-theme-color) h s calc(l - 10)))' }};
+            --main-theme-color: {{ $snipeSettings->header_color ?? '#3c8dbc' }};
+            --nav-hover-text-color: {{ $nav_link_color ?? 'hsl(from var(--main-theme-color) h s calc(l - 10))' }};
+            --nav-primary-text-color: {{ $nav_link_color ?? '#ffffff' }};
             --search-highlight: #e9d15b;
             --sidenav-hover-color-bg: #4c4b4b;
             --sidenav-text-hover-color: #fff;
             --sidenav-text-nohover-color: #b8c7ce;
-            --text-danger: light-dark(#a94442,#dd4b39);
-            --text-help: light-dark(#605e5e,#a6a4a4);
+            --table-border-row-color: light-dark(#ecf0f5, #656464);
+            --table-border-row-top: 1px solid #ecf0f5;
+            --table-border-row: 1px solid var(--table-border-row-color);
+            --table-stripe-bg-alt: light-dark(rgba(211, 211, 211, 0.25), #323131);
+            --table-stripe-bg: light-dark(#ffffff, #494747);
+            --text-danger: light-dark(#a94442, #fa5b48);
+            --text-help: light-dark(#777676,#a6a4a4);
             --text-info: light-dark(#31708f,#2baae6);
             --text-success: light-dark(#039516,#4ced61);
             --text-warning: light-dark(#da9113,#f3a51f);
-
+            --input-border-color: light-dark(#d2d6de,#656464);
         }
 
         [data-theme="light"] {
@@ -92,12 +98,7 @@
             --link-hover:  hsl(from var(--link-color) h s calc(l - 10));
             --main-theme-hover: hsl(from var(--main-theme-color) h s calc(l - 10));
             --tab-bottom-border: 1px solid var(--box-header-top-border-color);
-            --table-border-row-top: 1px solid #ecf0f5;
-            --table-border-row: 1px solid #ecf0f5;
-            --table-stripe-bg-alt: rgba(211, 211, 211, 0.25);
-            --table-stripe-bg: #ffffff;
             --text-legend-help: var(--text-help);
-            --text-warning: #da9113;
 
         }
 
@@ -122,19 +123,22 @@
             --link-hover:  hsl(from var(--link-color) h s calc(l + 15));
             --main-theme-hover: hsl(from var(--main-theme-color) h s calc(l - 10));
             --tab-bottom-border: 1px solid var(--box-header-top-border-color);
-            --table-border-row: 1px solid #656464;
-            --table-stripe-bg-alt: #323131;
-            --table-stripe-bg: #494747;
             --text-legend-help: #d6d6d6;
 
         }
 
         .label2_fields,
         .l2fd-main,
-        .l2fd-listitem
+        .l2fd-listitem,
+        .fixed-table-loading,
+        .list-group-item
         {
             background-color: var(--box-bg) !important;
             color: var(--color-fg) !important;
+        }
+
+        .list-group-item {
+            border: var(--tab-bottom-border);
         }
 
         footer.main-footer {
@@ -156,9 +160,12 @@
             color: var(--link-hover) !important;
         }
 
+        label.form-control {
+            color: var(--color-fg) !important;
+        }
 
         .footer-links a {
-            color: light-dark(hsl(from var(--link-color) h s calc(l + 10)),hsl(from var(--link-color) h s calc(l - 32))) !important;
+            color: var(--link-color) !important;
         }
 
         h2 small {
@@ -177,6 +184,15 @@
             /*color: var(--btn-theme-hover-text-color) !important;*/
             color: var(--nav-primary-text-color) !important;
             border: 1px solid hsl(from var(--btn-theme-base) h s calc(l - 15)) !important;
+        }
+
+        .btn-theme.active
+        {
+            background-color: var(--btn-theme-hover) !important;
+        }
+
+        .btn-theme:focus {
+            color: var(--nav-primary-text-color) !important;
         }
 
 
@@ -201,6 +217,7 @@
         input[type="url"],
         input[type="email"],
         input[type="password"],
+        input[type="tel"],
         option:active,
         option[active],
         option[selected],
@@ -210,12 +227,8 @@
         {
             background-color: var(--table-stripe-bg) !important;
             color: var(--color-fg) !important;
+            border-color: var(--input-border-color) !important;
 
-        }
-
-        .input-group-addon {
-            background-color: var(--input-group-bg) !important;
-            color: var(--input-group-fg) !important;
         }
 
         .select2-container--default.select2-container--focus .select2-selection--multiple,
@@ -223,24 +236,44 @@
             border-color: hsl(from var(--main-theme-color) h s calc(l - 5)) !important;
         }
 
-        .select2-results__option[aria-selected=true] /** this handles the selected option */
+        /**
+        Multiselect maybe?
+         */
+        .select2-results__option[aria-selected=true]
         {
-            background-color: hsl(from var(--main-theme-color) h s calc(l - 5)) !important;
-            color: var(--color-fg) !important;
+            background-color: var(--main-theme-color) !important;
+            color: var(--nav-primary-text-color) !important;
         }
 
+        .select2-results__option[aria-selected=false]
+        {
+            background-color: var(--table-stripe-bg) !important;
+            /*background-color: hsl(from var(--main-theme-color) h s calc(l - 15)) !important;*/
+            /*color: var(--nav-primary-text-color) !important;*/
+            color: var(--color-fg) !important;
+        }
 
         /**
-        Highlight the select2 on hover
+        Highlight the select2 on hover when NOT the selected option
          */
-        .select2-results__option--highlighted[aria-selected=false] {
-            background-color: hsl(from var(--main-theme-color) h s calc(l + 20)) !important;
-            color: var(--color-fg) !important;
+        .select2-results__option--highlighted[aria-selected=false]
+        {
+            background-color: hsl(from var(--main-theme-color) h s calc(l - 10)) !important;
+            color: var(--nav-primary-text-color) !important;
         }
 
-        .select2-results__option--highlighted[aria-selected=true] {
-            /*background-color: hsl(from var(--main-theme-color) h s calc(l + 20)) !important;*/
-            color: var(--color-fg) !important;
+        /**
+        Highlight the select2 on hover when the selected option
+         */
+        .select2-results__option--highlighted[aria-selected=true],
+        .select2-results__option--highlighted[aria-selected=true]:hover,
+        .select2-results__option--highlighted[aria-selected=true]:link,
+        .select2-results__option--highlighted[aria-selected=true]:focus,
+        .select2-results__option--highlighted[aria-selected=true]:visited
+        {
+            background-color: hsl(from var(--main-theme-color) h s calc(l - 15)) !important;
+            /*color: var(--color-fg) !important;*/
+            color: var(--nav-primary-text-color) !important;
         }
 
         .select2-selection__choice,
@@ -248,33 +281,44 @@
         {
             background-color: var(--main-theme-color) !important;
             border-color: hsl(from var(--main-theme-color) h s calc(l - 15)) !important;
+            color: var(--nav-primary-text-color) !important;
         }
 
         .select2-selection__choice__remove {
-            color: white !important;
+            color: var(--nav-primary-text-color) !important;
         }
-
-
 
         .select2-container--default .select2-selection--multiple .select2-selection__choice
         {
             background-color: hsl(from var(--main-theme-color) h s calc(l - 5)) !important;
-            color: var(--color-fg) !important;
+            color: var(--nav-primary-text-color) !important;
             overflow-y: auto;
         }
 
 
-        input[type="text"]:focus,
-        input[type="url"]:focus,
-        input[type="date"]:focus,
-        input[type="email"]:focus,
-        input[type="number"]:focus,
-        input[type="password"]:focus,
-        textarea:focus
-        {
-            border-color: hsl(from var(--main-theme-color) h s calc(l - 5)) !important;
+        .input-group-addon {
+            background-color: var(--input-group-bg) !important;
+            color: var(--input-group-fg) !important;
+            border-color: var(--input-border-color) !important;
         }
 
+        input:disabled,
+        input[type="checkbox"]:disabled,
+        input[type="radio"]:disabled,
+        input[readonly],
+        textarea[readonly],
+        .select2-container--default.select2-container--disabled .select2-selection--single,
+        .select2-container--default.select2-container--disabled .select2-selection--multiple,
+        .select2-container--default.select2-container--disabled .select2-selection__rendered,
+        .select2-container--default.select2-container--disabled .select2-selection--multiple .select2-search--inline {
+            background-color: light-dark(rgb(234, 232, 232), rgb(117, 116, 117)) !important;
+            cursor: not-allowed !important;
+        }
+
+        .select2-container--default.select2-container--disabled .select2-search__field::placeholder {
+            color: var(--text-help) !important;
+            opacity: 1 !important;
+        }
 
         input[type="search"].search-highlight {
             background-color: var(--search-highlight);
@@ -294,8 +338,15 @@
             cursor: pointer;
         }
 
-        h1, h2, h3, h4, p {
-            color: var(--color-fg);
+        h1,
+        h2,
+        h3,
+        h4,
+        p,
+        .modal-title,
+        .modal-header h2
+        {
+            color: var(--color-fg) !important;
         }
 
         .btn-danger,
@@ -309,8 +360,9 @@
         .btn-primary:focus,
         .modal-danger,
         .modal-danger h2,
-        .modal-header h2,
-        .modal-warning h2
+        .modal-warning h2,
+        .modal-danger h4,
+        .modal-warning h4,
         .bg-maroon,
         .bg-maroon:hover,
         .bg-maroon:focus,
@@ -320,6 +372,7 @@
         {
             color: white !important;
         }
+
 
         .btn-selected,
         .btn-selected a,
@@ -362,6 +415,22 @@
             border-right-color: var(--box-bg) !important;
         }
 
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > td,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > thead > tr > td,
+        .table-bordered > thead > tr > th,
+        .table-bordered > thead > tr > th,
+        .table-bordered,
+        .well
+        {
+            border: 1px solid var(--box-header-top-border-color) !important;
+            border-left-color: var(--box-header-top-border-color) !important;
+            border-right-color: var(--box-header-top-border-color) !important;
+        }
+
         .box {
             border-top: 3px solid;
         }
@@ -369,6 +438,8 @@
         .box.box-default {
             border-top:  var(--box-header-top-border);
         }
+
+
 
         .box-header.with-border {
             border-bottom: var(--box-header-bottom-border);
@@ -401,7 +472,9 @@
         .nav-tabs-custom > .nav-tabs > li:first-of-type,
         .nav-tabs-custom > .nav-tabs > li.active > a:link,
         .nav-tabs-custom > .nav-tabs > li.active > a:visited,
-        .nav-tabs-custom > .nav-tabs > li.active > a:hover
+        .nav-tabs-custom > .nav-tabs > li.active > a:hover,
+        .bootstrap-table.fullscreen,
+        .well
         {
 
             color: var(--color-fg);
@@ -409,6 +482,26 @@
             border-left: 1px solid transparent;
             border-right: 1px solid  transparent;
 
+        }
+
+        .panel {
+            border-color: var(--box-header-top-border-color);
+        }
+        .panel-body {
+            background-color: var(--box-bg) !important;
+        }
+
+        .panel-heading,
+        .panel-default > .panel-heading
+        {
+            color: var(--color-fg) !important;
+            background-color: var(--table-stripe-bg-alt) !important;
+            border-color: var(--box-header-top-border-color);
+        }
+
+        .panel-footer {
+            background-color: var(--box-bg) !important;
+            border-color: var(--box-header-top-border-color);
         }
 
         .nav-tabs-custom > .nav-tabs > li.active
@@ -450,23 +543,26 @@
 
         .table-striped > tbody > tr:nth-of-type(even),
         .row-new-striped > .row:nth-of-type(even),
-        .row-new-striped > .div:nth-of-type(odd) {
+        .row-new-striped > .div:nth-of-type(odd),
+        .cansort
+        {
             background-color: var(--table-stripe-bg) !important;
             border-top: var(--table-border-row-top) !important;
+            color: var(--color-fg) !important;
         }
 
         .table-striped > tbody > tr:nth-of-type(odd),
         .row-new-striped > .row:nth-of-type(even),
-        .row-new-striped > .div:nth-of-type(odd)
+        .row-new-striped > .div:nth-of-type(odd),
+        .cansort
         {
             background-color: var(--table-stripe-bg-alt) !important;
             border-top: var(--table-border-row-top) !important;
+            color: var(--color-fg) !important;
         }
 
 
-        .small-box h3, .small-box p {
-            color: white;
-        }
+
 
         /**
         main header nav
@@ -482,13 +578,15 @@
         .dropdown-menu > li,
         .navbar,
         .navbar-nav,
-        .label-default
+        .label-default,
+        .label-default:hover
         {
             background-color: var(--main-theme-color);
             color: var(--nav-primary-text-color) !important;
         }
 
 
+        .dropdown-menu > li > a,
         .dropdown-menu > li > a:link,
         .dropdown-menu > li > a:visited,
         .dropdown-menu > .active > a:link,
@@ -498,13 +596,12 @@
         .navbar-nav > li > a:link,
         .navbar-nav > li > a:visited
         {
-            background-color: var(--main-theme-color);
+            background-color: var(--main-theme-color) !important;
             /*background-color: rgba(0,0,0,.15);*/
             color: var(--nav-primary-text-color) !important;
             /*color: var(--nav-primary-text-color) !important;*/
 
         }
-
 
         .btn-tableButton.active.focus,
         .btn-tableButton.active:focus,
@@ -571,7 +668,6 @@
             color: var(--nav-primary-text-color) !important;
         }
 
-
         .navbar-nav > .notifications-menu > .dropdown-menu > li.header,
         .navbar-nav > .messages-menu > .dropdown-menu > li.header,
         .navbar-nav > .tasks-menu > .dropdown-menu > li.header,
@@ -600,6 +696,7 @@
             background-color: #1e282c;
         }
 
+
         .sidebar-menu>li.active > a,
         .sidebar-menu>li:hover>a,
         .treeview-menu>li> a
@@ -626,6 +723,10 @@
         }
 
 
+        .list-group-item:first-child {
+            border-top: 0 !important;
+        }
+
         .sidebar-menu > li > a:link,
         .sidebar-menu > li > a:visited,
         .treeview-menu>li> a
@@ -650,23 +751,27 @@
         .table > tfoot > tr > th,
         .table > thead > tr > td,
         .table > tbody > tr > td,
-        .table > tfoot > tr > td,
+        .table > tfoot > tr > td
 
         {
-            border-top-color: var(--box-header-bottom-border-color) !important;
+            border-top-color: var(--box-bg) !important;
             border-bottom-color: var(--box-header-bottom-border-color) !important;
+            color: var(--color-fg);
         }
 
 
-
         .help-block {
-            color: var(--text-help);
+            color: var(--text-help) !important;
         }
 
         .alert-msg,
         .has-error
         {
             color: var(--text-danger) !important;
+        }
+
+        .has-error .form-control {
+            border-color: var(--text-danger);
         }
 
         .alert a {
@@ -683,23 +788,23 @@
         }
 
         .text-warning {
-            color: var(--text-warning);
+            color: var(--text-warning) !important;
         }
 
         .text-info {
-            color: var(--text-info);
+            color: var(--text-info) !important;
         }
 
         .text-primary {
-            color: var(--main-theme-color);
+            color: var(--main-theme-color) !important;
         }
 
         .text-danger {
-            color: var(--text-danger);
+            color: var(--text-danger) !important;
         }
 
         .text-success {
-            color: var(--text-success);
+            color: var(--text-success) !important;
         }
 
         .dropdown-menu > .divider {
@@ -718,6 +823,9 @@
         input[type="checkbox"]::before {
             box-shadow: inset 1em 1em hsl(from var(--main-theme-color) h s calc(l - 20)) !important;
         }
+
+
+
 
         .callout.callout-legend {
             background-color: var(--callout-bg-color);
@@ -764,7 +872,8 @@
         .datepicker.dropdown-menu td:hover,
         .datepicker.datepicker-inline td:hover,
         .datepicker table tr td span:hover,
-        .datepicker table tr td span.focused
+        .datepicker table tr td span.focused,
+        .logo:hover
         {
             background-color: var(--main-theme-color) !important;
             color: var(--nav-primary-text-color) !important;
@@ -780,8 +889,33 @@
         {
             background-color: var(--box-bg) !important;
             /*color: var(--color-fg) !important;*/
-            color: contrast-color(var(--box-bg)) !important;
+            color: var(--color-fg) !important;
         }
+
+        /** this handles the arrows for the datepicker widget **/
+
+        /** arrow on the bottom - bg color **/
+        .datepicker-dropdown.datepicker-orient-top:after {
+            border-top: 6px solid var(--box-bg);
+        }
+
+        /** arrow on the bottom - border color **/
+        .datepicker-dropdown.datepicker-orient-top:before {
+            border-top: 6px solid var(--color-bg);
+        }
+
+        /** arrow on the top - bg color **/
+        .datepicker-dropdown:after {
+            border-bottom: 6px solid var(--box-bg);
+        }
+
+        /** arrow on the top - border color **/
+        .datepicker-dropdown:before {
+            border-bottom: 7px solid var(--color-bg);
+        }
+
+        /** end handling arrows for the datepicker widget **/
+
 
         .treeview-menu > li {
             background-color: #2c3b41;
@@ -810,6 +944,199 @@
         .table > tbody + tbody {
             border-top: 0px !important;
         }
+
+        h4#progress-text {
+            color: white !important;
+        }
+
+        .small-box h3, .small-box p {
+            color: white !important;
+        }
+
+        .box.box-theme {
+            border-top:  var(--main-theme-color) !important;
+        }
+
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        input[type="url"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus
+        {
+            border-color: hsl(from var(--main-theme-color) h s calc(l - 5)) !important;
+        }
+
+        input[type="date"]:required,
+        input[type="number"]:required,
+        input[type="text"]:required,
+        input[type="url"]:required,
+        input[type="email"]:required,
+        input[type="password"]:required,
+        input[type="tel"]:required,
+        select:required,
+        input:required,
+        textarea:required
+        {
+            border-right: 5px solid orange !important;
+        }
+
+        .bootstrap-table .fixed-table-container .table tbody tr.selected td {
+            background-color: light-dark(hsl(from var(--main-theme-color) h s calc(l + 40)),hsl(from var(--main-theme-color) h s calc(l - 40))) !important;
+        }
+
+        tr.success > td {
+            background-color: #00a65a !important;
+            color: white !important;
+        }
+
+        tr.danger > td {
+            background-color: var(--text-danger) !important;
+            color: white !important;
+        }
+
+        @media print {
+
+            body,
+            div.content-wrapper,
+            section.content,
+            .webui,
+            .main-panel,
+            .nav-tabs-custom,
+            .box,
+            .box-body,
+            .list-group,
+            .list-group-unbordered,
+            .list-group-item,
+            .row,
+            .tab-content
+            {
+                background: white !important;
+                color: black !important;
+            }
+            .fixed-table-toolbar,
+            .fixed-table-pagination,
+            #assetsToolBar,
+            .fixed-table-pagination
+            {
+                display: none !important;
+            }
+            .tab-pane.hidden-print {
+                display: none !important;
+                visibility: hidden !important;
+            }
+
+            h2, h3, h4 {
+                color: black !important;
+            }
+
+            .col-sm-9,
+            .main-panel
+            {
+                float: left;
+                width: 100% !important;
+            }
+
+        }
+
+        .list-group-item.subitem {
+            padding-left: 20px !important;
+            border-left: 0 !important;
+            border-right: 0 !important;
+        }
+
+        .list-group-item.subitem:first-child {
+            border: var(--tab-bottom-border);
+        }
+
+        .list-group-item.subitem:last-child {
+            border: 0 !important;
+        }
+
+        .main-panel-content {
+            line-height: 20px;
+            border-bottom: var(--tab-bottom-border);
+            padding: 10px 15px;
+        }
+
+
+        /* table */
+
+        dl.table-display {
+            float: left;
+            width: 100%;
+            margin: 1em 0;
+            padding: 0;
+        }
+
+        .table-display dt {
+            line-height: 25px;
+            clear: left;
+            float: left;
+            /*text-align: right;*/
+            width: 20%;
+            margin: 0;
+            padding: 8px;
+            border-top: var(--tab-bottom-border);
+            font-weight: bold;
+        }
+
+        .table-display dd {
+            line-height: 20px;
+            float: left;
+            width: 80%;
+            margin: 0;
+            padding: 10px;
+            border-top: var(--tab-bottom-border);
+        }
+
+        .well-display dt {
+            clear: left;
+            float: left;
+            width: 70%;
+            margin: 0;
+            padding: 6px;
+            border-top: 0;
+            font-weight: bold;
+        }
+
+        .well-display dd {
+            float: left;
+            width: 30%;
+            margin: 0;
+            padding: 6px;
+            border-top: 0;
+        }
+
+        .well-sm {
+            line-height: 30px;
+        }
+
+        .table-display dd:first-of-type, .table-display dt:first-of-type {
+            border-top: 0 !important;
+        }
+
+
+        @media (max-width: 750px) {
+            .table-display dd {
+                width: 100% !important;
+            }
+
+            .table-display dt {
+                width: 100% !important;
+            }
+        }
+
+        @media print {
+            /* All your print styles go here */
+            .box-profile {
+                display: block !important;
+                width: 100% !important;
+            }
+        }
+
 
     </style>
 
@@ -883,6 +1210,16 @@
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
+                            <li aria-hidden="true">
+
+                                    <a href="#" class="sidebar-toggle-mobile visible-xs hidden-lg hidden-md" data-toggle="push-menu"
+                                   role="button">
+                                    <span class="sr-only">{{ trans('general.toggle_navigation') }}</span>
+                                    <x-icon type="nav-toggle" />
+                                </a>
+
+                            </li>
+
                             @can('index', \App\Models\Asset::class)
                                 <li aria-hidden="true"{!! (request()->is('hardware*') ? ' class="active"' : '') !!}>
                                     <a href="{{ url('hardware') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=1" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.assets') }}">
@@ -924,25 +1261,31 @@
                                 </li>
                             @endcan
 
+                            @can('index', \App\Models\User::class)
+                                <li aria-hidden="true"{!! (request()->is('users*') ? ' class="active"' : '') !!}>
+                                    <a href="{{ route('users.index') }}" {{$snipeSettings->shortcuts_enabled == 1 ? "accesskey=6" : ''}} tabindex="-1" data-tooltip="true" data-placement="bottom" data-title="{{ trans('general.users') }}">
+                                        <x-icon type="users" class="fa-fw" />
+                                        <span class="sr-only">{{ trans('general.users') }}</span>
+                                    </a>
+                                </li>
+                            @endcan
+
                             @can('index', \App\Models\Asset::class)
                                 <li>
-                                    <form class="navbar-form navbar-left form-horizontal" role="search"
-                                          action="{{ route('findbytag/hardware') }}" method="get">
-                                        <div class="col-xs-12 col-md-12">
-                                            <div class="col-xs-12 form-group">
-                                                <label class="sr-only" for="tagSearch">
-                                                    {{ trans('general.lookup_by_tag') }}
-                                                </label>
-                                                <input type="text" class="form-control" id="tagSearch" name="assetTag" placeholder="{{ trans('general.lookup_by_tag') }}">
-                                                <input type="hidden" name="topsearch" value="true" id="search">
-                                            </div>
-                                            <div class="col-xs-1">
-                                                <button type="submit" id="topSearchButton" class="btn btn-theme pull-right">
-                                                    <x-icon type="search" />
-                                                    <span class="sr-only">{{ trans('general.search') }}</span>
-                                                </button>
-                                            </div>
-                                        </div>
+                                    <form class="navbar-form navbar-left form-inline" role="search" action="{{ route('findbytag/hardware') }}" method="get">
+
+                                                <div class="input-group col-xs-12" style="border: 0 !important;">
+                                                    <label class="sr-only" for="tagSearch">
+                                                        {{ trans('general.lookup_by_tag') }}
+                                                    </label>
+                                                    <input type="text" class="form-control" id="tagSearch" name="assetTag" placeholder="{{ trans('general.lookup_by_tag') }}">
+                                                    <span class="input-group-btn">
+                                                        <button type="submit" id="topSearchButton" class="btn btn-sm btn-theme" style="padding: 7px 10px 7px 10px; "><x-icon type="search" class="fa-fw" /><div class="sr-only">{{ trans('general.search') }}</div></button>
+                                                    </span>
+                                                </div>
+
+                                        <input type="hidden" name="topsearch" value="true" id="search">
+
                                     </form>
                                 </li>
                             @endcan
@@ -1002,93 +1345,24 @@
                                                 </a>
                                             </li>
                                         @endcan
+
+
                                     </ul>
                                 </li>
                             @endcan
 
                             @can('admin')
-                                <!-- Tasks: style can be found in dropdown.less -->
-                                <?php $alert_items = ($snipeSettings->show_alerts_in_menu=='1') ? Helper::checkLowInventory() : [];
-                                      $deprecations = Helper::deprecationCheck()
-                                        ?>
-
-                                <li class="dropdown tasks-menu">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        <x-icon type="alerts" />
-                                        <span class="sr-only">{{ trans('general.alerts') }}</span>
-                                        @if(count($alert_items) + count($deprecations))
-                                            <span class="label label-danger">{{ count($alert_items) + count($deprecations)}}</span>
-                                        @endif
-                                    </a>
-                                    <ul class="dropdown-menu">
-
-                                        @if ((count($alert_items) + count($deprecations)) > 0)
-
-                                            @can('superadmin')
-                                                @if($deprecations)
-                                                    @foreach ($deprecations as $key => $deprecation)
-                                                        @if ($deprecation['check'])
-                                                            <li class="header alert-warning">{!! $deprecation['message'] !!}</li>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            @endcan
-
-                                            @if($alert_items)
-                                                <li class="header">
-                                                    {{ trans_choice('general.quantity_minimum', count($alert_items)) }}
-                                                </li>
-                                                <li>
-                                                <!-- inner menu: contains the actual data -->
-                                                    <ul class="menu">
-                                                        @for($i = 0; count($alert_items) > $i; $i++)
-                                                            <!-- Task item -->
-                                                            <li>
-                                                                <a href="{{ route($alert_items[$i]['type'].'.show', $alert_items[$i]['id'])}}">
-                                                                    <h2 class="task_menu">{{ $alert_items[$i]['name'] }}
-                                                                        <small class="pull-right">
-                                                                            {{ $alert_items[$i]['remaining'] }} {{ trans('general.remaining') }}
-                                                                        </small>
-                                                                    </h2>
-                                                                    <div class="progress xs">
-                                                                        <div class="progress-bar progress-bar-yellow"
-                                                                             style="width: {{ $alert_items[$i]['percent'] }}%"
-                                                                             role="progressbar"
-                                                                             aria-valuenow="{{ $alert_items[$i]['percent'] }}"
-                                                                             aria-valuemin="0"
-                                                                             aria-valuemax="100">
-                                                                            <span class="sr-only">
-                                                                                {{ $alert_items[$i]['percent'] }}%
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </a>
-                                                            </li>
-                                                            <!-- end task item -->
-                                                        @endfor
-                                                    </ul>
-                                                </li>
-                                            @endif
-                                        @else
-                                            <li class="header">
-                                                {{ trans_choice('general.quantity_minimum', 0) }}
-                                            </li>
-
-                                        @endif
-{{--                                        <li class="footer">--}}
-{{--                                          <a href="#">{{ trans('general.tasks_view_all') }}</a>--}}
-{{--                                        </li>--}}
-                                    </ul>
-                                </li>
+                                <x-alert-menu />
                             @endcan
 
 
 
                             <!-- User Account: style can be found in dropdown.less -->
-                            @if (Auth::check())
+                            @auth
                                 <li class="dropdown user user-menu">
+
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                        @if (Auth::user()->present()->gravatar())
+                                        @if (auth()->user()->present()->gravatar())
                                             <img src="{{ Auth::user()->present()->gravatar() }}" class="user-image"
                                                  alt="">
                                         @else
@@ -1100,25 +1374,30 @@
                                             <strong class="caret"></strong>
                                         </span>
                                     </a>
+
+
                                     <ul class="dropdown-menu">
-                                        <!-- User image -->
+
+                                        <!-- User assets -->
                                         @can('self.profile')
-                                        <li {!! (request()->is('account/profile') ? ' class="active"' : '') !!}>
+                                        <li {!! (request()->is('account/view-assets') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('view-assets') }}">
                                                 <x-icon type="checkmark" class="fa-fw" />
                                                 {{ trans('general.viewassets') }}
                                             </a>
                                         </li>
+                                        @endcan
 
 
                                         @can('viewRequestable', \App\Models\Asset::class)
                                             <li {!! (request()->is('account/requested') ? ' class="active"' : '') !!}>
                                                 <a href="{{ route('account.requested') }}">
-                                                    <x-icon type="checkmark" class="fa-fw" />
+                                                    <x-icon type="requested" class="fa-fw" />
                                                     {{ trans('general.requested_assets_menu') }}
                                                 </a></li>
                                         @endcan
 
+                                        @can('self.profile')
                                         <li {!! (request()->is('account/accept') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('account.accept') }}">
                                                 <x-icon type="checkmark" class="fa-fw" />
@@ -1127,7 +1406,7 @@
                                         </li>
 
                                         @endcan
-                                        <li>
+                                        <li {!! (request()->is('account/profile') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('profile') }}">
                                                 <x-icon type="user" class="fa-fw" />
                                                 {{ trans('general.editprofile') }}
@@ -1135,30 +1414,31 @@
                                         </li>
 
                                         @can('self.profile')
-                                        @if (Auth::user()->ldap_import!='1')
-                                        <li>
-                                            <a href="{{ route('account.password.index') }}">
-                                                <x-icon type="password" class="fa-fw" />
-                                                {{ trans('general.changepassword') }}
-                                            </a>
-                                        </li>
-                                        @endif
+                                            @if (Auth::user()->ldap_import!='1')
+                                                <li {!! (request()->is('account/password') ? ' class="active"' : '') !!}>
+                                                    <a href="{{ route('account.password.index') }}">
+                                                        <x-icon type="password" class="fa-fw"/>
+                                                        {{ trans('general.changepassword') }}
+                                                    </a>
+                                                </li>
+                                            @endif
                                         @endcan
 
                                         <li>
-                                            <a type="button" data-theme-toggle aria-label="Dark mode" class="btn-link btn-anchor" href=""  onclick="event.preventDefault();">
+                                            <a type="button" data-theme-toggle aria-label="{{ trans('general.dark_mode') }}" class="btn-link btn-anchor" onclick="event.preventDefault();">
                                                 {{ trans('general.dark_mode') }}
                                             </a>
                                         </li>
 
                                         @can('self.api')
-                                            <li>
+                                            <li {!! (request()->is('account/api') ? ' class="active"' : '') !!}>
                                                 <a href="{{ route('user.api') }}">
                                                     <x-icon type="api-key" class="fa-fw" />
                                                      {{ trans('general.manage_api_keys') }}
                                                 </a>
                                             </li>
                                         @endcan
+                                        
                                         <li class="divider"></li>
                                         <li>
                                             <a href="{{ route('logout.get') }}"
@@ -1175,7 +1455,7 @@
                                         </li>
                                     </ul>
                                 </li>
-                            @endif
+                            @endauth
 
 
                             @can('superadmin')
@@ -1189,11 +1469,7 @@
                         </ul>
                     </div>
                 </nav>
-                <a href="#" style="float:left" class="sidebar-toggle-mobile visible-xs btn" data-toggle="push-menu"
-                   role="button">
-                    <span class="sr-only">{{ trans('general.toggle_navigation') }}</span>
-                    <x-icon type="nav-toggle" />
-                </a>
+
                 <!-- Sidebar toggle button-->
             </header>
 
@@ -1204,7 +1480,7 @@
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu" data-widget="tree" {{ \App\Helpers\Helper::determineLanguageDirection() == 'rtl' ? 'style="margin-right:12px' : '' }}>
                         @can('admin')
-                            <li {!! (\Request::route()->getName()=='home' ? ' class="active"' : '') !!} class="firstnav">
+                            <li {!! (\request()->route()->getName()=='home' ? ' class="active"' : '') !!} class="firstnav">
                                 <a href="{{ route('home') }}">
                                     <x-icon type="dashboard" class="fa-fw" />
                                     <span>{{ trans('general.dashboard') }}</span>
@@ -1212,14 +1488,14 @@
                             </li>
                         @endcan
                         @can('index', \App\Models\Asset::class)
-                            <li class="treeview{{ ((request()->is('statuslabels/*') || request()->is('hardware*')) ? ' active' : '') }}">
+                            <li class="treeview{{ ((request()->is('statuslabels/*') || request()->is(['hardware*', 'maintenances*'])) ? ' active' : '') }}">
                                 <a href="#">
                                     <x-icon type="assets" class="fa-fw" />
                                     <span>{{ trans('general.assets') }}</span>
                                     <x-icon type="angle-left" class="pull-right fa-fw"/>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li>
+                                    <li {!! (!request()->query('status_type') && (request()->is('hardware')) ? ' class="active"' : '') !!}>
                                         <a href="{{ url('hardware') }}">
                                             <x-icon type="circle" class="text-grey fa-fw"/>
                                             {{ trans('general.list_all') }}
@@ -1242,49 +1518,53 @@
                                     @endif
 
 
-                                    <li id="deployed-sidenav-option" {!! (Request::query('status') == 'Deployed' ? ' class="active"' : '') !!}>
-                                        <a href="{{ url('hardware?status=Deployed') }}">
+                                    <li id="deployed-sidenav-option" {!! (request()->query('status_type') == 'Deployed' ? ' class="active"' : '') !!}>
+                                        <a href="{{ url('hardware?status_type=Deployed') }}">
                                             <x-icon type="circle" class="text-blue fa-fw" />
                                             {{ trans('general.deployed') }}
                                             <span class="badge">{{ (isset($total_deployed_sidebar)) ? $total_deployed_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="rtd-sidenav-option"{!! (Request::query('status') == 'RTD' ? ' class="active"' : '') !!}>
-                                        <a href="{{ url('hardware?status=RTD') }}">
+                                    <li id="rtd-sidenav-option"{!! (request()->query('status_type') == 'RTD' ? ' class="active"' : '') !!}>
+                                        <a href="{{ url('hardware?status_type=RTD') }}">
                                             <x-icon type="circle" class="text-green fa-fw" />
                                             {{ trans('general.ready_to_deploy') }}
                                             <span class="badge">{{ (isset($total_rtd_sidebar)) ? $total_rtd_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="pending-sidenav-option"{!! (Request::query('status') == 'Pending' ? ' class="active"' : '') !!}><a href="{{ url('hardware?status=Pending') }}">
+                                    <li id="pending-sidenav-option"{!! (request()->query('status_type') == 'Pending' ? ' class="active"' : '') !!}>
+                                        <a href="{{ url('hardware?status_type=Pending') }}">
                                             <x-icon type="circle" class="text-orange fa-fw" />
                                             {{ trans('general.pending') }}
                                             <span class="badge">{{ (isset($total_pending_sidebar)) ? $total_pending_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="undeployable-sidenav-option"{!! (Request::query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a
-                                                href="{{ url('hardware?status=Undeployable') }}">
+                                    <li id="undeployable-sidenav-option"{!! (request()->query('status') == 'Undeployable' ? ' class="active"' : '') !!} ><a
+                                            href="{{ url('hardware?status_type=Undeployable') }}">
                                             <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('general.undeployable') }}
                                             <span class="badge">{{ (isset($total_undeployable_sidebar)) ? $total_undeployable_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="byod-sidenav-option"{!! (Request::query('status') == 'byod' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=byod') }}">
+                                    <li id="byod-sidenav-option"{!! (request()->query('status_type') == 'byod' ? ' class="active"' : '') !!}>
+                                        <a
+                                            href="{{ url('hardware?status_type=byod') }}">
                                             <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('general.byod') }}
                                             <span class="badge">{{ (isset($total_byod_sidebar)) ? $total_byod_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="archived-sidenav-option"{!! (Request::query('status') == 'Archived' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=Archived') }}">
+                                    <li id="archived-sidenav-option"{!! (request()->query('status_type') == 'Archived' ? ' class="active"' : '') !!}>
+                                        <a
+                                            href="{{ url('hardware?status_type=Archived') }}">
                                             <x-icon type="x" class="text-red fa-fw" />
                                             {{ trans('admin/hardware/general.archived') }}
                                             <span class="badge">{{ (isset($total_archived_sidebar)) ? $total_archived_sidebar : '' }}</span>
                                         </a>
                                     </li>
-                                    <li id="requestable-sidenav-option"{!! (Request::query('status') == 'Requestable' ? ' class="active"' : '') !!}><a
-                                                href="{{ url('hardware?status=Requestable') }}">
+                                    <li id="requestable-sidenav-option"{!! (request()->query('status_type') == 'Requestable' ? ' class="active"' : '') !!}>
+                                        <a
+                                            href="{{ url('hardware?status_type=Requestable') }}">
                                             <x-icon type="checkmark" class="text-blue fa-fw" />
                                             {{ trans('admin/hardware/general.requestable') }}
                                         </a>
@@ -1332,21 +1612,14 @@
                                     @endcan
 
                                     @can('create', \App\Models\Asset::class)
-                                        <li{!! (Request::query('Deleted') ? ' class="active"' : '') !!}>
-                                            <a href="{{ url('hardware?status=Deleted') }}">
+                                        <li{!! (request()->query('status_type') == 'Deleted' ? ' class="active"' : '') !!}>
+                                            <a href="{{ url('hardware?status_type=Deleted') }}">
                                                 {{ trans('general.deleted') }}
                                             </a>
                                         </li>
                                         <li {!! (request()->is('maintenances') ? ' class="active"' : '') !!}>
                                             <a href="{{ route('maintenances.index') }}">
                                                 {{ trans('general.maintenances') }}
-                                            </a>
-                                        </li>
-                                    @endcan
-                                    @can('admin')
-                                        <li id="import-history-sidenav-option" {!! (request()->is('hardware/history') ? ' class="active"' : '') !!}>
-                                            <a href="{{ url('hardware/history') }}">
-                                                {{ trans('general.import-history') }}
                                             </a>
                                         </li>
                                     @endcan
@@ -1357,6 +1630,15 @@
                                             </a>
                                         </li>
                                     @endcan
+
+                                    @can('admin')
+                                        <li id="import-history-sidenav-option" {!! (request()->is('hardware/history') ? ' class="active"' : '') !!}>
+                                            <a href="{{ url('hardware/history') }}">
+                                                {{ trans('general.import-history') }}
+                                            </a>
+                                        </li>
+                                    @endcan
+
                                 </ul>
                             </li>
                         @endcan
@@ -1459,7 +1741,7 @@
                         @endcan
 
                         @can('backend.interact')
-                            <li id="settings-sidenav-option" class="treeview {!! in_array(Request::route()->getName(),App\Helpers\Helper::SettingUrls()) ? ' active': '' !!}">
+                            <li id="settings-sidenav-option" class="treeview {!! (request()->is(App\Helpers\Helper::SettingUrls()) ? ' active' : '') !!}">
                                 <a href="#" id="settings">
                                     <x-icon type="settings" class="fa-fw" />
                                     <span>{{ trans('general.settings') }}</span>
@@ -1492,7 +1774,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\AssetModel::class)
-                                        <li {{!! (request()->is('models') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('models*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('models.index') }}">
                                                 {{ trans('general.asset_models') }}
                                             </a>
@@ -1500,7 +1782,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Category::class)
-                                        <li {{!! (request()->is('categories') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('categories*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('categories.index') }}">
                                                 {{ trans('general.categories') }}
                                             </a>
@@ -1508,7 +1790,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Manufacturer::class)
-                                        <li {{!! (request()->is('manufacturers') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('manufacturers*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('manufacturers.index') }}">
                                                 {{ trans('general.manufacturers') }}
                                             </a>
@@ -1516,7 +1798,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Supplier::class)
-                                        <li {{!! (request()->is('suppliers') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('suppliers*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('suppliers.index') }}">
                                                 {{ trans('general.suppliers') }}
                                             </a>
@@ -1524,7 +1806,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Department::class)
-                                        <li {{!! (request()->is('departments') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('departments*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('departments.index') }}">
                                                 {{ trans('general.departments') }}
                                             </a>
@@ -1532,7 +1814,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Location::class)
-                                        <li {{!! (request()->is('locations') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('locations*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('locations.index') }}">
                                                 {{ trans('general.locations') }}
                                             </a>
@@ -1540,7 +1822,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Company::class)
-                                        <li {{!! (request()->is('companies') ? ' class="active"' : '') !!}}>
+                                        <li {{!! (request()->is('companies*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('companies.index') }}">
                                                 {{ trans('general.companies') }}
                                             </a>
@@ -1548,7 +1830,7 @@
                                     @endcan
 
                                     @can('view', \App\Models\Depreciation::class)
-                                        <li  {{!! (request()->is('depreciations') ? ' class="active"' : '') !!}}>
+                                        <li  {{!! (request()->is('depreciations*') ? ' class="active"' : '') !!}}>
                                             <a href="{{ route('depreciations.index') }}">
                                                 {{ trans('general.depreciation') }}
                                             </a>
@@ -1560,6 +1842,7 @@
 
                         @can('reports.view')
                             <li class="treeview{{ (request()->is('reports*') ? ' active' : '') }}">
+
                                 <a href="#" class="dropdown-toggle">
                                     <x-icon type="reports" class="fa-fw" />
                                     <span>{{ trans('general.reports') }}</span>
@@ -1567,6 +1850,11 @@
                                 </a>
 
                                 <ul class="treeview-menu">
+                                    <li {{!! (request()->is('reports') ? ' class="active"' : '') !!}}>
+                                        <a href="{{ route('reports.index') }}">
+                                            {{ trans('general.list_all') }}
+                                        </a>
+                                    </li>
                                     <li {{!! (request()->is('reports/activity') ? ' class="active"' : '') !!}}>
                                         <a href="{{ route('reports.activity') }}">
                                             {{ trans('general.activity_report') }}
@@ -1737,16 +2025,16 @@
                          {!! trans('general.footer_credit') !!}
 
                         <a target="_blank" href="https://bsky.app/profile/snipeitapp.com" rel="noopener" data-tooltip="true" data-title="Join us on Bluesky">
-                            <i class="fa-brands fa-square-bluesky"></i>
+                            <i class="fa-brands fa-square-bluesky fa-fw"></i>
                         </a>
-                        <a target="_blank" href="https://hachyderm.io/@grokability" rel="noopener" data-tooltip="true" data-title="Join us on Github">
-                            <i class="fa-brands fa-square-github"></i>
+                        <a target="_blank" href="https://github.com/grokability/snipe-it/" rel="noopener" data-tooltip="true" data-title="Join us on Github">
+                            <i class="fa-brands fa-square-github fa-fw"></i>
                         </a>
                         <a target="_blank" href="https://hachyderm.io/@grokability" rel="noopener" data-tooltip="true" data-title="Join us on Mastodon">
-                            <i class="fa-brands fa-mastodon"></i>
+                            <i class="fa-brands fa-mastodon fa-fw"></i>
                         </a>
                         <a target="_blank" href="https://discord.gg/yZFtShAcKk" rel="noopener" data-tooltip="true" data-title="Join us on Discord">
-                            <i class="fa-brands fa-discord"></i>
+                            <i class="fa-brands fa-discord fa-fw"></i>
                         </a>
 
                     </div>
@@ -1799,9 +2087,9 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h2 class="modal-title" id="dataConfirmModalLabel">
+                        <h4 class="modal-title" id="dataConfirmModalLabel">
                             <span class="modal-header-icon"></span>&nbsp;
-                        </h2>
+                        </h4>
                     </div>
                     <div class="modal-body"></div>
                     <div class="modal-footer">
@@ -1859,6 +2147,14 @@
 
         <script nonce="{{ csrf_token() }}">
 
+            // Handle the first selected tabs regardless of permissions
+            if ($('li.snipetab').is(':first-of-type')) {
+                var hash = $('li.snipetab:first-of-type').children().attr('href');
+                $('li.snipetab:first-of-type').addClass('active');
+                $('div'+hash+'.snipetab-pane').addClass('in active');
+            }
+
+
             //color picker with addon
             $(".color").colorpicker();
 
@@ -1885,11 +2181,12 @@
              * Utility function to update the button text and aria-label.
              */
             function updateButton({ buttonEl, isDark }) {
-                const newCta = isDark ? '<i class="fa-regular fa-sun fa-fw"></i>  {{ trans('general.light_mode') }}' : '<i class="fa-solid fa-moon fa-fw"></i>   {{ trans('general.dark_mode') }}';
+                const newCta = isDark ? '{{ trans('general.light_mode') }}' : '{{ trans('general.dark_mode') }}';
+                const newCtaButton = isDark ? '<i class="fa-regular fa-sun fa-fw"></i> ' : '<i class="fa-solid fa-moon fa-fw"></i> ';
                 // use an aria-label if omitting text on the button
                 // and using a sun/moon icon, for example
                 buttonEl.setAttribute("aria-label", newCta);
-                buttonEl.innerHTML = newCta;
+                buttonEl.innerHTML = newCtaButton + newCta;
             }
 
             /**
@@ -2002,6 +2299,7 @@
                 weekStart: {{ $snipeSettings->week_start ?? 0 }},
             };
 
+
             var clipboard = new ClipboardJS('.js-copy-link');
 
             clipboard.on('success', function(e) {
@@ -2060,6 +2358,16 @@
                 email: "{{ trans('validation.generic.email') }}"
             });
 
+            $.validator.addMethod('pattern', function(value, element, param) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                if (typeof param === 'string') {
+                    param = new RegExp('^(?:' + param + ')$');
+                }
+                return param.test(value);
+            }, '{{ trans('validation.generic.invalid_value_in_field') }}');
+
 
             function showHideEncValue(e) {
                 // Use element id to find the text element to hide / show
@@ -2087,7 +2395,57 @@
                  }
              }
 
-            $(function () {
+
+
+
+            function checkInfoSidePanel() {
+                var side_panel_state = localStorage.getItem("side_panel_state");
+
+                // Open side info panel
+                if (side_panel_state == 'collapsed') {
+                    collapseInfoSidePanel();
+
+                // Collapse side info panel
+                } else {
+                    expandInfoSidePanel();
+                }
+
+            }
+
+            function toggleInfoSidePanel() {
+                var side_panel_state = localStorage.getItem("side_panel_state");
+
+                if (side_panel_state == 'expanded') {
+                    localStorage.setItem("side_panel_state", 'collapsed');
+                } else {
+                    localStorage.setItem("side_panel_state", 'expanded');
+                }
+
+                checkInfoSidePanel();
+            }
+
+            function collapseInfoSidePanel() {
+                $('.side-box').removeClass('expanded').hide();
+                $('.main-panel').removeClass('col-md-9').addClass('col-md-12');
+                $("#expand-info-panel-button").addClass('fa-square-caret-left').removeClass('fa-square-caret-right');
+            }
+
+            function expandInfoSidePanel() {
+                $('.side-box').fadeIn("fast").addClass('expanded');
+                $('.main-panel').removeClass('col-md-12').addClass('col-md-9');
+                $("#expand-info-panel-button").addClass('fa-square-caret-right').removeClass('fa-square-caret-left');
+            }
+
+
+            $(document).ready(function () {
+                checkInfoSidePanel();
+
+                // Handle the info-panel
+                $("#expand-info-panel-button").click(function () {
+                    toggleInfoSidePanel();
+                });
+
+
 
                 // This handles the show/hide for cloned items
                 $('#use_cloned_image').click(function() {

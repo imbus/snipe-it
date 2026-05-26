@@ -19,6 +19,6 @@ trait InitializesSettings
 
         $this->settings = Settings::initialize();
 
-        $this->beforeApplicationDestroyed(fn() => Setting::$_cache = null);
+        $this->beforeApplicationDestroyed(fn () => Setting::$_cache = null);
     }
 }

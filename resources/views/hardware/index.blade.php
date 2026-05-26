@@ -2,30 +2,37 @@
 
 @section('title0')
 
-  @if ((Request::get('company_id')) && ($company))
+  @php
+      $requestStatusType = request()->input('status_type');
+      $requestOrderNumber = request()->input('order_number');
+      $requestCompanyId = request()->input('company_id');
+      $requestStatusTypeId = request()->input('status_id');
+  @endphp
+
+  @if (is_scalar($requestCompanyId) && ($company instanceof \App\Models\Company))
     {{ $company->name }}
   @endif
 
 
 
-@if (Request::get('status'))
-  @if (Request::get('status')=='Pending')
+  @if ($requestStatusType)
+      @if ($requestStatusType=='Pending')
     {{ trans('general.pending') }}
-  @elseif (Request::get('status')=='RTD')
+      @elseif ($requestStatusType=='RTD')
     {{ trans('general.ready_to_deploy') }}
-  @elseif (Request::get('status')=='Deployed')
+      @elseif ($requestStatusType=='Deployed')
     {{ trans('general.deployed') }}
-  @elseif (Request::get('status')=='Undeployable')
+      @elseif ($requestStatusType=='Undeployable')
     {{ trans('general.undeployable') }}
-  @elseif (Request::get('status')=='Deployable')
+      @elseif ($requestStatusType=='Deployable')
     {{ trans('general.deployed') }}
-  @elseif (Request::get('status')=='Requestable')
+      @elseif ($requestStatusType=='Requestable')
     {{ trans('admin/hardware/general.requestable') }}
-  @elseif (Request::get('status')=='Archived')
+      @elseif ($requestStatusType=='Archived')
     {{ trans('general.archived') }}
-  @elseif (Request::get('status')=='Deleted')
+      @elseif ($requestStatusType=='Deleted')
     {{ ucfirst(trans('general.deleted')) }}
-  @elseif (Request::get('status')=='byod')
+      @elseif ($requestStatusType=='byod')
     {{ strtoupper(trans('general.byod')) }}
   @endif
 @else
@@ -33,8 +40,8 @@
 @endif
 {{ trans('general.assets') }}
 
-  @if (Request::has('order_number'))
-    : Order #{{ strval(Request::get('order_number')) }}
+  @if (Request::has('order_number') && is_scalar($requestOrderNumber))
+    : Order #{{ strval($requestOrderNumber) }}
   @endif
 @stop
 
@@ -46,7 +53,6 @@
 
 {{-- Page content --}}
 @section('content')
-
 
 <div class="responsive-layout">
   <!-- Filter Section -->
@@ -107,8 +113,7 @@
 @if($advanced_search_permission)
     <script type="module" src="{{ mix('js/dist/advanced-search-index.min.js') }}">
 @endif        
-</script>
-@stop
+</script>@stop
 
 @section('moar_scripts')
 @include('partials.bootstrap-table')

@@ -10,6 +10,7 @@ use Illuminate\Support\ServiceProvider;
  * some common upload path and image urls.
  *
  * PHP version 5.5.9
+ *
  * @version    v3.0
  */
 class SettingsServiceProvider extends ServiceProvider
@@ -18,7 +19,9 @@ class SettingsServiceProvider extends ServiceProvider
      * Custom email array validation
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v3.0]
+     *
      * @return void
      */
     public function boot()
@@ -28,7 +31,6 @@ class SettingsServiceProvider extends ServiceProvider
         view()->composer('*', function ($view) {
             $view->with('snipeSettings', Setting::getSettings());
         });
-
 
         // Make sure the limit is actually set, is an integer and does not exceed system limits
         app()->singleton('api_limit_value', function () {
@@ -42,12 +44,30 @@ class SettingsServiceProvider extends ServiceProvider
             return $limit;
         });
 
-        // Make sure the offset is actually set and is an integer
+        // Make sure the offset is actually set and is an integer.
+        // If 'page' is passed without 'offset', derive the offset from the page number.
         app()->singleton('api_offset_value', function () {
-            $offset = intval(request('offset'));
-            return $offset;
+            if (request()->filled('page') && ! request()->filled('offset')) {
+                $page = max(1, intval(request('page')));
+
+                return ($page - 1) * (int) app('api_limit_value');
+            }
+
+            return intval(request('offset'));
         });
 
+        // Resolve the current page number for inclusion in API list responses.
+        // Supports both page= and legacy offset= parameters.
+        app()->singleton('api_current_page', function () {
+            if (request()->filled('page') && ! request()->filled('offset')) {
+                return max(1, intval(request('page')));
+            }
+
+            $limit = (int) app('api_limit_value');
+            $offset = (int) app('api_offset_value');
+
+            return $limit > 0 ? (int) floor($offset / $limit) + 1 : 1;
+        });
 
         /**
          * Set some common variables so that they're globally available.
@@ -55,7 +75,6 @@ class SettingsServiceProvider extends ServiceProvider
          */
 
         // Model paths and URLs
-
 
         app()->singleton('eula_pdf_path', function () {
             return 'eula_pdf_path/';
@@ -85,6 +104,14 @@ class SettingsServiceProvider extends ServiceProvider
             return 'models/';
         });
 
+        app()->singleton('assets_upload_url', function () {
+            return 'assets/';
+        });
+
+        app()->singleton('licenses_upload_url', function () {
+            return 'licenses/';
+        });
+
         // Categories
         app()->singleton('categories_upload_path', function () {
             return 'categories/';
@@ -101,6 +128,24 @@ class SettingsServiceProvider extends ServiceProvider
 
         app()->singleton('locations_upload_url', function () {
             return 'locations/';
+        });
+
+        // Companies
+        app()->singleton('companies_upload_path', function () {
+            return 'companies/';
+        });
+
+        app()->singleton('companies_upload_url', function () {
+            return 'companies/';
+        });
+
+        // Departments
+        app()->singleton('departments_upload_path', function () {
+            return 'departments/';
+        });
+
+        app()->singleton('departments_upload_url', function () {
+            return 'departments/';
         });
 
         // Users
@@ -175,10 +220,18 @@ class SettingsServiceProvider extends ServiceProvider
             return 'components/';
         });
 
+        app()->singleton('maintenances_upload_url', function () {
+            return 'maintenances/';
+        });
+
+        app()->singleton('maintenances_upload_path', function () {
+            return 'maintenances/';
+        });
+
         // Set the monetary locale to the configured locale to make helper::parseFloat work.
         setlocale(LC_MONETARY, config('app.locale'));
         setlocale(LC_NUMERIC, config('app.locale'));
-        
+
     }
 
     /**
@@ -186,7 +239,5 @@ class SettingsServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-    }
+    public function register() {}
 }
