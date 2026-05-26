@@ -930,6 +930,31 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
     }
     ); // end asset notes API routes
 
+        //Route::middleware('auth:api')->group(function () {
+
+    Route::middleware('auth:api')->prefix('predefinedFilters')->group(function () {
+        Route::get('/', [PredefinedFilterController::class, 'index'])
+            ->name('api.predefined-filters.index');
+
+        Route::get('/selectlist', [PredefinedFilterController::class, 'selectlist'])
+            ->name('api.predefined-filters.selectlist');
+
+        Route::get('/{id}', [PredefinedFilterController::class, 'show'])
+            ->name('api.predefined-filters.show');
+
+        Route::post('/', [PredefinedFilterController::class, 'store'])
+            ->name('api.predefined-filters.store');
+
+        Route::put('/{id}', [PredefinedFilterController::class, 'update'])
+            ->name('api.predefined-filters.update');
+
+        Route::put('predefinedFilters/{id}/sync-permissions', [PredefinedFilterController::class, 'syncPermissionGroups'])
+            ->name('api.predefined-filters.sync-permissions');
+
+        Route::delete('/{id}', [PredefinedFilterController::class, 'destroy'])
+            ->name('api.predefined-filters.destroy');
+    }); // end predefinedFilters API routes
+    
     /**
      * Settings API routes
      */

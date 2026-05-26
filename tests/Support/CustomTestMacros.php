@@ -235,7 +235,7 @@ trait CustomTestMacros
         TestResponse::macro(
             'assertCsvHeader',
             function () {
-                $this->assertHeader('content-type', 'text/csv; charset=utf-8');
+                $this->assertHeader('content-type', 'text/csv; charset=UTF-8');
 
                 return $this;
             }

@@ -60,7 +60,21 @@ class PredefinedFilterControllerTest extends TestCase
         $this->actingAs($u, 'api')
             ->getJson('/api/v1/predefinedFilters')
             ->assertOk()
-            ->assertExactJson(['rows' => [], 'total' => 0,]);
+            ->assertJsonPath('rows', [])
+            ->assertJsonPath('total', 0)
+            ->assertJsonPath('current_page', 1)
+            ->assertJsonPath('prev_page_url', null)
+            ->assertJsonPath('next_page_url', null)
+            ->assertJsonPath('total_pages', 0)
+            ->assertJsonStructure([
+                'rows',
+                'total',
+                'current_page',
+                'per_page',
+                'prev_page_url',
+                'next_page_url',
+                'total_pages',
+            ]);
     }
 
     public function testIndexListsOnlyViewableOrOwned(): void
