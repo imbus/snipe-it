@@ -177,8 +177,15 @@ class AssetsController extends Controller
         }
 
         // This invokes the Searchable model trait scopeTextSearch and will handle input by search or by advanced search filter
-        if ($request->filled('filter') || $request->filled('search')) {
-            $assets->TextSearch($request->input('filter') ? $request->input('filter') : $request->input('search'));
+        if ($request->filled('filter')) {
+            $decoded = json_decode($request->input('filter'), true);
+            if (is_array($decoded) && isset($decoded[0]['field'])) {
+                $assets->byFilter($decoded);
+            } else {
+                $assets->TextSearch($request->input('filter'));
+            }
+        } elseif ($request->filled('search')) {
+            $assets->TextSearch($request->input('search'));
         }
 
         /**
