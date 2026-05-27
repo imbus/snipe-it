@@ -68,7 +68,7 @@ class FilterService
             'name' => 'locations.name',
         ],
         'status_label' => [
-            'relation' => 'assetstatus',
+            'relation' => 'status',
             'id' => 'status_labels.id',
             'name' => 'status_labels.name',
         ],
