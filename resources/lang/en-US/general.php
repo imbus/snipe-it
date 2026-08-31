@@ -786,7 +786,7 @@ return [
     'token_unrevoked' => 'API token reinstated',
     'token_revoked' => 'API token revoked',
 
-    'advanced_search' => \"Advanced search\",
+    'advanced_search' => 'Advanced search',
     'search_after_filter_field' => 'Type here to find a field',
     'predefined_filter_name' => 'Filter Name',
     'enter_predefined_filter_name' => 'Enter filter name',

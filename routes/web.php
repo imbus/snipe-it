@@ -467,7 +467,7 @@ Route::group(['prefix' => 'import', 'middleware' => ['auth']], function () {
         ]
     )->name('imports.download');
 
-    Route::livewire('/', Importer::class)
+    Route::get('/', Importer::class)
         ->middleware('auth')
         ->name('imports.index')
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('home')

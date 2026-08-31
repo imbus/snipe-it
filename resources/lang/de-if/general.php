@@ -779,7 +779,7 @@ return [
     'token_unrevoked' => 'API-Token wiederhergestellt',
     'token_revoked' => 'API-Token widerrufen',
 
-    'advanced_search' => \"Erweiterte Suche\",
+    'advanced_search' => 'Erweiterte Suche',
     'search_after_filter_field' => 'Nach einem Feld suchen...',
     'predefined_filter_name' => 'Filtername',
     'enter_predefined_filter_name' => 'Gib bitte einen Filternamen ein',

@@ -8,7 +8,10 @@ use App\Exceptions\CheckoutNotAllowed;
 use App\Helpers\Helper;
 use App\Http\Traits\UniqueUndeletedTrait;
 use App\Models\Traits\Acceptable;
+use App\Models\Traits\CompanyableTrait;
 use App\Models\Traits\HasUploads;
+use App\Models\Traits\Loggable;
+use App\Models\Traits\Requestable;
 use App\Models\Traits\Searchable;
 use App\Presenters\Presentable;
 use App\Presenters\AssetPresenter;
@@ -664,7 +667,7 @@ class Asset extends Depreciable
      * @since  [v2.0]
      * @return string | false
      */
-    public function getImageUrl()
+    public function getImageUrl($path = null)
     {
         if ($this->image && !empty($this->image)) {
             return Storage::disk('public')->url(app('assets_upload_path') . e($this->image));
@@ -788,6 +791,18 @@ class Asset extends Depreciable
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
     public function assetstatus()
+    {
+        return $this->belongsTo(\App\Models\Statuslabel::class, 'status_id');
+    }
+
+    /**
+     * Establishes the asset -> status relationship
+     *
+     * Alias of assetstatus() so eager loading with('status') resolves.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function status()
     {
         return $this->belongsTo(\App\Models\Statuslabel::class, 'status_id');
     }

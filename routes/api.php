@@ -42,10 +42,7 @@ Route::group(['prefix' => 'v1', 'middleware' => ['api', 'api-throttle:api']], fu
             'client_id' => $client->id,
         ]);
     });
-
     /**
-     * Account routes
-     */
      * Account routes
      */
     Route::group(['prefix' => 'account'], function () {

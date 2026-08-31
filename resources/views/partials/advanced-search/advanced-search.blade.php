@@ -383,7 +383,6 @@ document.getElementById('filterSearch').addEventListener('input', function(e) {
 
 
 </script>
-<<<<<<< HEAD
 
 <style>
 /* 
@@ -534,5 +533,3 @@ Show the mobile collapse icon on mobile screens.
 }
 
 </style>
-=======
->>>>>>> 3dbe28a4dc (Moved css for advanced search in it's own files)
