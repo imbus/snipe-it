@@ -33,4 +33,7 @@ return [
         'checkout' => 'Checkout :item_type',
         'checkin' => 'Checkin :item_type',
     ],
+    'save_predefined_filter_as' => 'Save filter as...',
+    'update_predefined_filter' => 'Update predefined filter',
+    'delete_predefined_filter' => 'Delete predefined filter',
 ];

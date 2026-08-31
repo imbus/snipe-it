@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
     'actions' => 'Aktionen',
@@ -35,4 +35,7 @@ return [
         'checkout' => ':item_type herausgeben',
         'checkin' => ':item_type zurücknehmen',
     ],
+    'save_predefined_filter_as' => 'Filter speichern unter...',
+    'update_predefined_filter' => 'Vordefinierten Filter aktualisieren',
+    'delete_predefined_filter' => 'Vordefinierten Filter löschen',
 ];

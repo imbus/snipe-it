@@ -5,8 +5,11 @@ namespace Tests;
 use App\Http\Middleware\SecurityHeaders;
 use App\Models\Asset;
 use App\Models\Company;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Tests\Support\AssertHasActionLogs;
 use Tests\Support\AssertsAgainstSlackNotifications;
@@ -42,6 +45,22 @@ abstract class TestCase extends BaseTestCase
 
         $this->initializeSettings();
 
+        config(['app.timezone' => 'UTC']);
+
+        try {
+            date_default_timezone_set('UTC');
+        } catch (\Throwable $e) {
+            Log::debug('Failed to set timezone: '.$e->getMessage());
+        }
+
+        Carbon::setLocale('en');
+
+        try {
+            DB::statement("SET time_zone = '+00:00'");
+        } catch (\Throwable $e) {
+            Log::debug($e);
+        }
+
         // Flush the custom field filter map cache between tests so that
         // dynamically-created custom fields are always picked up fresh.
         Asset::flushCustomFieldFilterMap();
@@ -52,8 +71,6 @@ abstract class TestCase extends BaseTestCase
         // different pivot set.
         Company::flushCompanyIdsCache();
     }
-
-    // ...existing code...
 
     private function guardAgainstMissingEnv(): void
     {

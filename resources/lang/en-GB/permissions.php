@@ -1,20 +1,6 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Permissions
-    |--------------------------------------------------------------------------
-    | The following language lines are used in the user permissions system.
-    | Each permission has a 'name' and a 'note' that describes
-    | the permission in detail.
-    |
-    | DO NOT edit the keys (left-hand side) of each permission as these are
-    | used throughout the system for translations.
-    |---------------------------------------------------------------------------
-    */
-
     'superuser' => [
         'name' => 'Super User',
         'note' => 'Determines whether the user has full access to all aspects of the admin. This setting overrides ALL more specific and restrictive permissions throughout the system. ',
@@ -23,74 +9,59 @@ return [
         'name' => 'Admin Access',
         'note' => 'Determines whether the user has access to most aspects of the system EXCEPT the System Admin Settings. These users will be able to manage users, locations, categories, etc, but ARE constrained by Full Multiple Company Support if it is enabled.',
     ],
-
     'import' => [
         'name' => 'CSV Import',
         'note' => 'This will allow users to import even if access to users, assets, etc is denied elsewhere.',
     ],
-
     'reports' => [
         'name' => 'Reports Access',
         'note' => 'Determines whether the user has access to the Reports section of the application.',
     ],
-
     'assets' => [
         'name' => 'Assets',
         'note' => 'Grants access to the Assets section of the application. ',
     ],
-
     'advancedsearch' => [
         'name' => 'Advanced Search',
-        'note' => 'Grants access to the advanced search section of the Application. Be aware, a user has the rights to load all results from all dropdowns.'
+        'note' => 'Grants access to the advanced search section of the Application. Be aware, a user has the rights to load all results from all dropdowns.',
     ],
-
     'assetsview' => [
         'name' => 'View Assets',
         'note' => 'Note that users with this permission will also be able to see (not modify or delete) files uploaded to the asset model as well. This is to make it easier to share common documents like user manuals across assets without having to upload them to every asset, and to avoid having to grant the user permission to modify asset files.',
     ],
-
     'assetscreate' => [
         'name' => 'Create New Assets',
     ],
-
     'assetsedit' => [
         'name' => 'Edit Assets',
     ],
-
     'assetsdelete' => [
         'name' => 'Delete Assets',
     ],
-
     'assetscheckin' => [
         'name' => 'Check In',
         'note' => 'Check assets back into inventory that are currently checked out.',
     ],
-
     'assetscheckout' => [
         'name' => 'Check Out',
         'note' => 'Assign assets in inventory by checking them out.',
     ],
-
     'assetsaudit' => [
         'name' => 'Audit Assets',
         'note' => 'Allows the user to mark an asset as physically inventoried.',
     ],
-
     'assetsviewrequestable' => [
         'name' => 'View Requestable Assets',
         'note' => 'Allows the user to view assets that are marked as requestable.',
     ],
-
     'assetsviewencrypted-custom-fields' => [
         'name' => 'View Encrypted Custom Fields',
         'note' => 'Allows the user to view and modify encrypted custom fields on assets.',
     ],
-
     'accessories' => [
         'name' => 'Accessories',
         'note' => 'Grants access to the Accessories section of the application.',
     ],
-
     'accessoriesview' => [
         'name' => 'View Accessories',
     ],
@@ -115,47 +86,38 @@ return [
         'name' => 'Manage Accessory Files',
         'note' => 'Allows the user to upload, download, and delete files associated with accessories. (This only makes sense with view privileges or higher.)',
     ],
-
     'assetsfiles' => [
         'name' => 'Manage Asset Files',
         'note' => 'Allows the user to upload, download, and delete files associated with assets. (This only makes sense with view privileges or higher.)',
     ],
-
     'usersfiles' => [
         'name' => 'Manage User Files',
         'note' => 'Allows the user to upload, download, and delete files associated with users. (This only makes sense with view privileges or higher.)',
     ],
-
     'modelsfiles' => [
         'name' => 'Manage Model Files',
         'note' => 'Allows the user to upload, download, and delete files associated with asset models on both the model view and the asset view screens. (This only makes sense with view privileges or higher.)',
     ],
-
     'departmentsfiles' => [
         'name' => 'Manage Department Files',
         'note' => 'Allows the user to upload, download, and delete files associated with departments. (This only makes sense with view privileges or higher.)',
     ],
-
     'suppliersfiles' => [
         'name' => 'Manage Supplier Files',
         'note' => 'Allows the user to upload, download, and delete files associated with suppliers. (This only makes sense with view privileges or higher.)',
     ],
-
     'locationsfiles' => [
         'name' => 'Manage Location Files',
         'note' => 'Allows the user to upload, download, and delete files associated with locations.(This only makes sense with view privileges or higher.)',
     ],
-
     'companiesfiles' => [
         'name' => 'Manage Company Files',
         'note' => 'Allows the user to upload, download, and delete files associated with companies. (This only makes sense with view privileges or higher.)',
     ],
-
     'consumablesfiles' => [
         'name' => 'Manage Consumable Files',
         'note' => 'Allows the user to upload, download, and delete files associated with consumables. (This only makes sense with view privileges or higher.)',
     ],
-
     'consumables' => [
         'name' => 'Consumables',
         'note' => 'Grants access to the Consumables section of the application.',
@@ -176,7 +138,6 @@ return [
         'name' => 'Check Out Consumables',
         'note' => 'Assign consumables in inventory by checking them out.',
     ],
-
     'licenses' => [
         'name' => 'Licenses',
         'note' => 'Grants access to the Licences section of the application.',
@@ -209,7 +170,6 @@ return [
         'name' => 'Manage Component Files',
         'note' => 'Allows the user to upload, download, and delete files associated with components.',
     ],
-
     'licenseskeys' => [
         'name' => 'Manage Licence Keys',
         'note' => 'Allows the user to view product keys associated with licences.',
@@ -230,7 +190,6 @@ return [
     'componentsdelete' => [
         'name' => 'Delete Components',
     ],
-
     'componentscheckout' => [
         'name' => 'Check Out Components',
         'note' => 'Assign components in inventory by checking them out.',
@@ -278,7 +237,6 @@ return [
     'modelsview' => [
         'name' => 'View Models',
     ],
-
     'modelscreate' => [
         'name' => 'Create New Models',
     ],
@@ -440,7 +398,6 @@ return [
         'name' => 'View Purchase Cost',
         'note' => 'Allows users to view the purchase cost of items in their account view.',
     ],
-
     'depreciations' => [
         'name' => 'Depreciation Management',
         'note' => 'Allows users to manage and view asset depreciation details.',
@@ -457,7 +414,6 @@ return [
     'depreciationscreate' => [
         'name' => 'Create Depreciation Records',
     ],
-
     'grant_all' => 'Grant all permissions for :area',
     'deny_all' => 'Deny all permissions for :area',
     'inherit_all' => 'Inherit all permissions for :area from permission groups',
@@ -465,5 +421,20 @@ return [
     'deny' => 'Deny Permission for :area',
     'inherit' => 'Inherit Permission for :area from permission groups',
     'use_groups' => 'We strongly suggest using Permission Groups instead of assigning individual permissions for easier management.',
-
+    'predefinedfilters' => [
+        'name' => 'Predefined Filters',
+        'note' => 'Grants access to the Predefined Filters section of the application.',
+    ],
+    'predefinedfiltercreate' => [
+        'name' => 'Create public Predefined Filters',
+    ],
+    'predefinedfilterview' => [
+        'name' => 'View New public Predefined Filters',
+    ],
+    'predefinedfilteredit' => [
+        'name' => 'Edit public Predefined Filters',
+    ],
+    'predefinedfilterdelete' => [
+        'name' => 'Delete public Predefined Filters',
+    ],
 ];

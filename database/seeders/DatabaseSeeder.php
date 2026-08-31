@@ -6,7 +6,9 @@ use App\Models\Setting;
 use Database\Seeders\Concerns\ReportsMemory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,14 +48,18 @@ class DatabaseSeeder extends Seeder
         $this->reportMemory('after ManufacturerSeeder');
         $this->call(SupplierSeeder::class);
         $this->reportMemory('after SupplierSeeder');
-        // CustomFieldSeeder MUST run before AssetModelSeeder. Mobile-phone
-        // model factories look up CustomFieldset by name (e.g., "Mobile
-        // Devices") to attach — if the fieldsets aren't seeded yet, the
-        // ?? fallback creates ad-hoc fieldsets that CustomFieldSeeder
-        // then truncates, leaving the models pointing at orphan
-        // fieldset_ids.
-        $this->call(CustomFieldSeeder::class);
-        $this->reportMemory('after CustomFieldSeeder');
+
+        // Custom-field seeders must run before AssetModelSeeder. Some model
+        // factories look up fieldsets by name while building the models.
+        $dataset = env('TEST_DATASET', 'default');
+        if ($dataset === 'huge+custom') {
+            $this->call(CustomFieldsStandaloneSeeder::class);
+            $this->reportMemory('after CustomFieldsStandaloneSeeder');
+        } else {
+            $this->call(CustomFieldSeeder::class);
+            $this->reportMemory('after CustomFieldSeeder');
+        }
+
         $this->call(AssetModelSeeder::class);
         $this->reportMemory('after AssetModelSeeder');
         $this->call(DepreciationSeeder::class);
@@ -87,11 +93,8 @@ class DatabaseSeeder extends Seeder
         $this->call(PredefinedFilterSeeder::class);
         $this->call(PredefinedFilterPermissionSeeder::class);
 
-        // snipeit:sync-asset-locations used to run here to backfill location_id
-        // on seeded assets. AssetFactory::configure() now sets location_id at
-        // make-time based on the assignment state, so post-seed sync is
-        // redundant. The command remains available as a manual maintenance
-        // tool for production databases that need drift correction.
+        Artisan::call('snipeit:sync-asset-locations', ['--output' => 'all']);
+        Log::info(Artisan::output());
 
         Model::reguard();
         DB::statement('SET FOREIGN_KEY_CHECKS=1');

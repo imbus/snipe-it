@@ -1,20 +1,6 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Permissions
-    |--------------------------------------------------------------------------
-    | The following language lines are used in the user permissions system.
-    | Each permission has a 'name' and a 'note' that describes
-    | the permission in detail.
-    |
-    | DO NOT edit the keys (left-hand side) of each permission as these are
-    | used throughout the system for translations.
-    |---------------------------------------------------------------------------
-    */
-
     'superuser' => [
         'name' => 'Super Benutzer',
         'note' => 'Legt fest, ob der Benutzer vollen Zugriff auf alle Aspekte des Administrators hat. Diese Einstellung überschreibt ALLE spezifischeren und restriktiveren Berechtigungen im gesamten System. ',
@@ -23,69 +9,55 @@ return [
         'name' => 'Admin-Zugriff',
         'note' => 'Legt fest, ob der Benutzer Zugriff auf die meisten Aspekte des Systems AUSSER in den Systemeinstellungen hat. Diese Benutzer werden in der Lage sein, Benutzer, Standorte, Kategorien, etc, zu verwalten, aber SIND beschränkt durch die Volle Mehrmandanten-Unterstützung für Firmen, wenn sie aktiviert ist.',
     ],
-
     'import' => [
         'name' => 'CSV-Import',
         'note' => 'Dies wird Benutzern erlauben zu importieren, auch wenn der Zugriff auf Benutzer, Gegenstände usw. an anderer Stelle verweigert wird.',
     ],
-
     'reports' => [
         'name' => 'Berichtszugriff',
         'note' => 'Legt fest, ob der Benutzer Zugriff auf den Berichte-Abschnitt der Anwendung hat.',
     ],
-
     'assets' => [
         'name' => 'Assets',
         'note' => 'Gewährt Zugriff auf den Bereich "Assets" in der Anwendung. ',
     ],
-
     'assetsview' => [
         'name' => 'Assets Anzeigen',
         'note' => 'Note that users with this permission will also be able to see (not modify or delete) files uploaded to the asset model as well. This is to make it easier to share common documents like user manuals across assets without having to upload them to every asset, and to avoid having to grant the user permission to modify asset files.',
     ],
-
     'assetscreate' => [
         'name' => 'Neue Assets Erstellen',
     ],
-
     'assetsedit' => [
         'name' => 'Assets Bearbeiten',
     ],
-
     'assetsdelete' => [
         'name' => 'Assets Löschen',
     ],
-
     'assetscheckin' => [
         'name' => 'Einchecken',
         'note' => 'Checken Sie die derzeit ausgebuchten Assets wieder in das Inventar ein.',
     ],
-
     'assetscheckout' => [
         'name' => 'Auschecken',
         'note' => 'Assets im Inventar zuweisen, indem sie ausgecheckt werden.',
     ],
-
     'assetsaudit' => [
         'name' => 'Assets Prüfung',
         'note' => 'Ermöglicht dem Benutzer, ein Asset als physisch inventarisiert zu markieren.',
     ],
-
     'assetsviewrequestable' => [
         'name' => 'Anforderbare Assets anzeigen',
         'note' => 'Ermöglicht dem Benutzer, Assets anzusehen, die als anforderbar markiert sind.',
     ],
-
     'assetsviewencrypted-custom-fields' => [
         'name' => 'Verschlüsselte Benutzerdefinierte Felder ansehen',
         'note' => 'Ermöglicht dem Benutzer, verschlüsselte benutzerdefinierte Felder auf Assets anzusehen und zu ändern.',
     ],
-
     'accessories' => [
         'name' => 'Zubehör',
         'note' => 'Gewährt Zugriff auf den Bereich "Zubehör" in der Anwendung.',
     ],
-
     'accessoriesview' => [
         'name' => 'Zubehör Ansehen',
     ],
@@ -110,47 +82,38 @@ return [
         'name' => 'Zubehördateien Verwalten',
         'note' => 'Allows the user to upload, download, and delete files associated with accessories. (This only makes sense with view privileges or higher.)',
     ],
-
     'assetsfiles' => [
         'name' => 'Manage Asset Files',
         'note' => 'Allows the user to upload, download, and delete files associated with assets. (This only makes sense with view privileges or higher.)',
     ],
-
     'usersfiles' => [
         'name' => 'Manage User Files',
         'note' => 'Allows the user to upload, download, and delete files associated with users. (This only makes sense with view privileges or higher.)',
     ],
-
     'modelsfiles' => [
         'name' => 'Manage Model Files',
         'note' => 'Allows the user to upload, download, and delete files associated with asset models on both the model view and the asset view screens. (This only makes sense with view privileges or higher.)',
     ],
-
     'departmentsfiles' => [
         'name' => 'Manage Department Files',
         'note' => 'Allows the user to upload, download, and delete files associated with departments. (This only makes sense with view privileges or higher.)',
     ],
-
     'suppliersfiles' => [
         'name' => 'Manage Supplier Files',
         'note' => 'Allows the user to upload, download, and delete files associated with suppliers. (This only makes sense with view privileges or higher.)',
     ],
-
     'locationsfiles' => [
         'name' => 'Manage Location Files',
         'note' => 'Allows the user to upload, download, and delete files associated with locations.(This only makes sense with view privileges or higher.)',
     ],
-
     'companiesfiles' => [
         'name' => 'Manage Company Files',
         'note' => 'Allows the user to upload, download, and delete files associated with companies. (This only makes sense with view privileges or higher.)',
     ],
-
     'consumablesfiles' => [
         'name' => 'Verbrauchsdateien verwalten',
         'note' => 'Allows the user to upload, download, and delete files associated with consumables. (This only makes sense with view privileges or higher.)',
     ],
-
     'consumables' => [
         'name' => 'Verbrauchsmaterialien',
         'note' => 'Gewährt Zugriff auf den Bereich "Verbrauchsmaterialien" in der Anwendung.',
@@ -171,7 +134,6 @@ return [
         'name' => 'Verbrauchsmaterialien Auschecken',
         'note' => 'Verbrauchsmaterialien im Inventar zuweisen, indem sie ausgecheckt werden.',
     ],
-
     'licenses' => [
         'name' => 'Lizenzen',
         'note' => 'Gewährt Zugriff auf den Bereich "Lizenzen" in der Anwendung.',
@@ -204,7 +166,6 @@ return [
         'name' => 'Komponentendateien Verwalten',
         'note' => 'Ermöglicht dem Benutzer das Hochladen, Herunterladen und Löschen in Verbindung mit Komponenten.',
     ],
-
     'licenseskeys' => [
         'name' => 'Lizenzschlüssel Verwalten',
         'note' => 'Ermöglicht dem Benutzer, Produktschlüssel anzuzeigen, die mit Lizenzen verknüpft sind.',
@@ -225,7 +186,6 @@ return [
     'componentsdelete' => [
         'name' => 'Komponenten Löschen',
     ],
-
     'componentscheckout' => [
         'name' => 'Komponenten Auschecken',
         'note' => 'Komponenten im Inventar zuweisen, indem sie ausgecheckt werden.',
@@ -273,7 +233,6 @@ return [
     'modelsview' => [
         'name' => 'Modelle anzeigen',
     ],
-
     'modelscreate' => [
         'name' => 'Neue Modelle Erstellen',
     ],
@@ -435,7 +394,6 @@ return [
         'name' => 'Kaufpreis Anzeigen',
         'note' => 'Ermöglicht den Benutzern, die Kaufpreis von Artikeln in ihrer Account-Ansicht anzuzeigen.',
     ],
-
     'depreciations' => [
         'name' => 'Abschreibungs-Verwaltung',
         'note' => 'Ermöglicht Benutzern das Verwalten und Anzeigen von Vermögensabschreibungsdaten.',
@@ -452,7 +410,6 @@ return [
     'depreciationscreate' => [
         'name' => 'Abschreibungs-Aufzeichnungen Erstellen',
     ],
-
     'grant_all' => 'Erteilen Sie alle Berechtigungen für :area',
     'deny_all' => 'Verweigerung aller Berechtigungen für :area',
     'inherit_all' => 'Alle Berechtigungen für :area von Berechtigungsgruppen Vererben',
@@ -460,5 +417,4 @@ return [
     'deny' => 'Verweigerung von Berechtigungen für :area',
     'inherit' => 'Berechtigungen für :area von Berechtigungsgruppen Vererben',
     'use_groups' => 'Wir empfehlen dringend, Berechtigungsgruppen zu verwenden, anstatt individuelle Berechtigungen für eine einfachere Verwaltung zuzuweisen.',
-
 ];

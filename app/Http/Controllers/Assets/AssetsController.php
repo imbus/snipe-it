@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Assets;
 
+use InvalidArgumentException;
 use App\Events\CheckoutableCheckedIn;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -9,16 +10,17 @@ use App\Http\Requests\CreateMultipleAssetRequest;
 use App\Http\Requests\ImageUploadRequest;
 use App\Http\Requests\UploadFileRequest;
 use App\Models\Actionlog;
+use App\Models\AdvancedSearch;
 use App\Models\Asset;
 use App\Models\AssetModel;
 use App\Models\CheckoutRequest;
 use App\Models\Company;
 use App\Models\Location;
-use App\Models\PredefinedFilter;
 use App\Models\Setting;
 use App\Models\Statuslabel;
 use App\Models\User;
 use App\Observers\AssetObserver;
+use App\Services\PredefinedFilterService;
 use App\View\Label;
 use Carbon\Carbon;
 use Com\Tecnick\Barcode\Barcode;
@@ -44,14 +46,16 @@ use TypeError;
  */
 class AssetsController extends Controller
 {
-    
     protected $qrCodeDimensions = ['height' => 3.5, 'width' => 3.5];
 
     protected $barCodeDimensions = ['height' => 2, 'width' => 22];
 
-    public function __construct()
+    protected PredefinedFilterService $predefinedFilterService;
+
+    public function __construct(PredefinedFilterService $predefinedFilterService)
     {
         $this->middleware('auth');
+        $this->predefinedFilterService = $predefinedFilterService;
         parent::__construct();
     }
 
@@ -67,14 +71,39 @@ class AssetsController extends Controller
     public function index(Request $request): View
     {
         $this->authorize('index', Asset::class);
-$companyId = $request->input('company_id');
+        $companyId = $request->input('company_id');
         $company = is_scalar($companyId) ? Company::find($companyId) : null;
+        $user = auth()->user();
 
-        $predefined_filters = PredefinedFilter::where('created_by', auth()->user()->id)
-            ->orderBy('name')
-            ->get();
+        $advancedSearchViewPermission = AdvancedSearch::userHasViewPermission($user);
+        $predefined_filter_id = $request->input('predefinedFilterId');
 
-        return view('hardware/index')->with('company', $company)->with('predefined_filters', $predefined_filters); // TODO maybe switch later to user / role based view
+        if ($advancedSearchViewPermission) {
+            if (! is_null($predefined_filter_id) && filter_var($predefined_filter_id, FILTER_VALIDATE_INT) === false) {
+                throw new InvalidArgumentException('You provided an invalid parameter for predefinedFilterId (must be an integer).');
+            }
+
+            $predefined_filter_name = '';
+
+            if ($predefined_filter_id !== null) {
+                $filter = $this->predefinedFilterService->getFilterWithOptionalPermissionsById($predefined_filter_id);
+                if (! $filter) {
+                    $predefined_filter_id = null;
+                    abort(404, 'Predefined filter not found');
+                } else {
+                    $predefined_filter_name = $filter->name;
+                }
+            }
+        } else {
+            $predefined_filter_id = null;
+            $predefined_filter_name = null;
+        }
+
+        return view('hardware/index')
+            ->with('company', $company)
+            ->with('advanced_search_permission', $advancedSearchViewPermission)
+            ->with('predefined_filter_id', $predefined_filter_id)
+            ->with('predefined_filter_name', $predefined_filter_name);
     }
 
     /**
@@ -995,6 +1024,5 @@ $companyId = $request->input('company_id');
         return view('hardware/requested', compact('requestedItems'));
     }
 }
-
 
 

@@ -13,8 +13,9 @@ use App\Models\Traits\HasUploads;
 use App\Models\Traits\Loggable;
 use App\Models\Traits\Requestable;
 use App\Models\Traits\Searchable;
-use App\Presenters\Presentable;
 use App\Presenters\AssetPresenter;
+use App\Presenters\Presentable;
+use App\Services\FilterService\FilterService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,6 +35,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  */
 class Asset extends Depreciable
 {
+
+    protected ?FilterService $filterService = null;
+
+    public function filterService(): FilterService
+    {
+        return $this->filterService ??= app(FilterService::class);
+
+    }
 
     protected $presenter = AssetPresenter::class;
     protected $with = ['model', 'adminuser'];
@@ -527,6 +536,28 @@ class Asset extends Depreciable
     {
         return $this->assignedType() === self::ASSET;
     }
+
+    public function assignedToLocation()
+    {
+        return $this->belongsTo(Location::class, 'assigned_to')
+            ->where('assigned_type', '=', Location::class);
+    }
+
+    public function assignedToUser()
+    {
+        return $this->belongsTo(User::class, 'assigned_to')
+            ->where('assigned_type', '=', User::class)
+            ->whereNotNull('assigned_to');
+    }
+
+    // Optional — only if an asset can be assigned to another asset
+    public function assignedToAsset()
+    {
+        return $this->belongsTo(Asset::class, 'assigned_to')
+            ->where('assigned_type', '=', Asset::class)
+            ->whereNotNull('assigned_to');
+    }
+
 
     /**
      * Get the target this asset is checked out to
@@ -1755,11 +1786,11 @@ class Asset extends Depreciable
      * Query builder scope to search on text filters for complex Bootstrap Tables API
      *
      * @param \Illuminate\Database\Query\Builder $query  Query builder instance
-     * @param text                               $filter JSON array of search keys and terms
+     * @param text                               $filters JSON array of search keys and terms
      *
      * @return \Illuminate\Database\Query\Builder          Modified query builder
      */
-    public function scopeByFilter($query, $filter)
+    public function applyLegacyFilters($query, $filter)
     {
         return $query->where(
             function ($query) use ($filter) {
@@ -2212,7 +2243,6 @@ class Asset extends Depreciable
                 }
             }
         );
-
     }
 
     private function whereHasMatchSingleItem($query, $relation, $searchValue, $idColumn = 'id', $nameColumn = 'name')
@@ -2241,6 +2271,21 @@ class Asset extends Depreciable
                 }
             });
         });
+    }
+
+    public function scopeByFilter($query, array $filters)
+    {
+        // Check if the filters are in Snipe-IT's original format (key => value)
+        if ($this->isLegacyFilterFormat($filters)) {
+            return $this->applyLegacyFilters($query, $filters);
+        }
+        return $this->filterService()->searchByFilter($query, $filters);
+    }
+
+    private function isLegacyFilterFormat($filters)
+    {
+        // Snipe-IT filters are simple key/value (not arrays with 'field')
+        return !isset($filters[0]['field']);
     }
 
     /**
