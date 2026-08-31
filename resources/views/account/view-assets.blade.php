@@ -2,28 +2,28 @@
 
 {{-- Page title --}}
 @section('title')
-{{ trans('general.hello_name', array('name' => $user->display_name)) }}
+{{ trans('general.hello_name', array('name' => auth()->user()->display_name)) }}
 @parent
 @stop
 
 {{-- Account page content --}}
 @section('content')
 
-@if ($acceptanceQuantity = \App\Models\CheckoutAcceptance::forUser(Auth::user())->pending()->sum('qty'))
-  <div class="row">
-    <div class="col-md-12">
-      <div class="alert alert alert-warning fade in">
-        <i class="fas fa-exclamation-triangle faa-pulse animated"></i>
-
-        <strong>
-          <a href="{{ route('account.accept') }}" style="color: white;">
-            {{ trans_choice('general.unaccepted_profile_warning', $acceptanceQuantity, ['count' => $acceptanceQuantity]) }}
-          </a>
-          </strong>
-      </div>
-    </div>
-  </div>
-@endif
+    @if (!request()->filled('user_id') || auth()->user()->id == $user->id)
+        @if ($acceptanceQuantity = \App\Models\CheckoutAcceptance::forUser(Auth::user())->pending()->sum('qty'))
+          <div class="row">
+            <div class="col-md-12">
+              <x-alert type="warning" icon="warning">
+                <strong>
+                  <a href="{{ route('account.accept') }}" style="color: white;">
+                    {{ trans_choice('general.unaccepted_profile_warning', $acceptanceQuantity, ['count' => $acceptanceQuantity]) }}
+                  </a>
+                </strong>
+              </x-alert>
+            </div>
+          </div>
+        @endif
+    @endif
 
 {{-- Manager View Dropdown --}}
 @if (isset($settings) && $settings->manager_view_enabled && isset($subordinates) && $subordinates->count() > 1)
@@ -130,71 +130,75 @@
 
 
               <!-- Start button column -->
-              <div class="col-md-3 col-xs-12 col-sm-push-9">
+                <div class="info-stack-container">
+                    <!-- Start button column -->
+                    <div class="col-md-3 col-xs-12 col-sm-push-9 info-stack">
 
-                <div class="col-md-12 text-center">
-                  <img src="{{ $user->present()->gravatar() }}"  class=" img-thumbnail hidden-print" style="margin-bottom: 20px;" alt="{{ $user->display_name }}" alt="User avatar">
-                </div>
-                  <div class="col-md-12">
-                    <a href="{{ route('profile') }}" style="width: 100%;" class="btn btn-sm btn-warning btn-social btn-block hidden-print">
-                      <x-icon type="edit" />
-                      {{ trans('general.editprofile') }}
-                    </a>
-                  </div>
-               
+                            <div class="col-md-12 text-center">
+                              <img src="{{ $user->present()->gravatar() }}"  class=" img-thumbnail hidden-print" style="margin-bottom: 20px;" alt="{{ $user->display_name }}" alt="User avatar">
+                            </div>
 
-                  @can('self.profile')
-                  @if (Auth::user()->ldap_import!='1')
-                <div class="col-md-12" style="padding-top: 5px;">
-                  <a href="{{ route('account.password.index') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
-                    <x-icon type="password" class="fa-fw" />
-                    {{ trans('general.changepassword') }}
-                  </a>
-                </div>
-                @endif
-                  @endcan
-
-                @can('self.api')
-                <div class="col-md-12" style="padding-top: 5px;">
-                  <a href="{{ route('user.api') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
-                    <x-icon type="api-key" class="fa-fw" />
-                    {{ trans('general.manage_api_keys') }}
-                  </a>
-                </div>
-                @endcan
+                              @if (!request()->filled('user_id') || auth()->user()->id == $user->id)
+                                  <div class="col-md-12">
+                                    <a href="{{ route('profile') }}" style="width: 100%;" class="btn btn-sm btn-warning btn-social btn-block hidden-print">
+                                      <x-icon type="edit" />
+                                      {{ trans('general.editprofile') }}
+                                    </a>
+                                  </div>
 
 
-                  <div class="col-md-12" style="padding-top: 5px;">
-                    <a href="{{ route('profile.print') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" target="_blank" rel="noopener">
-                      <x-icon type="print" class="fa-fw" />
-                      {{ trans('admin/users/general.print_assigned') }}
-                    </a>
-                  </div>
+                                  @can('self.profile')
+                                  @if (Auth::user()->ldap_import!='1')
+                                <div class="col-md-12" style="padding-top: 5px;">
+                                  <a href="{{ route('account.password.index') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
+                                    <x-icon type="password" class="fa-fw" />
+                                    {{ trans('general.changepassword') }}
+                                  </a>
+                                </div>
+                                @endif
+                              @endcan
+
+                            @can('self.api')
+                            <div class="col-md-12" style="padding-top: 5px;">
+                              <a href="{{ route('user.api') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
+                                <x-icon type="api-key" class="fa-fw" />
+                                {{ trans('general.manage_api_keys') }}
+                              </a>
+                            </div>
+                            @endcan
+                            @endif
+
+                              <div class="col-md-12" style="padding-top: 5px;">
+                                <a href="{{ route('profile.print') }}" style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" target="_blank" rel="noopener">
+                                  <x-icon type="print" class="fa-fw" />
+                                  {{ trans('admin/users/general.print_assigned') }}
+                                </a>
+                              </div>
 
 
-                  <div class="col-md-12" style="padding-top: 5px;">
-                    @if (!empty($user->email))
-                      <form action="{{ route('profile.email_assets') }}" method="POST">
-                        {{ csrf_field() }}
-                        <button style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
-                          <x-icon type="email" class="fa-fw" />
-                          {{ trans('admin/users/general.email_assigned') }}
-                        </button>
-                      </form>
-                    @else
-                      <button style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print disabled" rel="noopener" disabled title="{{ trans('admin/users/message.user_has_no_email') }}">
-                        <x-icon type="email" class="fa-fw" />
-                        {{ trans('admin/users/general.email_assigned') }}
-                      </button>
-                    @endif
-                  </div>
-
-                <br><br>
+                              <div class="col-md-12" style="padding-top: 5px;">
+                                @if (!empty($user->email))
+                                  <form action="{{ route('profile.email_assets') }}" method="POST">
+                                    {{ csrf_field() }}
+                                    <button style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print" rel="noopener">
+                                      <x-icon type="email" class="fa-fw" />
+                                      {{ trans('admin/users/general.email_assigned') }}
+                                    </button>
+                                  </form>
+                                @else
+                                  <button style="width: 100%;" class="btn btn-sm btn-theme btn-social btn-block hidden-print disabled" rel="noopener" disabled title="{{ trans('admin/users/message.user_has_no_email') }}">
+                                    <x-icon type="email" class="fa-fw" />
+                                    {{ trans('admin/users/general.email_assigned') }}
+                                  </button>
+                                @endif
+                              </div>
+                    <br><br>
+                    </div>
               </div>
 
               <!-- End button column -->
 
-              <div class="col-md-9 col-xs-12 col-sm-pull-3">
+                <div class="col-md-9 col-xs-12 col-sm-pull-3 info-stack">
 
                 <div class="row-new-striped">
 
@@ -213,14 +217,19 @@
 
 
                   <!-- company -->
-                  @if (!is_null($user->company))
+                    @if ($user->companies->isNotEmpty())
                     <div class="row">
 
                       <div class="col-md-3">
-                        {{ trans('general.company') }}
+                          {{ trans_choice('general.companies_var', $user->companies->count()) }}
                       </div>
                       <div class="col-md-9">
-                          {!!  $user->company->present()->formattedNameLink !!}
+                          @foreach ($user->companies as $userCompany)
+                              <span class="label label-light">{!! $userCompany->present()->formattedNameLink !!}</span>
+                              @if (!$loop->last)
+                                  &nbsp;
+                              @endif
+                          @endforeach
                       </div>
 
                     </div>
@@ -310,7 +319,7 @@
                         {{ trans('admin/users/table.manager') }}
                       </div>
                       <div class="col-md-9">
-                        <x-full-user-name :user="$user->manager" />
+                          {!!  $user->manager?->present()->formattedNameLink !!}
                       </div>
 
                     </div>
@@ -446,58 +455,65 @@
 
                     <thead>
                     <tr>
-                      <th class="col-md-1">
+                      <th scope="col" class="col-md-1">
                         #
                       </th>
-                      <th class="col-md-1">
+                      <th scope="col">
                         {{ trans('general.image') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="true">
+                      <th scope="col" data-switchable="true" data-visible="true">
                         {{ trans('general.category') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="true">
+                      <th scope="col" data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/table.asset_tag') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.name') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.status') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="true">
+                      <th scope="col" data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/table.asset_model') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.model_no') }}
                       </th>
-                      <th class="col-md-3" data-switchable="true" data-visible="true">
+                      <th scope="col" data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/table.serial') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                        <th scope="col" data-switchable="true" data-visible="true">
+                            {{ trans('general.manufacturer') }}
+                        </th>
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('admin/hardware/form.default_location') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.location') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="true">
+                      <th scope="col"  data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/form.expected_checkin') }}
                       </th>
                       @can('self.view_purchase_cost')
-                        <th class="col-md-6" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">
+                        <th scope="col" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">
                           {{ trans('general.purchase_cost') }}
                         </th>
                       @endcan
-                      <th class="col-md-2" data-switchable="true" data-visible="true">
+                      <th scope="col" data-switchable="true" data-visible="true">
                         {{ trans('admin/hardware/form.eol_date') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.last_audit') }}
                       </th>
-                      <th class="col-md-2" data-switchable="true" data-visible="false">
+                      <th scope="col" data-switchable="true" data-visible="false">
                         {{ trans('general.next_audit_date') }}
                       </th>
+                    <th scope="col" data-switchable="true" data-visible="false" data-formatter="trueFalseFormatter">
+                        {{ trans('general.byod') }}
+                    </th>
+
                       @foreach ($field_array as $db_column => $field_name)
-                        <th class="col-md-1" data-switchable="true" data-visible="true">{{ $field_name }}</th>
+                        <th scope="col" data-switchable="true" data-visible="true">{{ $field_name }}</th>
                       @endforeach
 
                     </tr>
@@ -530,7 +546,7 @@
                         </td>
                         <td>
                           <x-icon type="circle-solid" class="text-blue" />
-                          {{ $asset->assetstatus->name }}
+                            {{ $asset->status?->name }}
                           <label class="label label-default">{{ trans('general.deployed') }}</label>
                         </td>
                         <td>
@@ -542,6 +558,11 @@
                         <td>
                           {{ $asset->serial }}
                         </td>
+                          <td>
+                              @if (($asset->model) && ($asset->model->manufacturer))
+                                  {!! $asset->model->manufacturer->present()->formattedNameLink  !!}
+                              @endif
+                          </td>
                         <td>
                             {!!  ($asset->defaultLoc) ? $asset->defaultLoc->present()->formattedNameLink : '' !!}
 
@@ -568,6 +589,10 @@
                         <td>
                           {{ Helper::getFormattedDateObject($asset->next_audit_date, 'date', false) }}
                         </td>
+
+                          <td>
+                              {{ $asset->byod }}
+                          </td>
 
                         @foreach ($field_array as $db_column => $field_value)
                           <td>
@@ -608,11 +633,11 @@
 
                 <thead>
                 <tr>
-                  <th class="col-md-2">{{ trans('general.name') }}</th>
-                  <th class="col-md-4">{{ trans('admin/licenses/form.license_key') }}</th>
-                  <th class="col-md-2">{{ trans('admin/licenses/form.to_name') }}</th>
-                  <th class="col-md-2">{{ trans('admin/licenses/form.to_email') }}</th>
-                  <th class="col-md-2">{{ trans('general.category') }}</th>
+                  <th scope="col" class="col-md-2">{{ trans('general.name') }}</th>
+                  <th scope="col" class="col-md-4">{{ trans('admin/licenses/form.license_key') }}</th>
+                  <th scope="col" class="col-md-2">{{ trans('admin/licenses/form.to_name') }}</th>
+                  <th scope="col" class="col-md-2">{{ trans('admin/licenses/form.to_email') }}</th>
+                  <th scope="col" class="col-md-2">{{ trans('general.category') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -674,11 +699,10 @@
 
                 <thead>
                 <tr>
-                  <th class="col-md-5">{{ trans('general.name') }}</th>
+                  <th scope="col" class="col-md-5">{{ trans('general.name') }}</th>
                   @can('self.view_purchase_cost')
-                    <th class="col-md-6" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th scope="col" class="col-md-6" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
                   @endcan
-                  <th class="col-md-1 hidden-print">{{ trans('general.action') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -687,14 +711,10 @@
                     <td>{{ $accessory->name }}</td>
                     @can('self.view_purchase_cost')
                       <td>
-                        {!! Helper::formatCurrencyOutput($accessory->purchase_cost) !!}
+                        {!! Helper::formatCurrencyOutput($accessory->lastOrderDefaults()['unit_cost'] ?? null) !!}
                       </td>
                     @endcan
-                    <td class="hidden-print">
-                      @can('checkin', $accessory)
-                        <a href="{{ route('accessories.checkin.show', array('accessoryID'=> $accessory->pivot->id, 'backto'=>'user')) }}" class="btn btn-theme btn-sm hidden-print">{{ trans('general.checkin') }}</a>
-                      @endcan
-                    </td>
+
                   </tr>
                 @endforeach
                 </tbody>
@@ -724,12 +744,12 @@
 
                 <thead>
                 <tr>
-                  <th class="col-md-3">{{ trans('general.name') }}</th>
+                  <th scope="col" class="col-md-3">{{ trans('general.name') }}</th>
                   @can('self.view_purchase_cost')
-                    <th class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
+                    <th scope="col" class="col-md-2" data-footer-formatter="sumFormatter" data-fieldname="purchase_cost">{{ trans('general.purchase_cost') }}</th>
                   @endcan
-                  <th class="col-md-2">{{ trans('general.date') }}</th>
-                  <th class="col-md-5">{{ trans('general.notes') }}</th>
+                  <th scope="col" class="col-md-2">{{ trans('general.date') }}</th>
+                  <th scope="col" class="col-md-5">{{ trans('general.notes') }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -738,7 +758,7 @@
                     <td>{{ $consumable->name }}</td>
                     @can('self.view_purchase_cost')
                       <td>
-                        {!! Helper::formatCurrencyOutput($consumable->purchase_cost) !!}
+                        {!! Helper::formatCurrencyOutput($consumable->lastOrderDefaults()['unit_cost'] ?? null) !!}
                       </td>
                     @endcan
                     <td>{{ Helper::getFormattedDateObject($consumable->pivot->created_at, 'datetime',  false) }}</td>
@@ -772,11 +792,11 @@
 
               <thead>
               <tr>
-                <th data-visible="true" data-field="icon" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter">{{ trans('admin/hardware/table.icon') }}</th>
-                <th data-visible="true" data-field="item.name">{{ trans('general.item') }}</th>
-                <th data-visible="true" data-field="created_at" data-sortable="true" data-formatter="dateDisplayFormatter">{{ trans('general.accepted_date') }}</th>
-                <th data-field="note">{{ trans('general.notes') }}</th>
-                <th data-field="url" data-formatter="downloadFormatter">{{ trans('general.download') }}</th>
+                <th scope="col" data-visible="true" data-field="icon" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter">{{ trans('admin/hardware/table.icon') }}</th>
+                <th scope="col" data-visible="true" data-field="item.name">{{ trans('general.item') }}</th>
+                <th scope="col" data-visible="true" data-field="created_at" data-sortable="true" data-formatter="dateDisplayFormatter">{{ trans('general.accepted_date') }}</th>
+                <th scope="col" data-field="note">{{ trans('general.notes') }}</th>
+                <th scope="col" data-field="url" data-formatter="downloadFormatter">{{ trans('general.download') }}</th>
               </tr>
               </thead>
             </table>

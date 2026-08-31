@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\CustomField;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomFieldFactory extends Factory
@@ -27,6 +28,7 @@ class CustomFieldFactory extends Factory
             'element' => 'text',
             'auto_add_to_fieldsets' => '0',
             'show_in_requestable_list' => '0',
+            'created_by' => User::factory()->superuser(),
         ];
     }
 
@@ -136,7 +138,7 @@ class CustomFieldFactory extends Factory
                 'name' => 'Test Checkbox',
                 'help_text' => 'This is a sample checkbox.',
                 'field_values' => "One\r\nTwo\r\nThree",
-                'element'   => 'checkbox',
+                'element' => 'checkbox',
             ];
         });
     }
@@ -148,9 +150,54 @@ class CustomFieldFactory extends Factory
                 'name' => 'Test Radio',
                 'help_text' => 'This is a sample radio.',
                 'field_values' => "One\r\nTwo\r\nThree",
-                'element'   => 'radio',
+                'element' => 'radio',
             ];
         });
     }
 
+    public function testDate()
+    {
+        return $this->state(function () {
+            return [
+                'name' => 'Sample Date',
+                'help_text' => 'This shows a datepicker',
+                'element' => 'date_picker',
+                'format' => 'DATE',
+            ];
+        });
+    }
+
+    public function testDatetime()
+    {
+        return $this->state(function () {
+            return [
+                'name' => 'Sample Datetime',
+                'help_text' => 'This shows a datetimepicker',
+                'element' => 'datetime_picker',
+                'format' => 'DATETIME',
+            ];
+        });
+    }
+
+    public function testMarkdownTextarea()
+    {
+        return $this->state(function () {
+            return [
+                'name' => 'Notes',
+                'help_text' => 'Additional notes about this asset. Markdown is supported.',
+                'element' => 'markdown-textarea',
+            ];
+        });
+    }
+
+    public function xss()
+    {
+        return $this->state(function () {
+            return [
+                'name' => '<img src=x onerror=alert(1)>',
+                'help_text' => 'This is an intentional XSS seeded field so we can easily check for BS tables slips in escaping.',
+                'show_in_requestable_list' => '0',
+            ];
+        });
+    }
 }

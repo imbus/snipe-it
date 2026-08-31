@@ -2,20 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Transformers\PredefinedFiltersTransformer;
-use App\Http\Transformers\SelectlistTransformer;
-use App\Models\PredefinedFilter;
-use App\Services\PredefinedFilterService;
-use Auth;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Helpers\Helper;
 
 class PredefinedFilterController extends Controller
 {
-
     protected PredefinedFilterService $service;
 
     public function __construct(PredefinedFilterService $service)
@@ -23,76 +12,45 @@ class PredefinedFilterController extends Controller
         $this->service = $service;
     }
 
-    public function index(Request $request) : JsonResponse | array
+    public function index()
     {
         $filters = $this->service->getAllViewableFilters();
 
-        if ($request->filled('search')) {
-            $search = strtolower($request->get('search'));
-            $filters = $filters->filter(fn($filter) =>
-                str_contains(strtolower($filter->name), $search)
-            );
-        }
-
-        // --- Sorting ---
-        $sort = $request->input('sort', 'name');
-        $order = $request->input('order', 'asc');
-
-        $allowedColumns = ['id', 'name', 'is_public', 'created_by'];
-        
-        if (!in_array($sort, $allowedColumns)) {
-            $sort = 'name';
-        }
-
-        $filters = $order === 'desc'
-            ? $filters->sortByDesc(fn($f) => strtolower(data_get($f, $sort, '')))
-            : $filters->sortBy(fn($f) => strtolower(data_get($f, $sort, '')));
-        
-        // --- Pagination ---
-        $total = $filters->count();
-        $offset = (int) $request->input('offset', 0);
-        $limit = (int) $request->input('limit', config('app.max_results', 50));
-
-        $filters = $filters->slice($offset, $limit)->values();
-
-        return (new PredefinedFiltersTransformer)->transformPredefinedFilters($filters, $total);
+        return response()->json((new PredefinedFiltersTransformer)->transformPredefinedFilters($filters, $filters->count()));
     }
 
-
-
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        $filter = $this->service->getFilterWithIdAndNameValues($id);
-        
-        if (!$filter) {
+        $filter = $this->service->getFilterById($id);
+
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
-        if ($filter->userHasPermission(Auth::user(), 'view')) {
+        if ($filter->userHasPermission(Auth::user(), 'view')){
             return response()->json($filter->toArray());
         }
 
         return response()->json(['message' => trans('admin/predefinedFilters/message.show.not_allowed')], 403);
     }
 
-    public function store(Request $request): JsonResponse | array
+    public function store(Request $request): JsonResponse
     {
-
         $user = auth()->user();
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:191',
             'filter_data' => 'required|array',
-            'is_public' => 'sometimes|boolean'
+            'is_public' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()),422);
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
         }
 
         $validated = $validator->validated();
 
-        if (!empty($validated['is_public']) && !$user->hasAccess('predefinedFilter.create')) {
+        if (! empty($validated['is_public'] ?? false) && ! $user->hasAccess('predefinedFilter.create')) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.create.not_allowed')], 403);
         }
 
@@ -107,27 +65,32 @@ class PredefinedFilterController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $user = auth()->user();
-        $filter = PredefinedFilter::find($id);
+        $filter = $this->service->getFilterById($id);
 
-        if (!$filter) {
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:191',
             'filter_data' => 'required|array',
-            'is_public' => 'sometimes|boolean'
+            'is_public' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()),422);
+            return response()->json(Helper::formatStandardApiResponse(422, null, $validator->errors()), 422);
         }
-        
+
         $validated = $validator->validated();
-        
-        $updatedPermission = $this->updatePermissions($validated, $filter, $user);
-        if ($updatedPermission !== null) {
-            return $updatedPermission;
+        $currentIsPublic = (bool) $filter->is_public;
+        $newIsPublic = (bool) ($validated['is_public'] ?? $filter->is_public);
+
+        if ($filter->created_by === $user->id) {
+            if (! $currentIsPublic && $newIsPublic && ! $user->hasAccess('predefinedFilter.create')) {
+                return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_isPublic')], 403);
+            }
+        } elseif (! $filter->userHasPermission($user, 'update')) {
+            return response()->json(['message' => trans('admin/predefinedFilters/message.not_allowed_to_edit')], 403);
         }
 
         $updated = $this->service->updateFilter($filter, $validated);
@@ -135,21 +98,25 @@ class PredefinedFilterController extends Controller
         return response()->json([
             'message' => trans('admin/predefinedFilters/message.update.success'),
             'filter_data' => $updated,
-        ]);
+        ], 200);
     }
 
-    public function destroy(int $id)
+    public function destroy(Request $request, int $id): JsonResponse
     {
         $user = auth()->user();
-        $filter = PredefinedFilter::find($id);
+        $filter = $this->service->getFilterById($id);
 
-        if (!$filter) {
+        if (! $filter) {
             return response()->json(['message' => trans('admin/predefinedFilters/message.does_not_exist')], 404);
         }
 
-        if ($filter->userHasPermission($user, 'delete')) {
+        if (
+            $filter->created_by === $user->id ||
+            ($filter->is_public && $filter->userHasPermission($user, 'destroy'))
+        ) {
             $this->service->deleteFilter($filter);
-            return response()->json(['message' => trans('admin/predefinedFilters/message.delete.success')]);
+
+            return response()->json(['message' => trans('admin/predefinedFilters/message.delete.success')], 200);
         }
 
         return response()->json(['message' => trans('admin/predefinedFilters/message.delete.not_allowed_to_delete')], 403);
@@ -157,24 +124,10 @@ class PredefinedFilterController extends Controller
 
     public function selectlist(Request $request)
     {
-        $filters = $this->service->selectList($request, true);
+        $this->authorize('view.selectlists');
+
+        $filters = $this->service->selectList($request);
+
         return (new SelectlistTransformer)->transformSelectlist($filters);
-    }
-
-    private function updatePermissions($validated, $filter, $user) {
-        $newIsPublic = $validated['is_public'] ?? $filter->is_public;
-        $currentIsPublic = $filter->is_public;
-
-        if (!$filter->userHasPermission($user, 'edit')) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.not_allowed_to_edit')], 403);
-        }
-
-        //create permission
-        if ((!$currentIsPublic && $newIsPublic) 
-            && !$filter->userHasPermission($user, 'create')) {
-            return response()->json(['message' => trans('admin/predefinedFilters/message.update.not_allowed_to_change_isPublic')], 403);
-        }
-
-        return null;
     }
 }

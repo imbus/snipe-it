@@ -10,7 +10,6 @@
 
 return [
 
-
     /*
     | ***************************************************************************
     | DO NOT MAKE CHANGES DIRECTLY TO THIS FILE.
@@ -46,7 +45,7 @@ return [
     |
     */
 
-    'default' =>  env('MAIL_DRIVER') != null ? env('MAIL_DRIVER') : env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_DRIVER') != null ? env('MAIL_DRIVER') : env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +81,6 @@ return [
             |
             */
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-
 
             /*
             |--------------------------------------------------------------------------
@@ -273,6 +271,17 @@ return [
 
         'paths' => [
             resource_path('views/vendor/mail'),
+        ],
+
+        // CommonMark extensions to register on Laravel's mail Markdown parser.
+        // BlockImagesMarkdownExtension replaces the default Image renderer
+        // with a no-op that emits the alt text as plain text. Without it,
+        // user-controlled fields that reach a markdown mail template can
+        // produce <img src="/any/path"> tags. laravel-mail-auto-embed then
+        // resolves each src via file_get_contents() or curl, exfiltrating
+        // arbitrary local files or issuing internal HTTP requests.
+        'extensions' => [
+            \App\Mail\BlockImagesMarkdownExtension::class,
         ],
     ],
 

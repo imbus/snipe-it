@@ -20,16 +20,10 @@ export default class ApiService {
             user: "users"
         };
 
-        if (!Object.prototype.hasOwnProperty.call(typeMap, type)) {
+        if (!typeMap[type]) {
             return Promise.reject(`Invalid type ${type}`);
         }
-
-        if (!Number.isInteger(id) || id <= 0) {
-            return Promise.reject(new Error(`Invalid id ${id}. Must be a positive integer.`));
-        }
-    
-        const safeType = String(type);
-        const path = `${this.baseUrl}/${safeType}/${id}`;
+        const path = `${this.baseUrl}/${typeMap[type]}/${id}`;
         return this.fetchFromBackend('GET', path);
     }
 
@@ -61,6 +55,7 @@ export default class ApiService {
         };
 
         return fetch(path, options);
+        //.then(res => res.json());
     }
 
 }

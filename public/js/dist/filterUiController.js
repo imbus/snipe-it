@@ -112,7 +112,7 @@ class FilterUIController {
 
         Livewire.dispatch('openPredefinedFiltersModal', {
             action: 'edit',
-            predefinedFilterId: parseInt(selectedFilter.id, 10),
+            predefinedFilterId: parseInt(selectedFilter.id),
             predefinedFilterData: filters
         });
     }
@@ -126,7 +126,7 @@ class FilterUIController {
 
         Livewire.dispatch('openPredefinedFiltersModal', {
             action: 'delete',
-            predefinedFilterId: parseInt(selected.id, 10)
+            predefinedFilterId: parseInt(selected.id)
         });
     }
 

@@ -10,7 +10,9 @@ class CheckoutRequest extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    protected $fillable = ['user_id'];
+
+    protected $fillable = ['user_id', 'quantity'];
+
     protected $table = 'checkout_requests';
 
     public function user()

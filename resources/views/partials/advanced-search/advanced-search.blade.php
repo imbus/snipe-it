@@ -56,13 +56,480 @@
 @include('partials.confetti-js', ['autostart' => false])
 
 <script type="module">
-    import initAdvancedSearch from '/js/dist/advanced-search.min.js';
+    import ApiService from '/js/dist/apiService.min.js';
+    import FilterFormManager from '/js/dist/filterFormManager.min.js';
+    import FloatingButtons from  '/js/dist/floating-buttons.min.js';
 
-    initAdvancedSearch(
-        {
-            "tableId": "{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable",
-            "predefinedFilterId": {{ $predefined_filter_id ?? "null" }},
-            "predefinedFilterName": "{{ $predefined_filter_name }}",
+    import { container } from '/js/dist/simpleDIContainer.min.js';
+
+    // Add needed stuff into the di-container
+    container.register("apiService", new ApiService);
+    container.register("filterFormManager", new FilterFormManager);
+    container.register("floatingButtons", new FloatingButtons());
+
+    class FilterUIController {
+        constructor(tableElement) {
+            this.$table = tableElement;
+            this.apiService = container.resolve("apiService");
+            this.collector = container.resolve("filterFormManager");
+            this.collector.collectFilterInputs();
         }
-    );
+
+    refresh() {
+        const filters = this.collector.collectFilterData();
+        this.$table.bootstrapTable('refresh', {
+            query: {
+                filter: JSON.stringify(filters)
+            }
+        });
+    }
+
+    updateFilterWithPredefined(event, selectedId = null) {
+        if(event !== null) {
+            selectedId = event?.target?.value;
+        }
+
+        const floatingButtons = container.resolve("floatingButtons");
+
+        if (!selectedId) {
+            floatingButtons.disableEditDeleteButtons();
+            return;
+        }
+
+        floatingButtons.enableEditDeleteButtons();
+        //setAdvancedSearchPanelFilterEnabledState(true);
+
+        this.apiService.fetchPredefinedFilterData(selectedId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json(); // Parse JSON from response
+        })
+        .then(data => {
+            if (!data.filter_data) return;
+
+            return this.collector.setValuesFromResponse(data.filter_data)
+               .then(() => {
+                    this.refresh();
+            });
+        })
+        .catch(err => {
+            console.error("Failed to apply predefined filter:", err);
+            Livewire.dispatch('showNotification', { type: 'error', message: '{{ trans('general.failed_to_apply_predefined_filter') }}'});
+            //setAdvancedSearchPanelFilterEnabledState(false);
+        });
+    }
+
+    storePredefinedFilterInBackend() {
+        const filters = this.collector.collectFilterData();
+        
+        openFilterCreateUpdateModal(true)
+        .then((input) => {
+            const payload = {
+                name: input.name,
+                filter_data: filters,
+                permissions: input.permissions,
+                is_public: input.visibility === "public" ? true : false,
+            };
+            fetchFromBackend('POST', '{{ route('api.predefined-filters.store') }}', JSON.stringify(payload))
+            .then((response) => {
+                if (response.status === 201) {
+                    Livewire.dispatch('showNotification', {
+                      type: 'success',
+                      title: '{{ trans('general.notification_success') }}',
+                      message: '{{ trans('general.predefined_filter_saved_successfully') }}',
+                      tag: 'predefinedFilters'
+                    });
+                    if (window.triggerConfetti) window.triggerConfetti();
+                } else {
+                    Livewire.dispatch('showNotification', {
+                      type: 'error',
+                      title: '{{ trans('general.notification_error') }}',
+                      message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                      tag: 'predefinedFilters'
+                    });  
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                Livewire.dispatch('showNotification', {
+                  type: 'error',
+                  title: '{{ trans('general.notification_error') }}',
+                  message: String(error),
+                  tag: 'predefinedFilters'
+                }); 
+            })
+        });
+
+    }
+
+    updatePredefinedFilterInBackend(updateFilterButtonId) {
+        if (document.getElementById(updateFilterButtonId).classList.contains('disabled')) return;
+
+        const selectedFilter = $("#predefinedfilters-select").select2('data')[0];
+        if (!selectedFilter) return;
+        const filters = this.collector.collectFilterData();
+
+        fetchItemFromBackendById("group_select", selectedFilter.id)
+            .then((response) => {
+                response.json()
+                    .then((responseJson) => {
+                        const permissionGroupRequests = [];
+
+                        responseJson.permissions.forEach(permission => {
+                            permissionGroupRequests.push(fetchItemFromBackendById("groups", permission.permission_group_id));
+                        });
+                        Promise.all(permissionGroupRequests)
+                        .then((permissionGroupResponses) => {
+                            const permissionGroupResponsePromises = [];
+                            permissionGroupResponses.forEach((permissionGroupResponse) => {
+                                permissionGroupResponsePromises.push(permissionGroupResponse.json());
+                            })
+                            Promise.all(permissionGroupResponsePromises)
+                                .then((permissionGroupResponses) => {
+                                    openFilterCreateUpdateModal(false, responseJson.name, permissionGroupResponses)
+                                        .then((input) => {
+                                            const payload = {
+                                                name: input.name,
+                                                filter_data: filters,
+                                                permissions: input.permissions,
+                                                is_public: input.visibility === "public" ? true : false,
+                                            };
+
+                                            const updateUrlTemplate = `{{ route('api.predefined-filters.update', ['id' => '__ID__']) }}`;
+                                            const selectedFilterId = selectedFilter.id;
+                                            const finalUrl = updateUrlTemplate.replace('__ID__', selectedFilterId);
+
+                                            fetchFromBackend('PUT', finalUrl, JSON.stringify(payload))
+                                                .then((response) => {
+                                                    if (response.status === 200) {
+                                                        Livewire.dispatch('showNotification', {
+                                                          type: 'success',
+                                                          title: '{{ trans('general.notification_success') }}',
+                                                          message: '{{ trans('general.predefined_filter_updated_successfully') }}',
+                                                          tag: 'predefinedFilters'
+                                                        });
+                                                        if (window.triggerConfetti) window.triggerConfetti();
+                                                    } else {
+                                                        console.error(response);
+                                                        Livewire.dispatch('showNotification', {
+                                                          type: 'error',
+                                                          title: '{{ trans('general.notification_error') }}',
+                                                          message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                                                          tag: 'predefinedFilters'
+                                                        }); 
+                                                    }
+                                                });
+                                        });
+                                });
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Livewire.dispatch('showNotification', {
+                          type: 'error',
+                          title: '{{ trans('general.notification_error') }}',
+                          message: String(error),
+                          tag: 'predefinedFilters'
+                        }); 
+                    })
+            });
+    }
+
+    deletePredefinedFilterFromBackend(deleteFilterButtonId) {
+        if (document.getElementById(deleteFilterButtonId).classList.contains('disabled')) return;
+
+        const selectedFilterId = $("#predefinedfilters-select").select2('data')[0].id;
+        if (!selectedFilterId) return;
+
+        const updateUrlTemplate = `{{ route('api.predefined-filters.destroy', ['id' => '__ID__']) }}`;
+        const finalUrl = updateUrlTemplate.replace('__ID__', selectedFilterId);
+
+        fetchFromBackend('PUT', finalUrl)
+        .then((response) => {
+            if (response.status === 200) {
+                Livewire.dispatch('showNotification', {
+                  type: 'success',
+                  title: '{{ trans('general.notification_success') }}',
+                  message: '{{ trans('general.predefined_filter_deleted_successfully') }}',
+                  tag: 'predefinedFilters'
+                });
+                if (window.triggerConfetti) window.triggerConfetti();
+            } else {
+                console.error(response);
+                Livewire.dispatch('showNotification', {
+                  type: 'error',
+                  title: '{{ trans('general.notification_error') }}',
+                  message: '{{ trans('general.backend_responded_with') }} ' + response.status + " - " + response.statusText,
+                  tag: 'predefinedFilters'
+                });  
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+            Livewire.dispatch('showNotification', {
+              type: 'error',
+              title: '{{ trans('general.notification_error') }}',
+              message: String(error),
+              tag: 'predefinedFilters'
+            }); 
+        })
+    }
+
+    bindEvents() {
+
+        $('#predefinedfilters-select').on('change', (e) => {
+            this.updateFilterWithPredefined(e);
+        });
+
+        const filterButton = document.getElementById("filterButton");
+        if (filterButton) {
+            filterButton.addEventListener('click', this.refresh.bind(this));
+        }
+
+        const clearButton = document.getElementById("clearInputButton");
+        if (clearButton) {
+            clearButton.addEventListener('click', () => {
+                this.collector.clearAll() 
+                $('#predefinedfilters-select').val(null).trigger('change');
+            });
+        }
+
+        const topClearButton = document.getElementById("topClearInputButton");
+        if (topClearButton) {
+            topClearButton.addEventListener('click', () => 
+            {
+                this.collector.clearAll() 
+                $('#predefinedfilters-select').val(null).trigger('change');
+            });
+            //Livewire.emit('refreshNotifications');
+        }
+
+        const saveFilterButton = document.getElementById("storeFilterButton");
+        if (saveFilterButton) {
+            saveFilterButton.addEventListener('click', () => this.storePredefinedFilterInBackend());
+        }
+
+        const updateFilterButton = document.getElementById("updateFilterButton");
+        if (updateFilterButton) {
+            updateFilterButton.addEventListener('click', () => this.updatePredefinedFilterInBackend(updateFilterButton.id));
+        }
+
+        const deleteFilterButton = document.getElementById("deleteFilterButton");
+        if (deleteFilterButton) {
+            deleteFilterButton.addEventListener('click', () => this.deletePredefinedFilterFromBackend(deleteFilterButton.id));
+        }
+
+    }
+}
+
+document.addEventListener('livewire:init', function () {
+    const tableId = "{{ request()->has('status') ? e(request()->input('status')) : '' }}assetsListingTable";
+    const $table = $('#' + tableId);
+
+    // Initialize everything
+    const controller = new FilterUIController($table);
+    container.register("filterUiController", controller);
+    controller.bindEvents();
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+
+    sleep().then(async () => {
+        const filterSection = document.getElementById('filterSection');
+        filterSection.classList.remove('hide');
+        container.resolve("filterFormManager").clearAll();
+        await sleep();
+        filterSection.classList.add('hide');
+    });
+
+    @if(isset($predefined_filter_id))
+        // To set a predefined filter and open the modal over the url
+        controller.updateFilterWithPredefined(null, {{ $predefined_filter_id }});
+
+        //filterSection = document.getElementById('filterSection'); // Is defined above
+        filterSection.classList.remove('hide');
+
+        @if(!empty($predefined_filter_edit_modal_open) && $predefined_filter_edit_modal_open == true)
+            sleep(200).then(() => { // I know that this is bad practice but I havn't found another way that works :-(
+                Livewire.dispatch('openPredefinedFiltersModal', {
+                    action: 'edit',
+                    predefinedFilterId: {{ (int) $predefined_filter_id }},
+                    predefinedFilterData: {},
+                });
+            });
+        @endif
+    @endif
+
+});
+
+// Filter search functionality
+document.getElementById('filterSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    const items = document.querySelectorAll('.filter-item');
+    items.forEach(item => {
+        const label = item.querySelector('label');
+        const labelText = label ? label.textContent.toLowerCase() : '';
+        if (labelText.includes(searchTerm)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+});
+
+
 </script>
+
+<style>
+/* 
+Base styles for the filter sidebar and its transitions.
+Handles showing/hiding the sidebar smoothly.
+*/
+.filter-sidebar {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* 
+Smooth transition for the filter body (the inner panel).
+Ensures expanding/collapsing feels fluid.
+*/
+.filter-body {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* 
+Fade-in/out effect for any element with this class when shown/hidden.
+*/
+.filter-content {
+    transition: opacity 0.2s ease;
+}
+
+/* 
+Fade-in/out for filter section title and clear text.
+*/
+.filter-title,
+.clear-text {
+    transition: opacity 0.2s ease;
+}
+
+/* ---------- Desktop styles ---------- */
+@media (min-width: 769px) {
+    /* 
+    When collapsed, the sidebar is skinny and its content is hidden.
+    */
+}
+
+/* ---------- Mobile/Tablet styles ---------- */
+@media (max-width: 768px) {
+    /* 
+    Sidebar takes full width and less margin on mobile.
+    */
+    .filter-sidebar {
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+    
+    /* 
+    Collapsed sidebar hides content and disables interaction.
+    */
+}
+
+/* 
+Ensures filter panel container uses full width and is padded.
+Makes it responsive.
+*/
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 
+Makes the advanced search filters section block-level and full width.
+*/
+#advancedSearchFilters {
+    display: block;
+    max-width: 100%;
+    margin: 0;
+}
+
+/* 
+Scrollable filter panel body, with padding.
+*/
+.box-body {
+    overflow-y: auto;
+    padding: 15px;
+}
+
+/* 
+On small screens, limit box-body max height to 75% of viewport.
+Makes scrolling manageable on mobile.
+*/
+@media (max-width: 768px) {
+  .box-body {
+    max-height: 75vh;
+  }
+}
+
+/* 
+On desktop, take up all available vertical height.
+*/
+@media (min-width: 769px) {
+  .box-body {
+    height: 100%;
+  }
+}
+
+/* 
+Button blocks have a little space between each for clarity.
+*/
+
+/* 
+Custom thin scrollbar for the filter area.
+Aesthetic tweak.
+*/
+.box-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* 
+Collapse button tweaks for spacing.
+*/
+.collapse-toggle {
+    margin-right: 5px;
+}
+
+/* 
+By default, hide both the desktop and mobile collapse icons.
+*/
+.icon-desktop,
+.icon-mobile {
+  display: none;
+}
+
+/* 
+Show the desktop collapse icon on desktop screens.
+*/
+@media (min-width: 768px) {
+  .icon-desktop {
+    display: inline;
+  }
+}
+
+/* 
+Show the mobile collapse icon on mobile screens.
+*/
+@media (max-width: 767px) {
+  .icon-mobile {
+    display: inline;
+  }
+}
+
+</style>

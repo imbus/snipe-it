@@ -167,38 +167,7 @@ export default class FloatingButtons {
             window.addEventListener('scroll', () => {
                 // on scroll we only need to check the mode; throttle via rAF
                 if (!this._ticking) {
-                    this._ticking = true;
-                    window.requestAnimationFrame(() => {
-                        this.updatePositionMode();
-                        this._ticking = false;
-                    });
-                }
-            }, { passive: true });
-        });
-    }
-
-    align() {
-        if (!this.advancedSearchPanel || !this.floatingButtonContainer) return;
-
-        queueMicrotask(() => {
-            const panelRect = this.advancedSearchPanel.getBoundingClientRect();
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-            const centerX = panelRect.left + (panelRect.width / 2) + scrollLeft;
-
-            // Only set absolute page-based left when the container is in the document root (fixed mode).
-            if (this.floatingButtonContainer.classList.contains('floating-buttons-fab-fixed-wrapper')) {
-                this.floatingButtonContainer.style.left = `${centerX}px`;
-                this.floatingButtonContainer.style.transform = 'translateX(-50%)';
-            } else {
-                // when positioned inside the panel (absolute), use left:50% + translateX(-50%) to center relative to panel
-                this.floatingButtonContainer.style.left = '50%';
-                this.floatingButtonContainer.style.transform = 'translateX(-50%)';
-            }
-        });
-    }
-
-    updatePositionMode() {
-        if (!this.advancedSearchPanel || !this.floatingButtonContainer) return;
+        console.log('update');
 
         // always refresh natural height (don't rely on stale stored value)
         this.advancedSearchPanelHeight = this._getNaturalPanelHeight();
@@ -247,8 +216,10 @@ export default class FloatingButtons {
             // Only update mode if it changed
             if (newMode !== this._currentMode) {
                 if (newMode === PositionMode.FIXED) {
+                    console.log('setFixedMode');
                     this._setFixedMode();
                 } else {
+                    console.log('setScrollableMode');
                     this._setScrollableMode();
                 }
                 this._currentMode = newMode;
@@ -272,45 +243,7 @@ export default class FloatingButtons {
     _setScrollableMode() {
         if (!this.floatingButtonContainer || !this.advancedSearchPanel) return;
 
-        // ensure panel can be a positioned ancestor
-        const panelStyle = window.getComputedStyle(this.advancedSearchPanel);
-        if (panelStyle.position === 'static') {
-            this._panelPositionWasStatic = true;
-            this.advancedSearchPanel.style.position = 'relative';
-        }
-
-        // move container into the panel so position:absolute makes it scroll with the panel
-        this.advancedSearchPanel.appendChild(this.floatingButtonContainer);
-
-        // switch classes
-        this.floatingButtonContainer.classList.remove('floating-buttons-fab-fixed-wrapper');
-        this.floatingButtonContainer.classList.add('floating-buttons-fab-scrollable-wrapper');
-
-        // measure natural content height and ensure there's extra space for the buttons to sit comfortably
-        this.advancedSearchPanelHeight = this._getNaturalPanelHeight();
-
-        this.advancedSearchPanelExtended = false;
-
-        this.advancedSearchPanel.classList.add('advancedSearchPanel--withBuffer');
-        this.advancedSearchPanel.style.paddingBottom = `${this._heightBuffer}px`;
-    }
-
-    // Move the floating container back to its original parent and set fixed class
-    _setFixedMode() {
-        if (!this.floatingButtonContainer) return;
-
-        // if already fixed, nothing to do
-        if (this.floatingButtonContainer.classList.contains('floating-buttons-fab-fixed-wrapper')) {
-            return;
-        }
-
-        // align using panel metrics to compute fixed-left position before moving the container
-        const panelRect = this.advancedSearchPanel ? this.advancedSearchPanel.getBoundingClientRect() : null;
-        if (panelRect) {
-            const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-            const centerX = panelRect.left + (panelRect.width / 2) + scrollLeft;
-            this.floatingButtonContainer.style.left = `${centerX}px`;
-            this.floatingButtonContainer.style.transform = 'translateX(-50%)';
+            console.log('panelRect', panelRect, 'scrollLeft', scrollLeft);
         }
 
         // restore panel position style if we changed it earlier
