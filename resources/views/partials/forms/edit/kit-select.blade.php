@@ -1,4 +1,4 @@
-<div id="kit_id" class="form-group{{ $errors->has($fieldname) ? ' has-error' : '' }}"{!!  (isset($style)) ? ' style="'.e($style).'"' : ''  !!}>
+<div id="kit_id" class="form-group{{ $errors->has($fieldname) ? ' has-error' : '' }}"{!! isset($style) ? ' style="' . e($style) . '"' : '' !!}>
 
     <label for="{{ $fieldname }}" class="col-md-3 control-label">{{ $translated_name }}</label>
 
@@ -14,6 +14,6 @@
         @endcan
     </div>
 
-    {!! $errors->first($fieldname, '<div class="col-md-8 col-md-offset-3"><span class="alert-msg"><i class="fas fa-times"></i> :message</span></div>') !!}
+    <div class="col-md-8 col-md-offset-3"><x-form.error :name="$fieldname" /></div>
 
 </div>

@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\Manufacturers\DeleteManufacturerAction;
-use App\Exceptions\ItemStillHasAccessories;
-use App\Exceptions\ItemStillHasAssets;
+use App\Actions\Manufacturers\DestroyManufacturerAction;
 use App\Exceptions\ItemStillHasChildren;
-use App\Exceptions\ItemStillHasComponents;
-use App\Exceptions\ItemStillHasConsumables;
-use App\Exceptions\ItemStillHasLicenses;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\FilterRequest;
+use App\Http\Requests\ImageUploadRequest;
 use App\Http\Transformers\ManufacturersTransformer;
 use App\Http\Transformers\SelectlistTransformer;
 use App\Models\Actionlog;
 use App\Models\Manufacturer;
-use Illuminate\Http\Request;
-use App\Http\Requests\ImageUploadRequest;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ManufacturersController extends Controller
 {
@@ -26,13 +24,15 @@ class ManufacturersController extends Controller
      * Display a listing of the resource.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0]
-     * @return \Illuminate\Http\Response
+     *
+     * @return Response
      */
-    public function index(Request $request) : JsonResponse | array
+    public function index(FilterRequest $request): JsonResponse|array
     {
         $this->authorize('view', Manufacturer::class);
-        $allowed_columns =  [
+        $allowed_columns = [
             'id',
             'name',
             'url',
@@ -43,6 +43,7 @@ class ManufacturersController extends Controller
             'created_at',
             'updated_at',
             'image',
+            'accessories_count',
             'assets_count',
             'consumables_count',
             'components_count',
@@ -52,21 +53,21 @@ class ManufacturersController extends Controller
         ];
 
         $manufacturers = Manufacturer::select([
-                'id',
-                'name',
-                'url',
-                'support_url',
-                'warranty_lookup_url',
-                'support_email',
-                'support_phone',
-                'created_by',
-                'created_at',
-                'updated_at',
-                'image',
-                'deleted_at',
-                'tag_color',
-                'notes',
-            ])
+            'id',
+            'name',
+            'url',
+            'support_url',
+            'warranty_lookup_url',
+            'support_email',
+            'support_phone',
+            'created_by',
+            'created_at',
+            'updated_at',
+            'image',
+            'deleted_at',
+            'tag_color',
+            'notes',
+        ])
             ->with('adminuser')
             ->withCount('assets as assets_count')
             ->withCount('licenses as licenses_count')
@@ -82,11 +83,10 @@ class ManufacturersController extends Controller
             $manufacturers->onlyTrashed();
         }
 
-        if ($request->filled('search')) {
-            $manufacturers = $manufacturers->TextSearch($request->input('search'));
+        // This invokes the Searchable model trait scopeTextSearch and will handle input by search or by advanced search filter
+        if ($request->filled('filter') || $request->filled('search')) {
+            $manufacturers->TextSearch($request->input('filter') ? $request->input('filter') : $request->input('search'));
         }
-
-
 
         if ($request->filled('name')) {
             $manufacturers->where('name', '=', $request->input('name'));
@@ -117,10 +117,11 @@ class ManufacturersController extends Controller
         }
 
         // Make sure the offset and limit are actually integers and do not exceed system limits
-        $offset = ($request->input('offset') > $manufacturers->count()) ? $manufacturers->count() : app('api_offset_value');
+        $total = $manufacturers->count();
+        $offset = ($request->input('offset') > $total) ? $total : app('api_offset_value');
         $limit = app('api_limit_value');
         $order = $request->input('order') === 'asc' ? 'asc' : 'desc';
-        $sort_override =  $request->input('sort');
+        $sort_override = $request->input('sort');
         $column_sort = in_array($sort_override, $allowed_columns) ? $sort_override : 'created_at';
 
         switch ($sort_override) {
@@ -132,7 +133,6 @@ class ManufacturersController extends Controller
                 break;
         }
 
-        $total = $manufacturers->count();
         $manufacturers = $manufacturers->skip($offset)->take($limit)->get();
 
         return (new ManufacturersTransformer)->transformManufacturers($manufacturers, $total);
@@ -142,10 +142,10 @@ class ManufacturersController extends Controller
      * Store a newly created resource in storage.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0]
-     * @param  \App\Http\Requests\ImageUploadRequest $request
      */
-    public function store(ImageUploadRequest $request) : JsonResponse
+    public function store(ImageUploadRequest $request): JsonResponse
     {
         $this->authorize('create', Manufacturer::class);
         $manufacturer = new Manufacturer;
@@ -155,6 +155,7 @@ class ManufacturersController extends Controller
         if ($manufacturer->save()) {
             return response()->json(Helper::formatStandardApiResponse('success', $manufacturer, trans('admin/manufacturers/message.create.success')));
         }
+
         return response()->json(Helper::formatStandardApiResponse('error', null, $manufacturer->getErrors()));
 
     }
@@ -163,10 +164,12 @@ class ManufacturersController extends Controller
      * Display the specified resource.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0]
+     *
      * @param  int  $id
      */
-    public function show($id) : JsonResponse | array
+    public function show($id): JsonResponse|array
     {
         $this->authorize('view', Manufacturer::class);
         $manufacturer = Manufacturer::withCount('assets as assets_count')->withCount('licenses as licenses_count')->withCount('consumables as consumables_count')->withCount('accessories as accessories_count')->findOrFail($id);
@@ -178,11 +181,12 @@ class ManufacturersController extends Controller
      * Update the specified resource in storage.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0]
-     * @param  \App\Http\Requests\ImageUploadRequest  $request
+     *
      * @param  int  $id
      */
-    public function update(ImageUploadRequest $request, $id) : JsonResponse
+    public function update(ImageUploadRequest $request, $id): JsonResponse
     {
         $this->authorize('update', Manufacturer::class);
         $manufacturer = Manufacturer::findOrFail($id);
@@ -200,18 +204,21 @@ class ManufacturersController extends Controller
      * Remove the specified resource from storage.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0]
+     *
      * @param  int  $id
      */
     public function destroy(Manufacturer $manufacturer): JsonResponse
     {
         $this->authorize('delete', $manufacturer);
         try {
-            DeleteManufacturerAction::run($manufacturer);
+            DestroyManufacturerAction::run($manufacturer);
         } catch (ItemStillHasChildren $e) {
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.bulk_delete_associations.general_assoc_warning', ['item' => trans('general.manufacturer')])));
         } catch (\Exception $e) {
             report($e);
+
             return response()->json(Helper::formatStandardApiResponse('error', null, trans('general.something_went_wrong')));
         }
 
@@ -222,11 +229,14 @@ class ManufacturersController extends Controller
      * Restore a given Manufacturer (mark as un-deleted)
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v6.3.4]
-     * @param int $id
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @param  int  $id
+     *
+     * @throws AuthorizationException
      */
-    public function restore($id) : JsonResponse
+    public function restore($id): JsonResponse
     {
         $this->authorize('delete', Manufacturer::class);
 
@@ -238,7 +248,7 @@ class ManufacturersController extends Controller
 
             if ($manufacturer->restore()) {
 
-                $logaction = new Actionlog();
+                $logaction = new Actionlog;
                 $logaction->item_type = Manufacturer::class;
                 $logaction->item_id = $manufacturer->id;
                 $logaction->created_at = date('Y-m-d H:i:s');
@@ -252,17 +262,18 @@ class ManufacturersController extends Controller
             return response()->json(Helper::formatStandardApiResponse('error', trans('general.could_not_restore', ['item_type' => trans('general.manufacturer'), 'error' => $manufacturer->getErrors()->first()])), 200);
         }
 
-        return response()->json(Helper::formatStandardApiResponse('error', null,  trans('admin/manufacturers/message.does_not_exist')));
+        return response()->json(Helper::formatStandardApiResponse('error', null, trans('admin/manufacturers/message.does_not_exist')));
     }
 
     /**
      * Gets a paginated collection for the select2 menus
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v4.0.16]
-     * @see \App\Http\Transformers\SelectlistTransformer
+     * @see SelectlistTransformer
      */
-    public function selectlist(Request $request) : array
+    public function selectlist(Request $request): array
     {
 
         $this->authorize('view.selectlists');
@@ -274,7 +285,7 @@ class ManufacturersController extends Controller
         ]);
 
         if ($request->filled('search')) {
-            $manufacturers = $manufacturers->where('name', 'LIKE', '%'.$request->get('search').'%');
+            $manufacturers = $manufacturers->where('name', 'LIKE', '%'.$request->input('search').'%');
         }
 
         $manufacturers = $manufacturers->orderBy('name', 'ASC')->paginate(50);

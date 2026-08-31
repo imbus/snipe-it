@@ -5,10 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Transformers\PredefinedKitsTransformer;
-use App\Models\PredefinedKit;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Transformers\SelectlistTransformer;
+use App\Models\Accessory;
+use App\Models\AssetModel;
+use App\Models\Consumable;
+use App\Models\License;
+use App\Models\PredefinedKit;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 /**
  *  @author [D. Minaev.] [<dmitriy.minaev.v@gmail.com>]
@@ -18,9 +23,9 @@ class PredefinedKitsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index(Request $request) : JsonResponse | array
+    public function index(Request $request): JsonResponse|array
     {
         $this->authorize('view', PredefinedKit::class);
 
@@ -31,7 +36,8 @@ class PredefinedKitsController extends Controller
         }
 
         // Make sure the offset and limit are actually integers and do not exceed system limits
-        $offset = ($request->input('offset') > $kits->count()) ? $kits->count() : app('api_offset_value');
+        $total = $kits->count();
+        $offset = ($request->input('offset') > $total) ? $total : app('api_offset_value');
         $limit = app('api_limit_value');
 
         $order = $request->input('order') === 'desc' ? 'desc' : 'asc';
@@ -55,7 +61,6 @@ class PredefinedKitsController extends Controller
                 break;
         }
 
-        $total = $kits->count();
         $kits = $kits->skip($offset)->take($limit)->get();
 
         return (new PredefinedKitsTransformer)->transformPredefinedKits($kits, $total);
@@ -63,10 +68,8 @@ class PredefinedKitsController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
      */
-    public function store(Request $request) : JsonResponse
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('create', PredefinedKit::class);
         $kit = new PredefinedKit;
@@ -84,7 +87,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $id
      */
-    public function show($id) :  array
+    public function show($id): array
     {
         $this->authorize('view', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($id);
@@ -95,10 +98,9 @@ class PredefinedKitsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id kit id
+     * @param  int  $id  kit id
      */
-    public function update(Request $request, $id) : JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($id);
@@ -116,7 +118,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $id
      */
-    public function destroy($id) : JsonResponse
+    public function destroy($id): JsonResponse
     {
         $this->authorize('delete', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($id);
@@ -135,9 +137,9 @@ class PredefinedKitsController extends Controller
     /**
      * Gets a paginated collection for the select2 menus
      *
-     * @see \App\Http\Transformers\SelectlistTransformer
+     * @see SelectlistTransformer
      */
-    public function selectlist(Request $request) : array
+    public function selectlist(Request $request): array
     {
         $kits = PredefinedKit::select([
             'id',
@@ -145,7 +147,7 @@ class PredefinedKitsController extends Controller
         ]);
 
         if ($request->filled('search')) {
-            $kits = $kits->where('name', 'LIKE', '%'.$request->get('search').'%');
+            $kits = $kits->where('name', 'LIKE', '%'.$request->input('search').'%');
         }
 
         $kits = $kits->orderBy('name', 'ASC')->paginate(50);
@@ -157,9 +159,9 @@ class PredefinedKitsController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function indexLicenses($kit_id) : array
+    public function indexLicenses($kit_id): array
     {
         $this->authorize('view', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -172,9 +174,9 @@ class PredefinedKitsController extends Controller
      * Store the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function storeLicense(Request $request, $kit_id) : JsonResponse
+    public function storeLicense(Request $request, $kit_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
 
@@ -184,7 +186,10 @@ class PredefinedKitsController extends Controller
             $quantity = 1;
         }
 
-        $license_id = $request->get('license');
+        $license_id = $request->input('license');
+        $license = License::findOrFail($license_id);
+        $this->authorize('view', $license);
+
         $relation = $kit->licenses();
         if ($relation->find($license_id)) {
             return response()->json(Helper::formatStandardApiResponse('error', null, ['license' => trans('admin/kits/general.license_error')]));
@@ -198,18 +203,24 @@ class PredefinedKitsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $kit_id
      */
-    public function updateLicense(Request $request, $kit_id, $license_id) : JsonResponse
+    public function updateLicense(Request $request, $kit_id, $license_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
+
+        // Mirror storeLicense: verify the caller can view the license they
+        // are attaching. Without this, kits.edit alone would let them attach
+        // (and leak the name of) a license they cannot read directly.
+        $license = License::findOrFail($license_id);
+        $this->authorize('view', $license);
+
         $quantity = $request->input('quantity', 1);
         if ($quantity < 1) {
             $quantity = 1;
         }
-        $kit->licenses()->syncWithoutDetaching([$license_id => ['quantity' =>  $quantity]]);
+        $kit->licenses()->syncWithoutDetaching([$license_id => ['quantity' => $quantity]]);
 
         return response()->json(Helper::formatStandardApiResponse('success', $kit, trans('admin/kits/general.license_updated')));
     }
@@ -219,7 +230,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function detachLicense($kit_id, $license_id) : JsonResponse
+    public function detachLicense($kit_id, $license_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -234,7 +245,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function indexModels($kit_id) : array
+    public function indexModels($kit_id): array
     {
         $this->authorize('view', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -248,17 +259,24 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $id
      */
-    public function storeModel(Request $request, $kit_id) : JsonResponse
+    public function storeModel(Request $request, $kit_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
 
         $kit = PredefinedKit::findOrFail($kit_id);
 
-        $model_id = $request->get('model');
+        $model_id = $request->input('model');
         $quantity = $request->input('quantity', 1);
         if ($quantity < 1) {
             $quantity = 1;
         }
+
+        // Verify the caller can view the model they are attaching. Without
+        // this, kits.edit alone would let them attach (and leak the name
+        // of) a model they cannot read directly. Mirrors storeLicense /
+        // storeConsumable / storeAccessory.
+        $model = AssetModel::findOrFail($model_id);
+        $this->authorize('view', $model);
 
         $relation = $kit->models();
         if ($relation->find($model_id)) {
@@ -272,18 +290,21 @@ class PredefinedKitsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $kit_id
      */
-    public function updateModel(Request $request, $kit_id, $model_id) : JsonResponse
+    public function updateModel(Request $request, $kit_id, $model_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
+
+        $model = AssetModel::findOrFail($model_id);
+        $this->authorize('view', $model);
+
         $quantity = $request->input('quantity', 1);
         if ($quantity < 1) {
             $quantity = 1;
         }
-        $kit->models()->syncWithoutDetaching([$model_id => ['quantity' =>  $quantity]]);
+        $kit->models()->syncWithoutDetaching([$model_id => ['quantity' => $quantity]]);
 
         return response()->json(Helper::formatStandardApiResponse('success', $kit, trans('admin/kits/general.license_updated')));
     }
@@ -293,7 +314,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function detachModel($kit_id, $model_id) : JsonResponse
+    public function detachModel($kit_id, $model_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -308,7 +329,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function indexConsumables($kit_id) : array
+    public function indexConsumables($kit_id): array
     {
         $this->authorize('view', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -322,7 +343,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $id
      */
-    public function storeConsumable(Request $request, $kit_id) : JsonResponse
+    public function storeConsumable(Request $request, $kit_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
 
@@ -332,7 +353,10 @@ class PredefinedKitsController extends Controller
             $quantity = 1;
         }
 
-        $consumable_id = $request->get('consumable');
+        $consumable_id = $request->input('consumable');
+        $consumable = Consumable::findOrFail($consumable_id);
+        $this->authorize('view', $consumable);
+
         $relation = $kit->consumables();
         if ($relation->find($consumable_id)) {
             return response()->json(Helper::formatStandardApiResponse('error', null, ['consumable' => trans('admin/kits/general.consumable_error')]));
@@ -346,18 +370,21 @@ class PredefinedKitsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $kit_id
      */
-    public function updateConsumable(Request $request, $kit_id, $consumable_id) : JsonResponse
+    public function updateConsumable(Request $request, $kit_id, $consumable_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
+
+        $consumable = Consumable::findOrFail($consumable_id);
+        $this->authorize('view', $consumable);
+
         $quantity = $request->input('quantity', 1);
         if ($quantity < 1) {
             $quantity = 1;
         }
-        $kit->consumables()->syncWithoutDetaching([$consumable_id => ['quantity' =>  $quantity]]);
+        $kit->consumables()->syncWithoutDetaching([$consumable_id => ['quantity' => $quantity]]);
 
         return response()->json(Helper::formatStandardApiResponse('success', $kit, trans('admin/kits/general.consumable_updated')));
     }
@@ -367,7 +394,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function detachConsumable($kit_id, $consumable_id) : JsonResponse
+    public function detachConsumable($kit_id, $consumable_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -382,7 +409,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function indexAccessories($kit_id) : array
+    public function indexAccessories($kit_id): array
     {
         $this->authorize('view', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
@@ -396,7 +423,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function storeAccessory(Request $request, $kit_id) : JsonResponse
+    public function storeAccessory(Request $request, $kit_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
 
@@ -406,7 +433,10 @@ class PredefinedKitsController extends Controller
             $quantity = 1;
         }
 
-        $accessory_id = $request->get('accessory');
+        $accessory_id = $request->input('accessory');
+        $accessory = Accessory::findOrFail($accessory_id);
+        $this->authorize('view', $accessory);
+
         $relation = $kit->accessories();
         if ($relation->find($accessory_id)) {
             return response()->json(Helper::formatStandardApiResponse('error', null, ['accessory' => trans('admin/kits/general.accessory_error')]));
@@ -420,18 +450,21 @@ class PredefinedKitsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  int  $kit_id
      */
-    public function updateAccessory(Request $request, $kit_id, $accessory_id) : JsonResponse
+    public function updateAccessory(Request $request, $kit_id, $accessory_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);
+
+        $accessory = Accessory::findOrFail($accessory_id);
+        $this->authorize('view', $accessory);
+
         $quantity = $request->input('quantity', 1);
         if ($quantity < 1) {
             $quantity = 1;
         }
-        $kit->accessories()->syncWithoutDetaching([$accessory_id => ['quantity' =>  $quantity]]);
+        $kit->accessories()->syncWithoutDetaching([$accessory_id => ['quantity' => $quantity]]);
 
         return response()->json(Helper::formatStandardApiResponse('success', $kit, trans('admin/kits/general.accessory_updated')));
     }
@@ -441,7 +474,7 @@ class PredefinedKitsController extends Controller
      *
      * @param  int  $kit_id
      */
-    public function detachAccessory($kit_id, $accessory_id) : JsonResponse
+    public function detachAccessory($kit_id, $accessory_id): JsonResponse
     {
         $this->authorize('update', PredefinedKit::class);
         $kit = PredefinedKit::findOrFail($kit_id);

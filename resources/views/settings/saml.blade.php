@@ -6,211 +6,187 @@
     @parent
 @stop
 
-@section('header_right')
-    <a href="{{ route('settings.index') }}" class="btn btn-default"> {{ trans('general.back') }}</a>
-@stop
-
-
 {{-- Page content --}}
 @section('content')
 
-    <style>
-        .checkbox label {
-            padding-right: 40px;
-        }
-    </style>
+    <x-container class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+        <x-form :route="route('settings.saml.save')">
 
+            <x-box>
+                <x-slot:header>
+                    <x-icon type="saml"/> {{ trans('admin/settings/general.saml') }}
+                </x-slot:header>
 
-    <form method="POST" action="{{ route('settings.saml.save') }}" accept-charset="UTF-8" autocomplete="false"  role="form" class="form-horizontal">
-    <!-- CSRF Token -->
-    {{csrf_field()}}
+                {{-- Single demo-mode banner at the top so users don't wonder why
+                     changes silently fail. Renders nothing outside demo mode. --}}
+                <x-demo-callout />
 
-    <!-- this is a hack to prevent Chrome from trying to autocomplete fields -->
-    <input type="text" name="prevent_autofill" id="prevent_autofill" value="" style="display:none;" />
-    <input type="password" name="password_fake" id="password_fake" value="" style="display:none;" />
+                {{-- Enable SAML --}}
+                <x-form.checkbox-row
+                    name="saml_enabled"
+                    :label="trans('admin/settings/general.saml_enabled')"
+                    :item="$setting"
+                    :disabled="config('app.lock_passwords') === true"
+                />
 
+                @if ($setting->saml_enabled)
+                    {{-- SAML SP Entity ID (readonly, derived from app URL) --}}
+                    <x-form.row
+                        :label="trans('admin/settings/general.saml_sp_entityid')"
+                        name="saml_sp_entitiyid"
+                        input_div_class="col-md-8"
+                    >
+                        <x-slot:input>
+                            <input class="form-control" readonly name="saml_sp_entitiyid" type="text" value="{{ config('app.url') }}" id="saml_sp_entitiyid">
+                        </x-slot:input>
+                    </x-form.row>
 
+                    {{-- SAML SP ACS URL (readonly) --}}
+                    <x-form.row
+                        :label="trans('admin/settings/general.saml_sp_acs_url')"
+                        name="saml_sp_acs_url"
+                        input_div_class="col-md-8"
+                    >
+                        <x-slot:input>
+                            <input class="form-control" readonly name="saml_sp_acs_url" type="text" value="{{ route('saml.acs') }}" id="saml_sp_acs_url">
+                        </x-slot:input>
+                    </x-form.row>
 
-    <div class="row">
-        <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+                    {{-- SAML SP SLS URL (readonly) --}}
+                    <x-form.row
+                        :label="trans('admin/settings/general.saml_sp_sls_url')"
+                        name="saml_sp_sls_url"
+                        input_div_class="col-md-8"
+                    >
+                        <x-slot:input>
+                            <input class="form-control" readonly name="saml_sp_sls_url" type="text" value="{{ route('saml.sls') }}" id="saml_sp_sls_url">
+                        </x-slot:input>
+                    </x-form.row>
 
+                    {{-- SAML SP Certificate (readonly textarea; only shown after a cert is generated) --}}
+                    @if (! empty($setting->saml_sp_x509cert))
+                        <x-form.row
+                            :label="trans('admin/settings/general.saml_sp_x509cert')"
+                            name="saml_sp_x509cert"
+                            input_div_class="col-md-8"
+                        >
+                            <x-slot:input>
+                                <x-input.textarea
+                                    name="saml_sp_x509cert"
+                                    id="saml_sp_x509cert"
+                                    rows="20"
+                                    :value="$setting->saml_sp_x509cert"
+                                    wrap="off"
+                                    readonly
+                                />
+                            </x-slot:input>
+                        </x-form.row>
+                    @endif
 
-            <div class="panel box box-default">
-                <div class="box-header with-border">
-                    <h2 class="box-title">
-                        <x-icon type="saml"/>
-                         {{ trans('admin/settings/general.saml') }}
-                    </h2>
-                </div>
-                <div class="box-body">
+                    {{-- SAML SP Metadata URL (readonly + download button) --}}
+                    <x-form.row
+                        :label="trans('admin/settings/general.saml_sp_metadata_url')"
+                        name="saml_sp_metadata_url"
+                        input_div_class="col-md-8"
+                    >
+                        <x-slot:input>
+                            <input class="form-control" readonly name="saml_sp_metadata_url" type="text" value="{{ route('saml.metadata') }}" id="saml_sp_metadata_url">
+                            <p class="help-block">
+                                <a href="{{ route('saml.metadata') }}" target="_blank" class="btn btn-theme" style="margin-right: 5px;">{{ trans('admin/settings/general.saml_download') }}</a>
+                            </p>
+                        </x-slot:input>
+                    </x-form.row>
+                @endif
 
-                        <!-- Enable SAML -->
-                        <div class="form-group{{ $errors->has('saml_integration') ? ' error' : '' }}">
-                            <div class="control-label col-md-3">
-                                <strong>{{ trans('admin/settings/general.saml_integration') }}</strong>
-                            </div>
-                            <div class="col-md-8">
+                {{-- SAML IdP Metadata: paste XML directly or upload from disk.
+                     The file input is hidden; the visible button proxies its
+                     click, and the FileReader in the @push('js') block below
+                     reads the selected file into the textarea. --}}
+                <x-form.row
+                    :label="trans('admin/settings/general.saml_idp_metadata')"
+                    name="saml_idp_metadata"
+                    :help_text="trans('admin/settings/general.saml_idp_metadata_help')"
+                    input_div_class="col-md-8"
+                >
+                    <x-slot:input>
+                        <x-input.textarea
+                            name="saml_idp_metadata"
+                            id="saml_idp_metadata"
+                            :value="old('saml_idp_metadata', $setting->saml_idp_metadata)"
+                            placeholder="https://example.com/idp/metadata"
+                            wrap="off"
+                        />
+                        <br>
+                        <button type="button" class="btn btn-theme" id="saml_idp_metadata_upload_btn" {{ $setting->demoMode }}>{{ trans('button.select_file') }}</button>
+                        <input type="file" class="js-uploadFile" id="saml_idp_metadata_upload"
+                            @disabled(config('app.lock_passwords'))
+                            data-maxsize="{{ Helper::file_upload_max_size() }}"
+                            accept="text/xml,application/xml" style="display:none; max-width: 90%" {{ $setting->demoMode }}>
+                    </x-slot:input>
+                </x-form.row>
 
-                                <label class="form-control{{ config('app.lock_passwords') === true ? ' form-control--disabled': '' }}">
-                                    <input type="checkbox" name="saml_enabled" value="1" @checked(old('saml_enabled', $setting->saml_enabled)) @disabled(config('app.lock_passwords')) @class(['disabled' => config('app.lock_passwords')])/>
-                                    {{ trans('admin/settings/general.saml_enabled') }}
-                                </label>
+                {{-- SAML Attribute Mapping Username --}}
+                <x-form.row
+                    :label="trans('admin/settings/general.saml_attr_mapping_username')"
+                    name="saml_attr_mapping_username"
+                    type="text"
+                    :item="$setting"
+                    :help_text="trans('admin/settings/general.saml_attr_mapping_username_help')"
+                    :disabled="config('app.lock_passwords')"
+                    input_div_class="col-md-8"
+                />
 
-                                {!! $errors->first('saml_integration', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-                                @if (config('app.lock_passwords') === true)
-                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
-                                @endif
-                            </div>
+                {{-- SAML Force Login --}}
+                <x-form.checkbox-row
+                    name="saml_forcelogin"
+                    :label="trans('admin/settings/general.saml_forcelogin')"
+                    :help_text="trans('admin/settings/general.saml_forcelogin_help')"
+                    :item="$setting"
+                    :disabled="config('app.lock_passwords') === true"
+                />
 
+                {{-- SAML Single Log Out --}}
+                <x-form.checkbox-row
+                    name="saml_slo"
+                    :label="trans('admin/settings/general.saml_slo')"
+                    :help_text="trans('admin/settings/general.saml_slo_help')"
+                    :item="$setting"
+                    :disabled="config('app.lock_passwords') === true"
+                />
 
+                {{-- SAML Custom Options (raw settings passed to the SAML lib) --}}
+                <x-form.row
+                    :label="trans('admin/settings/general.saml_custom_settings')"
+                    name="saml_custom_settings"
+                    type="textarea"
+                    :item="$setting"
+                    :help_text="trans('admin/settings/general.saml_custom_settings_help')"
+                    placeholder="example.option=false&#13;&#10;sp_x509cert=file:///...&#13;&#10;sp_private_key=file:///"
+                    input_div_class="col-md-8"
+                    wrap="off"
+                />
 
-
-                                @if ($setting->saml_enabled)
-                                    <div class="col-md-9 col-md-offset-3">
-                                    <!-- SAML SP Details -->
-                                    <!-- SAML SP Entity ID -->
-                                    <label for="saml_sp_entitiyid" class="control-label col-md-3">{{ trans('admin/settings/general.saml_sp_entityid') }}</label>
-                                    <input class="form-control" readonly="" name="saml_sp_entitiyid" type="text" value="{{ config('app.url') }}" id="saml_sp_entitiyid">
-                                    <br>
-                                    <!-- SAML SP ACS -->
-                                    <label for="saml_sp_acs_url" class="control-label col-md-3">{{ trans('admin/settings/general.saml_sp_acs_url') }}</label>
-                                    <input class="form-control" readonly="" name="saml_sp_acs_url" type="text" value="{{ route('saml.acs') }}" id="saml_sp_acs_url">
-                                    <br>
-                                    <!-- SAML SP SLS -->
-                                    <label for="saml_sp_sls_url" class="control-label col-md-3">{{ trans('admin/settings/general.saml_sp_sls_url') }}</label>
-                                    <input class="form-control" readonly="" name="saml_sp_sls_url" type="text" value="{{ route('saml.sls') }}" id="saml_sp_sls_url">
-                                    <br>
-                                    <!-- SAML SP Certificate -->
-                                    @if (!empty($setting->saml_sp_x509cert))
-                                         <label for="saml_sp_x509cert" class="control-label col-md-3">{{ trans('admin/settings/general.saml_sp_x509cert') }}</label>
-                                            <x-input.textarea
-                                                name="saml_sp_x509cert"
-                                                id="saml_sp_x509cert"
-                                                :value="$setting->saml_sp_x509cert"
-                                                wrap="off"
-                                                readonly
-                                            />
-                                        <br>
-                                    @endif
-                                    <!-- SAML SP Metadata URL -->
-                                    <label for="saml_sp_metadata_url" class="control-label col-md-3">{{ trans('admin/settings/general.saml_sp_metadata_url') }}</label>
-                                    <input class="form-control" readonly="" name="saml_sp_metadata_url" type="text" value="{{ route('saml.metadata') }}" id="saml_sp_metadata_url">
-                                    <br>
-                                    <p class="help-block">
-                                        <a href="{{ route('saml.metadata') }}" target="_blank" class="btn btn-default" style="margin-right: 5px;">{{ trans('admin/settings/general.saml_download') }}</a>
-                                    </p>
-                                    </div>
-                                @endif
-                                {!! $errors->first('saml_enabled', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-
+                {{-- Explicit footer preserves the demo-mode-disabled save state
+                     that the default x-box.footer doesn't offer. --}}
+                <x-slot:customfooter>
+                    <div class="box-footer">
+                        <div class="text-left col-md-6">
+                            <a class="btn btn-link text-left" href="{{ route('settings.index') }}">{{ trans('button.cancel') }}</a>
                         </div>
-
-
-                        <!-- SAML IdP Metadata -->
-                        <div class="form-group {{ $errors->has('saml_idp_metadata') ? 'error' : '' }}">
-
-                            <label for="saml_idp_metadata" class="control-label col-md-3">{{ trans('admin/settings/general.saml_idp_metadata') }}</label>
-
-                        <div class="col-md-8">
-                            <x-input.textarea
-                                name="saml_idp_metadata"
-                                id="saml_idp_metadata"
-                                :value="old('saml_idp_metadata', $setting->saml_idp_metadata)"
-                                placeholder="https://example.com/idp/metadata"
-                                wrap="off"
-                            />
-                            {!! $errors->first('saml_idp_metadata', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}<br>
-                            <button type="button" class="btn btn-default" id="saml_idp_metadata_upload_btn" {{ $setting->demoMode }}>{{ trans('button.select_file') }}</button>
-                            <input type="file" class="js-uploadFile" id="saml_idp_metadata_upload"
-                                data-maxsize="{{ Helper::file_upload_max_size() }}"
-                                accept="text/xml,application/xml" style="display:none; max-width: 90%" {{ $setting->demoMode }}>
-                            
-                            <p class="help-block">{{ trans('admin/settings/general.saml_idp_metadata_help') }}</p>
-                        </div>
-                        </div>
-
-                        <!-- SAML Attribute Mapping Username -->
-                        <div class="form-group {{ $errors->has('saml_attr_mapping_username') ? 'error' : '' }}">
-
-                            <label for="saml_attr_mapping_username" class="control-label col-md-3">{{ trans('admin/settings/general.saml_attr_mapping_username') }}</label>
-
-                            <div class="col-md-9">
-                                <input class="form-control" name="saml_attr_mapping_username" type="text" id="saml_attr_mapping_username" value="{{ old('saml_attr_mapping_username', $setting->saml_attr_mapping_username) }}">
-                                <p class="help-block">{{ trans('admin/settings/general.saml_attr_mapping_username_help') }}</p>
-                                {!! $errors->first('saml_attr_mapping_username', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-                            </div>
-                        </div>
-
-                        <!-- SAML Force Login -->
-                        <div class="form-group">
-                            <div class="control-label col-md-3">
-                                <strong>{{  trans('admin/settings/general.saml_forcelogin_label') }}</strong>
-                            </div>
-                            <div class="col-md-9">
-                                <label class="form-control{{ config('app.lock_passwords') === true ? ' form-control--disabled': '' }}">
-                                    <input type="checkbox" name="saml_forcelogin" value="1" @checked(old('saml_forcelogin', $setting->saml_forcelogin)) @disabled(config('app.lock_passwords')) @class(['disabled' => config('app.lock_passwords')]) />
-                                    {{ trans('admin/settings/general.saml_forcelogin') }}
-                                </label>
-                                <p class="help-block">{{ trans('admin/settings/general.saml_forcelogin_help') }}</p>
-                                <p class="help-block">{{ route('login', ['nosaml']) }}</p>
-                                {!! $errors->first('saml_forcelogin', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-                            </div>
-                        </div>
-
-                        <!-- SAML Single Log Out -->
-                        <div class="form-group">
-                            <div class="control-label col-md-3">
-                                <strong>{{ trans('admin/settings/general.saml_slo_label') }}</strong>
-                            </div>
-                            <div class="col-md-9">
-                                <label class="form-control{{ config('app.lock_passwords') === true ? ' form-control--disabled': '' }}">
-                                    <input type="checkbox" name="saml_slo" value="1" @checked(old('saml_slo', $setting->saml_slo)) @disabled(config('app.lock_passwords')) @class(['minimal', 'disabled' => config('app.lock_passwords')])/>
-                                    {{ trans('admin/settings/general.saml_slo') }}
-                                </label>
-                                <p class="help-block">{{ trans('admin/settings/general.saml_slo_help') }}</p>
-                                {!! $errors->first('saml_slo', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-                            </div>
-                        </div>
-
-                        <!-- SAML Custom Options -->
-                        <div class="form-group {{ $errors->has('saml_custom_settings') ? 'error' : '' }}">
-                        <label for="saml_custom_settings" class="control-label col-md-3">{{ trans('admin/settings/general.saml_custom_settings') }}</label>
-
-                        <div class="col-md-9">
-                            <x-input.textarea
-                                name="saml_custom_settings"
-                                :value="old('saml_custom_settings', $setting->saml_custom_settings)"
-                                placeholder="example.option=false&#13;&#10;sp_x509cert=file:///...&#13;&#10;sp_private_key=file:///"
-                                wrap="off"
-                            />
-                            <p class="help-block">{{ trans('admin/settings/general.saml_custom_settings_help') }}</p>
-                            {!! $errors->first('saml_custom_settings', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
+                        <div class="text-right col-md-6">
+                            <x-button.submit class="btn-theme" :disabled="config('app.lock_passwords') === true" />
                         </div>
                     </div>
+                </x-slot:customfooter>
+            </x-box>
 
-                </div> <!--/.box-body-->
-                <div class="box-footer">
-                    <div class="text-left col-md-6">
-                        <a class="btn btn-link text-left" href="{{ route('settings.index') }}">{{ trans('button.cancel') }}</a>
-                    </div>
-                    <div class="text-right col-md-6">
-                        <button type="submit" class="btn btn-primary"{{ config('app.lock_passwords') === true ? ' disabled': '' }}><x-icon type="checkmark" /> {{ trans('general.save') }}</button>
-                    </div>
-
-                </div>
-            </div> <!-- /box -->
-
-        </div> <!-- /.col-md-8-->
-    </div> <!-- /.row-->
-
-    </form>
-
+        </x-form>
+    </x-container>
 
 @stop
 
 @push('js')
     <script nonce="{{ csrf_token() }}">
-
         $('#saml_idp_metadata_upload_btn').click(function() {
             $('#saml_idp_metadata_upload').click();
         });
@@ -220,12 +196,9 @@
 
             fr.onload = function(e) {
                 $('#saml_idp_metadata').val(e.target.result);
-            } 
+            }
 
             fr.readAsText(this.files[0]);
         });
-
     </script>
 @endpush
-
-

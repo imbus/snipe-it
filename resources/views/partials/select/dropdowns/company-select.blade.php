@@ -3,7 +3,9 @@
     data-endpoint="companies" 
     data-placeholder="{{ trans('general.select_company') }}" 
     data-tags="{{ isset($allow_tags) && $allow_tags ? 'true' : 'false' }}"
-    name="{{ $fieldname }}" 
+    @isset($only_top_level) data-only-top-level="{{ $only_top_level ? 'true' : '' }}" @endisset
+    @isset($exclude_id) data-exclude-id="{{ $exclude_id }}" @endisset
+    name="{{ $fieldname }}{{ (isset($multiple) && ($multiple=='true')) ? '[]' : '' }}" 
     style="width: 100%" 
     id="{{ isset($select_id) ? $select_id : $fieldname . '_company_select' }}"
     aria-label="{{ $fieldname }}"

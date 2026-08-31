@@ -71,7 +71,7 @@ return [
     ],
     'hex_color' => ':attribute-fältet måste vara en giltig hexadecimalfärg.',
     'image' => ':attribute-fältet måste vara en bild.',
-    'import_field_empty'    => 'Värdet för :fieldname kan inte vara noll.',
+    'import_field_empty' => 'Värdet för :fieldname kan inte vara noll.',
     'in' => 'Det valda :attribute är ogiltigt.',
     'in_array' => ':attribute-fältet måste existera i :other.',
     'integer' => ':attribute-fältet måste vara en integer.',
@@ -126,7 +126,7 @@ return [
         'symbols' => ':attribute-fältet måste innehåll minst en symbol.',
         'uncompromised' => ':attribute-fältet har upptäckts i en dataläcka. Vänligen ange ett annat :attribute.',
     ],
-    'percent'       => 'Värdeminskningsminimum måste vara mellan 0 och 100 när värdeminskningstypen är i procent.',
+    'percent' => 'Värdeminskningsminimum måste vara mellan 0 och 100 när värdeminskningstypen är i procent.',
 
     'present' => ':attribute fältet måste finnas.',
     'present_if' => ':attribute-fältet måste vara ifyllt om :other är :value.',
@@ -156,24 +156,29 @@ return [
         'string' => ':attribute-fältet måste vara :size tecken.',
     ],
     'starts_with' => ':attribute-fältet måste starta med minst ett av följande: :values.',
-    'string'               => ':attribute måste vara en sträng.',
+    'string' => ':attribute måste vara en sträng.',
     'two_column_unique_undeleted' => ':attribute måste vara unikt i :table1 och :table2. ',
-    'unique_undeleted'     => ':attribute måste vara unikt.',
-    'non_circular'         => ':attribute får inte skapa en cirkulär referens.',
-    'not_array'            => ':attribute kan inte vara en array.',
+    'unique_undeleted' => ':attribute måste vara unikt.',
+    'non_circular' => ':attribute får inte skapa en cirkulär referens.',
+    'parent_must_be_top_level' => 'The selected :attribute must itself be a top-level item. Only one level of nesting is allowed.',
+    'must_have_no_children' => 'This item already has children of its own, so it cannot be assigned a parent.',
+    'not_array' => ':attribute kan inte vara en array.',
     'disallow_same_pwd_as_user_fields' => 'Lösenordet kan inte vara samma som användarnamnet.',
-    'letters'              => 'Lösenord måste innehålla minst en bokstav.',
-    'numbers'              => 'Lösenord måste innehålla minst en siffra.',
-    'case_diff'            => 'Lösenordet måste innehålla både versaler och gemener.',
-    'symbols'              => 'Lösenordet måste innehålla symboler.',
+    'letters' => 'Lösenord måste innehålla minst en bokstav.',
+    'numbers' => 'Lösenord måste innehålla minst en siffra.',
+    'case_diff' => 'Lösenordet måste innehålla både versaler och gemener.',
+    'symbols' => 'Lösenordet måste innehålla symboler.',
     'timezone' => ':attribute-fältet måste vara en giltig tidszon.',
     'unique' => ':attribute är upptaget.',
     'uploaded' => 'Uppladdningen av :attribute misslyckades.',
     'uppercase' => ':attribute-fältet måste vara versaler.',
     'url' => ':attribute-fältet måste vara en giltig URL.',
+    'external_url' => 'The :attribute field must be a valid external URL (http:// or https://) that does not point at a private or local address.',
     'ulid' => ':attribute-fältet måste vara ett giltigt ULID.',
     'uuid' => ':attribute-fältet måste vara ett giltigt UUID.',
-    'fmcs_location' => 'Full multiple company support and location scoping is enabled in the Admin Settings, and the selected location and selected company are not compatible.',
+    'valid_css_color' => 'The :attribute field must be a valid CSS color (hex, rgb, rgba, hsl, or hsla).',
+    'fmcs_company' => 'The :attribute field is required because full multiple companies support is enabled and floaters are not allowed.',
+    'fmcs_location' => 'Location ":location" belongs to :location_company, which does not match the selected company.',
     'is_unique_across_company_and_location' => 'The :attribute must be unique within the selected company and location.',
 
     /*
@@ -187,38 +192,38 @@ return [
     |
     */
 
-    'email_array'      => 'En eller flera e-postadresser är ogiltiga.',
-    'checkboxes'           => ':attribute innehåller ogiltiga alternativ.',
-    'radio_buttons'        => ':attribute är ogiltigt.',
-    
+    'email_array' => 'En eller flera e-postadresser är ogiltiga.',
+    'checkboxes' => ':attribute innehåller ogiltiga alternativ.',
+    'radio_buttons' => ':attribute är ogiltigt.',
+
     'custom' => [
         'alpha_space' => 'Fältet :attribute innehåller ett tecken som inte är tillåtet.',
 
-        'hashed_pass'      => 'Ditt nuvarande lösenord är felaktigt',
-        'dumbpwd'          => 'Det angivna lösenordet är för vanligt.',
+        'hashed_pass' => 'Ditt nuvarande lösenord är felaktigt',
+        'dumbpwd' => 'Det angivna lösenordet är för vanligt.',
         'statuslabel_type' => 'Du måste ange en giltig statusetikett',
-        'custom_field_not_found'          => 'Detta fält verkar inte existera, vänligen dubbelkolla dina anpassade fält.',
+        'custom_field_not_found' => 'Detta fält verkar inte existera, vänligen dubbelkolla dina anpassade fält.',
         'custom_field_not_found_on_model' => 'Detta fält verkar existera, men är inte tillgängligt på tillgångsmodellens fältuppsättning.',
 
         // date_format validation with slightly less stupid messages. It duplicates a lot, but it gets the job done :(
         // We use this because the default error message for date_format reflects php Y-m-d, which non-PHP
         // people won't know how to format.
-        'purchase_date.date_format'     => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
-        'last_audit_date.date_format'   =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD hh:mm:ss format',
-        'expiration_date.date_format'   =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
-        'termination_date.date_format'  =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
-        'expected_checkin.date_format'  =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
-        'start_date.date_format'        =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
-        'end_date.date_format'          =>  ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'purchase_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'last_audit_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD hh:mm:ss format',
+        'expiration_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'termination_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'expected_checkin.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'start_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
+        'end_date.date_format' => ':attribute måste vara ett giltigt datum i YYYY-MM-DD format',
         'invalid_value_in_field' => 'Ogiltigt värde i detta fält',
 
         'ldap_username_field' => [
-            'not_in' =>         '<code>sAMAccountName</code> (blandade gemener och versaler) kommer sannolikt inte att fungera. Du bör använda <code>samaccountname</code> (gemener) istället.'
+            'not_in' => '<code>sAMAccountName</code> (blandade gemener och versaler) kommer sannolikt inte att fungera. Du bör använda <code>samaccountname</code> (gemener) istället.',
         ],
         'ldap_auth_filter_query' => ['not_in' => '<code>uid=samaccountname</code> är förmodligen inte ett giltigt aut-filter. Du vill förmodligen ha <code>uid=</code> '],
         'ldap_filter' => ['regex' => 'Detta värde bör sannolikt inte vara inom parantes.'],
 
-        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
@@ -230,7 +235,10 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'serials.*' => 'Serienummer',
+        'asset_tags.*' => 'Tillgångstagg',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -244,6 +252,5 @@ return [
         'required' => 'Detta fält är obligatoriskt',
         'email' => 'Vänligen ange en giltig e-postadress',
     ],
-
 
 ];

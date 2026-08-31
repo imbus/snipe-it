@@ -14,10 +14,76 @@ use Tests\TestCase;
 
 class AccessoryAcceptanceTest extends TestCase
 {
+    public function test_can_accept_accessory_checkout()
+    {
+        $assignee = User::factory()->create();
+        $accessory = Accessory::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->for($assignee, 'assignedTo')
+            ->for($accessory, 'checkoutable')
+            ->create(['qty' => 2]);
+
+        $this->actingAs($assignee)
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
+                'asset_acceptance' => 'accepted',
+                'note' => 'A note here',
+            ])
+            ->assertRedirect();
+
+        $this->assertNotNull($checkoutAcceptance->refresh()->accepted_at);
+        $this->assertEquals('A note here', $checkoutAcceptance->note);
+
+        $assignee->accessories->contains($accessory);
+
+        $this->assertDatabaseHas('action_logs', [
+            'action_type' => 'accepted',
+            'target_id' => $assignee->id,
+            'target_type' => User::class,
+            'item_id' => $accessory->id,
+            'item_type' => Accessory::class,
+            'quantity' => 2,
+        ]);
+    }
+
+    public function test_can_decline_accessory_checkout()
+    {
+        $assignee = User::factory()->create();
+        $accessory = Accessory::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->for($assignee, 'assignedTo')
+            ->for($accessory, 'checkoutable')
+            ->create(['qty' => 2]);
+
+        $this->actingAs($assignee)
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
+                'asset_acceptance' => 'declined',
+                'note' => 'A note here',
+            ])
+            ->assertRedirect();
+
+        $this->assertNotNull($checkoutAcceptance->refresh()->declined_at);
+        $this->assertEquals('A note here', $checkoutAcceptance->note);
+
+        $assignee->accessories->doesntContain($accessory);
+
+        $this->assertDatabaseHas('action_logs', [
+            'action_type' => 'declined',
+            'target_id' => $assignee->id,
+            'target_type' => User::class,
+            'item_id' => $accessory->id,
+            'item_type' => Accessory::class,
+            'quantity' => 2,
+        ]);
+    }
+
     /**
      * This can be absorbed into a bigger test
      */
-    public function testUsersNameIsIncludedInAccessoryAcceptedNotification()
+    public function test_users_name_is_included_in_accessory_accepted_notification()
     {
         Notification::fake();
 
@@ -50,7 +116,7 @@ class AccessoryAcceptanceTest extends TestCase
     /**
      * This can be absorbed into a bigger test
      */
-    public function testUsersNameIsIncludedInAccessoryDeclinedNotification()
+    public function test_users_name_is_included_in_accessory_declined_notification()
     {
         Notification::fake();
 
@@ -80,7 +146,7 @@ class AccessoryAcceptanceTest extends TestCase
         );
     }
 
-    public function testUserIsNotAbleToAcceptAnAssetAssignedToADifferentUser()
+    public function test_user_is_not_able_to_accept_an_asset_assigned_to_a_different_user()
     {
         Notification::fake();
 
@@ -139,5 +205,34 @@ class AccessoryAcceptanceTest extends TestCase
             ]);
 
         $this->assertEquals($originalAccessoryCheckoutCount - 3, AccessoryCheckout::count());
+    }
+
+    public function test_admin_can_complete_sign_in_place_accessory_acceptance_and_is_redirected_to_selected_destination()
+    {
+        $assignee = User::factory()->create();
+        $admin = User::factory()->admin()->create();
+        $accessory = Accessory::factory()->create();
+
+        $checkoutAcceptance = CheckoutAcceptance::factory()
+            ->pending()
+            ->for($assignee, 'assignedTo')
+            ->for($accessory, 'checkoutable')
+            ->create();
+
+        $this->actingAs($admin)
+            ->withSession([
+                'sign_in_place_acceptance_id' => $checkoutAcceptance->id,
+                'sign_in_place_item_id' => $accessory->id,
+                'sign_in_place_resource_type' => 'Accessories',
+                'redirect_option' => 'target',
+                'checkout_to_type' => 'user',
+            ])
+            ->post(route('account.store-acceptance', $checkoutAcceptance), [
+                'asset_acceptance' => 'accepted',
+                'note' => 'signed in person',
+            ])
+            ->assertRedirect(route('users.show', $assignee));
+
+        $this->assertNotNull($checkoutAcceptance->refresh()->accepted_at);
     }
 }

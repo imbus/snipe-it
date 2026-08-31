@@ -10,7 +10,9 @@ use App\Models\Traits\Searchable;
 use App\Presenters\AssetModelPresenter;
 use App\Presenters\Presentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Watson\Validating\ValidatingTrait;
@@ -24,10 +26,10 @@ use Watson\Validating\ValidatingTrait;
 class AssetModel extends SnipeModel
 {
     use HasFactory;
-    use SoftDeletes;
-    use Loggable, Requestable, Presentable;
-    use TwoColumnUniqueUndeletedTrait;
     use HasUploads;
+    use Loggable, Presentable, Requestable;
+    use SoftDeletes;
+    use TwoColumnUniqueUndeletedTrait;
 
     /**
      * Whether the model should inject its identifier to the unique
@@ -36,25 +38,24 @@ class AssetModel extends SnipeModel
      *
      * @var bool
      */
-
     protected $injectUniqueIdentifier = true;
+
     use ValidatingTrait;
+
     protected $table = 'models';
+
     protected $presenter = AssetModelPresenter::class;
 
     // Declare the rules for the model validation
 
-
     protected $rules = [
-        'name'              => 'string|required|min:1|max:255|two_column_unique_undeleted:model_number',
-        'model_number'      => 'string|max:255|nullable|two_column_unique_undeleted:name',
-        'min_amt'           => 'integer|min:0|nullable',
-        'category_id'       => 'required|integer|exists:categories,id',
-        'manufacturer_id'   => 'integer|exists:manufacturers,id|nullable',
-        'eol'               => 'integer:min:0|max:240|nullable',
+        'name' => 'string|required|min:1|max:255|two_column_unique_undeleted:model_number',
+        'model_number' => 'string|max:255|nullable|two_column_unique_undeleted:name',
+        'min_amt' => 'integer|min:0|nullable',
+        'category_id' => 'required|integer|exists:categories,id',
+        'manufacturer_id' => 'integer|exists:manufacturers,id|nullable',
+        'eol' => 'integer:min:0|max:240|nullable',
     ];
-
-
 
     /**
      * The attributes that are mass assignable.
@@ -73,7 +74,7 @@ class AssetModel extends SnipeModel
         'name',
         'notes',
         'requestable',
-        'require_serial'
+        'require_serial',
     ];
 
     use Searchable;
@@ -84,10 +85,12 @@ class AssetModel extends SnipeModel
      * @var array
      */
     protected $searchableAttributes = [
-        'name',
+        'created_at',
+        'eol',
+        'min_amt',
         'model_number',
+        'name',
         'notes',
-        'eol'
     ];
 
     /**
@@ -97,8 +100,22 @@ class AssetModel extends SnipeModel
      */
     protected $searchableRelations = [
         'depreciation' => ['name'],
-        'category'     => ['name'],
+        'category' => ['name'],
         'manufacturer' => ['name'],
+        'fieldset' => ['name'],
+        'adminuser' => ['first_name', 'last_name', 'display_name'],
+    ];
+
+    /**
+     * Computed aliases (withCount/withSum) that can be searched via TextSearch filters.
+     *
+     * @var array
+     */
+    protected $searchableCounts = [
+        'assets_count',
+        'remaining',
+        'assets_assigned_count',
+        'assets_archived_count',
     ];
 
     protected static function booted(): void
@@ -116,93 +133,158 @@ class AssetModel extends SnipeModel
      * Establishes the model -> assets relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function assets()
     {
-        return $this->hasMany(\App\Models\Asset::class, 'model_id');
+        return $this->hasMany(Asset::class, 'model_id');
     }
-
 
     public function availableAssets()
     {
-        return $this->hasMany(\App\Models\Asset::class, 'model_id')->RTD();
+        return $this->hasMany(Asset::class, 'model_id')->RTD();
     }
 
     public function assignedAssets()
     {
-        return $this->hasMany(\App\Models\Asset::class, 'model_id')->Deployed();
+        return $this->hasMany(Asset::class, 'model_id')->Deployed();
+    }
+
+    /**
+     * How many distinct Orders this asset model has appeared on across
+     * all of its Asset instances. Since each Asset is 1:1 with a
+     * transaction via AssetObserver::created, this is the count of
+     * distinct order_ids on order_items linked to any of this model's
+     * assets. Useful for the info-panel "how many times has this model
+     * been ordered" hint.
+     */
+    public function ordersCount(): int
+    {
+        // Purchases only (positive qty) — see HasOrders::ordersCount for
+        // the rationale on filtering out corrections/consumption events.
+        return (int) OrderItem::query()
+            ->where('item_type', Asset::class)
+            ->whereIn('item_id', $this->assets()->select('id'))
+            ->where('qty', '>', 0)
+            ->distinct()
+            ->count('order_id');
     }
 
     public function archivedAssets()
     {
-        return $this->hasMany(\App\Models\Asset::class, 'model_id')->Archived();
+        return $this->hasMany(Asset::class, 'model_id')->Archived();
+    }
+
+    public function percentRemaining()
+    {
+        // Prefer the pre-loaded withCount attributes — Api\AssetModelsController
+        // ::index already eager-loads these as `remaining` (available count)
+        // and `assets_count` (total) via correlated subqueries on the parent
+        // models SELECT. Reading them here avoids re-running the same counts
+        // as N+1 queries per model in the transformer loop. Read straight off
+        // getAttributes() rather than via __get so we don't accidentally
+        // trigger a relation load when the attribute isn't there.
+        // Cast to int at read time: PDO with MySQL default emulated prepares
+        // returns COUNT() values as string, and Eloquent doesn't auto-cast
+        // withCount aliases (no $casts entry for `remaining` / `assets_count`).
+        // A string "0" then slips past a strict === 0 guard AND — because PHP
+        // 8's arithmetic operators auto-convert numeric strings — still hits
+        // DivisionByZeroError at the ratio below.
+        $raw = $this->getAttributes();
+        $available = (int) ($raw['remaining'] ?? $this->availableAssets()->count());
+        if ($available === 0) {
+            return 0;
+        }
+
+        // Also guard the divisor. In principle available > 0 implies
+        // total > 0 (available is a subset of total via the RTD scope), but
+        // a data anomaly — an asset counted by availableAssets but not by
+        // assets, or a race between the two correlated withCount subqueries
+        // — has been observed in production. Return 0 rather than throw.
+        $total = (int) ($raw['assets_count'] ?? $this->assets()->count());
+        if ($total === 0) {
+            return 0;
+        }
+
+        return $available / $total * 100;
     }
 
     /**
      * Establishes the model -> category relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function category()
     {
-        return $this->belongsTo(\App\Models\Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     /**
      * Establishes the model -> depreciation relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function depreciation()
     {
-        return $this->belongsTo(\App\Models\Depreciation::class, 'depreciation_id');
+        return $this->belongsTo(Depreciation::class, 'depreciation_id');
     }
 
     /**
      * Establishes the model -> manufacturer relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function manufacturer()
     {
-        return $this->belongsTo(\App\Models\Manufacturer::class, 'manufacturer_id');
+        return $this->belongsTo(Manufacturer::class, 'manufacturer_id');
     }
 
     /**
      * Establishes the model -> fieldset relationship
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v2.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function fieldset()
     {
-        return $this->belongsTo(\App\Models\CustomFieldset::class, 'fieldset_id');
+        return $this->belongsTo(CustomFieldset::class, 'fieldset_id');
     }
-   
+
     public function customFields()
     {
-        return $this->fieldset()->first()->fields(); 
+        return $this->fieldset()->first()->fields();
     }
 
     /**
      * Establishes the model -> custom field default values relationship
      *
      * @author hannah tinkler
+     *
      * @since  [v4.3]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
     public function defaultValues()
     {
-        return $this->belongsToMany(\App\Models\CustomField::class, 'models_custom_fields')->withPivot('default_value');
+        return $this->belongsToMany(CustomField::class, 'models_custom_fields')->withPivot('default_value');
     }
 
     /**
@@ -211,10 +293,12 @@ class AssetModel extends SnipeModel
      * @todo this should probably be moved
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since  [v2.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     *
+     * @return Relation
      */
-    public function getImageUrl()
+    public function getImageUrl($path = null)
     {
         if ($this->image) {
             return Storage::disk('public')->url(app('models_upload_path').$this->image);
@@ -223,34 +307,21 @@ class AssetModel extends SnipeModel
         return false;
     }
 
-
     /**
      * Checks if the model is deletable
      *
      * @author A. Gianotto <snipe@snipe.net>
+     *
      * @since  [v6.3.4]
+     *
      * @return bool
      */
     public function isDeletable()
     {
         return Gate::allows('delete', $this)
-            && ($this->assets_count == 0)
+            && ((int) ($this->assets_count ?? $this->assets()->count()) === 0)
             && ($this->deleted_at == '');
     }
-
-
-    /**
-     * Get user who created the item
-     *
-     * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @since  [v1.0]
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function adminuser()
-    {
-        return $this->belongsTo(\App\Models\User::class, 'created_by')->withTrashed();
-    }
-
 
     /**
      * -----------------------------------------------
@@ -259,65 +330,14 @@ class AssetModel extends SnipeModel
      **/
 
     /**
-     * Query builder scope to search on text filters for complex Bootstrap Tables API
-     *
-     * @param \Illuminate\Database\Query\Builder $query  Query builder instance
-     * @param text                               $filter JSON array of search keys and terms
-     *
-     * @return \Illuminate\Database\Query\Builder          Modified query builder
-     */
-    public function scopeByFilter($query, $filter)
-    {
-        return $query->where(
-            function ($query) use ($filter) {
-                foreach ($filter as $fieldname => $search_val) {
-
-                    if ($fieldname == 'name') {
-                        $query->where('models.name', 'LIKE', '%' . $search_val . '%');
-                    }
-
-                    if ($fieldname == 'notes') {
-                        $query->where('models.notes', 'LIKE', '%' . $search_val . '%');
-                    }
-
-                    if ($fieldname == 'model_number') {
-                        $query->where('models.model_number', 'LIKE', '%' . $search_val . '%');
-                    }
-
-                    if ($fieldname == 'category') {
-                        $query->whereHas(
-                            'category', function ($query) use ($search_val) {
-                            $query->where('categories.name', 'LIKE', '%'.$search_val.'%');
-                        }
-                        );
-                    }
-
-                    if ($fieldname == 'manufacturer') {
-                        $query->whereHas(
-                            'manufacturer', function ($query) use ($search_val) {
-                            $query->where('manufacturers.name', 'LIKE', '%'.$search_val.'%');
-                        }
-                        );
-                    }
-
-
-
-                }
-
-
-            }
-        );
-    }
-
-    /**
      * scopeInCategory
      * Get all models that are in the array of category ids
      *
-     * @param $query
-     * @param array $categoryIdListing
      *
-     * @return  mixed
+     * @return mixed
+     *
      * @author  Vincent Sposato <vincent.sposato@gmail.com>
+     *
      * @version v1.0
      */
     public function scopeInCategory($query, array $categoryIdListing)
@@ -329,10 +349,11 @@ class AssetModel extends SnipeModel
      * scopeRequestable
      * Get all models that are requestable by a user.
      *
-     * @param $query
      *
-     * @return  $query
+     * @return $query
+     *
      * @author  Daniel Meltzer <dmeltzer.devel@gmail.com>
+     *
      * @version v3.5
      */
     public function scopeRequestableModels($query)
@@ -343,10 +364,9 @@ class AssetModel extends SnipeModel
     /**
      * Query builder scope to search on text, including catgeory and manufacturer name
      *
-     * @param Illuminate\Database\Query\Builder $query  Query builder instance
-     * @param text                              $search Search term
-     *
-     * @return Illuminate\Database\Query\Builder          Modified query builder
+     * @param  Illuminate\Database\Query\Builder  $query  Query builder instance
+     * @param  text  $search  Search term
+     * @return Illuminate\Database\Query\Builder Modified query builder
      */
     public function scopeSearchByManufacturerOrCat($query, $search)
     {
@@ -375,10 +395,9 @@ class AssetModel extends SnipeModel
     /**
      * Query builder scope to order on manufacturer
      *
-     * @param \Illuminate\Database\Query\Builder $query Query builder instance
-     * @param text                               $order Order
-     *
-     * @return \Illuminate\Database\Query\Builder          Modified query builder
+     * @param  Builder  $query  Query builder instance
+     * @param  text  $order  Order
+     * @return Builder Modified query builder
      */
     public function scopeOrderManufacturer($query, $order)
     {
@@ -388,10 +407,9 @@ class AssetModel extends SnipeModel
     /**
      * Query builder scope to order on category name
      *
-     * @param \Illuminate\Database\Query\Builder $query Query builder instance
-     * @param text                               $order Order
-     *
-     * @return \Illuminate\Database\Query\Builder          Modified query builder
+     * @param  Builder  $query  Query builder instance
+     * @param  text  $order  Order
+     * @return Builder Modified query builder
      */
     public function scopeOrderCategory($query, $order)
     {
@@ -411,4 +429,28 @@ class AssetModel extends SnipeModel
         return $query->leftJoin('users as admin_sort', 'models.created_by', '=', 'admin_sort.id')->select('models.*')->orderBy('admin_sort.first_name', $order)->orderBy('admin_sort.last_name', $order);
     }
 
+    /**
+     * Query builder scope to sort by the calculated `% remaining` column.
+     *
+     * `% remaining` is (available / total) * 100 — see percentRemaining().
+     * The caller (Api\AssetModelsController::index) already adds the
+     * `remaining` and `assets_count` withCount aliases before applying
+     * this scope, so we reference them directly in ORDER BY. Guarded
+     * against division by zero for models with no assets. Uses
+     * orderByRaw because Laravel's query builder has no arithmetic API
+     * for ORDER BY expressions.
+     *
+     * PostgreSQL note: this expression references SELECT-list aliases
+     * inside a compound ORDER BY expression, which PostgreSQL rejects
+     * per SQL standard. Snipe-IT officially supports MySQL/MariaDB and
+     * tests on SQLite (both allow this); moving to PostgreSQL would
+     * require inlining the subqueries or wrapping the query in an
+     * outer SELECT.
+     */
+    public function scopeOrderPercentRemaining($query, $order)
+    {
+        $direction = strtolower($order) === 'asc' ? 'asc' : 'desc';
+
+        return $query->orderByRaw('CASE WHEN assets_count = 0 THEN 0 ELSE (remaining * 100.0 / assets_count) END '.$direction);
+    }
 }
