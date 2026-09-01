@@ -3,30 +3,35 @@
 return [
 
     'update' => [
-        'error'                 => 'Ett fel har uppstått vid uppdatering. ',
-        'success'               => 'Inställningarna uppdaterades.',
+        'error' => 'Ett fel har uppstått vid uppdatering. ',
+        'success' => 'Inställningarna uppdaterades.',
     ],
     'backup' => [
-        'delete_confirm'        => 'Är du säker på att du vill ta bort den här säkerhetskopian? Den här åtgärden kan inte ångras. ',
-        'file_deleted'          => 'Säkerhetskopian har tagits bort. ',
-        'generated'             => 'En ny säkerhetskopia skapades.',
-        'file_not_found'        => 'Säkerhetskopian kunde inte hittas på servern.',
-        'restore_warning'       => 'Ja, återställ den. Jag är medveten att detta kommer att skriva över befintlig data som redan finns i databasen. Detta kommer också att logga ut alla befintliga användare (inklusive dig själv).',
-        'restore_confirm'       => 'Är du säker på att du vill återställa din databas från :filename?'
+        'delete_confirm' => 'Är du säker på att du vill ta bort den här säkerhetskopian? Den här åtgärden kan inte ångras. ',
+        'file_deleted' => 'Säkerhetskopian har tagits bort. ',
+        'generated' => 'En ny säkerhetskopia skapades.',
+        'file_not_found' => 'Säkerhetskopian kunde inte hittas på servern.',
+        'restore_warning' => 'Ja, återställ den. Jag är medveten att detta kommer att skriva över befintlig data som redan finns i databasen. Detta kommer också att logga ut alla befintliga användare (inklusive dig själv).',
+        'restore_confirm' => 'Är du säker på att du vill återställa din databas från :filename?',
+        'delete_disabled_help' => 'Deleting backups is disabled. Contact your administrator if you wish to enable deleting backups.',
     ],
     'restore' => [
-        'success'               => 'Din säkerhetskopia har återställts. Vänligen logga in igen.'
+        'success' => 'Din säkerhetskopia har återställts. Vänligen logga in igen.',
+        'archive_invalid' => 'The selected backup file (:filename) is not a valid zip archive. Restore aborted before touching the database.',
+        'zip_extension_missing' => 'PHP zip extension is not loaded on this server. Cannot validate the backup archive, and restore has been aborted to prevent data loss. Ask your server administrator to install ext-zip.',
+        'pre_backup_failed' => 'Could not create a pre-restore safety backup. Restore aborted so that the existing database is not destroyed without a recovery path.',
+        'failed_with_backup' => 'Restore failed. The pre-existing database was wiped as part of the restore attempt, but a pre-restore backup was saved to :backup and can be used to recover.',
     ],
     'purge' => [
-        'error'     => 'Ett fel har uppstått vid radering. ',
-        'validation_failed'     => 'Raderingsbekräftelsekoden är felaktig. Vänligen skriv ordet "DELETE" i bekräftelserutan.',
-        'success'               => 'Tidigare raderade poster har raderats för gott.',
+        'error' => 'Ett fel har uppstått vid radering. ',
+        'validation_failed' => 'Raderingsbekräftelsekoden är felaktig. Vänligen skriv ordet "DELETE" i bekräftelserutan.',
+        'success' => 'Tidigare raderade poster har raderats för gott.',
     ],
     'mail' => [
         'sending' => 'Skickar testmeddelande...',
         'success' => 'E-post skickat!',
         'error' => 'E-postmeddelandet kunde inte skickas.',
-        'additional' => 'Inga ytterligare felmeddelanden. Kontrollera dina e-postinställningar och din app-logg.'
+        'additional' => 'Inga ytterligare felmeddelanden. Kontrollera dina e-postinställningar och din app-logg.',
     ],
     'ldap' => [
         'testing' => 'Testar LDAP-anslutning, Bindning och Query...',
@@ -34,11 +39,11 @@ return [
         'error' => 'Något gick snett :(',
         'sync_success' => 'Ett urval av 10 användare som returneras från LDAP-servern baserat på dina inställningar:',
         'testing_authentication' => 'Testar LDAP-autentisering...',
-        'authentication_success' => 'Användaren har autentiserats via LDAP!'
+        'authentication_success' => 'Användaren har autentiserats via LDAP!',
     ],
     'labels' => [
         'null_template' => 'Label template not found. Please select a template.',
-        ],
+    ],
     'webhook' => [
         'sending' => 'Skickar :app testmeddelande...',
         'success' => 'Din :webhook_name-integration fungerar!',
@@ -55,5 +60,22 @@ return [
     'location_scoping' => [
         'not_saved' => 'Your settings were not saved.',
         'mismatch' => 'There is 1 item in the database that need your attention before you can enable location scoping.|There are :count items in the database that need your attention before you can enable location scoping.',
+    ],
+    'oauth' => [
+        'token_revoked' => 'Personal access token revoked successfully.',
+        'token_unrevoked' => 'Personal access token reinstated successfully.',
+        'token_not_found' => 'That personal access token could not be found.',
+        'token_revoke_error' => 'An error occurred while revoking the token.',
+        'token_unrevoke_error' => 'An error occurred while reinstating the token.',
+        'client_created' => 'OAuth client created successfully.',
+        'client_updated' => 'OAuth client updated successfully.',
+        'client_deleted' => 'OAuth client deleted successfully.',
+        'client_revoked' => 'OAuth client revoked successfully.',
+        'client_unrevoked' => 'OAuth client reinstated successfully.',
+        'client_not_found' => 'That OAuth client could not be found.',
+        'token_deleted' => 'Token revoked successfully.',
+        'client_delete_denied' => 'You are not authorized to delete this client.',
+        'client_edit_denied' => 'You are not authorized to edit this client.',
+        'token_delete_denied' => 'You are not authorized to revoke this token.',
     ],
 ];

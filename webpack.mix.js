@@ -8,6 +8,14 @@ mix
     processCssUrls: false,
     processFontUrls: true,
     clearConsole: false,
+    // Turn off postcss-calc (bundled into cssnano-preset-default). It
+    // chokes on CSS Level 5 relative color syntax such as
+    // `hsl(from var(--foo) h s calc(l - 10))`, misreading the color-channel
+    // keyword `l` as an undefined variable and emitting a "Lexical error"
+    // warning per calc() expression.
+    cssNano: {
+        calc: false,
+    },
   })
   .less("./node_modules/admin-lte/build/less/AdminLTE.less", "css/build")
   .less("./resources/assets/less/app.less", "css/build")
@@ -18,7 +26,7 @@ mix
       "./node_modules/bootstrap/dist/css/bootstrap.css",
       "./node_modules/@fortawesome/fontawesome-free/css/all.css",
       "./public/css/build/AdminLTE.css",
-      "./node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.standalone.css",
+      "./node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css",
       "./node_modules/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css",
       "./node_modules/blueimp-file-upload/css/jquery.fileupload.css",
       "./node_modules/blueimp-file-upload/css/jquery.fileupload-ui.css",
@@ -51,42 +59,37 @@ mix
  * Copy, minify and version the required files for the advanced search (advanced-search, floating buttons, modal)
  */
 mix
-  .copy("./resources/assets/css/components/advancedSearch/modal.css", "./public/css/dist")
-  .minify("./public/css/dist/modal.css");
-
-mix.combine([
-  "./resources/assets/css/components/advancedSearch/advanced-search.css",
-  "./resources/assets/css/components/advancedSearch/filterInputs.css",
-  "./resources/assets/css/components/advancedSearch/floating-buttons.css",
-], "./public/css/dist/advanced-search.css")
+  .copy("./resources/assets/css/components/advancedSearch/floating-buttons.css", "./public/css/dist")
+  .minify("./public/css/dist/floating-buttons.css");
+  mix
+  .copy("./resources/assets/css/components/advancedSearch/advanced-search.css", "./public/css/dist")
   .minify("./public/css/dist/advanced-search.css");
-
-// Keep advanced-search-index.css as a separate build artifact (used in some views)
-mix
+  mix
   .copy("./resources/assets/css/components/advancedSearch/advanced-search-index.css", "./public/css/dist")
   .minify("./public/css/dist/advanced-search-index.css");
-
-mix
-  .copy("resources/assets/js/advancedSearch/floating-buttons.js", "./public/js/dist")
-  .minify("./public/js/dist/floating-buttons.js");
-
-mix
+  mix
+  .copy("./resources/assets/css/components/advancedSearch/modal.css", "./public/css/dist")
+  .minify("./public/css/dist/modal.css");
+  mix
+  .copy("./resources/assets/css/components/advancedSearch/filterInputs.css", "./public/css/dist")
+  .minify("./public/css/dist/filterInputs.css");
+  mix
+    .copy("resources/assets/js/advancedSearch/floating-buttons.js", "./public/js/dist")
+    .minify("./public/js/dist/floating-buttons.js"); 
+  mix
   .copy("resources/assets/js/advancedSearch/apiService.js", "./public/js/dist")
   .minify("./public/js/dist/apiService.js");
-
-mix
+  mix
   .copy("resources/assets/js/advancedSearch/filterInputs.js", "./public/js/dist")
   .minify("./public/js/dist/filterInputs.js");
-
-mix
+  mix
   .copy("resources/assets/js/advancedSearch/filterFormManager.js", "./public/js/dist")
   .minify("./public/js/dist/filterFormManager.js");
-
-mix
+  mix
   .copy("resources/assets/js/advancedSearch/filterUiController.js", "./public/js/dist")
   .minify("./public/js/dist/filterUiController.js");
 
-mix
+  mix
   .babel("resources/assets/js/advancedSearch/search-inputs.js", "./public/js/dist/search-inputs.js")
   .minify("./public/js/dist/search-inputs.js");
   mix
@@ -157,23 +160,28 @@ mix
  */
 mix
   .combine(
-    [
-      "./resources/assets/js/dragtable.js",
-      './node_modules/bootstrap-table/dist/bootstrap-table.js',
-      './node_modules/bootstrap-table/dist/extensions/mobile/bootstrap-table-mobile.js',
-      './node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.js',
-      './node_modules/bootstrap-table/dist/extensions/cookie/bootstrap-table-cookie.js',
-      './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.js',
-      './node_modules/bootstrap-table/dist/extensions/addrbar/bootstrap-table-addrbar.js',
-      './node_modules/bootstrap-table/dist/extensions/print/bootstrap-table-print.min.js',
-      './node_modules/bootstrap-table/dist/extensions/custom-view/bootstrap-table-custom-view.js',
-      './resources/assets/js/extensions/jquery.base64.js',
-      './node_modules/tableexport.jquery.plugin/tableExport.min.js',
-      './node_modules/tableexport.jquery.plugin/libs/jsPDF/jspdf.umd.min.js',
-      './resources/assets/js/FileSaver.min.js',
-      './node_modules/xlsx/dist/xlsx.core.min.js',
-      './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.js',
-      './node_modules/bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js'
-    ],
-    'public/js/dist/bootstrap-table.js'
-  ).version();
+        [
+            "./resources/assets/js/dragtable.js",
+            './node_modules/bootstrap-table/dist/bootstrap-table.js',
+            './node_modules/bootstrap-table/dist/extensions/mobile/bootstrap-table-mobile.js',
+            './node_modules/bootstrap-table/dist/extensions/export/bootstrap-table-export.js',
+            './node_modules/bootstrap-table/dist/extensions/cookie/bootstrap-table-cookie.js',
+            './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.js',
+            './node_modules/bootstrap-table/dist/extensions/addrbar/bootstrap-table-addrbar.js',
+            './node_modules/bootstrap-table/dist/extensions/print/bootstrap-table-print.min.js',
+            './node_modules/bootstrap-table/dist/extensions/custom-view/bootstrap-table-custom-view.js',
+            './resources/assets/js/extensions/jquery.base64.js',
+            './node_modules/tableexport.jquery.plugin/tableExport.min.js',
+            './node_modules/tableexport.jquery.plugin/libs/jsPDF/jspdf.umd.min.js',
+            // DejaVuSans (regular + bold) registered into jsPDF's VFS so PDF
+            // exports render Cyrillic / Greek / Hebrew / Arabic / etc. Must be
+            // included AFTER jspdf.umd.min.js — the loader reaches into
+            // window.jspdf.jsPDF.API.events to hook the font registration.
+            './resources/assets/js/jspdf-dejavu-fonts.js',
+            './resources/assets/js/FileSaver.min.js',
+            './node_modules/xlsx/dist/xlsx.core.min.js',
+            './node_modules/bootstrap-table/dist/extensions/sticky-header/bootstrap-table-sticky-header.js',
+            './node_modules/bootstrap-table/dist/extensions/toolbar/bootstrap-table-toolbar.js'
+        ],
+        'public/js/dist/bootstrap-table.js'
+ ).version();

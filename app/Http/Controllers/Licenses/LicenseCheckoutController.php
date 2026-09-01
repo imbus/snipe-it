@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Licenses;
 
+use App\Actions\Acceptances\CreateCheckoutAcceptanceAction;
 use App\Events\CheckoutableCheckedOut;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LicenseCheckoutRequest;
-use App\Models\Accessory;
 use App\Models\Asset;
+use App\Models\CheckoutAcceptance;
 use App\Models\License;
 use App\Models\LicenseSeat;
+use App\Models\Setting;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class LicenseCheckoutController extends Controller
@@ -23,10 +29,13 @@ class LicenseCheckoutController extends Controller
      * only the seats associated with them.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v1.0]
-     * @param $id
-     * @return \Illuminate\Contracts\View\View |\Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @param  $id
+     * @return View |RedirectResponse
+     *
+     * @throws AuthorizationException
      */
     public function create(License $license)
     {
@@ -63,18 +72,18 @@ class LicenseCheckoutController extends Controller
      * Validates and stores the license checkout action.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @since [v1.0]
-     * @param LicenseCheckoutRequest $request
-     * @param $licenseId
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return RedirectResponse
+     *
+     * @throws AuthorizationException
      */
     public function store(LicenseCheckoutRequest $request, $licenseId, $seatId = null)
     {
         if (! $license = License::find($licenseId)) {
             return redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.not_found'));
         }
-
 
         $this->authorize('checkout', $license);
 
@@ -88,51 +97,111 @@ class LicenseCheckoutController extends Controller
             return redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.license_is_inactive'));
         }
 
-        $licenseSeat = $this->findLicenseSeatToCheckout($license, $seatId);
-        $licenseSeat->created_by = auth()->id();
-        $licenseSeat->notes = $request->input('notes');
+        if (Setting::getSettings()->full_multiple_companies_support == '1') {
+            if ($request->filled('asset_id')) {
+                $fmcsTarget = Asset::find($request->input('asset_id'));
+                if ($fmcsTarget && ! $license->canCheckoutTo($fmcsTarget)) {
+                    return redirect()->route('licenses.index')->with('error', trans('general.error_checkout_company_mismatch', [
+                        'item' => trans('general.license').' "'.$license->name.'"',
+                        'item_company' => $license->company?->name ?? trans('general.unassigned'),
+                        'target' => trans('general.asset').' "'.$fmcsTarget->display_name.'"',
+                    ]));
+                }
+            } elseif ($request->filled('assigned_to')) {
+                $fmcsTarget = User::find($request->input('assigned_to'));
+                if ($fmcsTarget && ! $license->canCheckoutTo($fmcsTarget)) {
+                    return redirect()->route('licenses.index')->with('error', trans('general.error_checkout_company_mismatch', [
+                        'item' => trans('general.license').' "'.$license->name.'"',
+                        'item_company' => $license->company?->name ?? trans('general.unassigned'),
+                        'target' => trans('general.user').' "'.$fmcsTarget->username.'"',
+                    ]));
+                }
+            }
+        }
+
+        $licenseSeat = null;
+        $checkoutTarget = null;
+
+        DB::transaction(function () use ($request, $license, $seatId, &$licenseSeat, &$checkoutTarget): void {
+            $licenseSeat = $this->findLicenseSeatToCheckout($license, $seatId, lock: true);
+            $licenseSeat->created_by = auth()->id();
+            $licenseSeat->notes = $request->input('notes');
+
+            if ($request->filled('asset_id')) {
+                $checkoutTarget = $this->checkoutToAsset($licenseSeat);
+            } elseif ($request->filled('assigned_to')) {
+                $checkoutTarget = $this->checkoutToUser($licenseSeat);
+            }
+        });
 
         if ($request->filled('asset_id')) {
             session()->put(['checkout_to_type' => 'asset']);
-            $checkoutTarget = $this->checkoutToAsset($licenseSeat);
             $request->request->add(['assigned_asset' => $checkoutTarget->id]);
-            session()->put(['redirect_option' => $request->get('redirect_option'), 'checkout_to_type' => 'asset']);
-
+            session()->put([
+                'redirect_option' => $request->input('redirect_option'),
+                'checkout_to_type' => 'asset',
+                'sign_in_place' => $request->boolean('sign_in_place'),
+            ]);
         } elseif ($request->filled('assigned_to')) {
             session()->put(['checkout_to_type' => 'user']);
-            $checkoutTarget = $this->checkoutToUser($licenseSeat);
             $request->request->add(['assigned_user' => $checkoutTarget->id]);
-            session()->put(['redirect_option' => $request->get('redirect_option'), 'checkout_to_type' => 'user']);
+            session()->put([
+                'redirect_option' => $request->input('redirect_option'),
+                'checkout_to_type' => 'user',
+                'sign_in_place' => $request->boolean('sign_in_place'),
+            ]);
         }
 
-
-
         if ($checkoutTarget) {
+
+            // When sign_in_place is requested and the target is a user, redirect to the
+            // acceptance/signature page so the user can sign in person.
+            if ($request->boolean('sign_in_place') && $checkoutTarget instanceof User) {
+                $acceptance = CheckoutAcceptance::where('checkoutable_type', LicenseSeat::class)
+                    ->where('checkoutable_id', $licenseSeat->id)
+                    ->where('assigned_to_id', $checkoutTarget->id)
+                    ->pending()
+                    ->latest()
+                    ->first();
+
+                // If requireAcceptance() is false the listener won't have created one; create it now.
+                if (! $acceptance) {
+                    $acceptance = CreateCheckoutAcceptanceAction::run($licenseSeat, $checkoutTarget);
+                }
+
+                session([
+                    'sign_in_place_acceptance_id' => $acceptance->id,
+                    'sign_in_place_item_id' => $license->id,
+                    'sign_in_place_resource_type' => 'Licenses',
+                ]);
+
+                return redirect()->route('account.accept.item', $acceptance->id)
+                    ->with('success', trans('admin/licenses/message.checkout.success'));
+            }
 
             return Helper::getRedirectOption($request, $license->id, 'Licenses')
                 ->with('success', trans('admin/licenses/message.checkout.success'));
         }
 
-
-
         return redirect()->route('licenses.index')->with('error', trans('Something went wrong handling this checkout.'));
     }
 
-    protected function findLicenseSeatToCheckout($license, $seatId)
+    protected function findLicenseSeatToCheckout($license, $seatId, bool $lock = false)
     {
-        $licenseSeat = LicenseSeat::find($seatId) ?? $license->freeSeat();
+        $licenseSeat = $seatId
+            ? LicenseSeat::where('id', $seatId)->when($lock, fn ($q) => $q->lockForUpdate())->first()
+            : $license->freeSeat(lock: $lock);
 
         if (! $licenseSeat) {
             if ($seatId) {
-                throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.unavailable')));
+                throw new HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.unavailable')));
             }
-            
-            throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.not_enough_seats')));
+
+            throw new HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.not_enough_seats')));
         }
 
-
         if (! $licenseSeat->license->is($license)) {
-            throw new \Illuminate\Http\Exceptions\HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.mismatch')));
+            throw new HttpResponseException(redirect()->route('licenses.index')->with('error', trans('admin/licenses/message.checkout.mismatch')));
         }
 
         return $licenseSeat;
@@ -150,7 +219,8 @@ class LicenseCheckoutController extends Controller
             $licenseSeat->assigned_to = $target->assigned_to;
         }
         if ($licenseSeat->save()) {
-            event(new CheckoutableCheckedOut($licenseSeat, $target, auth()->user(), request('notes')));
+            event(new CheckoutableCheckedOut($licenseSeat, $target, auth()->user(), request('notes'), [], 1, request()->boolean('sign_in_place')));
+
             return $target;
         }
 
@@ -166,7 +236,8 @@ class LicenseCheckoutController extends Controller
         $licenseSeat->assigned_to = request('assigned_to');
 
         if ($licenseSeat->save()) {
-            event(new CheckoutableCheckedOut($licenseSeat, $target, auth()->user(), request('notes')));
+            event(new CheckoutableCheckedOut($licenseSeat, $target, auth()->user(), request('notes'), [], 1, request()->boolean('sign_in_place')));
+
             return $target;
         }
 
@@ -177,24 +248,23 @@ class LicenseCheckoutController extends Controller
      * Bulk checkin all license seats
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
+     *
      * @see LicenseCheckinController::create() method that provides the form view
      * @since [v6.1.1]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return RedirectResponse
+     *
+     * @throws AuthorizationException
      */
-
-    public function bulkCheckout($licenseId) {
+    public function bulkCheckout($licenseId)
+    {
 
         Log::debug('Checking out '.$licenseId.' via bulk');
         $license = License::findOrFail($licenseId);
-        $this->authorize('checkin', $license);
-        $avail_count = $license->getAvailSeatsCountAttribute();
+        $this->authorize('checkout', $license);
 
-        $users = User::whereNull('deleted_at')->where('autoassign_licenses', '=', 1)->with('licenses')->get();
-        Log::debug($avail_count.' will be assigned');
-
-        if ($users->count() > $avail_count) {
-            Log::debug('You do not have enough free seats to complete this task, so we will check out as many as we can. ');
+        if ($license->isInactive()) {
+            return redirect()->back()->with('error', trans('admin/licenses/message.checkout.license_is_inactive'));
         }
 
         // If the license is valid, check that there is an available seat
@@ -202,6 +272,25 @@ class LicenseCheckoutController extends Controller
             return redirect()->back()->with('error', trans('admin/licenses/general.bulk.checkout_all.error_no_seats'));
         }
 
+        $avail_count = $license->getAvailSeatsCountAttribute();
+
+        $usersQuery = User::whereNull('deleted_at')->where('autoassign_licenses', '=', 1)->with('licenses');
+        if (Setting::getSettings()->full_multiple_companies_support && $license->company_id) {
+            // Filter to users pivoted to the license's company. The scalar
+            // users.company_id column is deprecated; membership lives in the
+            // company_user pivot only.
+            $usersQuery->whereIn('users.id', function ($sub) use ($license) {
+                $sub->select('user_id')
+                    ->from('company_user')
+                    ->where('company_id', $license->company_id);
+            });
+        }
+        $users = $usersQuery->get();
+        Log::debug($avail_count.' will be assigned');
+
+        if ($users->count() > $avail_count) {
+            Log::debug('You do not have enough free seats to complete this task, so we will check out as many as we can. ');
+        }
 
         $assigned_count = 0;
 
@@ -210,32 +299,52 @@ class LicenseCheckoutController extends Controller
             // Check to make sure this user doesn't already have this license checked out to them
             if ($user->licenses->where('id', '=', $licenseId)->count()) {
                 Log::debug($user->username.' already has this license checked out to them. Skipping... ');
+
                 continue;
             }
 
-            $licenseSeat = $license->freeSeat();
-
-            // Update the seat with checkout info
-            $licenseSeat->assigned_to = $user->id;
-
-            if ($licenseSeat->save()) {
+            // Concurrency guard, same shape as Api\LicensesController::checkout.
+            // freeSeat() without $lock=true returns the first-available
+            // LicenseSeat unlocked; two racing bulkCheckout runs on the same
+            // license could each grab the same seat, both call save(), and
+            // both assigned_to writes land (second wins). The visible
+            // assignment is fine but logCheckout below runs twice and the
+            // decrement of $avail_count double-counts. Wrap each iteration
+            // in a transaction with freeSeat(lock: true) so the seat is
+            // pinned to this iteration until the save + log commit.
+            $seatClaimed = DB::transaction(function () use ($license, $user, &$avail_count, &$assigned_count) {
+                $licenseSeat = $license->freeSeat(lock: true);
+                if (! $licenseSeat) {
+                    return false;
+                }
+                $licenseSeat->assigned_to = $user->id;
+                if (! $licenseSeat->save()) {
+                    return false;
+                }
                 $avail_count--;
                 $assigned_count++;
                 $licenseSeat->logCheckout(trans('admin/licenses/general.bulk.checkout_all.log_msg'), $user);
                 Log::debug('License '.$license->name.' seat '.$licenseSeat->id.' checked out to '.$user->username);
+
+                return true;
+            });
+
+            if (! $seatClaimed) {
+                Log::debug('No free seat available for '.$user->username.'. Skipping...');
+
+                continue;
             }
 
-            if ($avail_count ==  0) {
+            if ($avail_count == 0) {
                 return redirect()->back()->with('warning', trans('admin/licenses/general.bulk.checkout_all.warn_not_enough_seats', ['count' => $assigned_count]));
             }
         }
 
-        if ($assigned_count ==  0) {
+        if ($assigned_count == 0) {
             return redirect()->back()->with('warning', trans('admin/licenses/general.bulk.checkout_all.warn_no_avail_users', ['count' => $assigned_count]));
         }
 
-        return redirect()->back()->with('success', trans_choice('admin/licenses/general.bulk.checkout_all.success', 2, ['count' => $assigned_count] ));
-
+        return redirect()->back()->with('success', trans_choice('admin/licenses/general.bulk.checkout_all.success', 2, ['count' => $assigned_count]));
 
     }
 }

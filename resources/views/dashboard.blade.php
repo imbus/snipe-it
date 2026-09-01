@@ -143,13 +143,12 @@
             </div>
         </a>
     </div><!-- ./col -->
-
-</div>
 </div>
 
 @if ($counts['grand_total'] == 0)
 
     <div class="row">
+
         <div class="col-md-12">
             <div class="box box-default">
                 <div class="box-header with-border">
@@ -226,7 +225,6 @@
       <div class="box-body">
         <div class="row">
           <div class="col-md-12">
-            <div class="table-responsive">
 
                 <table
                     data-cookie-id-table="dashActivityReport"
@@ -242,19 +240,15 @@
                     data-url="{{ route('api.activity.index', ['limit' => 25]) }}">
                     <thead>
                     <tr>
-                        <th data-field="icon" data-visible="true" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter"><span  class="sr-only">{{ trans('admin/hardware/table.icon') }}</span></th>
-                        <th class="col-sm-3" data-visible="true" data-field="created_at" data-formatter="dateDisplayFormatter">{{ trans('general.date') }}</th>
-                        <th class="col-sm-2" data-visible="true" data-field="admin" data-formatter="usersLinkObjFormatter">{{ trans('general.created_by') }}</th>
-                        <th class="col-sm-2" data-visible="true" data-field="action_type">{{ trans('general.action') }}</th>
-                        <th class="col-sm-3" data-visible="true" data-field="item" data-formatter="polymorphicItemFormatter">{{ trans('general.item') }}</th>
-                        <th class="col-sm-2" data-visible="true" data-field="target" data-formatter="polymorphicItemFormatter">{{ trans('general.target') }}</th>
+                        <th scope="col" data-field="icon" data-visible="true" style="width: 40px;" class="hidden-xs" data-formatter="iconFormatter"><span  class="sr-only">{{ trans('admin/hardware/table.icon') }}</span></th>
+                        <th scope="col" class="col-sm-3" data-visible="true" data-field="created_at" data-formatter="dateDisplayFormatter">{{ trans('general.date') }}</th>
+                        <th scope="col" class="col-sm-2" data-visible="true" data-field="admin" data-formatter="usersLinkObjFormatter">{{ trans('general.created_by') }}</th>
+                        <th scope="col" class="col-sm-2" data-visible="true" data-field="action_type">{{ trans('general.action') }}</th>
+                        <th scope="col" class="col-sm-3" data-visible="true" data-field="item" data-formatter="polymorphicItemFormatter">{{ trans('general.item') }}</th>
+                        <th scope="col" class="col-sm-2" data-visible="true" data-field="target" data-formatter="polymorphicItemFormatter">{{ trans('general.target') }}</th>
                     </tr>
                     </thead>
                 </table>
-
-
-
-            </div><!-- /.responsive -->
           </div><!-- /.col -->
           <div class="text-center col-md-12" style="padding-top: 10px;">
             <a href="{{ route('reports.activity') }}" class="btn btn-theme btn-sm" style="width: 100%">{{ trans('general.viewall') }}</a>
@@ -309,7 +303,6 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="table-responsive">
 							<table
 									data-cookie-id-table="dashCompanySummary"
 									data-height="400"
@@ -324,35 +317,34 @@
 
 								<thead>
 								<tr>
-									<th class="col-sm-3" data-visible="true" data-field="name" data-formatter="companiesLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
-									<th class="col-sm-1" data-visible="true" data-field="users_count" data-sortable="true">
+									<th scope="col" class="col-sm-3" data-visible="true" data-field="name" data-formatter="companiesLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="users_count" data-sortable="true">
                                         <x-icon type="users" />
 										<span class="sr-only">{{ trans('general.people') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
                                         <x-icon type="assets" />
 										<span class="sr-only">{{ trans('general.asset_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
                                         <x-icon type="accessories" />
 										<span class="sr-only">{{ trans('general.accessories_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
                                         <x-icon type="consumables" />
 										<span class="sr-only">{{ trans('general.consumables_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
                                         <x-icon type="components" />
 										<span class="sr-only">{{ trans('general.components_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
                                         <x-icon type="licenses" />
 										<span class="sr-only">{{ trans('general.licenses_count') }}</span>
 									</th>
 								</tr>
 								</thead>
 							</table>
-							</div>
 						</div> <!-- /.col -->
 						<div class="text-center col-md-12" style="padding-top: 10px;">
 							<a href="{{ route('companies.index') }}" class="btn btn-theme btn-sm" style="width: 100%">{{ trans('general.viewall') }}</a>
@@ -378,7 +370,7 @@
 				<div class="box-body">
 					<div class="row">
 						<div class="col-md-12">
-							<div class="table-responsive">
+
 							<table
 									data-cookie-id-table="dashLocationSummary"
 									data-height="400"
@@ -392,17 +384,17 @@
 									data-url="{{ route('api.locations.index', ['sort' => 'assets_count', 'order' => 'asc']) }}">
 								<thead>
 								<tr>
-									<th class="col-sm-3" data-visible="true" data-field="name" data-formatter="locationsLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
+									<th scope="col" class="col-sm-3" data-visible="true" data-field="name" data-formatter="locationsLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
 									
-									<th class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
                                         <x-icon type="assets" />
 										<span class="sr-only">{{ trans('general.asset_count') }}</span>
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="assigned_assets_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="assigned_assets_count" data-sortable="true">
 										
 										{{ trans('general.assigned') }}
 									</th>
-									<th class="col-sm-1" data-visible="true" data-field="users_count" data-sortable="true">
+									<th scope="col" class="col-sm-1" data-visible="true" data-field="users_count" data-sortable="true">
                                         <x-icon type="users" />
 										<span class="sr-only">{{ trans('general.people') }}</span>
 										
@@ -411,7 +403,6 @@
 								</tr>
 								</thead>
 							</table>
-							</div>
 						</div> <!-- /.col -->
 						<div class="text-center col-md-12" style="padding-top: 10px;">
 							<a href="{{ route('locations.index') }}" class="btn btn-theme btn-sm" style="width: 100%">{{ trans('general.viewall') }}</a>
@@ -441,7 +432,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="table-responsive">
+
                         <table
                                 data-cookie-id-table="dashCategorySummary"
                                 data-height="400"
@@ -455,34 +446,34 @@
                                 data-url="{{ route('api.categories.index', ['sort' => 'assets_count', 'order' => 'asc']) }}">
                             <thead>
                             <tr>
-                                <th class="col-sm-3" data-visible="true" data-field="name" data-formatter="categoriesLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
-                                <th class="col-sm-3" data-visible="true" data-field="category_type" data-sortable="true">
+                                <th scope="col" class="col-sm-3" data-visible="true" data-field="name" data-formatter="categoriesLinkFormatter" data-sortable="true">{{ trans('general.name') }}</th>
+                                <th scope="col" class="col-sm-3" data-visible="true" data-field="category_type" data-sortable="true">
                                     {{ trans('general.type') }}
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
+                                <th scope="col" class="col-sm-1" data-visible="true" data-field="assets_count" data-sortable="true">
                                     <x-icon type="assets" />
                                     <span class="sr-only">{{ trans('general.asset_count') }}</span>
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
+                                <th scope="col" class="col-sm-1" data-visible="true" data-field="accessories_count" data-sortable="true">
                                     <x-icon type="licenses" />
                                     <span class="sr-only">{{ trans('general.accessories_count') }}</span>
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
+                                <th scope="col" class="col-sm-1" data-visible="true" data-field="consumables_count" data-sortable="true">
                                     <x-icon type="consumables" />
                                     <span class="sr-only">{{ trans('general.consumables_count') }}</span>
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
+                                <th scope="col" class="col-sm-1" data-visible="true" data-field="components_count" data-sortable="true">
                                     <x-icon type="components" />
                                     <span class="sr-only">{{ trans('general.components_count') }}</span>
                                 </th>
-                                <th class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
+                                <th scope="col" class="col-sm-1" data-visible="true" data-field="licenses_count" data-sortable="true">
                                     <x-icon type="licenses" />
                                     <span class="sr-only">{{ trans('general.licenses_count') }}</span>
                                 </th>
                             </tr>
                             </thead>
                         </table>
-                        </div>
+
                     </div> <!-- /.col -->
                     <div class="text-center col-md-12" style="padding-top: 10px;">
                         <a href="{{ route('categories.index') }}" class="btn btn-theme btn-sm" style="width: 100%">{{ trans('general.viewall') }}</a>

@@ -7,7 +7,7 @@
         </strong>
     </div>
     <div class="col-md-9">
-        <label class="btn btn-default{{ (config('app.lock_passwords')) ? ' disabled' : '' }}">
+        <label class="btn btn-theme{{ (config('app.lock_passwords')) ? ' disabled' : '' }}">
             {{ trans('button.select_file')  }}
             <input type="file" name="{{ $logoVariable }}" class="js-uploadFile" id="{{ $logoId }}"
                    accept="{{  $allowedTypes ?? "image/gif,image/jpeg,image/webp,image/png,image/svg,image/svg+xml,image/avif" }}"
@@ -17,18 +17,14 @@
 
         <span class='label label-default' id="{{ $logoId }}-info"></span>
 
-        {!! $errors->first($logoVariable, '<span class="alert-msg">:message</span>') !!}
+        <x-form.error :name="$logoVariable" />
 
 
         <p class="help-block" style="!important" id="{{ $logoId }}-status">
             {{ $helpBlock }}
         </p>
 
-        @if (config('app.lock_passwords')===true)
-            <p class="text-warning">
-                <x-icon type="locked" />
-                {{ trans('general.feature_disabled') }}</p>
-        @endif
+        <x-demo-lock>{{ trans('general.feature_disabled') }}</x-demo-lock>
     </div>
 
     <div class="col-md-9 col-md-offset-3">
